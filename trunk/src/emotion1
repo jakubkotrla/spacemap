@@ -1,0 +1,6 @@
+# Emocni funkce
+
+def Function(time):
+    return (5,5)
+    
+self.Function = Function
