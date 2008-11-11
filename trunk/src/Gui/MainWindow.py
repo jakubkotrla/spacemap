@@ -19,6 +19,8 @@ class MainWindow(Frame):
         self.mapRenderer = None
         self.agent = None
         
+        self.playbackLock = None
+        
         self.wndAffordances = None
         self.wndObjects = None
         self.wndRealObjects = None
@@ -30,10 +32,14 @@ class MainWindow(Frame):
         self.pack()  
         self.createWidgets()   
         self.createMenu()
+        
+        #self.showPAPFMA()
+        
     
     def createWidgets(self):
         self.wxCanvas = Canvas(self, width=1000, height=1000)
         self.wxCanvas.grid(row=0, column=0)
+        self.wxCanvas.bind('<Button-1>', self.canvasClick)
                                   
     def createMenu(self):
         worldMenu = Menu()
@@ -59,6 +65,8 @@ class MainWindow(Frame):
                   
         menubar = Menu(self)
         menubar.add_command(label="Start", command=self.startSimulation)
+        menubar.add_command(label="Pause", command=self.pauseSimulation)
+        menubar.add_command(label="Resume", command=self.resumeSimulation)
         menubar.add_cascade(label="World", menu=worldMenu)
         menubar.add_cascade(label="Agent", menu=agentMenu)
         menubar.add_cascade(label="Render", menu=renderMenu)
@@ -132,7 +140,7 @@ class MainWindow(Frame):
     def showPA(self):
         self.wndPA = Toplevel()
         Global.wndPA = self.wndPA
-        self.wndPA.geometry("400x200+1020+0")
+        self.wndPA.geometry("400x200+820+0")
         self.wndPA.title("SpaceMap - Process Area")
         txt = Listbox(self.wndPA)
         txt.pack(side=LEFT, fill=BOTH, expand=1)
@@ -144,7 +152,7 @@ class MainWindow(Frame):
         
     def showPF(self):
         self.wndPF = Toplevel()
-        self.wndPF.geometry("400x200+1020+250")
+        self.wndPF.geometry("400x200+820+250")
         self.wndPF.title("SpaceMap - Perception Field")
         txt = Listbox(self.wndPF)
         txt.pack(side=LEFT, fill=BOTH, expand=1)
@@ -156,7 +164,7 @@ class MainWindow(Frame):
         
     def showMA(self):
         self.wndMA = Toplevel()
-        self.wndMA.geometry("400x200+1020+500")
+        self.wndMA.geometry("400x200+820+500")
         self.wndMA.title("SpaceMap - Memory Area")
         txt = Listbox(self.wndMA)
         txt.pack(side=LEFT, fill=BOTH, expand=1)
@@ -167,6 +175,25 @@ class MainWindow(Frame):
         if self.agent != None: self.agent.ShowMA(txt)
     def showSM(self):
         pass
+    
+    def canvasClick(self, event):
+        x = int(self.wxCanvas.canvasx(event.x))
+        y = int(self.wxCanvas.canvasy(event.y))
+        ids = self.wxCanvas.find_overlapping(x,y, x+1,y+1)
+        for id in ids:
+            tags = self.wxCanvas.gettags(id)
+            if "kmlnode" in tags:
+                self.showKMLNode(self.mapRenderer.IdToKMLNodeGui(id))
+                break
+    def showKMLNode(self, guiNode):
+        wnd = Toplevel()
+        wnd.geometry("400x200+820+500")
+        wnd.title("SpaceMap - KMLNode Info")
+        txt = Listbox(wnd)
+        txt.pack(side=LEFT, fill=BOTH, expand=1)
+        txt.insert(0, "Node[" + str(guiNode.node.x) + "," + str(guiNode.node.y) + "]")
+        
+        
 
     def startSimulation(self):
         world = World()
@@ -174,10 +201,11 @@ class MainWindow(Frame):
 
         self.agent = Agent("agent1", "AgentsConfig\\intentions.simple.py")
         world.SetAgent(self.agent)
-        self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent)
+        self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
         
         self.lock = Lock()
         self.lock.acquire()
+        self.playbackLock = Lock()
         th = Thread(None, self.step, name="steps")
         th.start()     
     
@@ -190,12 +218,26 @@ class MainWindow(Frame):
             if self.wndPF != None: self.agent.ShowPF(self.wndPF.txt)
             if self.wndMA != None: self.agent.ShowMA(self.wndMA.txt)
             # PA done in Agent.Step to get more precise data
-            #time.sleep(0.1)
+            time.sleep(0.01)
             if self.lock.acquire(False): break
+            
+            self.playbackLock.acquire()
+            self.playbackLock.release()
+            
         self.lockBack.release()
         return
     
+    def pauseSimulation(self):
+        if self.playbackLock != None:
+            self.playbackLock.acquire()
+    def resumeSimulation(self):
+        if self.playbackLock != None:
+            self.playbackLock.release()
+    
     def quitSimulation(self):
+        #if self.playbackLock != None:
+         #   self.playbackLock.release()
+
         if self.lock != None:
             self.lock.release()
             self.lockBack.acquire()

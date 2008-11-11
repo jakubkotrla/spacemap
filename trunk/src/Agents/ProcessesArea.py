@@ -201,7 +201,7 @@ class ProcessesArea:
                 phantom.affordance = aff
    
     def Show(self, txt):
-        txt.delete(0, txt.size())
+        txt.delete(0, 100)
         act = self.actualProcess
         if act == None: return
         txt.insert(0, act.ToString())

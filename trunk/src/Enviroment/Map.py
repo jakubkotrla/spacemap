@@ -10,6 +10,7 @@ class RealObject:
         self.type = type
         self.x = x
         self.y = y
+        self.memoryPhantom = None
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
 
