@@ -9,6 +9,7 @@ class Affordance:
 
 
 # Configuration part    
+InternalLearningAff = Affordance('InternalLearningAff')
 
 Cutability = Affordance('Cutability')
 Flushability = Affordance('Flushability')
@@ -34,5 +35,5 @@ Zoomability = Affordance('Zoomability')
 Snackability = Affordance('Snackability')
 
 
-Affordances = [Cutability,Flushability,Eatability,Killability,Fishability,Washability,Stickability,Fireability,Drinkability,Protectability,
+Affordances = [InternalLearningAff,Cutability,Flushability,Eatability,Killability,Fishability,Washability,Stickability,Fireability,Drinkability,Protectability,
                Sliceability,Cookability,Repairability,Boilability,Screwability,Sewability,Smokeability,Lightability,Wetability,Readability,Zoomability,Snackability]

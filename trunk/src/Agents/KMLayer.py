@@ -1,7 +1,8 @@
 
 from Enviroment.Global import Global
-from math import exp
+from math import exp,sqrt
 from collections import deque
+from Enviroment.Objects import InternalLearningObj
 
 class KMLNode:
     def __init__(self, x, y):
@@ -12,8 +13,9 @@ class KMLNode:
         self.objects = []
         self.learnCoef = 0.2    #ToDo make a constant
         self.neighboursCoefLimit = 0 #ToDo make a constant
+        self.minimumDistance = 5 #ToDo make a constant
         
-    def Train(self, rObject, effect, neighboursCoef):
+    def Train(self, rObject, effect, neighboursCoef, nn):
         nG = self.Gausse(neighboursCoef)
         if nG < self.neighboursCoefLimit: return 
         
@@ -21,14 +23,28 @@ class KMLNode:
         difX = rObject.x - self.x
         difY = rObject.y - self.y
         
-        lCoef = nG * self.learnCoef * effect
-        
-        self.x = self.x + difX * lCoef
-        self.y = self.y + difY * lCoef
+        lCoef = nG * self.learnCoef * effect * rObject.attractivity*1.0/rObject.maxAttractivity
+        difX *= lCoef
+        difY *= lCoef
+        #we have vector of learning, now vector of anti-gravity with neighbours...
+        antiGcoef = 0 #0.5 - switched off
+        for n in nn:   # ToDo: must work for actual space neighbours not just in KHmap
+            ldx = (self.x - n.x) 
+            ldy = (self.y - n.y)
+            
+            dist = sqrt(ldx**2+ldy**2)
+            if dist < self.minimumDistance:
+                difX += ldx * antiGcoef
+                difY += ldy * antiGcoef
+      
+        self.x = self.x + difX
+        self.y = self.y + difY
         self.guiMoved(self)
             
     def Gausse(self, x):
         return exp( - ((x)**2) / 2 )
+    def HasObject(self, rObject):
+        return (rObject in self.objects)
 
 
 class KMLayer:
@@ -38,7 +54,7 @@ class KMLayer:
         self.trainEffectNotice = 1
         self.density = 10
         
-    def CreateMap(self):
+    def CreateMap(self, map):
         xCount = self.area.width / self.density
         yCount = self.area.height / self.density
         nodesMap = [[0 for col in range(xCount)] for row in range(yCount)]
@@ -53,6 +69,8 @@ class KMLayer:
                 if x>0:
                     node.neighbours.append(nodesMap[x-1][y])
                     nodesMap[x-1][y].neighbours.append(node)
+                # baseline objects
+                map.AddObject(InternalLearningObj, x*self.density+self.density/2, y*self.density+self.density/2, 5)
         
     def PositionToKMLNodes(self, x, y):
         inNodes = []
@@ -79,19 +97,26 @@ class KMLayer:
         trainQueue = deque([[node,0]])
         trainedList = set()
         
+        map = Global.Map
         neighboursCoef = 0
         
         while trainQueue:
             [node,ncoef] = trainQueue.popleft()
             if node in trainedList: continue
-            node.Train(rObject, effect, ncoef)
+            
+            nn = []
+            for n in self.nodes:
+                dist = map.DistanceObj(n.x, n.y, node)
+                if dist < node.minimumDistance:
+                    nn.append(n)
+            node.Train(rObject, effect, ncoef, nn)
             trainedList.add(node)
             for n in node.neighbours:
                 trainQueue.append([n,ncoef+1])
             
         
     
-    def ObjectNoticed(self, rObject):
+    def ObjectNoticed(self, rObject, intensity):
         inNodes = self.PositionToKMLNodes(rObject.x, rObject.y)
         if len(inNodes)>0:
             self.Train(inNodes[0], rObject, self.trainEffectNotice)

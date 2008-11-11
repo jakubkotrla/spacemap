@@ -1,18 +1,22 @@
 
-
 import random
 from Enviroment.Global import Global
 from KMLayer import KMLayer
 
 class MemoryObject:
-    def __init__(self, rObject, node, i=1):
+    def __init__(self, rObject, node, intensity=1):
         self.type = rObject.type
         self.node = node
-        self.intensity = i
+        self.object = rObject
+        self.intensity = intensity
         self.x = int(node.x)
         self.y = int(node.y)
+        self.maxIntensity = 10
+        
     def Intense(self, i = 1):
-        self.intensity += i
+        if self.intensity < self.maxIntensity:
+            self.intensity += i
+            
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
     
@@ -23,8 +27,9 @@ class SpaceMap:
         self.objects = []
         self.map = Global.Map
         self.KMLayer = KMLayer(self.map)
-        self.KMLayer.CreateMap()
+        self.KMLayer.CreateMap(self.map)
         self.affsToMemObjs = {}
+        
        
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:
@@ -37,10 +42,27 @@ class SpaceMap:
         return None
         
     def ObjectNoticed(self, rObject):
-        node = self.KMLayer.ObjectNoticed(rObject)
-        if node == None:
-            Global.Log("Programmer.Error: SpaceMap.ObjectNoticed")
-            return        
+        #node = self.KMLayer.ObjectNoticed(rObject)
+        nodes = PositionToKMLNodes(robject.x, rObject.y)
+        node = nodes[0]
+        
+        for aff in rObject.type.affordances:
+            if aff not in self.affsToMemObjs:
+                self.affsToMemObjs[aff] = []
+            memObjs = self.affsToMemObjs[aff]
+            memObj = None 
+            if node.HasObject(rObject):
+                for mO in memObjs:
+                    if mO.object == rObject:
+                        memObj = mO
+                        break
+                #hope it was found
+            else:
+                node.objects.append(rObject)    #ToDo udrzovat aktualni
+                memObj = MemoryObject(rObject, node)
+                self.affsToMemObjs[aff].append(memObj)  
+            memObj.Intense()  
+                
         memObj = MemoryObject(rObject, node)
         for aff in rObject.type.affordances:
             if aff not in self.affsToMemObjs:
