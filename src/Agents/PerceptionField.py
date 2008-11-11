@@ -6,14 +6,14 @@ from Enviroment.Global import Global
 
 
 class Phantom:
-    def __init__(self, realObject, habituation):
+    def __init__(self, realObject, habituation, memoryPhantom=None):
         self.object      = realObject
         self.affordance  = None     #which object affordance will be used - to speed up things
         self.ownerProcess  = None
         self.positionX   = realObject.x
         self.positionY   = realObject.y
         self.habituation = habituation
-        self.memoryPhantom = None
+        self.memoryPhantom = memoryPhantom
         
     def Update(self, realObject, habituation):
         self.positionX   = realObject.x
@@ -68,7 +68,7 @@ class PocketPhantom:
 #   - perceptionHabituationTime ... čas za ktorý agent zabudne na objekt
 class PerceptionField:
 
-    def __init__(self, processesArea, spaceMap):
+    def __init__(self, processesArea, spaceMap, memoryArea):
 #        self.perceptionFilter = PerceptionFilter()
         self.environmentPhantoms = {}
         self.pocketPhantoms = {}
@@ -76,6 +76,7 @@ class PerceptionField:
         self.perceptionHabituationTime = 10
         self.processesArea = processesArea
         self.spaceMap = spaceMap
+        self.memoryArea = memoryArea
 
     ## Funkcia ktorá pridá fantóm objektu do percepčného poľa
     # @param self pointer na percepčné pole
@@ -95,7 +96,7 @@ class PerceptionField:
             if rObj in self.environmentPhantoms.keys():
                 self.environmentPhantoms[rObj].Update(rObj, self.perceptionHabituationTime)
             else:
-                self.environmentPhantoms[rObj] = Phantom(rObj, self.perceptionHabituationTime)
+                self.environmentPhantoms[rObj] = Phantom(rObj, self.perceptionHabituationTime, rObj.memoryPhantom)
                 #link to possible processes
                 self.processesArea.PhantomAdded(self.environmentPhantoms[rObj])
                 self.spaceMap.ObjectNoticed(rObj)
@@ -151,6 +152,7 @@ class PerceptionField:
                 if usedSource == phantom.affordance:
                     map.UseObject(excProcess, phantom.object)
                     self.spaceMap.ObjectUsedUp(phantom.object)
+                    self.memoryArea.RemovePhantom(phantom.memoryPhantom)
                     del self.environmentPhantoms[phantom.object]
                     Global.Log("PF: removing(used) phantom for object " + phantom.object.type.name + " at " + str(phantom.object.y) + "," + str(phantom.object.x))
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
@@ -174,20 +176,25 @@ class PerceptionField:
         map = Global.Map
         rObj = map.GetRealObjectIfThere(memObject)
         
-        #ToDo - memory movePhantom to RealPhantom - in a smart way!
-        
         if rObj != None:
-            self.NoticeObjects([rObj])
+            rObj.memoryPhantom = memoryPhantom
+            self.NoticeObjects([rObj])  #ToDo: even better            
+            
             self.spaceMap.ObjectFound(memoryPhantom.object)
         else:
             self.spaceMap.ObjectNotFound(memoryPhantom.object)
+            self.memoryArea.RemovePhantom(memoryPhantom)
         return rObj
     
     
     def Show(self, txt):
-        txt.delete(0, txt.size())
+        txt.delete(0, 1000)
         for  phantom in self.environmentPhantoms:
             txt.insert("end", phantom.ToString())
+        
+        
+        
+        
         
     #old!
                  

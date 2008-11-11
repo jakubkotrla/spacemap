@@ -58,9 +58,15 @@ class MemoryArea:
             return memPhantom
         else:
             return None
+        
+    def RemovePhantom(self, memoryPhantom):
+        if memoryPhantom == None: return
+        if memoryPhantom not in self.memoryPhantoms:
+            Global.Log("Programmer Error: MemoryArea.RemovePhantom")
+        self.memoryPhantoms.remove(memoryPhantom)
       
     def Show(self, txt):
-        txt.delete(0, txt.size())
+        txt.delete(0, 1000)
         for  phantom in self.memoryPhantoms:
             txt.insert("end", phantom.ToString())  
         

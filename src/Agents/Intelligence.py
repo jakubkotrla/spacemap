@@ -14,14 +14,15 @@ class Intelligence:
     def __init__(self, agent, intentionsFile):
         self.agent            = agent
         self.episodicMemory   = EpisodicMemory()
-        self.spaceMap         = SpaceMap(agent)   
+        self.spaceMap         = SpaceMap(agent)
         self.processesArea    = ProcessesArea(self.episodicMemory)
-        self.perceptionField  = PerceptionField(self.processesArea, self.spaceMap)
         self.memoryArea       = MemoryArea(self.agent, self.spaceMap, self.processesArea)
+        self.perceptionField  = PerceptionField(self.processesArea, self.spaceMap, self.memoryArea)
         self.actionSelector   = ActionSelector(agent, intentionsFile, self.processesArea, self.perceptionField, self.episodicMemory, self.spaceMap)
         self.stress           = 0
         self.curiousness      = 0
         self.emotion          = Emotion("emotion1", Global.Time)
+        
 
     def GetAction(self):
         return self.actionSelector.GetAction(self.emotion)
