@@ -6,10 +6,12 @@ from Global import Global
 from Agents.ProcessesArea import *
 
 class RealObject:
-    def __init__(self, type, x, y):
+    def __init__(self, type, x, y, attractivity = 10):
         self.type = type
         self.x = x
         self.y = y
+        self.attractivity = attractivity
+        self.maxAttractivity = 20 
         self.memoryPhantom = None
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
@@ -26,8 +28,8 @@ class Map:
         self.agentMoves = []
         self.guiObjectAppeared = None
         
-    def AddObject(self, type, x, y):
-        rObj = RealObject(type, x, y)    
+    def AddObject(self, type, x, y, attractivity = 10):
+        rObj = RealObject(type, x, y, attractivity)    
         self.objects.append(rObj)
         self.map[x][y] = rObj
         if self.guiObjectAppeared != None:
@@ -104,9 +106,9 @@ map.AddObject(CocaColaCan, 50, 35)
 map.AddObject(Glasses, 50, 55)
 map.AddObject(Book, 51, 56)
 map.AddObject(Plate, 90, 55)
-map.AddObject(Water, 50, 55)
+map.AddObject(Water, 10, 75)
 map.AddObject(Wood, 50, 55)
-map.AddObject(Torch, 50, 55)
+map.AddObject(Torch, 50, 52)
 map.AddObject(Pipe, 30, 35)
 
 Global.Map = map

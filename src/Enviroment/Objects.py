@@ -14,6 +14,9 @@ class Object:
         
         
 # Configuration part
+InternalLearningObj = Object('InternalLearningObj')
+InternalLearningObj.affordances = [InternalLearningAff]
+
 Meal = Object('Meal')
 Meal.affordances = [Eatability]
 
