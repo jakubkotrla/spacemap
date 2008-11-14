@@ -95,6 +95,8 @@ class Map:
         return sqrt((x2-x1)**2+(y2-y1)**2)
     def DistanceObj(self, x,y,object):
         return sqrt((x-object.x)**2+(y-object.y)**2)
+    def DistanceObjs(self, o1,o2):
+        return sqrt((o1.x-o2.x)**2+(o1.y-o2.y)**2)
         
         
 # Configuration part

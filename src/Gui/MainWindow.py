@@ -236,7 +236,7 @@ class MainWindow(Frame):
     
     def quitSimulation(self):
         #if self.playbackLock != None:
-         #   self.playbackLock.release()
+        #   self.playbackLock.release()
 
         if self.lock != None:
             self.lock.release()

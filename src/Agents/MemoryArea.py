@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-from SpaceMap import *
+from Enviroment.Global import Global
 
 
 class MemoryPhantom:

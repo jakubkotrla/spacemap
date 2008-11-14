@@ -9,14 +9,14 @@ class KMLNode:
         self.x = x
         self.y = y
         self.neighbours = []
-        self.size = 10  #ToDo use a constant for setting
+        self.size = 20  #ToDo use a constant for setting
         self.objects = []
         self.learnCoef = 0.2    #ToDo make a constant
         self.neighboursCoefLimit = 0 #ToDo make a constant
-        self.minimumDistance = 5 #ToDo make a constant
+        self.minimumDistance = 7 #ToDo make a constant
         
     def Train(self, rObject, effect, neighboursCoef, nn):
-        nG = self.Gausse(neighboursCoef)
+        nG = self.Gauss(neighboursCoef)
         if nG < self.neighboursCoefLimit: return 
         
         # Wv(t + 1) = Wv(t) + neighboursCoef(v, t)*learnCoef(t)(D(t) - Wv(t))
@@ -27,7 +27,7 @@ class KMLNode:
         difX *= lCoef
         difY *= lCoef
         #we have vector of learning, now vector of anti-gravity with neighbours...
-        antiGcoef = 0 #0.5 - switched off
+        antiGcoef = 0.5 #0.5 - switched off
         for n in nn:   # ToDo: must work for actual space neighbours not just in KHmap
             ldx = (self.x - n.x) 
             ldy = (self.y - n.y)
@@ -41,7 +41,7 @@ class KMLNode:
         self.y = self.y + difY
         self.guiMoved(self)
             
-    def Gausse(self, x):
+    def Gauss(self, x):
         return exp( - ((x)**2) / 2 )
     def HasObject(self, rObject):
         return (rObject in self.objects)
@@ -70,7 +70,7 @@ class KMLayer:
                     node.neighbours.append(nodesMap[x-1][y])
                     nodesMap[x-1][y].neighbours.append(node)
                 # baseline objects
-                map.AddObject(InternalLearningObj, x*self.density+self.density/2, y*self.density+self.density/2, 5)
+                #map.AddObject(InternalLearningObj, x*self.density+self.density/2, y*self.density+self.density/2, 5)
         
     def PositionToKMLNodes(self, x, y):
         inNodes = []
@@ -111,15 +111,16 @@ class KMLayer:
                     nn.append(n)
             node.Train(rObject, effect, ncoef, nn)
             trainedList.add(node)
-            for n in node.neighbours:
-                trainQueue.append([n,ncoef+1])
+            #for n in node.neighbours:
+            #    trainQueue.append([n,ncoef+1])
             
         
     
     def ObjectNoticed(self, rObject, intensity):
         inNodes = self.PositionToKMLNodes(rObject.x, rObject.y)
         if len(inNodes)>0:
-            self.Train(inNodes[0], rObject, self.trainEffectNotice)
+            for node in inNodes:
+                self.Train(node, rObject, self.trainEffectNotice)
             return inNodes[0]
         #should never happen
         return None

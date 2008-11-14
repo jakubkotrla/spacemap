@@ -9,7 +9,13 @@ class KMLNodeGui:
     def __init__(self, node, id, lineIds):
         self.node = node
         self.id = id
-        self.lineIds = lineIds 
+        self.lineIds = lineIds
+        
+class GLNodeGui:
+    def __init__(self, node, id):
+        self.node = node
+        self.id = id
+ 
 
 
 class MapRenderer:
@@ -33,20 +39,32 @@ class MapRenderer:
         for obj in self.map.objects:
             self.objectAppeared(obj)
             
-        kml = self.agent.GetSpaceMap().KMLayer
-        self.kmlNodes = {}
-        self.idToKMLNode = {}
-        for node in kml.nodes:
-            nodeId = self.pixelC(node.x, node.y, "green", 2, "kmlnode")
-            node.guiMoved = self.klmNodeMoved
-            lines = []
-            for neighbour in node.neighbours:
-                if neighbour in self.kmlNodes:
-                    lId = self.line(node.x, node.y, neighbour.x, neighbour.y, "green", "kmlline")
-                    lines.append(lId)
-                    self.kmlNodes[neighbour].lineIds.append(lId)
-            self.kmlNodes[node] = KMLNodeGui(node, nodeId, lines)
-            self.idToKMLNode[nodeId] = self.kmlNodes[node]
+#        kml = self.agent.GetSpaceMap().KMLayer
+#        self.kmlNodes = {}
+#        self.idToKMLNode = {}
+#        for node in kml.nodes:
+#            nodeId = self.pixelC(node.x, node.y, "green", 2, "kmlnode")
+#            node.guiMoved = self.kmlNodeMoved
+#            lines = []
+#            for neighbour in node.neighbours:
+#                if neighbour in self.kmlNodes:
+#                    lId = self.line(node.x, node.y, neighbour.x, neighbour.y, "green", "kmlline")
+#                    lines.append(lId)
+#                    self.kmlNodes[neighbour].lineIds.append(lId)
+#            self.kmlNodes[node] = KMLNodeGui(node, nodeId, lines)
+#            self.idToKMLNode[nodeId] = self.kmlNodes[node]
+            
+        gl = self.agent.GetSpaceMap().GLayer
+        self.glNodes = {}
+        self.idToGLNode = {}
+        for node in gl.nodes:
+            nodeId = self.pixelC(node.x, node.y, "green", 2, "glnode")
+            node.guiMoved = self.glNodeMoved
+            
+            self.glNodes[node] = GLNodeGui(node, nodeId)
+            self.idToGLNode[nodeId] = self.glNodes[node]
+            
+        
         
     def pixel(self, cx, cy, color, tags="pixel"):
         x = cx*self.zoom - round(self.zoom/2) 
@@ -62,15 +80,23 @@ class MapRenderer:
         return self.canvas.create_line(self.zoom*x,self.zoom*y, self.zoom*x2,self.zoom*y2,  fill=color, tags=tags)
     
     
+    def glNodeMoved(self, node):
+        self.canvas.delete(self.glNodes[node].id)
+        del self.idToGLNode[self.glNodes[node].id]
+                    
+        nodeId = self.pixelC(node.x, node.y, "green", 2, "glnode")
+        self.glNodes[node] = GLNodeGui(node, nodeId)
+        self.idToGLNode[nodeId] = self.glNodes[node]
+    
     def IdToKMLNodeGui(self, id):
         return self.idToKMLNode[id]
     
-    def klmNodeMoved(self, node):
+    def kmlNodeMoved(self, node):
         self.canvas.delete(self.kmlNodes[node].id)
         del self.idToKMLNode[self.kmlNodes[node].id]
         for lineId in self.kmlNodes[node].lineIds:
             self.canvas.delete(lineId)
-        
+                    
         nodeId = self.pixelC(node.x, node.y, "green", 2, "kmlnode")
         lines = []
         for neighbour in node.neighbours:
