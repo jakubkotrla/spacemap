@@ -7,7 +7,8 @@ import time
 class GlobalVariables:
     def __init__(self):
         self.Time    = Time()
-        self.max_distance = 200000
+        self.MaxNumber = 9999999
+        
         self.gTerrainTypes = { "forest":"#008000", "wood":"#808000", "meadow": "#00b355", 
                 "stone_mountain": "#a0a0a0", "iron_mountain": "#ff9f71", "cave": "#996600",
                 "house": "#cc6600", "town": "#ffcc99", "road": "#a4a4a4", "default": "#e0e0e0",
@@ -37,6 +38,13 @@ class GlobalVariables:
         if self.wndLog != None:
             self.wndLog.txtLog.insert("end", msg)
         
+    def TimeToHumanFormat(self):
+        return self.Time.TimeToHumanFormat()
+    
+    
+       
+        
+        
     def Explode(self,string,delimiter):
         result = []
         substring = ""
@@ -49,10 +57,6 @@ class GlobalVariables:
         if substring != "":
             result.append(substring)
         return result
-    
-    def TimeToHumanFormat(self):
-        return self.Time.TimeToHumanFormat()
-        
     def PrintList(self,list):
         result = "[ \"" + list.pop(0) +"\""
         for item in list:

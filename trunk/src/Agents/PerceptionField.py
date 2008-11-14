@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-from random import *
+from random import sample
 import copy
 from Enviroment.Global import Global
 #from PerceptionFilter import PerceptionFilter

@@ -1,14 +1,13 @@
 # -*- coding: UTF-8 -*-
 
 from Intentions         import Intentions, Intention
+from Enviroment.Affordances import *
 from Processes          import Processes, Process
 from Scenarios          import Scenarios, Scenario
 from Enviroment.Global import Global
-from Enviroment.Affordances import *
-from Enviroment.Objects import *
 from sets               import *
-from copy               import copy
 import random
+
 
 ## Trieda reprezentujúca selektor zámerov
 # - Atribúty triedy:

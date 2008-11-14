@@ -1,16 +1,19 @@
 
-import random
+
 from Enviroment.Global import Global
+
+from GridLayer import GridLayer
 from KMLayer import KMLayer
+from GLayer import GLayer 
 
 class MemoryObject:
     def __init__(self, rObject, node, intensity=1):
         self.type = rObject.type
         self.node = node
         self.object = rObject
-        self.intensity = intensity
         self.x = int(node.x)
         self.y = int(node.y)
+        self.intensity = intensity
         self.maxIntensity = 10
         
     def Intense(self, i = 1):
@@ -19,6 +22,17 @@ class MemoryObject:
             
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
+
+class LinkMemoryObjectToNode:
+    def __init__(self, object, node, intensity):
+        self.object = object
+        self.node = node
+        self.intensity = intensity
+        self.maxIntensity = 10
+        
+    def Intense(self, i = 1):
+        if self.intensity < self.maxIntensity:
+            self.intensity += i
     
 
 class SpaceMap:
@@ -26,9 +40,18 @@ class SpaceMap:
         self.agent   = agent
         self.objects = []
         self.map = Global.Map
-        self.KMLayer = KMLayer(self.map)
-        self.KMLayer.CreateMap(self.map)
         self.affsToMemObjs = {}
+        
+        self.GridLayer = GridLayer(self.map)
+        self.GridLayer.CreateMap()
+        
+        #self.KMLayer = KMLayer(self.map)
+        #self.KMLayer.CreateMap(self.map)
+        
+        #self.GLayer = GLayer(self.map)
+        #self.GLayer.CreateMap(self.map)
+        
+        
         
        
     def GetMemoryObject(self, affordance):
@@ -41,10 +64,40 @@ class SpaceMap:
                 return memObjs[0]
         return None
         
+    
     def ObjectNoticed(self, rObject):
+        node = self.GLayer.ObjectNoticed(rObject, 10)
+        
+        for aff in rObject.type.affordances:
+            if aff not in self.affsToMemObjs:
+                self.affsToMemObjs[aff] = []
+            memObjs = self.affsToMemObjs[aff]
+            memObj = None 
+            if node.HasObject(rObject):
+                for mO in memObjs:
+                    if mO.object == rObject:
+                        memObj = mO
+                        break
+                #hope it was found
+            else:
+                node.objects.append(rObject)    #ToDo udrzovat aktualni
+                memObj = MemoryObject(rObject, node)
+                self.affsToMemObjs[aff].append(memObj)  
+            memObj.Intense()  
+                
+        memObj = MemoryObject(rObject, node)
+        for aff in rObject.type.affordances:
+            if aff not in self.affsToMemObjs:
+                self.affsToMemObjs[aff] = []
+            self.affsToMemObjs[aff].append(memObj)  
+    
+        
+    def ObjectNoticedKM(self, rObject):
         #node = self.KMLayer.ObjectNoticed(rObject)
-        nodes = PositionToKMLNodes(robject.x, rObject.y)
-        node = nodes[0]
+#        nodes = self.KMLayer.PositionToKMLNodes(rObject.x, rObject.y)
+        
+        #node = nodes[0]
+        node = self.KMLayer.ObjectNoticed(rObject, 10)
         
         for aff in rObject.type.affordances:
             if aff not in self.affsToMemObjs:
@@ -72,26 +125,15 @@ class SpaceMap:
     
         
     def ObjectFound(self, rObject):
-        self.KMLayer.ObjectFound(rObject)
+        pass
         
     def ObjectNotFound(self, rObject):
         Global.Log("SM: object not found: " + rObject.type.name)
-        self.KMLayer.ObjectNotFound(rObject)
         
     def ObjectUsed(self, rObject):
-        self.KMLayer.ObjectUsed(rObject)
+        pass
         
         
     def ObjectUsedUp(self, rObject):
-        node = self.KMLayer.PositionToKMLNodes(rObject.x, rObject.y)
-        
-        for aff in rObject.type.affordances:
-            if aff not in self.affsToMemObjs:
-                pass
-            else:
-                for memObj in self.affsToMemObjs[aff]:
-                    pass
-                
-        
-        
-        #self.KMLayer.ObjectUsedUp(rObject)
+        pass
+
