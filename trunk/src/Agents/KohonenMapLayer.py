@@ -38,7 +38,11 @@ class KohonenMapLayerNode:
             neighbour.guiLinesIds[self] = lineId
                 
     def ToString(self):
-        return "KohonenMapLayerNode [" + self.x + "," + self.y + "]"
+        strInfo = []
+        strInfo.append("KohonenMapLayerNode [" + str(self.x) + "," + str(self.y) + "]")
+        for link in self.linkToObjects:
+            strInfo.append(link.ToString())        
+        return strInfo
                 
     def Train(self, memObject, effect, neighboursCoef, nodesAround):
         neighboursCoef = Global.Gauss(neighboursCoef)
@@ -58,7 +62,7 @@ class KohonenMapLayerNode:
             ldy = (self.y - node.y)
             dist = sqrt(ldx**2+ldy**2)
             if dist < Global.KMLayerAntigravityRange:
-                difX += ldx * Global.KMLayerAntigravityCoef / dist**2   #imitate NewTon law a little
+                difX += ldx * Global.KMLayerAntigravityCoef / dist**2   #imitate Newton law a little
                 difY += ldy * Global.KMLayerAntigravityCoef / dist**2
             else:
                 Global.Log("Programmer.Error KMLNode.Train")

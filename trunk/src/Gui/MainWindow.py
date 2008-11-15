@@ -28,6 +28,7 @@ class MainWindow(Frame):
         self.wndPF = None
         self.wndPA = None
         self.wndMA = None
+        self.wndInfo = None
         
         self.pack()  
         self.createWidgets()   
@@ -182,13 +183,22 @@ class MainWindow(Frame):
             tags = self.wxCanvas.gettags(id)
             if "info" in tags:
                 strInfo.append( self.mapRenderer.GuiIdToObject(id).ToString() )
-        wnd = Toplevel()
-        wnd.geometry("400x200+820+500")
-        wnd.title("SpaceMap - Objects Info")
-        txt = Listbox(wnd)
-        txt.pack(side=LEFT, fill=BOTH, expand=1)
-        for str in strInfo:
-            txt.insert("end", str)
+        if self.wndInfo == None:
+            self.wndInfo = Toplevel()
+            self.wndInfo.geometry("400x200+820+500")
+            self.wndInfo.title("SpaceMap - Objects Info")
+            self.wndInfo.txt = Listbox(self.wndInfo)
+            self.wndInfo.txt.pack(side=LEFT, fill=BOTH, expand=1)
+        else:
+            self.wndInfo.txt.delete(0, 100)
+        for strI in strInfo:
+            if type(strI) is ListType:
+                s = strI.pop(0)
+                self.wndInfo.txt.insert("end", s)
+                for s in strI:
+                    self.wndInfo.txt.insert("end", " - " + s)
+            else:
+                self.wndInfo.txt.insert("end", strI)
         
 
     def startSimulation(self):
