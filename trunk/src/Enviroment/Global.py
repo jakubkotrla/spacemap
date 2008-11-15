@@ -3,6 +3,7 @@
 from __future__ import division
 from Time import Time
 import time
+from math import exp
 
 class GlobalVariables:
     def __init__(self):
@@ -37,6 +38,9 @@ class GlobalVariables:
         print msg
         if self.wndLog != None:
             self.wndLog.txtLog.insert("end", msg)
+        
+    def Gauss(self, x, c=1):
+        return exp( - ((x)**2) / 2*(c**2) )
         
     def TimeToHumanFormat(self):
         return self.Time.TimeToHumanFormat()

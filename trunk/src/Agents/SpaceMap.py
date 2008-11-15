@@ -7,18 +7,22 @@ from KMLayer import KMLayer
 from GLayer import GLayer 
 
 class MemoryObject:
-    def __init__(self, rObject, node, intensity=1):
-        self.type = rObject.type
-        self.node = node
+    def __init__(self, rObject, intensity=1):
         self.object = rObject
-        self.x = int(node.x)
-        self.y = int(node.y)
+        self.type = rObject.type
+        self.x = rObject.x
+        self.y = rObject.y
+        self.linkToNodes = []
         self.intensity = intensity
         self.maxIntensity = 10
         
-    def Intense(self, i = 1):
-        if self.intensity < self.maxIntensity:
-            self.intensity += i
+    def AddLinkToNode(self, node, intensity=1):
+        l = LinkMemoryObjectToNode(self, node, intensity)
+        self.linkToNodes.append(l)
+        
+#    def Intense(self, i = 1):
+#        if self.intensity < self.maxIntensity:
+#            self.intensity += i
             
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
@@ -41,6 +45,7 @@ class SpaceMap:
         self.objects = []
         self.map = Global.Map
         self.affsToMemObjs = {}
+        self.objectsToMemObjs = {}
         
         self.GridLayer = GridLayer(self.map)
         self.GridLayer.CreateMap()
@@ -66,61 +71,25 @@ class SpaceMap:
         
     
     def ObjectNoticed(self, rObject):
-        node = self.GLayer.ObjectNoticed(rObject, 10)
+        if rObject in self.objectsToMemObjs:
+            memObj = self.objectsToMemObjs[rObject]
+            #memObj.Intense() ToDo
+            #ToDo: lower and lower effect on learning of layer
+        else:
+            #seen for first time
+            memObj = MemoryObject(rObject)
+            inNodes = self.gridLayer.PositionToNodes(memObj.x, memObj.y)
+            for node in inNodes:
+                memObj.AddLinkToNode(node)  #ToDo: intensity by distance * effect of noticing
         
+        node = self.GLayer.ObjectNoticed(memObj)
+        
+        # put memObject to all its affordances
         for aff in rObject.type.affordances:
             if aff not in self.affsToMemObjs:
                 self.affsToMemObjs[aff] = []
-            memObjs = self.affsToMemObjs[aff]
-            memObj = None 
-            if node.HasObject(rObject):
-                for mO in memObjs:
-                    if mO.object == rObject:
-                        memObj = mO
-                        break
-                #hope it was found
-            else:
-                node.objects.append(rObject)    #ToDo udrzovat aktualni
-                memObj = MemoryObject(rObject, node)
-                self.affsToMemObjs[aff].append(memObj)  
-            memObj.Intense()  
-                
-        memObj = MemoryObject(rObject, node)
-        for aff in rObject.type.affordances:
-            if aff not in self.affsToMemObjs:
-                self.affsToMemObjs[aff] = []
-            self.affsToMemObjs[aff].append(memObj)  
-    
-        
-    def ObjectNoticedKM(self, rObject):
-        #node = self.KMLayer.ObjectNoticed(rObject)
-#        nodes = self.KMLayer.PositionToKMLNodes(rObject.x, rObject.y)
-        
-        #node = nodes[0]
-        node = self.KMLayer.ObjectNoticed(rObject, 10)
-        
-        for aff in rObject.type.affordances:
-            if aff not in self.affsToMemObjs:
-                self.affsToMemObjs[aff] = []
-            memObjs = self.affsToMemObjs[aff]
-            memObj = None 
-            if node.HasObject(rObject):
-                for mO in memObjs:
-                    if mO.object == rObject:
-                        memObj = mO
-                        break
-                #hope it was found
-            else:
-                node.objects.append(rObject)    #ToDo udrzovat aktualni
-                memObj = MemoryObject(rObject, node)
-                self.affsToMemObjs[aff].append(memObj)  
-            memObj.Intense()  
-                
-        memObj = MemoryObject(rObject, node)
-        for aff in rObject.type.affordances:
-            if aff not in self.affsToMemObjs:
-                self.affsToMemObjs[aff] = []
-            self.affsToMemObjs[aff].append(memObj)  
+            if memObj not in self.affsToMemObjs[aff]:
+                self.affsToMemObjs[aff].append(memObj)
         
     
         
