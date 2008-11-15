@@ -10,29 +10,35 @@ class GlobalVariables:
         self.Time    = Time()
         self.MaxNumber = 9999999
         
-        self.gTerrainTypes = { "forest":"#008000", "wood":"#808000", "meadow": "#00b355", 
-                "stone_mountain": "#a0a0a0", "iron_mountain": "#ff9f71", "cave": "#996600",
-                "house": "#cc6600", "town": "#ffcc99", "road": "#a4a4a4", "default": "#e0e0e0",
-                "parcel": "#d2b48c", "room": "#4682b4", "park": "#9acd32", "chamber": "#b8860b" }
+        self.World = None
+        self.Map = None
+        
+        self.wndLog = None
+        self.wndPA = None
+        self.AgentMoveHistoryLength = 10
+        
+        self.MapVisibility = 10
+        self.MapObjectPickupDistance = 10
+        
+        self.GridLayerNodeSize = 20 
+        
+        
+        
+        
+        # OLD !!!
         self.WorstEffectivity = 999999999
         self.CutObjects = []
         self.MainCycle = None
-        self.World = None
-        self.Map = None
-        self.MapVisibility = 10
-        self.MapObjectPickupDistance = 10
-        self.wndLog = None
-        self.wndPA = None
         self.Variables = {}
         self.AgentSpeed = 3
         self.MaxResults = 5
         self.objectsList = []
+        self.gTerrainTypes = { "forest":"#008000", "wood":"#808000", "meadow": "#00b355", 
+                "stone_mountain": "#a0a0a0", "iron_mountain": "#ff9f71", "cave": "#996600",
+                "house": "#cc6600", "town": "#ffcc99", "road": "#a4a4a4", "default": "#e0e0e0",
+                "parcel": "#d2b48c", "room": "#4682b4", "park": "#9acd32", "chamber": "#b8860b" }
         
-        teraz=time.localtime(time.time())
-        year, month, day, hour, minute, second, weekday, yearday, daylight = teraz
-        datum="%04d-%02d-%02d" % (year, month, day)
-        cas="%02d-%02d-%02d" % (hour, minute, second)
-        self.gTimeStart = "experiments/"+datum + "_" + cas
+        
         
     def Log(self, msg):
         print msg

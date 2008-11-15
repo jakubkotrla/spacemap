@@ -86,6 +86,8 @@ class Agent:
     def GetSpaceMap(self):
         return self.intelligence.spaceMap
 
+    def ToString(self):
+        return "Agent " + self.name
     def TellTheStory(self, txt):
         self.intelligence.TellTheStory(txt)
     

@@ -6,13 +6,19 @@ from Global import Global
 from Agents.ProcessesArea import *
 
 class RealObject:
-    def __init__(self, type, x, y, attractivity = 10):
+    def __init__(self, type, x, y, attractivity, amount):
         self.type = type
         self.x = x
         self.y = y
+        self.amount = amount
         self.attractivity = attractivity
-        self.maxAttractivity = 20 
+        self.maxAttractivity = 20
+         
         self.memoryPhantom = None
+    def Use(self):
+        self.amount =- 1
+        return (self.amount > 0)
+    
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
 
@@ -28,8 +34,8 @@ class Map:
         self.agentMoves = []
         self.guiObjectAppeared = None
         
-    def AddObject(self, type, x, y, attractivity = 10):
-        rObj = RealObject(type, x, y, attractivity)    
+    def AddObject(self, type, x, y, attractivity = 10, amount=1):
+        rObj = RealObject(type, x, y, attractivity, amount)    
         self.objects.append(rObj)
         self.map[x][y] = rObj
         if self.guiObjectAppeared != None:
@@ -47,7 +53,6 @@ class Map:
         agent.y = y
         
     
-    #returns time it takes
     def MoveAgent(self, agent, newX, newY):
         #ToDo: check locations, waypoints, impassable things etc.
         
@@ -75,11 +80,12 @@ class Map:
             return None
     
     def UseObject(self, excProcess, realObject):
-        self.map[realObject.x][realObject.y] = None
-        self.objects.remove(realObject)
-        self.guiObjectDisAppeared(realObject)
-        Global.Log("Map: agent used object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
-        #ToDo: create newObject if defined in process 
+        if realObject.Use():
+            self.map[realObject.x][realObject.y] = None
+            self.objects.remove(realObject)
+            self.guiObjectDisAppeared(realObject)
+            Global.Log("Map: agent used object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
+ 
         
     def GetVisibleObjects(self, centerX, centerY):
         objs = []
@@ -102,7 +108,7 @@ class Map:
 # Configuration part
 map = Map()
 
-map.AddObject(Meal, 20, 25)
+map.AddObject(Meal, 20, 25, amount=10)
 map.AddObject(Snickers, 80, 55)
 map.AddObject(CocaColaCan, 50, 35)
 map.AddObject(Glasses, 50, 55)

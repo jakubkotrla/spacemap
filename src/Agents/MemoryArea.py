@@ -68,7 +68,7 @@ class MemoryArea:
       
     def Show(self, txt):
         txt.delete(0, 1000)
-        for  phantom in self.memoryPhantoms:
+        for phantom in self.memoryPhantoms:
             txt.insert("end", phantom.ToString())  
         
         
