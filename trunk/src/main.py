@@ -4,14 +4,23 @@ from Enviroment.Global import Global
 from Enviroment.World import World
 from Agents.Agent import Agent
 
-world= World()
-Global.World = world
+from sets import *
 
+s = set('abc')
+s.add("a")
+s.add(1)
+s.add(1)
 
-agent = Agent("agent1", "AgentsConfig\\intentions.simple.py")
-world.SetAgent(agent)
+print s
 
-while Global.Time.GetSeconds() < 18000:
-    world.Step()
-    
-agent.TellTheStory()
+#world= World()
+#Global.World = world
+#
+#
+#agent = Agent("agent1", "AgentsConfig\\intentions.simple.py")
+#world.SetAgent(agent)
+#
+#while Global.Time.GetSecondsInDay() < 18000:
+#    world.Step()
+#    
+#agent.TellTheStory()

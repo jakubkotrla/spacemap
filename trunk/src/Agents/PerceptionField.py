@@ -125,8 +125,6 @@ class PerceptionField:
                 i += 1
                 
     def NoticeObjects(self, visibleObjects):
-        #perceptivity = max(min(1.3*self.perceptionFieldSize/(len(visibleObjects)+len(self.environmentPhantoms)+1),1),0.5)
-        #self.Update(self.perceptionFilter.FilterObjects(visibleObjects, perceptivity))
         self.Update(visibleObjects)
     
     def TryToLinkPhantomsFor(self, excProcess, missingSources):
@@ -151,14 +149,15 @@ class PerceptionField:
         for usedSource in usedSources:
             for phantom in excProcess.resources:
                 if usedSource == phantom.affordance:
-                    map.UseObject(excProcess, phantom.object)
-                    self.spaceMap.ObjectUsedUp(phantom.object)
-                    del self.environmentPhantoms[phantom.object]
-                    Global.Log("PF: removing(used) phantom for object " + phantom.object.type.name + " at " + str(phantom.object.y) + "," + str(phantom.object.x))
+                    rest = map.UseObject(excProcess, phantom.object)
+                    if rest < 1:
+                        self.spaceMap.ObjectUsedUp(phantom.object)
+                        del self.environmentPhantoms[phantom.object]
+                        Global.Log("PF: removing(used) phantom for object " + phantom.object.type.name + " at " + str(phantom.object.y) + "," + str(phantom.object.x))
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
         phantoms = copy.copy(excProcess.resources)
         for phantom in phantoms:
-            self.memoryArea.RemovePhantom(phantom.memoryPhantom)
+            self.memoryArea.RemovePhantom(phantom.memoryPhantom)    #ToDo - not ok, move to only when used
             phantom.ResetOwnerProcess()
         
     def UpdatePhantomsBecauseOfMove(self, agent):

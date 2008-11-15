@@ -61,7 +61,6 @@ class MainWindow(Frame):
         agentMenu.add_command(label="Show ProcessArea", command=self.showPA)
         agentMenu.add_command(label="Show PerceptionField", command=self.showPF)
         agentMenu.add_command(label="Show MemoryArea", command=self.showMA)
-        agentMenu.add_command(label="Show SpaceMap", command=self.showSM)
                   
         menubar = Menu(self)
         menubar.add_command(label="Start", command=self.startSimulation)
@@ -173,26 +172,23 @@ class MainWindow(Frame):
         txt["yscrollcommand"]  =  scrollBar.set
         scrollBar.pack(side=RIGHT, fill=Y)
         if self.agent != None: self.agent.ShowMA(txt)
-    def showSM(self):
-        pass
     
     def canvasClick(self, event):
         x = int(self.wxCanvas.canvasx(event.x))
         y = int(self.wxCanvas.canvasy(event.y))
         ids = self.wxCanvas.find_overlapping(x,y, x+1,y+1)
+        strInfo = []
         for id in ids:
             tags = self.wxCanvas.gettags(id)
-            if "kmlnode" in tags:
-                self.showKMLNode(self.mapRenderer.IdToKMLNodeGui(id))
-                break
-    def showKMLNode(self, guiNode):
+            if "info" in tags:
+                strInfo.append( self.mapRenderer.GuiIdToObject(id).ToString() )
         wnd = Toplevel()
         wnd.geometry("400x200+820+500")
-        wnd.title("SpaceMap - KMLNode Info")
+        wnd.title("SpaceMap - Objects Info")
         txt = Listbox(wnd)
         txt.pack(side=LEFT, fill=BOTH, expand=1)
-        txt.insert(0, "Node[" + str(guiNode.node.x) + "," + str(guiNode.node.y) + "]")
-        
+        for str in strInfo:
+            txt.insert("end", str)
         
 
     def startSimulation(self):

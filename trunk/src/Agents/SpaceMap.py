@@ -47,16 +47,11 @@ class SpaceMap:
         self.affsToMemObjs = {}
         self.objectsToMemObjs = {}
         
-        self.GridLayer = GridLayer(self.map)
-        self.GridLayer.CreateMap()
-        
+        self.Layer = GridLayer(self.map)
         #self.KMLayer = KMLayer(self.map)
-        #self.KMLayer.CreateMap(self.map)
-        
         #self.GLayer = GLayer(self.map)
-        #self.GLayer.CreateMap(self.map)
         
-        
+        self.Layer.CreateMap()
         
        
     def GetMemoryObject(self, affordance):
@@ -78,11 +73,11 @@ class SpaceMap:
         else:
             #seen for first time
             memObj = MemoryObject(rObject)
-            inNodes = self.GridLayer.PositionToNodes(memObj.x, memObj.y)
+            inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
             for node in inNodes:
                 memObj.AddLinkToNode(node)  #ToDo: intensity by distance * effect of noticing
         
-        node = self.GridLayer.ObjectNoticed(memObj)
+        self.Layer.ObjectNoticed(memObj)
         
         # put memObject to all its affordances
         for aff in rObject.type.affordances:
