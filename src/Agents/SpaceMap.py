@@ -3,8 +3,8 @@
 from Enviroment.Global import Global
 
 from GridLayer import GridLayer
-from KMLayer import KMLayer
-from GLayer import GLayer 
+from KohonenMapLayer import KohonenMapLayer
+
 
 class MemoryObject:
     def __init__(self, rObject, intensity=1):
@@ -19,6 +19,7 @@ class MemoryObject:
     def AddLinkToNode(self, node, intensity=1):
         l = LinkMemoryObjectToNode(self, node, intensity)
         self.linkToNodes.append(l)
+        node.linkToObjects.append(l)
         
     def Intense(self, i = 1):
         if self.intensity < self.maxIntensity:
@@ -47,9 +48,9 @@ class SpaceMap:
         self.affsToMemObjs = {}
         self.objectsToMemObjs = {}
         
-        self.Layer = GridLayer(self.map)
-        #self.KMLayer = KMLayer(self.map)
-        #self.GLayer = GLayer(self.map)
+        #self.Layer = GridLayer(self.map)
+        self.Layer = KohonenMapLayer(self.map)
+        #self.Layer = GravityLayer(self.map)
         
         self.Layer.CreateMap()
         
