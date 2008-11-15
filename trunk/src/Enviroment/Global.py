@@ -20,9 +20,24 @@ class GlobalVariables:
         self.MapVisibility = 10
         self.MapObjectPickupDistance = 10
         
+        
+        
+        self.TrainEffectNotice = 1
+        self.TrainEffectUse = 5
+        self.TrainEffectFound = 2
+        self.TrainEffectNotFound = 1
+        
         self.GridLayerNodeSize = 20 
         
-        
+        self.KMLayerDensity = 10
+        self.KMLayerLearningCoef = 0.2
+        self.KMLayerTrainAll = False
+        self.KMLayerNodeSize = 10
+        self.KMLayerNeighbourLimit = 0.01
+        self.KMLayerUseBaseLineObjects = False
+        self.KMLayerBaseLineObjectAttractivity = 5
+        self.KMLayerAntigravityCoef = 0.5
+        self.KMLayerAntigravityRange = 20
         
         
         # OLD !!!

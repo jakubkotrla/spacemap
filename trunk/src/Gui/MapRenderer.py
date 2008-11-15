@@ -91,32 +91,11 @@ class MapRenderer:
     def Line(self, x,y,x2,y2, color, tags="line"):
         return self.canvas.create_line(self.zoom*x,self.zoom*y, self.zoom*x2,self.zoom*y2,  fill=color, tags=tags)
     
-    
-    def layerNodeMoved(self, node):
-        self.canvas.delete(self.glNodes[node].id)
-        del self.idToGLNode[self.glNodes[node].id]
-                    
-        nodeId = self.pixelC(node.x, node.y, "green", 2, "glnode")
-        self.glNodes[node] = GLNodeGui(node, nodeId)
-        self.idToGLNode[nodeId] = self.glNodes[node]
-    
-
-    
-    def kmlNodeMoved(self, node):
-        self.canvas.delete(self.kmlNodes[node].id)
-        del self.idToKMLNode[self.kmlNodes[node].id]
-        for lineId in self.kmlNodes[node].lineIds:
-            self.canvas.delete(lineId)
-                    
-        nodeId = self.pixelC(node.x, node.y, "green", 2, "kmlnode")
-        lines = []
-        for neighbour in node.neighbours:
-            lId = self.line(node.x, node.y, neighbour.x, neighbour.y, "green", "kmlline")
-            lines.append(lId)
-            self.kmlNodes[neighbour].lineIds.append(lId)
-        self.kmlNodes[node] = KMLNodeGui(node, nodeId, lines)
-        self.idToKMLNode[nodeId] = self.kmlNodes[node]
-    
+    def DeleteGuiObject(self, id):
+        self.canvas.delete(id)
+        if id in self.guiIdsToObjects:
+            del self.guiIdsToObjects[id]
+        
     
     
     def agentMoved(self):
