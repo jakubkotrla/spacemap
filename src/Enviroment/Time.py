@@ -26,6 +26,9 @@ class Time:
         else:
             return False
     
+    def Difference(self, time):
+        pass
+    
     def AddMinutes(self, minutes):
         self.minute += minutes
         while self.minute > 59:
@@ -71,7 +74,7 @@ class Time:
     def IsNewDay(self):
         return ((self.hour == 0) and (self.minute == 0) and (self.second == 0))
     
-    def GetSeconds(self):
+    def GetSecondsInDay(self):
         return self.hour*3600 + self.minute*60 + self.second
     
     def TimeToHumanFormat(self):
@@ -83,4 +86,6 @@ class Time:
         else: strMinute = str(self.minute)
         if self.second < 10: strSecs = "0" + str(self.second)
         else: strSecs = str(self.second)
+        
+        return "Day " + strDay + ", " + strHours + ":" + strMinute + ":" + strSecs
         

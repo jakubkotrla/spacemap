@@ -62,7 +62,8 @@ class MemoryArea:
     def RemovePhantom(self, memoryPhantom):
         if memoryPhantom == None: return
         if memoryPhantom not in self.memoryPhantoms:
-            Global.Log("Programmer Error: MemoryArea.RemovePhantom")
+            Global.Log("Programmer Error: MemoryArea.RemovePhantom " + memoryPhantom.object.type.name)
+            #return
         self.memoryPhantoms.remove(memoryPhantom)
       
     def Show(self, txt):
