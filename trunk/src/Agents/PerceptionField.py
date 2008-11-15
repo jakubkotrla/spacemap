@@ -34,6 +34,7 @@ class Phantom:
         if self.ownerProcess != None:
             self.ownerProcess.resources.remove(self)
         self.ownerProcess = None
+        self.memoryPhantom = None #ToDo: this is nasty hack
         
     def ToString(self):
         if (self.ownerProcess != None):
@@ -152,12 +153,12 @@ class PerceptionField:
                 if usedSource == phantom.affordance:
                     map.UseObject(excProcess, phantom.object)
                     self.spaceMap.ObjectUsedUp(phantom.object)
-                    self.memoryArea.RemovePhantom(phantom.memoryPhantom)
                     del self.environmentPhantoms[phantom.object]
                     Global.Log("PF: removing(used) phantom for object " + phantom.object.type.name + " at " + str(phantom.object.y) + "," + str(phantom.object.x))
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
         phantoms = copy.copy(excProcess.resources)
         for phantom in phantoms:
+            self.memoryArea.RemovePhantom(phantom.memoryPhantom)
             phantom.ResetOwnerProcess()
         
     def UpdatePhantomsBecauseOfMove(self, agent):
@@ -178,7 +179,8 @@ class PerceptionField:
         
         if rObj != None:
             rObj.memoryPhantom = memoryPhantom
-            self.NoticeObjects([rObj])  #ToDo: even better            
+            self.NoticeObjects([rObj])  #ToDo: even better
+            rObj.memoryPhantom = None   #hack jak svina            
             
             self.spaceMap.ObjectFound(memoryPhantom.object)
         else:

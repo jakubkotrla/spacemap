@@ -54,15 +54,17 @@ class MapRenderer:
 #            self.kmlNodes[node] = KMLNodeGui(node, nodeId, lines)
 #            self.idToKMLNode[nodeId] = self.kmlNodes[node]
             
-        gl = self.agent.GetSpaceMap().GLayer
-        self.glNodes = {}
-        self.idToGLNode = {}
-        for node in gl.nodes:
-            nodeId = self.pixelC(node.x, node.y, "green", 2, "glnode")
-            node.guiMoved = self.glNodeMoved
-            
-            self.glNodes[node] = GLNodeGui(node, nodeId)
-            self.idToGLNode[nodeId] = self.glNodes[node]
+#        gl = self.agent.GetSpaceMap().GLayer
+#        self.glNodes = {}
+#        self.idToGLNode = {}
+#        for node in gl.nodes:
+#            nodeId = self.pixelC(node.x, node.y, "green", 2, "glnode")
+#            node.guiMoved = self.glNodeMoved
+#            
+#            self.glNodes[node] = GLNodeGui(node, nodeId)
+#            self.idToGLNode[nodeId] = self.glNodes[node]
+
+        
             
         
         

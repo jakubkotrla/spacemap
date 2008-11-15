@@ -213,7 +213,7 @@ class MainWindow(Frame):
         world = Global.World
         self.lockBack = Lock()
         self.lockBack.acquire()
-        while Global.Time.GetSeconds() < 100000:
+        while True:
             world.Step()
             if self.wndPF != None: self.agent.ShowPF(self.wndPF.txt)
             if self.wndMA != None: self.agent.ShowMA(self.wndMA.txt)

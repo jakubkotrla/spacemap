@@ -20,9 +20,9 @@ class MemoryObject:
         l = LinkMemoryObjectToNode(self, node, intensity)
         self.linkToNodes.append(l)
         
-#    def Intense(self, i = 1):
-#        if self.intensity < self.maxIntensity:
-#            self.intensity += i
+    def Intense(self, i = 1):
+        if self.intensity < self.maxIntensity:
+            self.intensity += i
             
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
@@ -73,16 +73,16 @@ class SpaceMap:
     def ObjectNoticed(self, rObject):
         if rObject in self.objectsToMemObjs:
             memObj = self.objectsToMemObjs[rObject]
-            #memObj.Intense() ToDo
+            memObj.Intense()
             #ToDo: lower and lower effect on learning of layer
         else:
             #seen for first time
             memObj = MemoryObject(rObject)
-            inNodes = self.gridLayer.PositionToNodes(memObj.x, memObj.y)
+            inNodes = self.GridLayer.PositionToNodes(memObj.x, memObj.y)
             for node in inNodes:
                 memObj.AddLinkToNode(node)  #ToDo: intensity by distance * effect of noticing
         
-        node = self.GLayer.ObjectNoticed(memObj)
+        node = self.GridLayer.ObjectNoticed(memObj)
         
         # put memObject to all its affordances
         for aff in rObject.type.affordances:
