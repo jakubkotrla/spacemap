@@ -12,29 +12,42 @@ class GravityLayerNode:
         self.guiId = None
         self.mapRenderer = None
         
-    def Train(self, rObject, effect, nn):
-        difX = rObject.x - self.x
-        difY = rObject.y - self.y
+    def Render(self, mapRenderer):
+        self.guiId = mapRenderer.PixelC(self, self.x, self.y, "green", 2, "gravitylayernode info")
+        self.mapRenderer = mapRenderer
+    
+    def renderMove(self):
+        self.mapRenderer.DeleteGuiObject(self.guiId)
+        self.guiId = self.mapRenderer.PixelC(self, self.x, self.y, "green", 2, "gravitylayernode info")
+                
+    def ToString(self):
+        strInfo = []
+        strInfo.append("GravityLayerNode [" + str(self.x) + "," + str(self.y) + "]")
+        for link in self.linkToObjects:
+            strInfo.append(link.ToString())        
+        return strInfo
+                
+    def Train(self, memObject, effect, nodesAround):
+        difX = memObject.x - self.x
+        difY = memObject.y - self.y
         
-        map = Global.Map
-        gCoef = map.DistanceObjs(self, rObject)
-        
-        lCoef = effect * rObject.attractivity*1.0/rObject.maxAttractivity
+        lCoef = effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
         difX *= lCoef
         difY *= lCoef
+        
         #we have vector of learning, now vector of anti-gravity with neighbours...
-        antiGcoef = 0.5 #0.5 - switched off
-        for n in nn:   # ToDo: must work for actual space neighbours not just in KHmap
-            ldx = (self.x - n.x) 
-            ldy = (self.y - n.y)
-            
+        for node in nodesAround:
+            ldx = (self.x - node.x) 
+            ldy = (self.y - node.y)
             dist = sqrt(ldx**2+ldy**2)
-            if dist < self.minimumDistance:
-                difX += ldx * antiGcoef
-                difY += ldy * antiGcoef
-      
+            if dist < Global.KMLayerAntigravityRange:
+                difX += ldx * Global.KMLayerAntigravityCoef / dist**2   #imitate Newton law a little
+                difY += ldy * Global.KMLayerAntigravityCoef / dist**2
+            else:
+                Global.Log("Programmer.Error GravityLayerNode.Train")
         self.x = self.x + difX
         self.y = self.y + difY
+        self.renderMove()
             
 
 
@@ -46,20 +59,10 @@ class GravityLayer:
     def CreateMap(self, map):
         xCount = self.area.width / self.density
         yCount = self.area.height / self.density
-        nodesMap = [[0 for col in range(xCount)] for row in range(yCount)]
         for y in range(yCount):
             for x in range(xCount):
                 node = GravityLayerNode(x*self.density+self.density/2, y*self.density+self.density/2)
                 self.nodes.append(node)
-                nodesMap[x][y] = node
-                if y>0:
-                    node.neighbours.append(nodesMap[x][y-1])
-                    nodesMap[x][y-1].neighbours.append(node)
-                if x>0:
-                    node.neighbours.append(nodesMap[x-1][y])
-                    nodesMap[x-1][y].neighbours.append(node)
-                # baseline objects
-                #map.AddObject(InternalLearningObj, x*self.density+self.density/2, y*self.density+self.density/2, 5)
         
     def PositionToNodes(self, x, y):
         inNodes = []
@@ -93,12 +96,12 @@ class GravityLayer:
             [node,ncoef] = trainQueue.popleft()
             if node in trainedList: continue
             
-            nn = []
+            nodesAround = []
             for n in self.nodes:
                 dist = map.DistanceObj(n.x, n.y, node)
                 if dist < node.minimumDistance:
-                    nn.append(n)
-            node.Train(memObject, effect, ncoef, nn)
+                    nodesAround.append(n)
+            node.Train(memObject, effect, ncoef, nodesAround)
             trainedList.add(node)
             for n in node.neighbours:
                 trainQueue.append([n,ncoef+1])
@@ -106,10 +109,9 @@ class GravityLayer:
         
     
     def ObjectNoticed(self, memObject, intensity):
-        inNodes = self.PositionToKMLNodes(memObject.x, memObject.y)
+        inNodes = self.PositionToNodes(memObject.x, memObject.y)
         for node in inNodes:
             self.Train(node, memObject, self.trainEffectNotice)
-        return inNodes[0]
     
     def ObjectFound(self, rObject):
         pass

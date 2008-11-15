@@ -38,6 +38,8 @@ class LinkMemoryObjectToNode:
     def Intense(self, i = 1):
         if self.intensity < self.maxIntensity:
             self.intensity += i
+    def ToString(self):
+        return "LinkTo(i:" + str(self.intensity) + "): " + self.object.ToString()
     
 
 class SpaceMap:
@@ -74,6 +76,7 @@ class SpaceMap:
         else:
             #seen for first time
             memObj = MemoryObject(rObject)
+            self.objectsToMemObjs[rObject] = memObj
             inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
             for node in inNodes:
                 memObj.AddLinkToNode(node)  #ToDo: intensity by distance * effect of noticing
