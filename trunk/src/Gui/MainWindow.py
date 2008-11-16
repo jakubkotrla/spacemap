@@ -178,6 +178,7 @@ class MainWindow(Frame):
         x = int(self.wxCanvas.canvasx(event.x))
         y = int(self.wxCanvas.canvasy(event.y))
         ids = self.wxCanvas.find_overlapping(x,y, x+1,y+1)
+        if len(ids) < 1: return
         strInfo = []
         for id in ids:
             tags = self.wxCanvas.gettags(id)
@@ -189,6 +190,7 @@ class MainWindow(Frame):
             self.wndInfo.title("SpaceMap - Objects Info")
             self.wndInfo.txt = Listbox(self.wndInfo)
             self.wndInfo.txt.pack(side=LEFT, fill=BOTH, expand=1)
+            self.wndInfo.bind("<Destroy>", self.wndInfoClosed) 
         else:
             self.wndInfo.txt.delete(0, 100)
         for strI in strInfo:
@@ -199,7 +201,8 @@ class MainWindow(Frame):
                     self.wndInfo.txt.insert("end", " - " + s)
             else:
                 self.wndInfo.txt.insert("end", strI)
-        
+    def wndInfoClosed(self, event):
+        self.wndInfo = None    
 
     def startSimulation(self):
         world = World()

@@ -30,8 +30,11 @@ class GravityLayerNode:
     def Train(self, memObject, effect, nodesAround):
         difX = memObject.x - self.x
         difY = memObject.y - self.y
+        dist = sqrt(difX**2+difY**2)
+        gCoef = Global.Gauss(dist)
+        Global.Log("GLN.Train gCoef=" + str(gCoef), "grav") 
         
-        lCoef = effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
+        lCoef = gCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
         difX *= lCoef
         difY *= lCoef
         
@@ -40,11 +43,11 @@ class GravityLayerNode:
             ldx = (self.x - node.x) 
             ldy = (self.y - node.y)
             dist = sqrt(ldx**2+ldy**2)
-            if dist < Global.KMLayerAntigravityRange:
-                difX += ldx * Global.KMLayerAntigravityCoef / dist**2   #imitate Newton law a little
-                difY += ldy * Global.KMLayerAntigravityCoef / dist**2
+            if dist < Global.GravLayerAntigravityRange:
+                difX += ldx * Global.GravLayerAntigravityCoef / dist**2   #imitate Newton law a little
+                difY += ldy * Global.GravLayerAntigravityCoef / dist**2
             else:
-                Global.Log("Programmer.Error GravityLayerNode.Train")
+                Global.Log("Programmer.Error GravityLayerNode.Train", "error")
         self.x = self.x + difX
         self.y = self.y + difY
         self.renderMove()
@@ -56,12 +59,13 @@ class GravityLayer:
         self.area = area
         self.nodes = []
         
-    def CreateMap(self, map):
-        xCount = self.area.width / self.density
-        yCount = self.area.height / self.density
+    def CreateMap(self):
+        density = Global.GravLayerDensity
+        xCount = self.area.width / density
+        yCount = self.area.height / density
         for y in range(yCount):
             for x in range(xCount):
-                node = GravityLayerNode(x*self.density+self.density/2, y*self.density+self.density/2)
+                node = GravityLayerNode(x*density+density/2, y*density+density/2)
                 self.nodes.append(node)
         
     def PositionToNodes(self, x, y):
@@ -87,31 +91,21 @@ class GravityLayer:
             return [closestNode]
     
     def Train(self, node, memObject, effect):
-        trainQueue = deque([[node,0]])
-        trainedList = set()
-        
         map = Global.Map
-        
-        while trainQueue:
-            [node,ncoef] = trainQueue.popleft()
-            if node in trainedList: continue
-            
-            nodesAround = []
-            for n in self.nodes:
-                dist = map.DistanceObj(n.x, n.y, node)
-                if dist < node.minimumDistance:
-                    nodesAround.append(n)
-            node.Train(memObject, effect, ncoef, nodesAround)
-            trainedList.add(node)
-            for n in node.neighbours:
-                trainQueue.append([n,ncoef+1])
+        nodesAround = []
+        for n in self.nodes:
+            if n == node: continue
+            dist = map.DistanceObj(n.x, n.y, node)
+            if dist < Global.GravLayerAntigravityRange:
+                nodesAround.append(n)
+        node.Train(memObject, effect, nodesAround)
             
         
     
-    def ObjectNoticed(self, memObject, intensity):
+    def ObjectNoticed(self, memObject, intensity=1):
         inNodes = self.PositionToNodes(memObject.x, memObject.y)
         for node in inNodes:
-            self.Train(node, memObject, self.trainEffectNotice)
+            self.Train(node, memObject, Global.TrainEffectNotice)
     
     def ObjectFound(self, rObject):
         pass
