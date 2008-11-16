@@ -22,9 +22,21 @@ class MemoryObject:
         self.linkToNodes.append(l)
         node.linkToObjects.append(l)
         
-    def Intense(self, i = 1):
-        if self.intensity < self.maxIntensity:
-            self.intensity += i
+    def IntenseToNode(self, node, intensity=1):
+        foundLink = None
+        for l in self.linkToNodes:
+            if l.node == node:
+                foundLink = l
+                break
+        if foundLink == None:
+            link = LinkMemoryObjectToNode(self, node, intensity)
+            self.linkToNodes.append(link)
+        else:
+            foundLink.Intense(intensity)
+        
+    def Intense(self, intensity = 1):
+        self.intensity += intensity
+        if self.intensity > self.maxIntensity: self.intensity = self.maxIntensity
             
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
@@ -37,8 +49,8 @@ class LinkMemoryObjectToNode:
         self.maxIntensity = 10
         
     def Intense(self, i = 1):
-        if self.intensity < self.maxIntensity:
-            self.intensity += i
+        self.intensity += i
+        if self.intensity > self.maxIntensity: self.intensity = self.maxIntensity
     def ToString(self):
         return "LinkTo(i:" + str(self.intensity) + "): " + self.object.ToString()
     
@@ -57,6 +69,8 @@ class SpaceMap:
         
         self.Layer.CreateMap()
         
+    def StepUpdate(self):
+        if self.Layer.StepUpdate != None: self.Layer.StepUpdate() 
        
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:
@@ -70,17 +84,26 @@ class SpaceMap:
         
     
     def ObjectNoticed(self, rObject):
+        map = Global.Map
         if rObject in self.objectsToMemObjs:
             memObj = self.objectsToMemObjs[rObject]
+            inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
             memObj.Intense()
+            for node in inNodes:
+                dist = map.DistanceObjs(node, memObj)
+                intensity = Global.Gauss(dist/10)
+                memObj.IntenseToNode(node, intensity * Global.TrainEffectNotice)
             #ToDo: lower and lower effect on learning of layer
         else:
             #seen for first time
             memObj = MemoryObject(rObject)
             self.objectsToMemObjs[rObject] = memObj
             inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
+            
             for node in inNodes:
-                memObj.AddLinkToNode(node)  #ToDo: intensity by distance * effect of noticing
+                dist = map.DistanceObjs(node, memObj)
+                intensity = Global.Gauss(dist/10)
+                memObj.AddLinkToNode(node, intensity * Global.TrainEffectNotice)
         
         self.Layer.ObjectNoticed(memObj)
         

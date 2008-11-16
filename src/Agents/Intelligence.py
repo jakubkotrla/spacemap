@@ -29,6 +29,7 @@ class Intelligence:
 
     def ActionDone(self):
         self.actionSelector.ActionDone(self.emotion)
+        self.spaceMap.StepUpdate()
         
     def TellTheStory(self, txt):
         self.episodicMemory.Print()
