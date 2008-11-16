@@ -227,7 +227,7 @@ class MainWindow(Frame):
             world.Step()
             if self.wndPF != None: self.agent.ShowPF(self.wndPF.txt)
             if self.wndMA != None: self.agent.ShowMA(self.wndMA.txt)
-            # PA done in Agent.Step to get more precise data
+            # ShowPA done in Agent.Step to get more precise data
             time.sleep(0.01)
             if self.lock.acquire(False): break
             

@@ -41,13 +41,15 @@ class GlobalVariables:
         self.KMLayerAntigravityRange = 20
         
         self.GravLayerDensity = 10
-        self.GravLayerNoise = 2
+        self.GravLayerNoise = 0
         self.GravLayerUseGauss = False
         self.GravLayerGravityRange = 30
         self.GravLayerGravityCoef = 0.4
         self.GravLayerDistanceCoef = 0.3
+        self.GravLayerAntigravityEveryStep = True
         self.GravLayerAntigravityCoef = 0.1
-        self.GravLayerAntigravityRange = 30
+        self.GravLayerAntigravityRange = 10
+        self.GravLayerNodeUsageMax = 10
         
         
         
