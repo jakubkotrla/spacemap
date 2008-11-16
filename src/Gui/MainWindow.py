@@ -20,6 +20,7 @@ class MainWindow(Frame):
         self.agent = None
         
         self.playbackLock = None
+        self.playbackLockLocked = False 
         
         self.wndAffordances = None
         self.wndObjects = None
@@ -237,16 +238,17 @@ class MainWindow(Frame):
         return
     
     def pauseSimulation(self):
-        if self.playbackLock != None:
+        if self.playbackLock != None and not self.playbackLockLocked:
             self.playbackLock.acquire()
+            self.playbackLockLocked = True
     def resumeSimulation(self):
-        if self.playbackLock != None:
+        if self.playbackLock != None and self.playbackLockLocked:
             self.playbackLock.release()
+            self.playbackLockLocked = False
     
     def quitSimulation(self):
-        #if self.playbackLock != None:
-        #   self.playbackLock.release()
-
+        if self.playbackLock != None and self.playbackLockLocked:
+            self.playbackLock.release()
         if self.lock != None:
             self.lock.release()
             self.lockBack.acquire()

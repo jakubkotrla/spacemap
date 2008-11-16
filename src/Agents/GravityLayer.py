@@ -1,7 +1,7 @@
 
 from Enviroment.Global import Global
 from math import sqrt
-from collections import deque
+from random import randint
 
 class GravityLayerNode:
     def __init__(self, x, y):
@@ -31,21 +31,26 @@ class GravityLayerNode:
         difX = memObject.x - self.x
         difY = memObject.y - self.y
         dist = sqrt(difX**2+difY**2)
-        gCoef = Global.Gauss(dist)
+        
+        if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceCoef)
+        else: gCoef = 1 / dist**2
         Global.Log("GLN.Train gCoef=" + str(gCoef), "grav") 
         
-        lCoef = gCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
+        lCoef = Global.GravLayerGravityCoef * gCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
         difX *= lCoef
         difY *= lCoef
         
-        #we have vector of learning, now vector of anti-gravity with neighbours...
         for node in nodesAround:
             ldx = (self.x - node.x) 
             ldy = (self.y - node.y)
             dist = sqrt(ldx**2+ldy**2)
             if dist < Global.GravLayerAntigravityRange:
-                difX += ldx * Global.GravLayerAntigravityCoef / dist**2   #imitate Newton law a little
-                difY += ldy * Global.GravLayerAntigravityCoef / dist**2
+                
+                if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceCoef)
+                else: gCoef = 1 / dist**2
+                
+                difX += ldx * Global.GravLayerAntigravityCoef * gCoef
+                difY += ldy * Global.GravLayerAntigravityCoef * gCoef
             else:
                 Global.Log("Programmer.Error GravityLayerNode.Train", "error")
         self.x = self.x + difX
@@ -65,14 +70,17 @@ class GravityLayer:
         yCount = self.area.height / density
         for y in range(yCount):
             for x in range(xCount):
-                node = GravityLayerNode(x*density+density/2, y*density+density/2)
+                xNoise = randint(-Global.GravLayerNoise, Global.GravLayerNoise)
+                yNoise = randint(-Global.GravLayerNoise, Global.GravLayerNoise)
+                
+                node = GravityLayerNode(x*density+density/2+xNoise, y*density+density/2+yNoise)
                 self.nodes.append(node)
         
     def PositionToNodes(self, x, y):
         inNodes = []
         closestNode = None
         closestDistance = Global.MaxNumber
-        per = Global.KMLayerNodeSize
+        per = Global.GravLayerGravityRange
         map = Global.Map
         for node in self.nodes:
             distance = map.DistanceObj(x, y, node)
@@ -95,7 +103,7 @@ class GravityLayer:
         nodesAround = []
         for n in self.nodes:
             if n == node: continue
-            dist = map.DistanceObj(n.x, n.y, node)
+            dist = map.DistanceObjs(n, node)
             if dist < Global.GravLayerAntigravityRange:
                 nodesAround.append(n)
         node.Train(memObject, effect, nodesAround)

@@ -41,8 +41,14 @@ class GlobalVariables:
         self.KMLayerAntigravityRange = 20
         
         self.GravLayerDensity = 10
-        self.GravLayerAntigravityCoef = 0.5
-        self.GravLayerAntigravityRange = 20
+        self.GravLayerNoise = 2
+        self.GravLayerUseGauss = False
+        self.GravLayerGravityRange = 30
+        self.GravLayerGravityCoef = 0.4
+        self.GravLayerDistanceCoef = 0.3
+        self.GravLayerAntigravityCoef = 0.1
+        self.GravLayerAntigravityRange = 30
+        
         
         
         # OLD !!!
@@ -76,7 +82,7 @@ class GlobalVariables:
     
        
         
-        
+    # OLD !!!
     def Explode(self,string,delimiter):
         result = []
         substring = ""
