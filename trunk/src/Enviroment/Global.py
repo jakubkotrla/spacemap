@@ -49,7 +49,8 @@ class GlobalVariables:
         self.GravLayerAntigravityEveryStep = True
         self.GravLayerAntigravityCoef = 0.1
         self.GravLayerAntigravityRange = 10
-        self.GravLayerNodeUsageMax = 10
+        self.GravLayerNodeUsageCoef = 10
+        self.GravLayerNodeUsageLimit = 15
         
         
         

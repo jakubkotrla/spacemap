@@ -2,10 +2,13 @@
 from Enviroment.Global import Global
 from math import sqrt
 from random import randint
+from sets import SetIntersection
+from copy import copy
 
 class GravityLayerNode:
-    def __init__(self, area, x, y):
-        self.area = area
+    def __init__(self, layer, x, y):
+        self.layer = layer
+        self.area = layer.area
         self.x = x
         self.y = y
         self.linkToObjects = []
@@ -46,9 +49,16 @@ class GravityLayerNode:
                 else: gCoef = 1 / dist**2
                 
                 #anti-gravity is based on node usage
-                usageCoef = Global.GravLayerNodeUsageMax / max(1, self.GetUsage()+node.GetUsage())
+                usageCoef = Global.GravLayerNodeUsageCoef / max(1, self.GetUsage()+node.GetUsage())
                 gCoef = gCoef * usageCoef
                 Global.Log("GLN.StepUpdate usageCoef=" + str(usageCoef), "grav") 
+                
+#                usage = self.GetUsage()+node.GetUsage()
+#                Global.Log("Usage is " + str(usage), "grav")
+#                if usage > Global.GravLayerNodeUsageLimit:
+#                    newNode = self.layer.AddNode(self, node)
+#                    newNode.Render(self.mapRenderer)
+#                    Global.Log("Usage is big so new node CREATED", "grav")
                 
                 difX += ldx * Global.GravLayerAntigravityCoef * gCoef
                 difY += ldy * Global.GravLayerAntigravityCoef * gCoef
@@ -88,7 +98,7 @@ class GravityLayerNode:
                 else: gCoef = 1 / dist**2
                 
                 #anti-gravity is based on node usage
-                usageCoef = Global.GravLayerNodeUsageMax / max(1, self.GetUsage()+node.GetUsage())
+                usageCoef = Global.GravLayerNodeUsageLimit / max(1, self.GetUsage()+node.GetUsage())
                 #gCoef = gCoef * usageCoef
                 Global.Log("GLN.Train usageCoef=" + str(usageCoef), "grav") 
                 
@@ -121,7 +131,7 @@ class GravityLayer:
                 xNoise = randint(-Global.GravLayerNoise, Global.GravLayerNoise)
                 yNoise = randint(-Global.GravLayerNoise, Global.GravLayerNoise)
                 
-                node = GravityLayerNode(self.area, x*density+density/2+xNoise, y*density+density/2+yNoise)
+                node = GravityLayerNode(self, x*density+density/2+xNoise, y*density+density/2+yNoise)
                 self.nodes.append(node)
                 node.info = str(x) + "," + str(y) 
         
@@ -159,6 +169,15 @@ class GravityLayer:
                     nodesAround.append(n)
             node.StepUpdate(nodesAround)
         
+    def AddNode(self, node1, node2):
+        x = (node1.x + node2.x) / 2
+        y = (node1.y + node2.y) / 2
+        node = GravityLayerNode(self, x, y)
+        self.nodes.append(node)
+        node.info = str(x) + "," + str(y)
+        commonLinks = SetIntersection(node1.linkToObjects,node2.linkToObjects)
+        node.linkToObjects = copy(commonLinks)
+        return node
     
     def Train(self, node, memObject, effect):
         map = Global.Map
