@@ -9,6 +9,7 @@ class GlobalVariables:
     def __init__(self):
         self.Time    = Time()
         self.MaxNumber = 9999999
+        self.LogTags = ["error", "grav"]
         
         self.World = None
         self.Map = None
@@ -39,6 +40,10 @@ class GlobalVariables:
         self.KMLayerAntigravityCoef = 0.5
         self.KMLayerAntigravityRange = 20
         
+        self.GravLayerDensity = 10
+        self.GravLayerAntigravityCoef = 0.5
+        self.GravLayerAntigravityRange = 20
+        
         
         # OLD !!!
         self.WorstEffectivity = 999999999
@@ -55,7 +60,9 @@ class GlobalVariables:
         
         
         
-    def Log(self, msg):
+    def Log(self, msg, tag="msg"):
+        if not tag in self.LogTags: return
+        msg = tag + "> " + msg
         print msg
         if self.wndLog != None:
             self.wndLog.txtLog.insert("end", msg)

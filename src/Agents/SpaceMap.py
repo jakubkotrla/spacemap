@@ -3,6 +3,7 @@
 from Enviroment.Global import Global
 
 from GridLayer import GridLayer
+from GravityLayer import GravityLayer
 from KohonenMapLayer import KohonenMapLayer
 
 
@@ -51,8 +52,8 @@ class SpaceMap:
         self.objectsToMemObjs = {}
         
         #self.Layer = GridLayer(self.map)
-        self.Layer = KohonenMapLayer(self.map)
-        #self.Layer = GravityLayer(self.map)
+        #self.Layer = KohonenMapLayer(self.map)
+        self.Layer = GravityLayer(self.map)
         
         self.Layer.CreateMap()
         

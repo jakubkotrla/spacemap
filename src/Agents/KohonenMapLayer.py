@@ -65,7 +65,7 @@ class KohonenMapLayerNode:
                 difX += ldx * Global.KMLayerAntigravityCoef / dist**2   #imitate Newton law a little
                 difY += ldy * Global.KMLayerAntigravityCoef / dist**2
             else:
-                Global.Log("Programmer.Error KMLNode.Train")
+                Global.Log("Programmer.Error KMLNode.Train", "error")
         self.x = self.x + difX
         self.y = self.y + difY
         self.renderMove()
