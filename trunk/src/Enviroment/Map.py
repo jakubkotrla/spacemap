@@ -56,7 +56,7 @@ class Map:
     def MoveAgent(self, agent, newX, newY):
         #ToDo: check locations, waypoints, impassable things etc.
         
-        if (newX < 0 or newY < 0 or newX > self.width or newY > self.height):
+        if (newX < 0 or newY < 0 or newX > self.width/2 or newY > self.height/2):
             return 0
         
         duration = self.Distance(agent.x, agent.y, newX, newY)
@@ -68,7 +68,7 @@ class Map:
       
     def CanMoveAgent(self, agent, newX, newY):
         #ToDo: check locations, waypoints, impassable things etc.
-        if (newX < 0 or newY < 0 or newX > self.width or newY > self.height):
+        if (newX < 0 or newY < 0 or newX > self.width/2 or newY > self.height/2):
             return False
         return True
     
@@ -111,12 +111,12 @@ map = Map()
 map.AddObject(Meal, 20, 25, amount=10)
 map.AddObject(Snickers, 80, 55)
 map.AddObject(CocaColaCan, 50, 35)
-map.AddObject(Glasses, 50, 55)
-map.AddObject(Book, 51, 56)
+#map.AddObject(Glasses, 50, 55)
+#map.AddObject(Book, 51, 56)
 map.AddObject(Plate, 90, 55)
 map.AddObject(Water, 10, 75)
-map.AddObject(Wood, 50, 55)
-map.AddObject(Torch, 50, 52)
+#map.AddObject(Wood, 51, 52)
+#map.AddObject(Torch, 50, 52)
 map.AddObject(Pipe, 30, 35)
 
 Global.Map = map

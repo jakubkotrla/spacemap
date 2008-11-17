@@ -2,7 +2,6 @@
 from Enviroment.Global import Global
 from math import sqrt
 from random import randint
-from sets import SetIntersection
 from copy import copy
 
 class GravityLayerNode:
@@ -12,6 +11,11 @@ class GravityLayerNode:
         self.x = x
         self.y = y
         self.linkToObjects = []
+        
+        self.stepDiffX = []
+        self.stepDiffY = []
+        
+        self.usageLT = 0
         
         self.info = ""
         self.guiId = None
@@ -25,7 +29,8 @@ class GravityLayerNode:
         self.guiId = self.mapRenderer.PixelC(self, self.x, self.y, "green", 2, "gravitylayernode info")
     def ToString(self):
         strInfo = []
-        strInfo.append("GravityLayerNode(" + self.info + ") [" + str(self.x) + "," + str(self.y) + "]")
+        strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
+        strInfo.append("GravityLayerNode(" + self.info + ") [" + strXY + "]")
         for link in self.linkToObjects:
             strInfo.append(link.ToString())        
         return strInfo
@@ -37,56 +42,77 @@ class GravityLayerNode:
         return usage
                 
     def StepUpdate(self, nodesAround):
-        difX = 0
-        difY = 0
+        diffX = 0
+        diffY = 0
+
+        #Global.Log("GLN.StepUpdate usageLT=" + str(self.usageLT), "grav") 
+        if Global.GravLayerAddNewNodes and self.usageLT > Global.GravLayerUsageLTLimit:
+            newNode = self.layer.AddNode(self)
+            newNode.Render(self.mapRenderer)
+            self.usageLT = self.usageLT * Global.GravLayerUsageLTBornParentCoef
+            
         for node in nodesAround:
             ldx = (self.x - node.x) 
             ldy = (self.y - node.y)
             dist = sqrt(ldx**2+ldy**2)
             if dist < Global.GravLayerAntigravityRange:
                 
-                if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceCoef)
-                else: gCoef = 1 / dist**2
+                if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceGaussCoef)
+                else: gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
+
+                usageCoef = Global.GravLayerNodeUsageCoef / max(1, self.GetUsage()*node.GetUsage())
+                #gCoef = gCoef * usageCoef
+                gCoef = gCoef * Global.GravLayerAntigravityCoef
+                gCoef = min(1, gCoef)
+                if self.info == "1,2" and node.info == "2,2":
+                    Global.Log("GravityLayerNode.StepUpdate gCoef=" + str(gCoef), "grav")
+                diffX = ldx * gCoef
+                diffY = ldy * gCoef
                 
-                #anti-gravity is based on node usage
-                usageCoef = Global.GravLayerNodeUsageCoef / max(1, self.GetUsage()+node.GetUsage())
-                gCoef = gCoef * usageCoef
-                Global.Log("GLN.StepUpdate usageCoef=" + str(usageCoef), "grav") 
+                self.stepDiffX.append(diffX)
+                self.stepDiffY.append(diffY)
+                node.stepDiffX.append(diffX)
+                node.stepDiffY.append(diffY)
                 
-#                usage = self.GetUsage()+node.GetUsage()
-#                Global.Log("Usage is " + str(usage), "grav")
-#                if usage > Global.GravLayerNodeUsageLimit:
-#                    newNode = self.layer.AddNode(self, node)
-#                    newNode.Render(self.mapRenderer)
-#                    Global.Log("Usage is big so new node CREATED", "grav")
+#                self.stepDiffX += diffX
+#                self.stepDiffY += diffY
+#                node.stepDiffX += diffX
+#                node.stepDiffY += diffY
                 
-                difX += ldx * Global.GravLayerAntigravityCoef * gCoef
-                difY += ldy * Global.GravLayerAntigravityCoef * gCoef
             else:
                 Global.Log("Programmer.Error GravityLayerNode.StepUpdate", "error")
-        self.x = self.x + difX
-        self.y = self.y + difY
         
+        
+    def StepUpdateMove(self):
+        diffX = 0
+        diffY = 0
+        for dx in self.stepDiffX: diffX = diffX + dx
+        for dy in self.stepDiffY: diffY = diffY + dy
+        
+        self.x = self.x + diffX
+        self.y = self.y + diffY
         if self.x < 1: self.x = 1
         if self.y < 1: self.y = 1
         if self.x > self.area.width-1: self.x = self.area.width-1
         if self.y > self.area.height-1: self.y = self.area.height-1 
         self.renderMove()
-        
+        if self.info == "1,2":
+            Global.Log("GravityLayerNode.StepUpdateMove self.stepDiffX=" + str(self.stepDiffX), "grav")
+            Global.Log("GravityLayerNode.StepUpdateMove self.stepDiffY=" + str(self.stepDiffY), "grav")
+        self.stepDiffX = []
+        self.stepDiffY = []
             
     def Train(self, memObject, effect, nodesAround):
         difX = memObject.x - self.x
         difY = memObject.y - self.y
         dist = sqrt(difX**2+difY**2)
         
-        if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceCoef)
-        else: gCoef = 1 / dist**2
-        Global.Log("GLN.Train gCoef=" + str(gCoef), "grav")
-        
+        if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceGaussCoef)
+        else: gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
         
         lCoef = Global.GravLayerGravityCoef * gCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
-        difX *= lCoef
-        difY *= lCoef
+        difX *= min(1, lCoef)
+        difY *= min(1, lCoef)
         
         for node in nodesAround:
             ldx = (self.x - node.x) 
@@ -94,7 +120,7 @@ class GravityLayerNode:
             dist = sqrt(ldx**2+ldy**2)
             if dist < Global.GravLayerAntigravityRange:
                 
-                if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceCoef)
+                if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceGaussCoef)
                 else: gCoef = 1 / dist**2
                 
                 #anti-gravity is based on node usage
@@ -114,6 +140,9 @@ class GravityLayerNode:
         if self.x > self.area.width-1: self.x = self.area.width-1
         if self.y > self.area.height-1: self.y = self.area.height-1 
         self.renderMove()
+        
+        usage = self.GetUsage()
+        self.usageLT = self.usageLT + (usage * Global.GravLayerUsageLTCoef)
             
 
 
@@ -168,16 +197,21 @@ class GravityLayer:
                 if dist < Global.GravLayerAntigravityRange:
                     nodesAround.append(n)
             node.StepUpdate(nodesAround)
+        for node in self.nodes:
+            node.StepUpdateMove()
         
-    def AddNode(self, node1, node2):
-        x = (node1.x + node2.x) / 2
-        y = (node1.y + node2.y) / 2
-        node = GravityLayerNode(self, x, y)
-        self.nodes.append(node)
-        node.info = str(x) + "," + str(y)
-        commonLinks = SetIntersection(node1.linkToObjects,node2.linkToObjects)
-        node.linkToObjects = copy(commonLinks)
-        return node
+    def AddNode(self, parentNode):
+        xNoise = randint(-Global.GravLayerNoiseAdd, Global.GravLayerNoiseAdd)
+        yNoise = randint(-Global.GravLayerNoiseAdd, Global.GravLayerNoiseAdd)
+                
+        x = parentNode.x + xNoise
+        y = parentNode.y + yNoise
+        newNode = GravityLayerNode(self, x, y)
+        self.nodes.append(newNode)
+        newNode.info = str(x) + "," + str(y)
+        
+        newNode.linkToObjects = copy(parentNode.linkToObjects)
+        return newNode
     
     def Train(self, node, memObject, effect):
         map = Global.Map

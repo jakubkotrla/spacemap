@@ -52,7 +52,8 @@ class LinkMemoryObjectToNode:
         self.intensity += i
         if self.intensity > self.maxIntensity: self.intensity = self.maxIntensity
     def ToString(self):
-        return "LinkTo(i:" + str(self.intensity) + "): " + self.object.ToString()
+        strInt =  '%.4f'%(self.intensity)
+        return "LinkTo( " + strInt + " ): " + self.object.ToString()
     
 
 class SpaceMap:
@@ -89,10 +90,21 @@ class SpaceMap:
             memObj = self.objectsToMemObjs[rObject]
             inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
             memObj.Intense()
+            
+            nodesToIntensity = {}
+            sumIntensity = 0
+            
             for node in inNodes:
                 dist = map.DistanceObjs(node, memObj)
                 intensity = Global.Gauss(dist/10)
-                memObj.IntenseToNode(node, intensity * Global.TrainEffectNotice)
+                nodesToIntensity[node] = intensity
+                sumIntensity = sumIntensity + intensity
+            
+            for node in inNodes:
+                #ToDo use rObject.attractivity
+                intensity = nodesToIntensity[node] * Global.TrainEffectNotice / sumIntensity
+                memObj.IntenseToNode(node, intensity)
+                
             #ToDo: lower and lower effect on learning of layer
         else:
             #seen for first time

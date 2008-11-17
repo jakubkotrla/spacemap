@@ -9,6 +9,7 @@ class GlobalVariables:
     def __init__(self):
         self.Time    = Time()
         self.MaxNumber = 9999999
+        self.MinPositiveNumber = 0.00000001
         self.LogTags = ["error", "grav"]
         
         self.World = None
@@ -44,14 +45,18 @@ class GlobalVariables:
         self.GravLayerNoise = 0
         self.GravLayerUseGauss = False
         self.GravLayerGravityRange = 30
-        self.GravLayerGravityCoef = 0.4
-        self.GravLayerDistanceCoef = 0.3
+        self.GravLayerGravityCoef = 0.6
+        self.GravLayerDistanceGaussCoef = 0.3
         self.GravLayerAntigravityEveryStep = True
-        self.GravLayerAntigravityCoef = 0.1
+        self.GravLayerAntigravityCoef = 10
         self.GravLayerAntigravityRange = 10
-        self.GravLayerNodeUsageCoef = 10
+        self.GravLayerNodeUsageCoef = 10.0
         self.GravLayerNodeUsageLimit = 15
-        
+        self.GravLayerAddNewNodes = False
+        self.GravLayerUsageLTCoef = 0.01
+        self.GravLayerUsageLTLimit = 30
+        self.GravLayerNoiseAdd = 3
+        self.GravLayerUsageLTBornParentCoef = 0
         
         
         # OLD !!!

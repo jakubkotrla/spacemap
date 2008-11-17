@@ -30,6 +30,7 @@ class MainWindow(Frame):
         self.wndPA = None
         self.wndMA = None
         self.wndInfo = None
+        self.wndSM = None
         
         self.pack()  
         self.createWidgets()   
@@ -50,14 +51,9 @@ class MainWindow(Frame):
         worldMenu.add_command(label="Show Objects", command=self.showObjects)
         worldMenu.add_command(label="Show Log", command=self.showLog)
                   
-        renderMenu = Menu()
-        renderMenu.add_checkbutton(label="Map", command=self.chRenderMap)
-        renderMenu.add_checkbutton(label="Objects", command=self.chRenderObjects)
-        renderMenu.add_checkbutton(label="Agent", command=self.chRenderAgent)
-        renderMenu.add_checkbutton(label="Visible Area", command=self.chRenderVisibleArea)
-        renderMenu.add_checkbutton(label="Visible Objects", command=self.chRenderVisibleobjects)
-        renderMenu.add_checkbutton(label="SpaceMap", command=self.chRenderSpaceMap)
-    
+        spacemapMenu = Menu()
+        spacemapMenu.add_command(label="Show Nodes", command=self.showSMnodes)
+        
         agentMenu = Menu()
         agentMenu.add_command(label="Show PA-PF-MA", command=self.showPAPFMA)
         agentMenu.add_command(label="Show ProcessArea", command=self.showPA)
@@ -70,7 +66,7 @@ class MainWindow(Frame):
         menubar.add_command(label="Resume", command=self.resumeSimulation)
         menubar.add_cascade(label="World", menu=worldMenu)
         menubar.add_cascade(label="Agent", menu=agentMenu)
-        menubar.add_cascade(label="Render", menu=renderMenu)
+        menubar.add_cascade(label="SpaceMap", menu=spacemapMenu)
         menubar.add_command(label="Quit", command=self.quitSimulation)
         self.winfo_toplevel().config(menu=menubar)
         
@@ -121,18 +117,20 @@ class MainWindow(Frame):
         txtLog["yscrollcommand"]  =  scrollBar.set
         scrollBar.pack(side=RIGHT, fill=Y)
         
-    def chRenderMap(self):
-        pass
-    def chRenderObjects(self):
-        pass
-    def chRenderAgent(self):
-        pass
-    def chRenderVisibleArea(self):
-        pass
-    def chRenderVisibleobjects(self):
-        pass
-    def chRenderSpaceMap(self):
-        pass
+    def showSMnodes(self):
+        self.wndSM = Toplevel()
+        self.wndSM.geometry("400x200+820+0")
+        self.wndSM.title("SpaceMap - NodesList")
+        txt = Listbox(self.wndSM)
+        txt.pack(side=LEFT, fill=BOTH, expand=1)
+        self.wndSM.txt = txt
+        scrollBar = Scrollbar(self.wndSM, orient=VERTICAL, command=txt.yview)
+        txt["yscrollcommand"]  =  scrollBar.set
+        scrollBar.pack(side=RIGHT, fill=Y)
+        nodes = self.agent.GetSpaceMap().Layer.nodes
+        for node in nodes:
+            txt.insert("end", node.ToString()[0])
+        
     
     def showPAPFMA(self):
         self.showPA()
