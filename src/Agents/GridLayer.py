@@ -58,6 +58,8 @@ class GridLayer:
         else:
             return [closestNode]
     
+    def StepUpdate(self):
+        pass
     
     def ObjectNoticed(self, memObject, intensity=1):
         #no training

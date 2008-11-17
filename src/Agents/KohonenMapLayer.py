@@ -119,6 +119,9 @@ class KohonenMapLayer:
         else:
             return [closestNode]
     
+    def StepUpdate(self):
+        pass
+    
     def Train(self, node, memObject, effect):
         trainQueue = deque([[node,0]])
         trainedList = set()

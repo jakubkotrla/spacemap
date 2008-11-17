@@ -65,13 +65,13 @@ class SpaceMap:
         self.objectsToMemObjs = {}
         
         #self.Layer = GridLayer(self.map)
-        #self.Layer = KohonenMapLayer(self.map)
-        self.Layer = GravityLayer(self.map)
+        self.Layer = KohonenMapLayer(self.map)
+        #self.Layer = GravityLayer(self.map)
         
         self.Layer.CreateMap()
         
     def StepUpdate(self):
-        if self.Layer.StepUpdate != None: self.Layer.StepUpdate() 
+        self.Layer.StepUpdate() 
        
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:
