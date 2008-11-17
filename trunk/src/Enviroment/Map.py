@@ -56,7 +56,7 @@ class Map:
     def MoveAgent(self, agent, newX, newY):
         #ToDo: check locations, waypoints, impassable things etc.
         
-        if (newX < 0 or newY < 0 or newX > self.width/2 or newY > self.height/2):
+        if (newX < 0 or newY < 0 or newX > self.width or newY > self.height):
             return 0
         
         duration = self.Distance(agent.x, agent.y, newX, newY)
@@ -68,7 +68,7 @@ class Map:
       
     def CanMoveAgent(self, agent, newX, newY):
         #ToDo: check locations, waypoints, impassable things etc.
-        if (newX < 0 or newY < 0 or newX > self.width/2 or newY > self.height/2):
+        if (newX < 0 or newY < 0 or newX > self.width or newY > self.height):
             return False
         return True
     

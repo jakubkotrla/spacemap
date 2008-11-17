@@ -12,8 +12,8 @@ class GravityLayerNode:
         self.y = y
         self.linkToObjects = []
         
-        self.stepDiffX = []
-        self.stepDiffY = []
+        self.stepDiffX = 0
+        self.stepDiffY = 0
         
         self.usageLT = 0
         
@@ -44,8 +44,7 @@ class GravityLayerNode:
     def StepUpdate(self, nodesAround):
         diffX = 0
         diffY = 0
-
-        #Global.Log("GLN.StepUpdate usageLT=" + str(self.usageLT), "grav") 
+ 
         if Global.GravLayerAddNewNodes and self.usageLT > Global.GravLayerUsageLTLimit:
             newNode = self.layer.AddNode(self)
             newNode.Render(self.mapRenderer)
@@ -60,47 +59,31 @@ class GravityLayerNode:
                 if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceGaussCoef)
                 else: gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
 
-                usageCoef = Global.GravLayerNodeUsageCoef / max(1, self.GetUsage()*node.GetUsage())
-                #gCoef = gCoef * usageCoef
+                usageCoef = Global.GravLayerNodeUsageCoef / max(1, self.GetUsage())*max(1,node.GetUsage())
+                gCoef = gCoef * usageCoef
                 gCoef = gCoef * Global.GravLayerAntigravityCoef
                 gCoef = min(1, gCoef)
-                if self.info == "1,2" and node.info == "2,2":
-                    Global.Log("GravityLayerNode.StepUpdate gCoef=" + str(gCoef), "grav")
                 diffX = ldx * gCoef
                 diffY = ldy * gCoef
                 
-                self.stepDiffX.append(diffX)
-                self.stepDiffY.append(diffY)
-                node.stepDiffX.append(diffX)
-                node.stepDiffY.append(diffY)
-                
-#                self.stepDiffX += diffX
-#                self.stepDiffY += diffY
-#                node.stepDiffX += diffX
-#                node.stepDiffY += diffY
-                
+                self.stepDiffX += diffX/2
+                self.stepDiffY += diffY/2
+                node.stepDiffX += -diffX/2
+                node.stepDiffY += -diffY/2
             else:
                 Global.Log("Programmer.Error GravityLayerNode.StepUpdate", "error")
         
         
     def StepUpdateMove(self):
-        diffX = 0
-        diffY = 0
-        for dx in self.stepDiffX: diffX = diffX + dx
-        for dy in self.stepDiffY: diffY = diffY + dy
-        
-        self.x = self.x + diffX
-        self.y = self.y + diffY
+        self.x = self.x + self.stepDiffX
+        self.y = self.y + self.stepDiffY
         if self.x < 1: self.x = 1
         if self.y < 1: self.y = 1
         if self.x > self.area.width-1: self.x = self.area.width-1
         if self.y > self.area.height-1: self.y = self.area.height-1 
         self.renderMove()
-        if self.info == "1,2":
-            Global.Log("GravityLayerNode.StepUpdateMove self.stepDiffX=" + str(self.stepDiffX), "grav")
-            Global.Log("GravityLayerNode.StepUpdateMove self.stepDiffY=" + str(self.stepDiffY), "grav")
-        self.stepDiffX = []
-        self.stepDiffY = []
+        self.stepDiffX = 0
+        self.stepDiffY = 0
             
     def Train(self, memObject, effect, nodesAround):
         difX = memObject.x - self.x
