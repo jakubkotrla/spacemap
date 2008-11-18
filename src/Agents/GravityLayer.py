@@ -59,7 +59,7 @@ class GravityLayerNode:
                 if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceGaussCoef)
                 else: gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
 
-                usageCoef = Global.GravLayerNodeUsageCoef / max(1, self.GetUsage())*max(1,node.GetUsage())
+                usageCoef = Global.GravLayerNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
                 gCoef = gCoef * usageCoef
                 gCoef = gCoef * Global.GravLayerAntigravityCoef
                 gCoef = min(1, gCoef)
@@ -152,7 +152,6 @@ class GravityLayer:
             return [closestNode]
     
     def StepUpdate(self):
-        if not Global.GravLayerAntigravityEveryStep: return
         map = Global.Map
         for node in self.nodes:
             nodesAround = []

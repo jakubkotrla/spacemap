@@ -5,11 +5,15 @@ from collections import deque
 from Enviroment.Objects import InternalLearningObj
 
 class KohonenMapLayerNode:
-    def __init__(self, x, y):
+    def __init__(self, area, x, y):
+        self.area = area
         self.x = x
         self.y = y
         self.neighbours = []
         self.linkToObjects = []
+        
+        self.stepDiffX = 0
+        self.stepDiffY = 0
         
         self.guiId = None
         self.guiLinesIds = {}
@@ -43,6 +47,49 @@ class KohonenMapLayerNode:
         for link in self.linkToObjects:
             strInfo.append(link.ToString())        
         return strInfo
+
+    def GetUsage(self):
+        usage = 0
+        for link in self.linkToObjects:
+            usage = usage + link.intensity
+        return usage
+
+    def StepUpdate(self, nodesAround):
+        diffX = 0
+        diffY = 0
+            
+        for node in nodesAround:
+            ldx = (self.x - node.x) 
+            ldy = (self.y - node.y)
+            dist = sqrt(ldx**2+ldy**2)
+            if dist < Global.KMLayerAntigravityRange:
+                
+                if Global.KMLayerUseGauss: gCoef = Global.Gauss(dist * Global.KMLayerDistanceGaussCoef)
+                else: gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
+
+                usageCoef = Global.KMLayerNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
+                gCoef = gCoef * usageCoef
+                gCoef = gCoef * Global.KMLayerAntigravityCoef
+                gCoef = min(1, gCoef)
+                diffX = ldx * gCoef
+                diffY = ldy * gCoef
+                
+                self.stepDiffX += diffX
+                self.stepDiffY += diffY
+            else:
+                Global.Log("Programmer.Error KohonenMapLayerNode.StepUpdate", "error")
+        
+    def StepUpdateMove(self):
+        self.x = self.x + self.stepDiffX
+        self.y = self.y + self.stepDiffY
+        if self.x < 1: self.x = 1
+        if self.y < 1: self.y = 1
+        if self.x > self.area.width-1: self.x = self.area.width-1
+        if self.y > self.area.height-1: self.y = self.area.height-1 
+        self.renderMove()
+        self.stepDiffX = 0
+        self.stepDiffY = 0
+  
                 
     def Train(self, memObject, effect, neighboursCoef, nodesAround):
         neighboursCoef = Global.Gauss(neighboursCoef)
@@ -75,7 +122,7 @@ class KohonenMapLayer:
         nodesMap = [[0 for col in range(xCount)] for row in range(yCount)]
         for y in range(yCount):
             for x in range(xCount):
-                node = KohonenMapLayerNode(x*density+density/2, y*density+density/2)
+                node = KohonenMapLayerNode(self.area, x*density+density/2, y*density+density/2)
                 self.nodes.append(node)
                 nodesMap[x][y] = node
                 if y>0:
@@ -119,7 +166,17 @@ class KohonenMapLayer:
             return [closestNode]
     
     def StepUpdate(self):
-        pass
+        map = Global.Map
+        for node in self.nodes:
+            nodesAround = []
+            for n in self.nodes:
+                if n == node: continue
+                dist = map.DistanceObjs(n, node)
+                if dist < Global.KMLayerAntigravityRange:
+                    nodesAround.append(n)
+            node.StepUpdate(nodesAround)
+        for node in self.nodes:
+            node.StepUpdateMove()
     
     def Train(self, node, memObject, effect):
         trainQueue = deque([[node,0]])

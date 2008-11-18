@@ -91,7 +91,7 @@ class Time:
         else: strSecs = str(self.second)
         
         if full:
-            return "Week " + self.week + ", Day " + strDay + ", " + strHours + ":" + strMinute + ":" + strSecs
+            return "Week " + str(self.week) + ", Day " + strDay + ", " + strHours + ":" + strMinute + ":" + strSecs
         else:
             return "Day " + strDay + ", " + strHours + ":" + strMinute + ":" + strSecs
         

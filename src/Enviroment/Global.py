@@ -10,7 +10,7 @@ class GlobalVariables:
         self.Time    = Time()
         self.MaxNumber = 9999999
         self.MinPositiveNumber = 0.00000001
-        self.LogTags = ["error", "grav"]
+        self.LogTags = ["error", "grav", "km"]
         
         self.World = None
         self.Map = None
@@ -37,11 +37,15 @@ class GlobalVariables:
         self.KMLayerTrainAll = False
         self.KMLayerNodeSize = 10
         self.KMLayerNeighbourLimit = 0
-        self.KMLayerUseBaseObjects = True
+        self.KMLayerUseBaseObjects = False
         self.KMLayerBaseObjectAttractivity = 5
         self.KMLayerBaseObjectWallAttractivity = 10
         self.KMLayerAntigravityCoef = 0.5
-        self.KMLayerAntigravityRange = 20
+        self.KMLayerAntigravityRange = 10
+        self.KMLayerUseGauss = False
+        self.KMLayerDistanceGaussCoef = 0.3
+        self.KMLayerNodeUsageCoef = 10.0
+        #self.GravLayerNodeUsageLimit = 15
         
         self.GravLayerDensity = 10
         self.GravLayerNoise = 0
