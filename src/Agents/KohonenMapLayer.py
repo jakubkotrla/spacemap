@@ -69,10 +69,16 @@ class KohonenMapLayerNode:
 
                 usageCoef = Global.KMLayerNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
                 gCoef = gCoef * usageCoef
-                gCoef = gCoef * Global.KMLayerAntigravityCoef
+                #gCoef = gCoef * Global.KMLayerAntigravityCoef
                 gCoef = min(1, gCoef)
-                diffX = ldx * gCoef
-                diffY = ldy * gCoef
+                
+                gCoef = gCoef * (1.0/max(1, self.GetUsage()))
+                
+                diffX = Global.KMLayerAntigravityCoef * gCoef * Global.Sign(ldx)
+                diffY = Global.KMLayerAntigravityCoef * gCoef * Global.Sign(ldy)
+                
+                #diffX = ldx * gCoef
+                #diffY = ldy * gCoef
                 
                 self.stepDiffX += diffX
                 self.stepDiffY += diffY
