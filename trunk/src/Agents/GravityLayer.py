@@ -61,15 +61,18 @@ class GravityLayerNode:
 
                 usageCoef = Global.GravLayerNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
                 gCoef = gCoef * usageCoef
-                gCoef = gCoef * Global.GravLayerAntigravityCoef
+                #gCoef = gCoef * Global.GravLayerAntigravityCoef
                 gCoef = min(1, gCoef)
-                diffX = ldx * gCoef
-                diffY = ldy * gCoef
                 
-                self.stepDiffX += diffX/2
-                self.stepDiffY += diffY/2
-                node.stepDiffX += -diffX/2
-                node.stepDiffY += -diffY/2
+                gCoef = gCoef * (1.0/max(1, self.GetUsage()))
+                
+#                diffX = ldx * gCoef
+#                diffY = ldy * gCoef
+                diffX = Global.GravLayerAntigravityCoef * gCoef * Global.Sign(ldx)
+                diffY = Global.GravLayerAntigravityCoef * gCoef * Global.Sign(ldy)
+                
+                self.stepDiffX += diffX
+                self.stepDiffY += diffY
             else:
                 Global.Log("Programmer.Error GravityLayerNode.StepUpdate", "error")
         

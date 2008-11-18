@@ -244,7 +244,7 @@ class MainWindow(Frame):
                 secs = Global.GetSeconds()
                 draw = ImageDraw.Draw(im)
                 draw.text((5, 5), Global.TimeToHumanFormat(True), font=self.font, fill="black")
-                im.save("../../exs/sp" + str(secs) + ".png", "PNG")            
+                im.save("../../exs/sp" + str(secs).zfill(10) + ".png", "PNG")            
             
             if self.lock.acquire(False): break
             self.playbackLock.acquire()

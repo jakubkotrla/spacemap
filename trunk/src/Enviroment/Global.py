@@ -40,8 +40,8 @@ class GlobalVariables:
         self.KMLayerUseBaseObjects = False
         self.KMLayerBaseObjectAttractivity = 5
         self.KMLayerBaseObjectWallAttractivity = 10
-        self.KMLayerAntigravityCoef = 0.5
-        self.KMLayerAntigravityRange = 10
+        self.KMLayerAntigravityCoef = 0.1
+        self.KMLayerAntigravityRange = 15
         self.KMLayerUseGauss = False
         self.KMLayerDistanceGaussCoef = 0.3
         self.KMLayerNodeUsageCoef = 10.0
@@ -50,10 +50,10 @@ class GlobalVariables:
         self.GravLayerDensity = 10
         self.GravLayerNoise = 0
         self.GravLayerUseGauss = False
-        self.GravLayerGravityRange = 30
-        self.GravLayerGravityCoef = 0.6
+        self.GravLayerGravityRange = 50
+        self.GravLayerGravityCoef = 1
         self.GravLayerDistanceGaussCoef = 0.3
-        self.GravLayerAntigravityCoef = 1
+        self.GravLayerAntigravityCoef = 2
         self.GravLayerAntigravityRange = 10
         self.GravLayerNodeUsageCoef = 10.0
         self.GravLayerNodeUsageLimit = 15
@@ -88,6 +88,10 @@ class GlobalVariables:
         
     def Gauss(self, x, c=1):
         return exp( - ((x)**2) / 2*(c**2) )
+    def Sign(self, int):
+        if(int < 0): return -1;
+        elif(int > 0): return 1;
+        else: return int;
         
     def TimeToHumanFormat(self, full=False):
         return self.Time.TimeToHumanFormat(full)
