@@ -2,6 +2,7 @@
 from Tkinter import *   
 from threading import *
 import time
+from PIL import ImageGrab, ImageDraw, ImageFont
 from Enviroment.Global import Global
 from Enviroment.World import World
 from Enviroment.Affordances import Affordances
@@ -18,6 +19,9 @@ class MainWindow(Frame):
         self.lock = None
         self.mapRenderer = None
         self.agent = None
+        
+        self.saveStep = 0
+        self.font = ImageFont.truetype("arial.ttf", 12) 
         
         self.playbackLock = None
         self.playbackLockLocked = False 
@@ -227,8 +231,22 @@ class MainWindow(Frame):
             if self.wndMA != None: self.agent.ShowMA(self.wndMA.txt)
             # ShowPA done in Agent.Step to get more precise data
             time.sleep(0.01)
-            if self.lock.acquire(False): break
             
+            x0 = self.wxCanvas.winfo_rootx()
+            y0 = self.wxCanvas.winfo_rooty()
+            x1 = x0 + self.wxCanvas.winfo_reqwidth()
+            y1 = y0 + self.wxCanvas.winfo_reqheight()
+
+            self.saveStep = self.saveStep + 1
+            if self.saveStep > Global.SaveFreq:
+                self.saveStep = 0
+                im = ImageGrab.grab((x0,y0, x1,y1))
+                secs = Global.GetSeconds()
+                draw = ImageDraw.Draw(im)
+                draw.text((5, 5), Global.TimeToHumanFormat(True), font=self.font, fill="black")
+                im.save("../../exs/sp" + str(secs) + ".png", "PNG")            
+            
+            if self.lock.acquire(False): break
             self.playbackLock.acquire()
             self.playbackLock.release()
             

@@ -17,6 +17,7 @@ class GlobalVariables:
         
         self.wndLog = None
         self.wndPA = None
+        self.SaveFreq = 50
         self.AgentMoveHistoryLength = 10
         
         self.MapVisibility = 10
@@ -35,9 +36,10 @@ class GlobalVariables:
         self.KMLayerLearningCoef = 0.2
         self.KMLayerTrainAll = False
         self.KMLayerNodeSize = 10
-        self.KMLayerNeighbourLimit = 0.01
-        self.KMLayerUseBaseLineObjects = False
-        self.KMLayerBaseLineObjectAttractivity = 5
+        self.KMLayerNeighbourLimit = 0
+        self.KMLayerUseBaseObjects = True
+        self.KMLayerBaseObjectAttractivity = 5
+        self.KMLayerBaseObjectWallAttractivity = 10
         self.KMLayerAntigravityCoef = 0.5
         self.KMLayerAntigravityRange = 20
         
@@ -47,7 +49,6 @@ class GlobalVariables:
         self.GravLayerGravityRange = 30
         self.GravLayerGravityCoef = 0.6
         self.GravLayerDistanceGaussCoef = 0.3
-        self.GravLayerAntigravityEveryStep = True
         self.GravLayerAntigravityCoef = 1
         self.GravLayerAntigravityRange = 10
         self.GravLayerNodeUsageCoef = 10.0
@@ -84,9 +85,11 @@ class GlobalVariables:
     def Gauss(self, x, c=1):
         return exp( - ((x)**2) / 2*(c**2) )
         
-    def TimeToHumanFormat(self):
-        return self.Time.TimeToHumanFormat()
+    def TimeToHumanFormat(self, full=False):
+        return self.Time.TimeToHumanFormat(full)
     
+    def GetSeconds(self):
+        return self.Time.GetSeconds()
     
        
         
