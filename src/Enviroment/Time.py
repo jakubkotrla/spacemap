@@ -77,7 +77,10 @@ class Time:
     def GetSecondsInDay(self):
         return self.hour*3600 + self.minute*60 + self.second
     
-    def TimeToHumanFormat(self):
+    def GetSeconds(self):
+        return self.week*3600*24*7 + self.day*3600*24 + self.hour*3600 + self.minute*60 + self.second
+    
+    def TimeToHumanFormat(self, full=False):
         strDay = str(self.week*7 + self.day)
           
         if self.hour < 10: strHours = "0" + str(self.hour)
@@ -87,5 +90,8 @@ class Time:
         if self.second < 10: strSecs = "0" + str(self.second)
         else: strSecs = str(self.second)
         
-        return "Day " + strDay + ", " + strHours + ":" + strMinute + ":" + strSecs
+        if full:
+            return "Week " + self.week + ", Day " + strDay + ", " + strHours + ":" + strMinute + ":" + strSecs
+        else:
+            return "Day " + strDay + ", " + strHours + ":" + strMinute + ":" + strSecs
         

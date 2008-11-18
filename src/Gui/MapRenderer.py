@@ -85,7 +85,10 @@ class MapRenderer:
         if (object in self.objectsRects.keys()):
             Global.Log("Programmer Error: MapRenderer.objectAppeared")
         else:
-            objId = self.Pixel(object, object.x, object.y, "blue", tags="info object")
+            if object.type.name == "InternalLearningObj":
+                objId = self.PixelC(object, object.x, object.y, "darkgreen", 3, tags="info internalobject")
+            else:
+                objId = self.Pixel(object, object.x, object.y, "blue", tags="info object")
             self.objectsRects[object] = objId
         
     def objectDisAppeared(self, object):

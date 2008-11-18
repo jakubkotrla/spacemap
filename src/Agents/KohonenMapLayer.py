@@ -55,17 +55,7 @@ class KohonenMapLayerNode:
         lCoef = neighboursCoef * Global.KMLayerLearningCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
         difX *= lCoef
         difY *= lCoef
-        
-        #we have vector of learning, now vector of anti-gravity with neighbours...
-        for node in nodesAround:
-            ldx = (self.x - node.x) 
-            ldy = (self.y - node.y)
-            dist = sqrt(ldx**2+ldy**2)
-            if dist < Global.KMLayerAntigravityRange:
-                difX += ldx * Global.KMLayerAntigravityCoef / dist**2   #imitate Newton law a little
-                difY += ldy * Global.KMLayerAntigravityCoef / dist**2
-            else:
-                Global.Log("Programmer.Error KMLNode.Train", "error")
+
         self.x = self.x + difX
         self.y = self.y + difY
         self.renderMove()
@@ -94,8 +84,17 @@ class KohonenMapLayer:
                 if x>0:
                     node.neighbours.append(nodesMap[x-1][y])
                     nodesMap[x-1][y].neighbours.append(node)
-                if Global.KMLayerUseBaseLineObjects:
-                    map.AddObject(InternalLearningObj, x*density+density/2, y*density+density/2, Global.KMLayerBaseLineObjectAttractivity)
+                    
+                if Global.KMLayerUseBaseObjects:
+                    self.area.AddObject(InternalLearningObj, x*density+density/2, y*density+density/2, Global.KMLayerBaseObjectAttractivity)
+        if Global.KMLayerUseBaseObjects:
+            for x in range(xCount):
+                self.area.AddObject(InternalLearningObj, x*density+density/2, 0, Global.KMLayerBaseObjectAttractivity)
+                self.area.AddObject(InternalLearningObj, x*density+density/2, self.area.height-1, Global.KMLayerBaseObjectAttractivity)
+            for y in range(yCount):
+                self.area.AddObject(InternalLearningObj, 0, y*density+density/2, Global.KMLayerBaseObjectWallAttractivity)
+                self.area.AddObject(InternalLearningObj, self.area.width-1, y*density+density/2, Global.KMLayerBaseObjectWallAttractivity)
+            
         
     def PositionToNodes(self, x, y):
         inNodes = []

@@ -96,25 +96,7 @@ class GravityLayerNode:
         lCoef = Global.GravLayerGravityCoef * gCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
         difX *= min(1, lCoef)
         difY *= min(1, lCoef)
-        
-        for node in nodesAround:
-            ldx = (self.x - node.x) 
-            ldy = (self.y - node.y)
-            dist = sqrt(ldx**2+ldy**2)
-            if dist < Global.GravLayerAntigravityRange:
-                
-                if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceGaussCoef)
-                else: gCoef = 1 / dist**2
-                
-                #anti-gravity is based on node usage
-                usageCoef = Global.GravLayerNodeUsageLimit / max(1, self.GetUsage()+node.GetUsage())
-                #gCoef = gCoef * usageCoef
-                Global.Log("GLN.Train usageCoef=" + str(usageCoef), "grav") 
-                
-                difX += ldx * Global.GravLayerAntigravityCoef * gCoef
-                difY += ldy * Global.GravLayerAntigravityCoef * gCoef
-            else:
-                Global.Log("Programmer.Error GravityLayerNode.Train", "error")
+
         self.x = self.x + difX
         self.y = self.y + difY
         
@@ -199,12 +181,11 @@ class GravityLayer:
     def Train(self, node, memObject, effect):
         map = Global.Map
         nodesAround = []
-        if not Global.GravLayerAntigravityEveryStep:
-            for n in self.nodes:
-                if n == node: continue
-                dist = map.DistanceObjs(n, node)
-                if dist < Global.GravLayerAntigravityRange:
-                    nodesAround.append(n)
+        for n in self.nodes:
+            if n == node: continue
+            dist = map.DistanceObjs(n, node)
+            if dist < Global.GravLayerAntigravityRange:
+                nodesAround.append(n)
         node.Train(memObject, effect, nodesAround)
             
         
