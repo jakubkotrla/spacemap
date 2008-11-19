@@ -40,7 +40,7 @@ class GlobalVariables:
         self.KMLayerUseBaseObjects = False
         self.KMLayerBaseObjectAttractivity = 5
         self.KMLayerBaseObjectWallAttractivity = 10
-        self.KMLayerAntigravityCoef = 0.1
+        self.KMLayerAntigravityCoef = 0.2
         self.KMLayerAntigravityRange = 15
         self.KMLayerUseGauss = False
         self.KMLayerDistanceGaussCoef = 0.3
