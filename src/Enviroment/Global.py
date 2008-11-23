@@ -45,15 +45,14 @@ class GlobalVariables:
         self.KMLayerUseGauss = False
         self.KMLayerDistanceGaussCoef = 0.3
         self.KMLayerNodeUsageCoef = 10.0
-        #self.GravLayerNodeUsageLimit = 15
         
         self.GravLayerDensity = 10
         self.GravLayerNoise = 0
         self.GravLayerUseGauss = False
+        self.GravLayerDistanceGaussCoef = 0.3
         self.GravLayerGravityRange = 50
         self.GravLayerGravityCoef = 1
-        self.GravLayerDistanceGaussCoef = 0.3
-        self.GravLayerAntigravityCoef = 2
+        self.GravLayerAntigravityCoef = 1
         self.GravLayerAntigravityRange = 10
         self.GravLayerNodeUsageCoef = 10.0
         self.GravLayerNodeUsageLimit = 15
@@ -62,6 +61,17 @@ class GlobalVariables:
         self.GravLayerUsageLTLimit = 30
         self.GravLayerNoiseAdd = 3
         self.GravLayerUsageLTBornParentCoef = 0
+
+        self.EnergyLayerDensity = 10
+        self.EnergyLayerCreateNoise = 0
+        self.EnergyLayerGravityRange = 50
+        self.EnergyLayerGravityCoef = 1
+        self.EnergyLayerAntigravityCoef = 2
+        self.EnergyLayerAntigravityRange = 10
+        self.EnergyLayerNodeUsageCoef = 10.0
+        self.EnergyLayerNodeUsageLimit = 15
+        self.EnergyLayerAddNewNodes = False
+        
         
         
         # OLD !!!

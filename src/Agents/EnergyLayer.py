@@ -4,7 +4,13 @@ from math import sqrt
 from random import randint
 from copy import copy
 
-class GravityLayerNode:
+class EnergyPoint:
+    def __init__(self, x, y, energy):
+        self.x = x
+        self.y = y
+        self.energy = energy
+
+class EnergyLayerNode:
     def __init__(self, layer, x, y):
         self.layer = layer
         self.area = layer.area
@@ -15,22 +21,19 @@ class GravityLayerNode:
         self.stepDiffX = 0
         self.stepDiffY = 0
         
-        self.usageLT = 0
-        
-        self.info = ""
         self.guiId = None
         self.mapRenderer = None
         
     def Render(self, mapRenderer):
-        self.guiId = mapRenderer.PixelC(self, self.x, self.y, "green", 2, "gravitylayernode info")
+        self.guiId = mapRenderer.PixelC(self, self.x, self.y, "green", 2, "energylayernode info")
         self.mapRenderer = mapRenderer
     def renderMove(self):
         self.mapRenderer.DeleteGuiObject(self.guiId)
-        self.guiId = self.mapRenderer.PixelC(self, self.x, self.y, "green", 2, "gravitylayernode info")
+        self.guiId = self.mapRenderer.PixelC(self, self.x, self.y, "green", 2, "energylayernode info")
     def ToString(self):
         strInfo = []
         strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
-        strInfo.append("GravityLayerNode(" + self.info + ") [" + strXY + "]")
+        strInfo.append("EnergyLayerNode(" + self.info + ") [" + strXY + "]")
         for link in self.linkToObjects:
             strInfo.append(link.ToString())        
         return strInfo
@@ -44,29 +47,23 @@ class GravityLayerNode:
     def StepUpdate(self, nodesAround):
         diffX = 0
         diffY = 0
- 
-        if Global.GravLayerAddNewNodes and self.usageLT > Global.GravLayerUsageLTLimit:
-            newNode = self.layer.AddNode(self)
-            newNode.Render(self.mapRenderer)
-            self.usageLT = self.usageLT * Global.GravLayerUsageLTBornParentCoef
             
         for node in nodesAround:
             ldx = (self.x - node.x) 
             ldy = (self.y - node.y)
             dist = sqrt(ldx**2+ldy**2)
-            if dist < Global.GravLayerAntigravityRange:
+            if dist < Global.EnergyLayerAntigravityRange:
                 
-                if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceGaussCoef)
-                else: gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
+                gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
 
-                usageCoef = Global.GravLayerNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
+                usageCoef = Global.EnergyLayerNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
                 gCoef = gCoef * usageCoef
                 gCoef = min(1, gCoef)
                 
                 gCoef = gCoef * (1.0/max(1, self.GetUsage()))
                 
-                diffX = Global.GravLayerAntigravityCoef * gCoef * Global.Sign(ldx)
-                diffY = Global.GravLayerAntigravityCoef * gCoef * Global.Sign(ldy)
+                diffX = Global.EnergyLayerAntigravityCoef * gCoef * Global.Sign(ldx)
+                diffY = Global.EnergyLayerAntigravityCoef * gCoef * Global.Sign(ldy)
                 
                 self.stepDiffX += diffX
                 self.stepDiffY += diffY
@@ -90,8 +87,7 @@ class GravityLayerNode:
         difY = memObject.y - self.y
         dist = sqrt(difX**2+difY**2)
         
-        if Global.GravLayerUseGauss: gCoef = Global.Gauss(dist * Global.GravLayerDistanceGaussCoef)
-        else: gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
+        gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
         
         lCoef = Global.GravLayerGravityCoef * gCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
         difX *= min(1, lCoef)
@@ -107,25 +103,24 @@ class GravityLayerNode:
         self.renderMove()
         
         usage = self.GetUsage()
-        self.usageLT = self.usageLT + (usage * Global.GravLayerUsageLTCoef)
             
 
 
-class GravityLayer:
+class EnergyLayer:
     def __init__(self, area):
         self.area = area
         self.nodes = []
         
     def CreateMap(self):
-        density = Global.GravLayerDensity
+        density = Global.EnergyLayerDensity
         xCount = self.area.width / density
         yCount = self.area.height / density
         for y in range(yCount):
             for x in range(xCount):
-                xNoise = randint(-Global.GravLayerNoise, Global.GravLayerNoise)
-                yNoise = randint(-Global.GravLayerNoise, Global.GravLayerNoise)
+                xNoise = randint(-Global.EnergyLayerCreateNoise, Global.EnergyLayerCreateNoise)
+                yNoise = randint(-Global.EnergyLayerCreateNoise, Global.EnergyLayerCreateNoise)
                 
-                node = GravityLayerNode(self, x*density+density/2+xNoise, y*density+density/2+yNoise)
+                node = EnergyLayerNode(self, x*density+density/2+xNoise, y*density+density/2+yNoise)
                 self.nodes.append(node)
                 node.info = str(x) + "," + str(y) 
         
@@ -133,7 +128,7 @@ class GravityLayer:
         inNodes = []
         closestNode = None
         closestDistance = Global.MaxNumber
-        per = Global.GravLayerGravityRange
+        per = Global.EnergyLayerGravityRange
         map = Global.Map
         for node in self.nodes:
             distance = map.DistanceObj(x, y, node)
@@ -158,19 +153,19 @@ class GravityLayer:
             for n in self.nodes:
                 if n == node: continue
                 dist = map.DistanceObjs(n, node)
-                if dist < Global.GravLayerAntigravityRange:
+                if dist < Global.EnergyLayerAntigravityRange:
                     nodesAround.append(n)
             node.StepUpdate(nodesAround)
         for node in self.nodes:
             node.StepUpdateMove()
         
     def AddNode(self, parentNode):
-        xNoise = randint(-Global.GravLayerNoiseAdd, Global.GravLayerNoiseAdd)
-        yNoise = randint(-Global.GravLayerNoiseAdd, Global.GravLayerNoiseAdd)
+        xNoise = randint(-Global.EnergyLayerCreateNoise, Global.EnergyLayerCreateNoise)
+        yNoise = randint(-Global.EnergyLayerCreateNoise, Global.EnergyLayerCreateNoise)
                 
         x = parentNode.x + xNoise
         y = parentNode.y + yNoise
-        newNode = GravityLayerNode(self, x, y)
+        newNode = EnergyLayerNode(self, x, y)
         self.nodes.append(newNode)
         newNode.info = str(x) + "," + str(y)
         
