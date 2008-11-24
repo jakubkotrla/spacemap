@@ -9,6 +9,25 @@ class EnergyPoint:
         self.x = x
         self.y = y
         self.energy = energy
+        
+        self.guiId = None
+        self.mapRenderer = None
+        
+        
+    def Render(self, mapRenderer):
+        self.guiId = mapRenderer.CircleC(self, self.x, self.y, "darkgreen", 2, "energylayerpoint info")
+        self.mapRenderer = mapRenderer
+    def renderMove(self):
+        self.mapRenderer.DeleteGuiObject(self.guiId)
+        self.guiId = self.mapRenderer.CircleC(self, self.x, self.y, "darkgreen", 2, "energylayerpoint info")
+    def ToString(self):
+        strInfo = []
+        strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
+        strInfo.append("EnergyLayerNode(" + self.info + ") [" + strXY + "]")
+        for link in self.linkToObjects:
+            strInfo.append(link.ToString())        
+        return strInfo
+    
 
 class EnergyLayerNode:
     def __init__(self, layer, x, y):
@@ -88,7 +107,6 @@ class EnergyLayerNode:
         dist = sqrt(difX**2+difY**2)
         
         gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
-        
         lCoef = Global.GravLayerGravityCoef * gCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
         difX *= min(1, lCoef)
         difY *= min(1, lCoef)
@@ -101,8 +119,6 @@ class EnergyLayerNode:
         if self.x > self.area.width-1: self.x = self.area.width-1
         if self.y > self.area.height-1: self.y = self.area.height-1 
         self.renderMove()
-        
-        usage = self.GetUsage()
             
 
 

@@ -54,6 +54,13 @@ class MapRenderer:
         id = self.canvas.create_rectangle(x,y, x+round(2*self.zoom/coef),y+round(2*self.zoom/coef), fill=color, tags=tags)
         self.guiIdsToObjects[id] = object
         return id
+    def CircleC(self, object, cx, cy, color, coef, tags="ovalc"):
+        coef = coef * 2
+        x = cx*self.zoom - round(self.zoom/coef) 
+        y = cy*self.zoom - round(self.zoom/coef)
+        id = self.canvas.create_oval(x,y, x+round(2*self.zoom/coef),y+round(2*self.zoom/coef), fill="", outline=color, tags=tags)
+        self.guiIdsToObjects[id] = object
+        return id
     
     def Line(self, x,y,x2,y2, color, tags="line"):
         return self.canvas.create_line(self.zoom*x,self.zoom*y, self.zoom*x2,self.zoom*y2,  fill=color, tags=tags)
