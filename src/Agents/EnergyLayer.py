@@ -15,18 +15,14 @@ class EnergyPoint:
         
         
     def Render(self, mapRenderer):
-        self.guiId = mapRenderer.CircleC(self, self.x, self.y, "darkgreen", 2, "energylayerpoint info")
+        self.guiId = mapRenderer.CircleC(self, self.x, self.y, "darkgreen", 0.5, "energylayerpoint info")
         self.mapRenderer = mapRenderer
-    def renderMove(self):
+    def renderDelete(self):
         self.mapRenderer.DeleteGuiObject(self.guiId)
-        self.guiId = self.mapRenderer.CircleC(self, self.x, self.y, "darkgreen", 2, "energylayerpoint info")
     def ToString(self):
         strInfo = []
         strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
-        strInfo.append("EnergyLayerNode(" + self.info + ") [" + strXY + "]")
-        for link in self.linkToObjects:
-            strInfo.append(link.ToString())        
-        return strInfo
+        strInfo.append("EnergyLayerPoint(" + self.info + ") [" + strXY + "] energy:" + str(self.energy))
     
 
 class EnergyLayerNode:
@@ -87,7 +83,7 @@ class EnergyLayerNode:
                 self.stepDiffX += diffX
                 self.stepDiffY += diffY
             else:
-                Global.Log("Programmer.Error GravityLayerNode.StepUpdate", "error")
+                Global.Log("Programmer.Error EnergyLayerNode.StepUpdate", "error")
         
         
     def StepUpdateMove(self):
@@ -107,6 +103,8 @@ class EnergyLayerNode:
         dist = sqrt(difX**2+difY**2)
         
         gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
+        #gCoef = gCoef * (1.0/max(1, self.GetUsage()))
+        
         lCoef = Global.GravLayerGravityCoef * gCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
         difX *= min(1, lCoef)
         difY *= min(1, lCoef)
@@ -126,6 +124,8 @@ class EnergyLayer:
     def __init__(self, area):
         self.area = area
         self.nodes = []
+        self.energyPoints = []
+        self.mapRenderer = None
         
     def CreateMap(self):
         density = Global.EnergyLayerDensity
@@ -188,7 +188,12 @@ class EnergyLayer:
         newNode.linkToObjects = copy(parentNode.linkToObjects)
         return newNode
     
-    def Train(self, node, memObject, effect):
+    def Train(self, memObject, effect):
+        ep = EnergyPoint(memObject.x, memObject.y, effect * Global.EnergyLayerEnergyPointCreateCoef)
+        self.energyPoints.append(ep)
+        ep.Render(self.mapRenderer)
+        
+    def getNodesAround(self, node):
         map = Global.Map
         nodesAround = []
         for n in self.nodes:
@@ -196,14 +201,12 @@ class EnergyLayer:
             dist = map.DistanceObjs(n, node)
             if dist < Global.GravLayerAntigravityRange:
                 nodesAround.append(n)
-        node.Train(memObject, effect, nodesAround)
+        #node.Train(memObject, effect, nodesAround)
             
         
     
     def ObjectNoticed(self, memObject, intensity=1):
-        inNodes = self.PositionToNodes(memObject.x, memObject.y)
-        for node in inNodes:
-            self.Train(node, memObject, Global.TrainEffectNotice)
+        self.Train(memObject, Global.TrainEffectNotice)
     
     def ObjectFound(self, rObject):
         pass

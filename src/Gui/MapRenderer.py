@@ -32,6 +32,7 @@ class MapRenderer:
             
         
         layer = self.agent.GetSpaceMap().Layer
+        layer.mapRenderer = self
         for node in layer.nodes:
             node.Render(self)
 

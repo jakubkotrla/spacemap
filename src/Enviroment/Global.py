@@ -10,7 +10,7 @@ class GlobalVariables:
         self.Time    = Time()
         self.MaxNumber = 9999999
         self.MinPositiveNumber = 0.00000001
-        self.LogTags = ["error", "grav", "km"]
+        self.LogTags = ["error", "debug"]
         
         self.World = None
         self.Map = None
@@ -70,6 +70,7 @@ class GlobalVariables:
         self.EnergyLayerAntigravityRange = 10
         self.EnergyLayerNodeUsageCoef = 10.0
         self.EnergyLayerNodeUsageLimit = 15
+        self.EnergyLayerEnergyPointCreateCoef = 100
         self.EnergyLayerAddNewNodes = False
         
         
