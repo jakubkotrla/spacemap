@@ -1,11 +1,12 @@
 
 from Enviroment.Global import Global
 from math import sqrt
-from random import randint
+from random import randint, choice
 from copy import copy
 
 class EnergyPoint:
-    def __init__(self, x, y, energy):
+    def __init__(self, layer, x, y, energy):
+        self.layer = layer
         self.x = x
         self.y = y
         self.energy = energy
@@ -17,12 +18,20 @@ class EnergyPoint:
     def Render(self, mapRenderer):
         self.guiId = mapRenderer.CircleC(self, self.x, self.y, "darkgreen", 0.5, "energylayerpoint info")
         self.mapRenderer = mapRenderer
-    def renderDelete(self):
-        self.mapRenderer.DeleteGuiObject(self.guiId)
     def ToString(self):
         strInfo = []
         strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
         strInfo.append("EnergyLayerPoint(" + self.info + ") [" + strXY + "] energy:" + str(self.energy))
+        
+    def StepUpdate(self, nodesAround):
+        self.energy = 0
+        for node in nodesAround:
+            effect = 1
+            node.Train(self, effect)
+        #ToDo pritahnout nodes okolo, pripadne vytvorit novy node, odebrat energii
+        if self.energy < 1:
+            self.mapRenderer.DeleteGuiObject(self.guiId)
+            self.layer.DeleteEneryPoint(self)
     
 
 class EnergyLayerNode:
@@ -45,6 +54,8 @@ class EnergyLayerNode:
     def renderMove(self):
         self.mapRenderer.DeleteGuiObject(self.guiId)
         self.guiId = self.mapRenderer.PixelC(self, self.x, self.y, "green", 2, "energylayernode info")
+    def renderDelete(self):
+        self.mapRenderer.DeleteGuiObject(self.guiId)
     def ToString(self):
         strInfo = []
         strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
@@ -52,6 +63,11 @@ class EnergyLayerNode:
         for link in self.linkToObjects:
             strInfo.append(link.ToString())        
         return strInfo
+
+    def Delete(self):
+        self.renderDelete()
+        for link in self.linkToObjects:
+            link.NodeDeleted()
 
     def GetUsage(self):
         usage = 0
@@ -97,15 +113,15 @@ class EnergyLayerNode:
         self.stepDiffX = 0
         self.stepDiffY = 0
             
-    def Train(self, memObject, effect, nodesAround):
-        difX = memObject.x - self.x
-        difY = memObject.y - self.y
+    def Train(self, point, effect):
+        difX = point.x - self.x
+        difY = point.y - self.y
         dist = sqrt(difX**2+difY**2)
         
         gCoef = 1 / max(Global.MinPositiveNumber, dist**2)
         #gCoef = gCoef * (1.0/max(1, self.GetUsage()))
         
-        lCoef = Global.GravLayerGravityCoef * gCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
+        lCoef = Global.EnergyLayerGravityCoef * gCoef * effect
         difX *= min(1, lCoef)
         difY *= min(1, lCoef)
 
@@ -125,6 +141,7 @@ class EnergyLayer:
         self.area = area
         self.nodes = []
         self.energyPoints = []
+        self.energyPointsToDelete = []
         self.mapRenderer = None
         
     def CreateMap(self):
@@ -163,17 +180,23 @@ class EnergyLayer:
             return [closestNode]
     
     def StepUpdate(self):
-        map = Global.Map
+        for ep in self.energyPoints:
+            ep.StepUpdate(self.getNodesAround(ep, Global.EnergyLayerGravityRange))
         for node in self.nodes:
-            nodesAround = []
-            for n in self.nodes:
-                if n == node: continue
-                dist = map.DistanceObjs(n, node)
-                if dist < Global.EnergyLayerAntigravityRange:
-                    nodesAround.append(n)
-            node.StepUpdate(nodesAround)
+            node.StepUpdate(self.getNodesAround(node, Global.EnergyLayerAntigravityRange))
         for node in self.nodes:
             node.StepUpdateMove()
+            
+        for ep in self.energyPointsToDelete:
+            self.energyPoints.remove(ep)
+        self.energyPointsToDelete = []
+
+        #ToDo: melo by zaviset na poctu node
+        diceRoll = randint(0, 100)
+        if diceRoll < Global.EnergyLayerForgetNodeChance:
+            chosenNode = choice(self.nodes)
+            chosenNode.Delete()
+            self.nodes.remove(chosenNode)
         
     def AddNode(self, parentNode):
         xNoise = randint(-Global.EnergyLayerCreateNoise, Global.EnergyLayerCreateNoise)
@@ -189,21 +212,23 @@ class EnergyLayer:
         return newNode
     
     def Train(self, memObject, effect):
-        ep = EnergyPoint(memObject.x, memObject.y, effect * Global.EnergyLayerEnergyPointCreateCoef)
+        ep = EnergyPoint(self, memObject.x, memObject.y, effect * Global.EnergyLayerEnergyPointCreateCoef)
         self.energyPoints.append(ep)
         ep.Render(self.mapRenderer)
         
-    def getNodesAround(self, node):
+    def DeleteEneryPoint(self, energyPoint):
+        self.energyPointsToDelete.append(energyPoint)
+        
+    def getNodesAround(self, node, range):
         map = Global.Map
         nodesAround = []
         for n in self.nodes:
             if n == node: continue
             dist = map.DistanceObjs(n, node)
-            if dist < Global.GravLayerAntigravityRange:
+            if dist < range:
                 nodesAround.append(n)
-        #node.Train(memObject, effect, nodesAround)
-            
-        
+        return nodesAround
+
     
     def ObjectNoticed(self, memObject, intensity=1):
         self.Train(memObject, Global.TrainEffectNotice)
