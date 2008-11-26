@@ -2,7 +2,6 @@
 
 from __future__ import division
 from Time import Time
-import time
 from math import exp
 
 class GlobalVariables:
@@ -72,7 +71,9 @@ class GlobalVariables:
         self.EnergyLayerNodeUsageLimit = 15
         self.EnergyLayerEnergyPointCreateCoef = 100
         self.EnergyLayerAddNewNodes = False
-        
+        self.EnergyLayerAddNewNodesCost = 50
+        self.EnergyLayerForgetNodeChance = 1    #max=100
+                
         
         
         # OLD !!!

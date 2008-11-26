@@ -49,6 +49,9 @@ class LinkMemoryObjectToNode:
         self.intensity = intensity
         self.maxIntensity = 10
         
+    def NodeDeleted(self):
+        self.object.linkToNodes.remove(self)
+        
     def Intense(self, i = 1):
         self.intensity += i
         if self.intensity > self.maxIntensity: self.intensity = self.maxIntensity
