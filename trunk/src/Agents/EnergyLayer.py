@@ -24,12 +24,16 @@ class EnergyPoint:
         strInfo.append("EnergyLayerPoint(" + self.info + ") [" + strXY + "] energy:" + str(self.energy))
         
     def StepUpdate(self, nodesAround):
-        self.energy = 0
+        #get chance for new node
+            #create new node
+        #get effect - gravity strength
+        
         for node in nodesAround:
             effect = 1
             node.Train(self, effect)
-        #ToDo pritahnout nodes okolo, pripadne vytvorit novy node, odebrat energii
-        if self.energy < 1:
+
+        self.energy = self.energy * Global.EnergyLayerEnergyFadeCoef
+        if self.energy < Global.EnergyLayerEnergyFadeLimit:
             self.mapRenderer.DeleteGuiObject(self.guiId)
             self.layer.DeleteEneryPoint(self)
     
