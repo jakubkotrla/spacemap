@@ -61,6 +61,7 @@ class GlobalVariables:
         self.GravLayerNoiseAdd = 3
         self.GravLayerUsageLTBornParentCoef = 0
 
+
         self.EnergyLayerDensity = 10
         self.EnergyLayerCreateNoise = 0
         self.EnergyLayerGravityRange = 50
@@ -69,9 +70,12 @@ class GlobalVariables:
         self.EnergyLayerAntigravityRange = 10
         self.EnergyLayerNodeUsageCoef = 10.0
         self.EnergyLayerNodeUsageLimit = 15
+        
         self.EnergyLayerEnergyPointCreateCoef = 100
-        self.EnergyLayerAddNewNodes = False
         self.EnergyLayerAddNewNodesCost = 50
+        self.EnergyLayerEnergyFadeCoef = 0.5
+        self.EnergyLayerEnergyFadeLimit = 10
+        
         self.EnergyLayerForgetNodeChance = 1    #max=100
                 
         
