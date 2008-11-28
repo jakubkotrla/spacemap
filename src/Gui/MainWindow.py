@@ -2,6 +2,7 @@
 from Tkinter import *   
 from threading import *
 import time
+from random import seed
 from PIL import ImageGrab, ImageDraw, ImageFont
 from Enviroment.Global import Global
 from Enviroment.World import World
@@ -210,6 +211,7 @@ class MainWindow(Frame):
     def startSimulation(self):
         world = World()
         Global.World = world
+        seed()
 
         self.agent = Agent("agent1", "AgentsConfig\\intentions.simple.py")
         world.SetAgent(self.agent)

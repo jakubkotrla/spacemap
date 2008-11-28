@@ -24,10 +24,10 @@ class GlobalVariables:
         
         
         
-        self.TrainEffectNotice = 1
-        self.TrainEffectUse = 5
-        self.TrainEffectFound = 2
-        self.TrainEffectNotFound = 1
+        self.TrainEffectNotice = 1.0
+        self.TrainEffectUse = 5.0
+        self.TrainEffectFound = 2.0
+        self.TrainEffectNotFound = 1.0
         
         self.GridLayerNodeSize = 20 
         
@@ -64,19 +64,21 @@ class GlobalVariables:
 
         self.EnergyLayerDensity = 10
         self.EnergyLayerCreateNoise = 0
-        self.EnergyLayerGravityRange = 50
+        self.EnergyLayerGravityRange = 20
         self.EnergyLayerGravityCoef = 1
         self.EnergyLayerAntigravityCoef = 2
         self.EnergyLayerAntigravityRange = 10
-        self.EnergyLayerNodeUsageCoef = 10.0
+        self.EnergyLayerAntigravityNoise = 0.2
+        self.EnergyLayerNodeUsageCoef = 50.0
         self.EnergyLayerNodeUsageLimit = 15
         
         self.EnergyLayerEnergyPointCreateCoef = 100
-        self.EnergyLayerAddNewNodesCost = 50
+        self.EnergyLayerNodeAddCost = 50
+        self.EnergyLayerNodeAddNoise = 4
         self.EnergyLayerEnergyFadeCoef = 0.5
         self.EnergyLayerEnergyFadeLimit = 10
         
-        self.EnergyLayerForgetNodeChance = 1    #max=100
+        self.EnergyLayerForgetNodeChance = 0    #max=1..100% each step
                 
         
         

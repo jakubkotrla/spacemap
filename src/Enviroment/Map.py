@@ -108,7 +108,7 @@ class Map:
 # Configuration part
 map = Map()
 
-map.AddObject(Meal, 20, 25, amount=10)
+#map.AddObject(Meal, 20, 25, amount=10)
 map.AddObject(Snickers, 80, 55)
 map.AddObject(CocaColaCan, 50, 35)
 #map.AddObject(Glasses, 50, 55)
