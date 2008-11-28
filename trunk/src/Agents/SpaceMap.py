@@ -49,12 +49,16 @@ class LinkMemoryObjectToNode:
         self.intensity = intensity
         self.maxIntensity = 10
         
-    def NodeDeleted(self):
-        self.object.linkToNodes.remove(self)
-        
-    def Intense(self, i = 1):
+    def Intense(self, i = 1.0):
         self.intensity += i
         if self.intensity > self.maxIntensity: self.intensity = self.maxIntensity
+        
+    def StepUpdate(self):
+        self.intensity = self.intensity - 0.1
+        if self.intensity < 0: self.intensity = 0 
+            
+    def NodeDeleted(self):
+        self.object.linkToNodes.remove(self)
     def ToString(self):
         strInt =  '%.4f'%(self.intensity)
         return "LinkTo( " + strInt + " ): " + self.object.ToString()
@@ -101,7 +105,7 @@ class SpaceMap:
             
             for node in inNodes:
                 dist = map.DistanceObjs(node, memObj)
-                intensity = Global.Gauss(dist/10)
+                intensity = Global.Gauss(dist/10.0)
                 nodesToIntensity[node] = intensity
                 sumIntensity = sumIntensity + intensity
             
