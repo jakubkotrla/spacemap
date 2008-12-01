@@ -33,7 +33,10 @@ class Processes:
                         "LookUpInMemory"  : Process("LookUpInMemory",[],[],[],[]),
                         "Remember"  : Process("Remember",[],[],[],[]),
                         "LookForObject"  : Process("LookForObject",[],[],[],[]),
-                        "SearchRandom"  : Process("SearchRandom",[],[],[],[])}        
+                        "SearchRandom"  : Process("SearchRandom",[],[],[],[]),
+                        "Rest"  : Process("Rest",[],[],[],[]),
+                        "Walk"  : Process("Walk",[],[],[],[])
+                        }        
         self.processes = []
     
     def AddProcess(self, process):

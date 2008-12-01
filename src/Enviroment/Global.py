@@ -69,7 +69,7 @@ class GlobalVariables:
         self.EnergyLayerAntigravityCoef = 2
         self.EnergyLayerAntigravityRange = 10
         self.EnergyLayerAntigravityNoise = 0.2
-        self.EnergyLayerNodeUsageCoef = 50.0
+        self.EnergyLayerNodeUsageCoef = 30.0
         self.EnergyLayerNodeUsageLimit = 15
         
         self.EnergyLayerEnergyPointCreateCoef = 100
