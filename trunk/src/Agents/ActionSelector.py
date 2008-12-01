@@ -39,6 +39,14 @@ class ActionSelector:
         self.intentions.wantInt = Intention("Want", [self.processes.atomic["Explore"],
                                                      self.processes.atomic["LookUpInMemory"],
                                                      self.processes.atomic["SearchRandom"]])
+        #to increase time spent by "SearchRandom"
+        I_Rest = Intention("Rest", [self.processes.atomic["Rest"]])
+        self.intentions.AddIntention(I_Rest)
+        self.intentions.AddHighLevelIntention(I_Rest)
+        I_Walk = Intention("Walk", [self.processes.atomic["Walk"]])
+        self.intentions.AddIntention(I_Walk)
+        self.intentions.AddHighLevelIntention(I_Walk)
+        
         
     
     def GetAction(self, emotion):
@@ -178,7 +186,11 @@ class ActionSelector:
                 atomicProcess.data["phantom"] = excProcess.data["phantom"]
                 return atomicProcess    
             
-            return None        
+            return None    
+        elif (excProcess.process.name == "Rest"):
+            pass
+        elif (excProcess.process.name == "Walk"):
+            pass
         else:
             return excProcess
 

@@ -21,6 +21,7 @@ class MainWindow(Frame):
         self.mapRenderer = None
         self.agent = None
         
+        self.captureScreen = False
         self.saveStep = 0
         self.font = ImageFont.truetype("arial.ttf", 12) 
         
@@ -55,6 +56,7 @@ class MainWindow(Frame):
         worldMenu.add_command(label="Show Object Types", command=self.showObjectTypes)
         worldMenu.add_command(label="Show Objects", command=self.showObjects)
         worldMenu.add_command(label="Show Log", command=self.showLog)
+        worldMenu.add_checkbutton(label="Capture screen", command=self.captureScreenCheck)
                   
         spacemapMenu = Menu()
         spacemapMenu.add_command(label="Show Nodes", command=self.showSMnodes)
@@ -121,6 +123,8 @@ class MainWindow(Frame):
         scrollBar = Scrollbar(wndLog, orient=VERTICAL, command=txtLog.yview)
         txtLog["yscrollcommand"]  =  scrollBar.set
         scrollBar.pack(side=RIGHT, fill=Y)
+    def captureScreenCheck(self):
+        self.captureScreen = not self.captureScreen
         
     def showSMnodes(self):
         self.wndSM = Toplevel()
@@ -144,7 +148,7 @@ class MainWindow(Frame):
     def showPA(self):
         self.wndPA = Toplevel()
         Global.wndPA = self.wndPA
-        self.wndPA.geometry("400x200+820+0")
+        self.wndPA.geometry("400x200+1020+0")
         self.wndPA.title("SpaceMap - Process Area")
         txt = Listbox(self.wndPA)
         txt.pack(side=LEFT, fill=BOTH, expand=1)
@@ -156,7 +160,7 @@ class MainWindow(Frame):
         
     def showPF(self):
         self.wndPF = Toplevel()
-        self.wndPF.geometry("400x200+820+250")
+        self.wndPF.geometry("400x200+1020+250")
         self.wndPF.title("SpaceMap - Perception Field")
         txt = Listbox(self.wndPF)
         txt.pack(side=LEFT, fill=BOTH, expand=1)
@@ -168,7 +172,7 @@ class MainWindow(Frame):
         
     def showMA(self):
         self.wndMA = Toplevel()
-        self.wndMA.geometry("400x200+820+500")
+        self.wndMA.geometry("400x200+1020+500")
         self.wndMA.title("SpaceMap - Memory Area")
         txt = Listbox(self.wndMA)
         txt.pack(side=LEFT, fill=BOTH, expand=1)
@@ -190,7 +194,7 @@ class MainWindow(Frame):
                 strInfo.append( self.mapRenderer.GuiIdToObject(id).ToString() )
         if self.wndInfo == None:
             self.wndInfo = Toplevel()
-            self.wndInfo.geometry("400x200+820+500")
+            self.wndInfo.geometry("400x200+1020+500")
             self.wndInfo.title("SpaceMap - Objects Info")
             self.wndInfo.txt = Listbox(self.wndInfo)
             self.wndInfo.txt.pack(side=LEFT, fill=BOTH, expand=1)
@@ -240,7 +244,7 @@ class MainWindow(Frame):
             y1 = y0 + self.wxCanvas.winfo_reqheight()
 
             self.saveStep = self.saveStep + 1
-            if self.saveStep > Global.SaveFreq:
+            if self.saveStep > Global.SaveFreq and self.captureScreen:
                 self.saveStep = 0
                 im = ImageGrab.grab((x0,y0, x1,y1))
                 secs = Global.GetSeconds()
