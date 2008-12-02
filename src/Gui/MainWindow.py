@@ -238,19 +238,21 @@ class MainWindow(Frame):
             # ShowPA done in Agent.Step to get more precise data
             time.sleep(0.01)
             
-            x0 = self.wxCanvas.winfo_rootx()
-            y0 = self.wxCanvas.winfo_rooty()
-            x1 = x0 + self.wxCanvas.winfo_reqwidth()
-            y1 = y0 + self.wxCanvas.winfo_reqheight()
+            if self.captureScreen:
+                x0 = self.wxCanvas.winfo_rootx()
+                y0 = self.wxCanvas.winfo_rooty()
+                x1 = x0 + self.wxCanvas.winfo_reqwidth()
+                y1 = y0 + self.wxCanvas.winfo_reqheight()
 
-            self.saveStep = self.saveStep + 1
-            if self.saveStep > Global.SaveFreq and self.captureScreen:
-                self.saveStep = 0
-                im = ImageGrab.grab((x0,y0, x1,y1))
-                secs = Global.GetSeconds()
-                draw = ImageDraw.Draw(im)
-                draw.text((5, 5), Global.TimeToHumanFormat(True), font=self.font, fill="black")
-                im.save("../../exs/sp" + str(secs).zfill(10) + ".png", "PNG")            
+                self.saveStep = self.saveStep + 1
+                if self.saveStep > Global.SaveFreq:
+                    self.saveStep = 0
+                    im = ImageGrab.grab((x0,y0, x1,y1))
+                    secs = Global.GetSeconds()
+                    draw = ImageDraw.Draw(im)
+                    draw.text((5, 5), Global.TimeToHumanFormat(True), font=self.font, fill="black")
+                    im.save("../../exs/sp" + str(secs).zfill(10) + ".png", "PNG")
+            #end of captureScreen            
             
             if self.lock.acquire(False): break
             self.playbackLock.acquire()

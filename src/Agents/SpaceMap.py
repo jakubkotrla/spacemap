@@ -55,7 +55,7 @@ class LinkMemoryObjectToNode:
         if self.intensity > self.maxIntensity: self.intensity = self.maxIntensity
         
     def StepUpdate(self):
-        self.intensity = self.intensity - 0.1
+        self.intensity = self.intensity - 0.001
         if self.intensity < 0: self.intensity = 0 
             
     def NodeDeleted(self):
@@ -96,12 +96,14 @@ class SpaceMap:
     
     def ObjectNoticed(self, rObject):
         map = Global.Map
+        effect = Global.TrainEffectNotice
         if rObject in self.objectsToMemObjs:
             memObj = self.objectsToMemObjs[rObject]
             memObj.Intense()
         else:  #seen for first time
             memObj = MemoryObject(rObject)
             self.objectsToMemObjs[rObject] = memObj
+            #effect = effect * 4
         
         self.Layer.ObjectNoticed(memObj)
         
@@ -116,7 +118,7 @@ class SpaceMap:
             sumIntensity = sumIntensity + intensity
         for node in inNodes:
             #ToDo use rObject.attractivity
-            intensity = nodesToIntensity[node] * Global.TrainEffectNotice / sumIntensity
+            intensity = nodesToIntensity[node] * effect / sumIntensity
             memObj.IntenseToNode(node, intensity)
             
         #ToDo: lower and lower effect on learning of layer
