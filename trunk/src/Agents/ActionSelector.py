@@ -1,11 +1,11 @@
 # -*- coding: UTF-8 -*-
 
-from Intentions         import Intentions, Intention
+from Intentions import Intentions, Intention
 from Enviroment.Affordances import *
-from Processes          import Processes, Process
-from Scenarios          import Scenarios, Scenario
+from Processes import Processes, Process
+from Scenarios import Scenarios, Scenario
 from Enviroment.Global import Global
-from sets               import *
+from sets import *
 import random
 
 
@@ -147,7 +147,6 @@ class ActionSelector:
                     newX = random.randint(-20, 20) + self.agent.x
                     newY = random.randint(-20, 20) + self.agent.y
                     canMove = map.CanMoveAgent(self.agent, newX, newY)
-                
                 atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = newX
@@ -188,9 +187,28 @@ class ActionSelector:
             
             return None    
         elif (excProcess.process.name == "Rest"):
-            pass
+            atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["Explore"], excProcess.excParentIntention, excProcess)
+            atomicProcess.data["parent"] = "process"
+            atomicProcess.data["process"] = excProcess.excParentIntention.parentExcProcess
+            atomicProcess.data["affordance"] = NothingSpecial
+            return atomicProcess
         elif (excProcess.process.name == "Walk"):
-            pass
+            excProcess.data["step"] = excProcess.data["step"] - 1 
+            if excProcess.data["step"] < 1:
+                self.processesArea.TerminateProcess(emotion, True)
+                return self.GetAction(emotion)
+            else:
+                map = Global.Map
+                canMove = False
+                while not canMove:
+                    newX = random.randint(-20, 20) + self.agent.x
+                    newY = random.randint(-20, 20) + self.agent.y
+                    canMove = map.CanMoveAgent(self.agent, newX, newY)
+                atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
+                atomicProcess.data["process"] = excProcess.process
+                atomicProcess.data["newx"] = newX
+                atomicProcess.data["newy"] = newY
+                return atomicProcess  
         else:
             return excProcess
 
@@ -211,7 +229,7 @@ class ActionSelector:
                                             #chooses another intention or no intention will be actual
         elif actProcess.name == "MoveTo":
             #nothing smart to do here except of terminating atomic Moveto
-            self.processesArea.TerminateAtomicProcess(emotion)   #terminates Execute
+            self.processesArea.TerminateAtomicProcess(emotion)   #terminates Moveto
             
         elif actProcess.name == "SearchRandom":
             # check we got it.. - is done in child LookForObject process!
@@ -247,9 +265,17 @@ class ActionSelector:
                 self.processesArea.TerminateProcess(emotion, False)
             
         elif actProcess.name == "Explore":
-            #check if we got required affordance
             excProcess = actExcProcess.data["process"]
             wantedAff = actExcProcess.data["affordance"]
+            
+            if wantedAff == NothingSpecial:
+                #just Resting - terminate with success
+                self.processesArea.TerminateAtomicProcess(emotion, True)    #terminate Explore
+                self.processesArea.TerminateAtomicProcess(emotion, True)    #terminate Rest
+                self.processesArea.TerminateIntentionWant(emotion)          #misnamed - terminates I_Rest
+                return
+                
+            #check if we got required affordance
             missingSources = excProcess.GetMissingSources()
             if wantedAff in missingSources:
                 #still we do not have it - fail

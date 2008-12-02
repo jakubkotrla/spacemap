@@ -134,9 +134,11 @@ class ProcessesArea:
             self.actualProcess.data["step"] = "MoveTo"
             self.actualProcess.data["tries"] = 10
             self.actualProcess.data["affordance"] = parentExcIntention.data["affordance"]
-        if process.name == "LookUpInMemory":
+        elif process.name == "LookUpInMemory":
             self.actualProcess.data["step"] = "Remember"
             self.actualProcess.data["affordance"] = parentExcIntention.data["affordance"]
+        elif process.name == "Walk":
+            self.actualProcess.data["step"] = 5
             
         return self.actualProcess
    

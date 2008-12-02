@@ -11,6 +11,7 @@ class Affordance:
 # Configuration part    
 InternalLearningAff = Affordance('InternalLearningAff')
 
+NothingSpecial = Affordance('NothingSpecial')
 Cutability = Affordance('Cutability')
 Flushability = Affordance('Flushability')
 Eatability = Affordance('Eatability')
