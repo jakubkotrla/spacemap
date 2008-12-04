@@ -94,22 +94,21 @@ class SpaceMap:
         return None
         
     
-    def ObjectNoticed(self, rObject):
+    def ObjectNoticed(self, rObject, effect = 1):
         map = Global.Map
-        effect = Global.TrainEffectNotice
         if rObject in self.objectsToMemObjs:
             memObj = self.objectsToMemObjs[rObject]
             memObj.Intense()
         else:  #seen for first time
             memObj = MemoryObject(rObject)
             self.objectsToMemObjs[rObject] = memObj
-            #effect = effect * 4
         
         self.Layer.ObjectNoticed(memObj)
         
         inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
         nodesToIntensity = {}
         sumIntensity = 0
+        effect = Global.TrainEffectNotice * 4 * effect
         
         for node in inNodes:
             dist = map.DistanceObjs(node, memObj)
@@ -129,8 +128,9 @@ class SpaceMap:
                 self.affsToMemObjs[aff] = []
             if memObj not in self.affsToMemObjs[aff]:
                 self.affsToMemObjs[aff].append(memObj)
-        
-    
+                
+    def ObjectNoticedAgain(self, rObject):
+        self.ObjectNoticed(rObject, 0.1)    
         
     def ObjectFound(self, rObject):
         pass

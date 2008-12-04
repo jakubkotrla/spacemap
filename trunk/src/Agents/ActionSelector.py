@@ -43,9 +43,9 @@ class ActionSelector:
         I_Rest = Intention("Rest", [self.processes.atomic["Rest"]])
         self.intentions.AddIntention(I_Rest)
         self.intentions.AddHighLevelIntention(I_Rest)
-        I_Walk = Intention("Walk", [self.processes.atomic["Walk"]])
-        self.intentions.AddIntention(I_Walk)
-        self.intentions.AddHighLevelIntention(I_Walk)
+        #I_Walk = Intention("Walk", [self.processes.atomic["Walk"]])
+        #self.intentions.AddIntention(I_Walk)
+        #self.intentions.AddHighLevelIntention(I_Walk)
         
         
     
