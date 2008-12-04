@@ -1,10 +1,6 @@
 
 
 from Enviroment.Global import Global
-
-from GridLayer import GridLayer
-from KohonenMapLayer import KohonenMapLayer
-from GravityLayer import GravityLayer
 from EnergyLayer import EnergyLayer
 
 
@@ -73,11 +69,7 @@ class SpaceMap:
         self.affsToMemObjs = {}
         self.objectsToMemObjs = {}
         
-        #self.Layer = GridLayer(self.map)
-        #self.Layer = KohonenMapLayer(self.map)
-        #self.Layer = GravityLayer(self.map)
         self.Layer = EnergyLayer(self.map)
-        
         self.Layer.CreateMap()
         
     def StepUpdate(self):

@@ -147,14 +147,9 @@ class EnergyLayerNode:
         diffY = point.y - self.y
         if diffX == diffY == 0: return
         
-        #dist = sqrt(diffX**2+diffY**2)
-        #gCoef = 1.0 / dist**2
         gCoef = 1.0 / (diffX**2+diffY**2)
-        
         gCoef = gCoef * (1.0/max(0.1, self.GetUsage()))
-        
         gCoef = gCoef * (random() * 0.4 + 0.8) #Global.EnergyLayerGravityNoise
-        
         gCoef = gCoef * effect
         
         gCoef = min(1, gCoef)
@@ -225,13 +220,14 @@ class EnergyLayer:
             return [closestNode]
     
     def StepUpdate(self):
+        
         for ep in self.energyPoints:
             ep.StepUpdate(self.getNodesAround(ep, Global.EnergyLayerGravityRange))
         for node in self.nodes:
             node.StepUpdate(self.getNodesAround(node, Global.EnergyLayerAntigravityRange))
         for node in self.nodes:
             node.StepUpdateMove()
-            
+        
         for ep in self.energyPointsToDelete:
             self.energyPoints.remove(ep)
         self.energyPointsToDelete = []
