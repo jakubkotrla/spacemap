@@ -22,63 +22,28 @@ class GlobalVariables:
         self.MapVisibility = 10
         self.MapObjectPickupDistance = 10
         
-        
-        
         self.TrainEffectNotice = 1.0
         self.TrainEffectUse = 5.0
         self.TrainEffectFound = 2.0
         self.TrainEffectNotFound = 1.0
         
-        self.GridLayerNodeSize = 20 
+        self.ELDensity = 10
+        self.ELCreateNoise = 1
+        self.ELGravityRange = 20
+        self.ELGravityCoef = 1
+        self.ELAntigravityCoef = 1.0
+        self.ELAntigravityRange = 15
+        self.ELAntigravityNoise = 0.2
+        self.ELNodeUsageCoef = 10.0
+        self.ELNodeUsageLimit = 15
         
-        self.KMLayerDensity = 10
-        self.KMLayerLearningCoef = 0.2
-        self.KMLayerTrainAll = False
-        self.KMLayerNodeSize = 10
-        self.KMLayerNeighbourLimit = 0
-        self.KMLayerUseBaseObjects = False
-        self.KMLayerBaseObjectAttractivity = 5
-        self.KMLayerBaseObjectWallAttractivity = 10
-        self.KMLayerAntigravityCoef = 0.2
-        self.KMLayerAntigravityRange = 15
-        self.KMLayerUseGauss = False
-        self.KMLayerDistanceGaussCoef = 0.3
-        self.KMLayerNodeUsageCoef = 10.0
+        self.ELEnergyPointCreateCoef = 100
+        self.ELNodeAddCost = 50
+        self.ELNodeAddNoise = 2
+        self.ELEnergyFadeCoef = 0.5
+        self.ELEnergyFadeLimit = 10
         
-        self.GravLayerDensity = 10
-        self.GravLayerNoise = 0
-        self.GravLayerUseGauss = False
-        self.GravLayerDistanceGaussCoef = 0.3
-        self.GravLayerGravityRange = 50
-        self.GravLayerGravityCoef = 1
-        self.GravLayerAntigravityCoef = 1
-        self.GravLayerAntigravityRange = 10
-        self.GravLayerNodeUsageCoef = 10.0
-        self.GravLayerNodeUsageLimit = 15
-        self.GravLayerAddNewNodes = False
-        self.GravLayerUsageLTCoef = 0.01
-        self.GravLayerUsageLTLimit = 30
-        self.GravLayerNoiseAdd = 3
-        self.GravLayerUsageLTBornParentCoef = 0
-
-
-        self.EnergyLayerDensity = 10
-        self.EnergyLayerCreateNoise = 1
-        self.EnergyLayerGravityRange = 20
-        self.EnergyLayerGravityCoef = 1
-        self.EnergyLayerAntigravityCoef = 1.0
-        self.EnergyLayerAntigravityRange = 15
-        self.EnergyLayerAntigravityNoise = 0.2
-        self.EnergyLayerNodeUsageCoef = 10.0
-        self.EnergyLayerNodeUsageLimit = 15
-        
-        self.EnergyLayerEnergyPointCreateCoef = 100
-        self.EnergyLayerNodeAddCost = 50
-        self.EnergyLayerNodeAddNoise = 2
-        self.EnergyLayerEnergyFadeCoef = 0.5
-        self.EnergyLayerEnergyFadeLimit = 10
-        
-        self.EnergyLayerForgetNodeChance = 1    #max=1..100% each step
+        self.ELForgetNodeChance = 1    #max=1..100% each step
                 
         
         

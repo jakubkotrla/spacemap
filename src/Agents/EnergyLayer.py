@@ -31,14 +31,13 @@ class EnergyPoint:
             self.layer.CreateNode(self, self.memObject)
             self.energy = self.energy - cost
         
-        #get effect - gravity strength
-        effect = self.energy / Global.EnergyLayerEnergyPointCreateCoef
+        effect = self.energy / Global.ELEnergyPointCreateCoef
             
         for node in nodesAround:
             node.Train(self, effect)
 
-        self.energy = self.energy * Global.EnergyLayerEnergyFadeCoef
-        if self.energy < Global.EnergyLayerEnergyFadeLimit:
+        self.energy = self.energy * Global.ELEnergyFadeCoef
+        if self.energy < Global.ELEnergyFadeLimit:
             self.mapRenderer.DeleteGuiObject(self.guiId)
             self.layer.DeleteEneryPoint(self)
     
@@ -69,7 +68,7 @@ class EnergyLayerNode:
     def ToString(self):
         strInfo = []
         strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
-        strInfo.append("EnergyLayerNode" + str(self.index) + "(" + self.info + ") [" + strXY + "]")
+        strInfo.append("EnergyLayerNode" + str(self.index) + "[" + strXY + "]")
         for link in self.linkToObjects:
             strInfo.append(link.ToString())        
         return strInfo
@@ -110,14 +109,14 @@ class EnergyLayerNode:
 
             gCoef = 1.0 / max(Global.MinPositiveNumber, dist2)
 
-            usageCoef = Global.EnergyLayerNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
+            usageCoef = Global.ELNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
             usageCoef = min(1, usageCoef)
             gCoef = gCoef * usageCoef
             
             gCoef = min(1, gCoef)
-            gCoef = gCoef * (random() * 0.4 + 0.8) #Global.EnergyLayerAntigravityNoise
+            gCoef = gCoef * (random() * 0.4 + 0.8) #Global.ELAntigravityNoise
             
-            gDiff = Global.EnergyLayerAntigravityCoef * gCoef
+            gDiff = Global.ELAntigravityCoef * gCoef
             gDiffCoef = gDiff /  max(Global.MinPositiveNumber, dist) 
             
             diffX = ldx * gDiffCoef
@@ -149,7 +148,7 @@ class EnergyLayerNode:
         
         gCoef = 1.0 / (diffX**2+diffY**2)
         gCoef = gCoef * (1.0/max(0.1, self.GetUsage()))
-        gCoef = gCoef * (random() * 0.4 + 0.8) #Global.EnergyLayerGravityNoise
+        gCoef = gCoef * (random() * 0.4 + 0.8) #Global.ELGravityNoise
         gCoef = gCoef * effect
         
         gCoef = min(1, gCoef)
@@ -171,11 +170,11 @@ class EnergyLayer:
         self.nodeIndex = 1
         
     def CreateMap(self):
-        density = Global.EnergyLayerDensity
+        density = Global.ELDensity
         xCount = self.area.width / density
         yCount = self.area.height / density
         
-        if Global.EnergyLayerCreateNoise == -1:
+        if Global.ELCreateNoise == -1:
             count = xCount * yCount
             for i in range(count):
                 x = randint(0, self.area.width-1)
@@ -183,25 +182,23 @@ class EnergyLayer:
                 node = EnergyLayerNode(self, x, y, self.nodeIndex)
                 self.nodeIndex = self.nodeIndex + 1
                 self.nodes.append(node)
-                node.info = str(x) + "," + str(y)
         else: 
             for y in range(yCount):
                 for x in range(xCount):
-                    xNoise = randint(-Global.EnergyLayerCreateNoise, Global.EnergyLayerCreateNoise)
-                    yNoise = randint(-Global.EnergyLayerCreateNoise, Global.EnergyLayerCreateNoise)
+                    xNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
+                    yNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
                     xx = x*density+density/2+xNoise
                     yy = y*density+density/2+yNoise
                     node = EnergyLayerNode(self, xx, yy, self.nodeIndex)
                     self.nodeIndex = self.nodeIndex + 1
                     self.nodes.append(node)
-                    node.info = str(xx) + "," + str(yy)
-        #end of Global.EnergyLayerCreateNoise == -1
+        #end of Global.ELCreateNoise == -1
         
     def PositionToNodes(self, x, y):
         inNodes = []
         closestNode = None
         closestDistance = Global.MaxNumber
-        per = Global.EnergyLayerGravityRange
+        per = Global.ELGravityRange
         map = Global.Map
         for node in self.nodes:
             distance = map.DistanceObj(x, y, node)
@@ -222,9 +219,9 @@ class EnergyLayer:
     def StepUpdate(self):
         
         for ep in self.energyPoints:
-            ep.StepUpdate(self.getNodesAround(ep, Global.EnergyLayerGravityRange))
+            ep.StepUpdate(self.getNodesAround(ep, Global.ELGravityRange))
         for node in self.nodes:
-            node.StepUpdate(self.getNodesAround(node, Global.EnergyLayerAntigravityRange))
+            node.StepUpdate(self.getNodesAround(node, Global.ELAntigravityRange))
         for node in self.nodes:
             node.StepUpdateMove()
         
@@ -235,7 +232,7 @@ class EnergyLayer:
         #ToDo: melo by zaviset na poctu node
         diceRoll = randint(0, 100)
         self.forgetEnergy = self.forgetEnergy + 1
-        if diceRoll < Global.EnergyLayerForgetNodeChance*0:
+        if diceRoll < Global.ELForgetNodeChance*0:
             if self.forgetEnergy > self.GetNodeDeleteCost():
                 self.forgetEnergy = self.forgetEnergy - self.GetNodeCreateDeleteCost()
                 chosenNode = choice(self.nodes)
@@ -246,15 +243,14 @@ class EnergyLayer:
                 pass 
         
     def CreateNode(self, point, memObject):
-        xNoise = randint(-Global.EnergyLayerNodeAddNoise, Global.EnergyLayerNodeAddNoise)
-        yNoise = randint(-Global.EnergyLayerNodeAddNoise, Global.EnergyLayerNodeAddNoise)
+        xNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
+        yNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
                 
         x = point.x + xNoise
         y = point.y + yNoise
         newNode = EnergyLayerNode(self, x, y, self.nodeIndex)
         self.nodeIndex = self.nodeIndex + 1
         self.nodes.append(newNode)
-        newNode.info = str(x) + "," + str(y)
         newNode.Render(self.mapRenderer)
         
         memObject.AddLinkToNode(newNode)
@@ -268,9 +264,9 @@ class EnergyLayer:
                 foundEP = ep
                 break
         if foundEP != None:
-            foundEP.energy = foundEP.energy + effect * Global.EnergyLayerEnergyPointCreateCoef
+            foundEP.energy = foundEP.energy + effect * Global.ELEnergyPointCreateCoef
         else:                
-            ep = EnergyPoint(self, memObject, memObject.x, memObject.y, effect * Global.EnergyLayerEnergyPointCreateCoef)
+            ep = EnergyPoint(self, memObject, memObject.x, memObject.y, effect * Global.ELEnergyPointCreateCoef)
             self.energyPoints.append(ep)
             ep.Render(self.mapRenderer)
         
@@ -290,12 +286,11 @@ class EnergyLayer:
         return cost
         
     def getNodesAround(self, node, range):
-        map = Global.Map
         nodesAround = []
         range = range ** 2
         for n in self.nodes:
             if n == node: continue
-            dist = (n.x-node.x)**2+(n.y-node.y)**2 #map.DistanceObjs(n, node)
+            dist = (n.x-node.x)**2+(n.y-node.y)**2
             if dist < range:
                 nodesAround.append(n)
         return nodesAround
