@@ -231,12 +231,14 @@ class MainWindow(Frame):
         world = Global.World
         self.lockBack = Lock()
         self.lockBack.acquire()
+        step = 0
         while True:
             world.Step()
             if self.wndPF != None: self.agent.ShowPF(self.wndPF.txt)
             if self.wndMA != None: self.agent.ShowMA(self.wndMA.txt)
             # ShowPA done in Agent.Step to get more precise data
             time.sleep(0.01)
+            step = step + 1
             
             if self.captureScreen:
                 x0 = self.wxCanvas.winfo_rootx()
@@ -250,7 +252,7 @@ class MainWindow(Frame):
                     im = ImageGrab.grab((x0,y0, x1,y1))
                     secs = Global.GetSeconds()
                     draw = ImageDraw.Draw(im)
-                    draw.text((5, 5), Global.TimeToHumanFormat(True), font=self.font, fill="black")
+                    draw.text((5, 5), str(step) + " steps = " + Global.TimeToHumanFormat(True), font=self.font, fill="black")
                     im.save("../../exs/sp" + str(secs).zfill(10) + ".png", "PNG")
             #end of captureScreen            
             

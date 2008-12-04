@@ -96,6 +96,7 @@ class PerceptionField:
         for rObj in realObjects:
             if rObj in self.environmentPhantoms.keys():
                 self.environmentPhantoms[rObj].Update(rObj, self.perceptionHabituationTime)
+                self.spaceMap.ObjectNoticedAgain(rObj)
             else:
                 self.environmentPhantoms[rObj] = Phantom(rObj, self.perceptionHabituationTime, rObj.memoryPhantom)
                 #link to possible processes

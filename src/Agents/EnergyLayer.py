@@ -194,12 +194,12 @@ class EnergyLayer:
                 for x in range(xCount):
                     xNoise = randint(-Global.EnergyLayerCreateNoise, Global.EnergyLayerCreateNoise)
                     yNoise = randint(-Global.EnergyLayerCreateNoise, Global.EnergyLayerCreateNoise)
-                    x = x*density+density/2+xNoise
-                    y = y*density+density/2+yNoise
-                    node = EnergyLayerNode(self, x, y, self.nodeIndex)
+                    xx = x*density+density/2+xNoise
+                    yy = y*density+density/2+yNoise
+                    node = EnergyLayerNode(self, xx, yy, self.nodeIndex)
                     self.nodeIndex = self.nodeIndex + 1
                     self.nodes.append(node)
-                    node.info = str(x) + "," + str(y)
+                    node.info = str(xx) + "," + str(yy)
         #end of Global.EnergyLayerCreateNoise == -1
         
     def PositionToNodes(self, x, y):
@@ -262,7 +262,7 @@ class EnergyLayer:
         newNode.Render(self.mapRenderer)
         
         memObject.AddLinkToNode(newNode)
-        memObject.IntenseToNode(newNode, 5)
+        memObject.IntenseToNode(newNode, 1.0)   #ToDo should be some constant
         return newNode
     
     def Train(self, memObject, effect):
@@ -283,7 +283,10 @@ class EnergyLayer:
         
     def GetNodeCreateCost(self):
         desiredNodeCount = self.area.width * self.area.height / 100
-        cost = max(1, (1.0* len(self.nodes) - desiredNodeCount)) ** 2
+        #cost = max(1, (1.0* len(self.nodes) - desiredNodeCount)) ** 2
+        if len(self.nodes) - desiredNodeCount < 10: return 10
+        cost = len(self.nodes) - desiredNodeCount + 10
+        if cost > 100: cost = 100
         return cost
     def GetNodeDeleteCost(self):
         desiredNodeCount = self.area.width * self.area.height / 100
