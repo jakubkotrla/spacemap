@@ -104,44 +104,35 @@ class Map:
     
     def AreIntersecting(self, edge1point1, edge1point2, edge2point1, edge2point2):
         # 0 = ax + by + c
-        d1x = edge1point1.x - edge1point2.x
-        d1y = edge1point1.y - edge1point2.y
-        a1 = -d1y
-        b1 = d1x
-        c1 = - (a1 * edge1point1.x) - (b1 * edge1point1.y)
+        a1 = edge1point2.y - edge1point1.y
+        b1 = edge1point1.x - edge1point2.x
+        c1 = edge1point2.x*edge1point1.y - edge1point1.x*edge1point2.y
+
+        a2 = edge2point2.y - edge2point1.y
+        b2 = edge2point1.x - edge2point2.x
+        c2 = edge2point2.x*edge2point1.y - edge2point1.x*edge2point2.y
+
+        denom = a1*b2 - a2*b1;
+  
+        if denom == 0:
+            return Hit(0,0, False)
+      
+        x =(b1*c2 - b2*c1)/denom;
+        y =(a2*c1 - a1*c2)/denom;
         
-        d2x = edge2point1.x - edge2point2.x
-        d2y = edge2point1.y - edge2point2.y
-        a2 = -d2y
-        b2 = d2x
-        c2 = - (a2 * edge2point1.x) - (b2 * edge2point1.y)
+        lx1 = min(edge1point1.x, edge1point2.x) - 0.1
+        rx1 = max(edge1point1.x, edge1point2.x) + 0.1
+        if not lx1 <= x <= rx1: return Hit(x,y, False)
+        ly1 = min(edge1point1.y, edge1point2.y) - 0.1
+        ry1 = max(edge1point1.y, edge1point2.y) + 0.1
+        if not ly1 <= y <= ry1: return Hit(x,y, False)
         
-        if (a1 == 0 and a2 == 0):
-            #paralel horizontal
-            return Hit(0, 0, False)
-        elif (b1 == 0 and b2 == 0):
-            #paralel vertical
-            return Hit(0, 0, False)
-        else:
-            x = (c2*b1 - c1*b2) / (b1*a2 - b2*a1)
-        if b1 == 0:
-            y = edge1point1.y
-        else:
-            y = - ( (a1*x + c1) / b1 )
-        
-        lx1 = min(edge1point1.x, edge1point2.x)
-        rx1 = max(edge1point1.x, edge1point2.x)
-        if not lx1 < x < rx1: return Hit(x,y, False)
-        ly1 = min(edge1point1.y, edge1point2.y)
-        ry1 = max(edge1point1.y, edge1point2.y)
-        if not ly1 < y < ry1: return Hit(x,y, False)
-        
-        lx2 = min(edge2point1.x, edge2point2.x)
-        rx2 = max(edge2point1.x, edge2point2.x)
-        if not lx2 < x < rx2: return Hit(x,y, False)
-        ly2 = min(edge2point1.y, edge2point2.y)
-        ry2 = max(edge2point1.y, edge2point2.y)
-        if not ly2 < y < ry2: return Hit(x,y, False)
+        lx2 = min(edge2point1.x, edge2point2.x) - 0.1
+        rx2 = max(edge2point1.x, edge2point2.x) + 0.1
+        if not lx2 <= x <= rx2: return Hit(x,y, False)
+        ly2 = min(edge2point1.y, edge2point2.y) - 0.1
+        ry2 = max(edge2point1.y, edge2point2.y) + 0.1
+        if not ly2 <= y <= ry2: return Hit(x,y, False)
         
         return Hit(x,y, True)       
               
