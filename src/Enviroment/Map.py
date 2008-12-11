@@ -53,6 +53,10 @@ class Map:
             self.edges.append(edge)
             lastPoint = point
         
+    def Render(self, mapRenderer):
+        for edge in self.edges:
+            mapRenderer.Line(edge.start.x, edge.start.y, edge.end.x, edge.end.y, "#000", "map edge")
+    
     def AddObject(self, type, x, y, attractivity = 10, amount=1):
         rObj = RealObject(type, x, y, attractivity, amount)    
         self.objects.append(rObj)

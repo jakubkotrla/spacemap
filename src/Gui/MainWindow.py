@@ -15,7 +15,7 @@ class MainWindow(Frame):
     def __init__(self, master=None):                    
         Frame.__init__(self, master)
         tl = self.winfo_toplevel()
-        tl.geometry("1000x1000+0+0")
+        tl.geometry("1100x1100+0+0")
         tl.title("SpaceMap MainWindow")
         self.lock = None
         self.mapRenderer = None
@@ -46,9 +46,11 @@ class MainWindow(Frame):
         
     
     def createWidgets(self):
-        self.wxCanvas = Canvas(self, width=1000, height=1000)
+        self.wxCanvas = Canvas(self, width=1100, height=1100)
         self.wxCanvas.grid(row=0, column=0)
         self.wxCanvas.bind('<Button-1>', self.canvasClick)
+        self.wxCanvas.width = 1100
+        self.wxCanvas.height = 1100
                                   
     def createMenu(self):
         worldMenu = Menu()

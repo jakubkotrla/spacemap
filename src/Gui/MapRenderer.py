@@ -17,11 +17,12 @@ class MapRenderer:
         self.zoom = 10
         self.guiIdsToObjects = {}
         
-        self.canvas.create_polygon(0,0, self.map.width*self.zoom,0, self.map.width*self.zoom,self.map.height*self.zoom, 0,self.map.height*self.zoom, fill="white")
+        self.canvas.create_polygon(0,0, self.canvas.width, 0, self.canvas.width, self.canvas.height, 0, self.canvas.height, fill="white")
+        self.map.Render(self)
         
         self.agent.guiMoved = self.agentMoved
         self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
-        self.agentVisibleOval = self.canvas.create_oval((self.agent.x-Global.MapVisibility)*self.zoom, (self.agent.y-Global.MapVisibility)*self.zoom, (self.agent.x+Global.MapVisibility)*self.zoom, (self.agent.y+Global.MapVisibility)*self.zoom, fill="", outline="red", tags="visible")
+        self.agentVisibleOval = self.canvas.create_oval((self.agent.x-Global.MapVisibility)*self.zoom+10, (self.agent.y-Global.MapVisibility)*self.zoom+10, (self.agent.x+Global.MapVisibility)*self.zoom+10, (self.agent.y+Global.MapVisibility)*self.zoom+10, fill="", outline="red", tags="visible")
         self.agentMHlines = []
         
         self.map.guiObjectAppeared = self.objectAppeared
@@ -45,26 +46,26 @@ class MapRenderer:
     def Pixel(self, object, cx, cy, color, tags="pixel"):
         x = cx*self.zoom - round(self.zoom/2) 
         y = cy*self.zoom - round(self.zoom/2)
-        id = self.canvas.create_rectangle(x,y, x+self.zoom,y+self.zoom, fill=color, tags=tags)
+        id = self.canvas.create_rectangle(x+10,y+10, x+self.zoom+10,y+self.zoom+10, fill=color, tags=tags)
         self.guiIdsToObjects[id] = object
         return id 
     def PixelC(self, object, cx, cy, color, coef, tags="pixelc"):
         coef = coef * 2
         x = cx*self.zoom - round(self.zoom/coef) 
         y = cy*self.zoom - round(self.zoom/coef)
-        id = self.canvas.create_rectangle(x,y, x+round(2*self.zoom/coef),y+round(2*self.zoom/coef), fill=color, tags=tags)
+        id = self.canvas.create_rectangle(x+10,y+10, x+round(2*self.zoom/coef)+10,y+round(2*self.zoom/coef)+10, fill=color, tags=tags)
         self.guiIdsToObjects[id] = object
         return id
     def CircleC(self, object, cx, cy, color, coef, tags="ovalc"):
         coef = coef * 2
         x = cx*self.zoom - round(self.zoom/coef) 
         y = cy*self.zoom - round(self.zoom/coef)
-        id = self.canvas.create_oval(x,y, x+round(2*self.zoom/coef),y+round(2*self.zoom/coef), fill="", outline=color, tags=tags)
+        id = self.canvas.create_oval(x+10,y+10, x+round(2*self.zoom/coef)+10,y+round(2*self.zoom/coef)+10, fill="", outline=color, tags=tags)
         self.guiIdsToObjects[id] = object
         return id
     
     def Line(self, x,y,x2,y2, color, tags="line"):
-        return self.canvas.create_line(self.zoom*x,self.zoom*y, self.zoom*x2,self.zoom*y2,  fill=color, tags=tags)
+        return self.canvas.create_line(self.zoom*x+10,self.zoom*y+10, self.zoom*x2+10,self.zoom*y2+10, fill=color, tags=tags)
     
     def DeleteGuiObject(self, id):
         self.canvas.delete(id)
