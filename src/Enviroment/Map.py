@@ -22,27 +22,45 @@ class RealObject:
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
 
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        
+class Hit(Point):
+    def __init__(self, x, y, hit):
+        Point.__init__(self, x, y)
+        self.hit = hit
+
+class Edge:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+         
+
 class Map:
     def __init__(self):
         self.width = 100
         self.height = 100
+        self.points = [ Point(0,0), Point(100,0), Point(100,100), Point(0,100) ]
+        self.edges = []  
         self.objects = []
-        self.map = [[0 for col in range(self.width)] for row in range(self.height)]
-        for i in range(self.width):
-            for j in range(self.height):
-                self.map[i][j] = None
         self.agentMoves = []
         self.guiObjectAppeared = None
+        lastPoint = self.points[-1]
+        for point in self.points:
+            edge = Edge(lastPoint, point)
+            self.edges.append(edge)
+            lastPoint = point
         
     def AddObject(self, type, x, y, attractivity = 10, amount=1):
         rObj = RealObject(type, x, y, attractivity, amount)    
         self.objects.append(rObj)
-        self.map[x][y] = rObj
         if self.guiObjectAppeared != None:
             self.guiObjectAppeared(rObj)
     
     def PickUpObject(self, agent, rObject):
-        if self.Distance(agent.x, agent.y, rObject) < Global.MapObjectPickupDistance:
+        if self.DistanceObjs(agent, rObject) < Global.MapObjectPickupDistance:
             self.objects.remove(rObject)
             return True
         return False 
@@ -54,8 +72,6 @@ class Map:
         
     
     def MoveAgent(self, agent, newX, newY):
-        #ToDo: check locations, waypoints, impassable things etc.
-        
         if (newX < 0 or newY < 0 or newX > self.width or newY > self.height):
             return 0
         
@@ -66,22 +82,78 @@ class Map:
         agent.guiMoved()
         return round(duration)
       
-    def CanMoveAgent(self, agent, newX, newY):
-        #ToDo: check locations, waypoints, impassable things etc.
-        if (newX < 0 or newY < 0 or newX > self.width or newY > self.height):
-            return False
-        return True
+    #start has old position in .x and .y 
+    def CanMove(self, start, newX, newY):
+        hitPoint = None
+        
+        for edge in self.edges:
+            hitResult = self.AreIntersecting(edge.start, edge.end, start, Point(newX,newY) )
+            if hitResult.hit:
+                if hitPoint == None:
+                    hitPoint = hitResult
+                    hitPoint.dist = self.DistanceObjs(hitResult, start)
+                else:
+                    dist = self.DistanceObjs(hitResult, start)
+                    if dist < hitPoint.dist: hitPoint = hitResult
+        
+        if hitPoint == None:
+            return Hit(0, 0, False)
+        else:
+            #we know the point of hit!
+            return hitPoint
+    
+    def AreIntersecting(self, edge1point1, edge1point2, edge2point1, edge2point2):
+        # 0 = ax + by + c
+        d1x = edge1point1.x - edge1point2.x
+        d1y = edge1point1.y - edge1point2.y
+        a1 = -d1y
+        b1 = d1x
+        c1 = - (a1 * edge1point1.x) - (b1 * edge1point1.y)
+        
+        d2x = edge2point1.x - edge2point2.x
+        d2y = edge2point1.y - edge2point2.y
+        a2 = -d2y
+        b2 = d2x
+        c2 = - (a2 * edge2point1.x) - (b2 * edge2point1.y)
+        
+        if (a1 == 0 and a2 == 0):
+            #paralel horizontal
+            return Hit(0, 0, False)
+        elif (b1 == 0 and b2 == 0):
+            #paralel vertical
+            return Hit(0, 0, False)
+        else:
+            x = (c2*b1 - c1*b2) / (b1*a2 - b2*a1)
+        if b1 == 0:
+            y = edge1point1.y
+        else:
+            y = - ( (a1*x + c1) / b1 )
+        
+        lx1 = min(edge1point1.x, edge1point2.x)
+        rx1 = max(edge1point1.x, edge1point2.x)
+        if not lx1 < x < rx1: return Hit(x,y, False)
+        ly1 = min(edge1point1.y, edge1point2.y)
+        ry1 = max(edge1point1.y, edge1point2.y)
+        if not ly1 < y < ry1: return Hit(x,y, False)
+        
+        lx2 = min(edge2point1.x, edge2point2.x)
+        rx2 = max(edge2point1.x, edge2point2.x)
+        if not lx2 < x < rx2: return Hit(x,y, False)
+        ly2 = min(edge2point1.y, edge2point2.y)
+        ry2 = max(edge2point1.y, edge2point2.y)
+        if not ly2 < y < ry2: return Hit(x,y, False)
+        
+        return Hit(x,y, True)       
+              
     
     def GetRealObjectIfThere(self, memObject):
-        rObj = self.map[memObject.x][memObject.y]
-        if rObj != None and rObj.type == memObject.type:
-            return rObj
-        else:
-            return None
+        for rObj in self.objects:
+            if rObj.x == memObject.x and rObj.y == memObject.y and rObj.type == memObject.type:
+                return rObj
+        return None
     
     def UseObject(self, excProcess, realObject):
         if realObject.Use():
-            self.map[realObject.x][realObject.y] = None
             self.objects.remove(realObject)
             self.guiObjectDisAppeared(realObject)
             Global.Log("Map: agent used object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))

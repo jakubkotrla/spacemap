@@ -146,7 +146,7 @@ class ActionSelector:
                 while not canMove:
                     newX = random.randint(-20, 20) + self.agent.x
                     newY = random.randint(-20, 20) + self.agent.y
-                    canMove = map.CanMoveAgent(self.agent, newX, newY)
+                    canMove = map.CanMove(self.agent, newX, newY)
                 atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = newX
@@ -203,7 +203,7 @@ class ActionSelector:
                 while not canMove:
                     newX = random.randint(-20, 20) + self.agent.x
                     newY = random.randint(-20, 20) + self.agent.y
-                    canMove = map.CanMoveAgent(self.agent, newX, newY)
+                    canMove = map.CanMove(self.agent, newX, newY)
                 atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = newX
