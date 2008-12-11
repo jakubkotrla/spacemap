@@ -2,6 +2,7 @@
 from Enviroment.Global import Global
 from math import sqrt
 from random import randint, choice, random
+from Enviroment.Map import Point
 
 class EnergyPoint:
     def __init__(self, layer, memObject, x, y, energy):
@@ -135,7 +136,6 @@ class EnergyLayerNode:
         newY = self.y + self.stepDiffY * massCoef
         
         hit = self.area.CanMove(self, newX, newY)
-        
         if hit.hit:
             newX = hit.x
             newY = hit.y
@@ -157,9 +157,16 @@ class EnergyLayerNode:
         gCoef = gCoef * effect
         
         gCoef = min(1, gCoef)
-        self.x = self.x + diffX * gCoef
-        self.y = self.y + diffY * gCoef
+        newX = self.x + diffX * gCoef
+        newY = self.y + diffY * gCoef
         
+        hit = self.area.CanMove(self, newX, newY)
+        if hit.hit:
+            newX = hit.x
+            newY = hit.y
+        
+        self.x = newX
+        self.y = newY        
         self.renderMove()
             
 
@@ -181,12 +188,14 @@ class EnergyLayer:
         
         if Global.ELCreateNoise == -1:
             count = xCount * yCount
-            for i in range(count):
+            while len(self.nodes) < count:
                 x = randint(0, self.area.width-1)
                 y = randint(0, self.area.height-1)
-                node = EnergyLayerNode(self, x, y, self.nodeIndex)
-                self.nodeIndex = self.nodeIndex + 1
-                self.nodes.append(node)
+                
+                if self.area.IsInside( Point(x,y) ):                
+                    node = EnergyLayerNode(self, x, y, self.nodeIndex)
+                    self.nodeIndex = self.nodeIndex + 1
+                    self.nodes.append(node)
         else: 
             for y in range(yCount):
                 for x in range(xCount):
@@ -253,6 +262,10 @@ class EnergyLayer:
                 
         x = point.x + xNoise
         y = point.y + yNoise
+        
+        if not self.area.IsInside( Point(x,y) ):
+            return False
+        
         newNode = EnergyLayerNode(self, x, y, self.nodeIndex)
         self.nodeIndex = self.nodeIndex + 1
         self.nodes.append(newNode)
