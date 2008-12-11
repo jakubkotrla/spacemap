@@ -40,9 +40,9 @@ class Edge:
 
 class Map:
     def __init__(self):
-        self.width = 100
+        self.width = 100    #actually defining bounding box
         self.height = 100
-        self.points = [ Point(0,0), Point(100,0), Point(100,100), Point(0,100) ]
+        self.points = [ Point(0,0), Point(100,0), Point(100,100), Point(0, 100), Point(0, 80), Point(70, 50), Point(0, 20) ]
         self.edges = []  
         self.objects = []
         self.agentMoves = []
@@ -76,14 +76,15 @@ class Map:
         
     
     def MoveAgent(self, agent, newX, newY):
-        if (newX < 0 or newY < 0 or newX > self.width or newY > self.height):
+        hitPoint = self.CanMove(agent, newX, newY)
+        if hitPoint.hit:
             return 0
-        
-        duration = self.Distance(agent.x, agent.y, newX, newY)
-        self.agentMoves.append( {"x":agent.x, "y":agent.y} )
-        agent.x = newX
-        agent.y = newY
-        agent.guiMoved()
+        else:
+            duration = self.Distance(agent.x, agent.y, newX, newY)
+            self.agentMoves.append( {"x":agent.x, "y":agent.y} )
+            agent.x = newX
+            agent.y = newY
+            agent.guiMoved()
         return round(duration)
       
     #start has old position in .x and .y 
@@ -139,7 +140,20 @@ class Map:
         if not ly2 <= y <= ry2: return Hit(x,y, False)
         
         return Hit(x,y, True)       
-              
+         
+    def IsInside(self, point):
+        c = False
+
+        for edge in self.edges:
+            
+            if (edge.start.y > point.y) != (edge.end.y > point.y):
+                if point.x < (edge.end.x - edge.start.x) * (point.y - edge.start.y) / (edge.end.y - edge.start.y) + edge.start.x:
+                    c = not c
+        return c 
+
+    def IsVisible(self, start, end):
+        hitPoint = self.CanMove(start, end.x, end.y)
+        return not hitPoint.hit
     
     def GetRealObjectIfThere(self, memObject):
         for rObj in self.objects:
@@ -181,9 +195,9 @@ map.AddObject(CocaColaCan, 50, 35)
 #map.AddObject(Glasses, 50, 55)
 #map.AddObject(Book, 51, 56)
 map.AddObject(Plate, 90, 55)
-map.AddObject(Water, 10, 75)
+map.AddObject(Water, 80, 75)
 #map.AddObject(Wood, 51, 52)
 #map.AddObject(Torch, 50, 52)
-map.AddObject(Pipe, 30, 35)
+map.AddObject(Pipe, 30, 25)
 
 Global.Map = map

@@ -28,7 +28,7 @@ class GlobalVariables:
         self.TrainEffectNotFound = 1.0
         
         self.ELDensity = 10
-        self.ELCreateNoise = 4
+        self.ELCreateNoise = -1
         self.ELGravityRange = 20
         self.ELGravityCoef = 1
         self.ELAntigravityCoef = 2.0
