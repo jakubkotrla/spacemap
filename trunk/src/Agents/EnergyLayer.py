@@ -131,12 +131,16 @@ class EnergyLayerNode:
     def StepUpdateMove(self):
         massCoef = 1.0/max(1, self.GetUsage())
         
-        self.x = self.x + self.stepDiffX * massCoef
-        self.y = self.y + self.stepDiffY * massCoef
-        if self.x < 1: self.x = 1
-        if self.y < 1: self.y = 1
-        if self.x > self.area.width-1: self.x = self.area.width-1
-        if self.y > self.area.height-1: self.y = self.area.height-1 
+        newX = self.x + self.stepDiffX * massCoef
+        newY = self.y + self.stepDiffY * massCoef
+        
+        hit = self.area.CanMove(self, newX, newY)
+        if hit.hit:
+            newX = hit.x
+            newY = hit.y
+         
+        self.x = newX
+        self.y = newY
         self.renderMove()
         self.stepDiffX = 0
         self.stepDiffY = 0
