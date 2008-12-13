@@ -22,13 +22,15 @@ class GlobalVariables:
         self.MapVisibility = 10
         self.MapObjectPickupDistance = 10
         
-        self.TrainEffectNotice = 1.0
-        self.TrainEffectUse = 5.0
+        self.TrainEffectNoticed = 1.0
+        self.TrainEffectNoticedAgain = 0.1
+        self.TrainEffectUsed = 5.0
         self.TrainEffectFound = 2.0
         self.TrainEffectNotFound = 1.0
+        self.TrainEffectUseUp = 1.0
         
-        self.ELDensity = 10
-        self.ELCreateNoise = -1
+        self.ELDensity = 10             #one node will represent area of appr. ELDensity x ELDensity
+        self.ELCreateNoise = 2
         self.ELGravityRange = 20
         self.ELGravityCoef = 1
         self.ELAntigravityCoef = 2.0

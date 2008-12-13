@@ -143,8 +143,7 @@ class EnergyLayerNode:
         self.x = newX
         self.y = newY
         self.renderMove()
-        self.stepDiffX = 0
-        self.stepDiffY = 0
+        self.stepDiffX = self.stepDiffY = 0
             
     def Train(self, point, effect):
         diffX = point.x - self.x
@@ -182,13 +181,11 @@ class EnergyLayer:
         self.nodeIndex = 1
         
     def CreateMap(self):
-        density = Global.ELDensity
-        xCount = self.area.width / density
-        yCount = self.area.height / density
+        areaArea = self.area.GetArea()
+        nodeCount = areaArea / Global.ELDensity ** 2
         
-        if Global.ELCreateNoise == -1:
-            count = xCount * yCount
-            while len(self.nodes) < count:
+        if Global.ELCreateNoise > Global.ELDensity or Global.ELCreateNoise == -1:
+            while len(self.nodes) < nodeCount:
                 x = randint(0, self.area.width-1)
                 y = randint(0, self.area.height-1)
                 
@@ -196,17 +193,21 @@ class EnergyLayer:
                     node = EnergyLayerNode(self, x, y, self.nodeIndex)
                     self.nodeIndex = self.nodeIndex + 1
                     self.nodes.append(node)
-        else: 
+        else:
+            xCount = self.area.width / Global.ELDensity
+            yCount = self.area.height / Global.ELDensity
+            density = Global.ELDensity
             for y in range(yCount):
                 for x in range(xCount):
                     xNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
                     yNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
                     xx = x*density+density/2+xNoise
                     yy = y*density+density/2+yNoise
-                    node = EnergyLayerNode(self, xx, yy, self.nodeIndex)
-                    self.nodeIndex = self.nodeIndex + 1
-                    self.nodes.append(node)
-        #end of Global.ELCreateNoise == -1
+                    
+                    if self.area.IsInside( Point(xx,yy) ):    
+                        node = EnergyLayerNode(self, xx, yy, self.nodeIndex)
+                        self.nodeIndex = self.nodeIndex + 1
+                        self.nodes.append(node)
         
     def PositionToNodes(self, x, y):
         inNodes = []
@@ -259,13 +260,15 @@ class EnergyLayer:
     def CreateNode(self, point, memObject):
         xNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
         yNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
-                
         x = point.x + xNoise
         y = point.y + yNoise
         
-        if not self.area.IsInside( Point(x,y) ):
-            return False
-        
+        while not self.area.IsInside( Point(x,y) ):
+            xNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
+            yNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
+            x = point.x + xNoise
+            y = point.y + yNoise
+            
         newNode = EnergyLayerNode(self, x, y, self.nodeIndex)
         self.nodeIndex = self.nodeIndex + 1
         self.nodes.append(newNode)
@@ -313,18 +316,4 @@ class EnergyLayer:
                 nodesAround.append(n)
         return nodesAround
 
-    
-    def ObjectNoticed(self, memObject, intensity=1):
-        self.Train(memObject, Global.TrainEffectNotice)
-    
-    def ObjectFound(self, rObject):
-        pass
-    
-    def ObjectNotFound(self, rObject):
-        pass
-    
-    def ObjectUsed(self, rObject):
-        pass
-    
-    def ObjectUsedUp(self, rObject):
-        pass
+ 

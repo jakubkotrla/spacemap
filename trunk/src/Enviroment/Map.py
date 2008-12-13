@@ -155,6 +155,18 @@ class Map:
         hitPoint = self.CanMove(start, end.x, end.y)
         return not hitPoint.hit
     
+    def GetArea(self):
+        sum = 0
+        
+        vertices = copy(self.points)
+        vertices.reverse()
+        vertices.append(vertices[0])
+        
+        for i in range(len(self.points)):
+            sum = sum + vertices[i].x * vertices[i+1].y - vertices[i].y * vertices[i+1].x
+            
+        return ( sum * 1.0) / 2
+    
     def GetRealObjectIfThere(self, memObject):
         for rObj in self.objects:
             if rObj.x == memObject.x and rObj.y == memObject.y and rObj.type == memObject.type:
