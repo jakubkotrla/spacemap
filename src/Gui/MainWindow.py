@@ -9,7 +9,8 @@ from Enviroment.World import World
 from Enviroment.Affordances import Affordances
 from Enviroment.Objects import Objects
 from Agents.Agent import Agent
-from MapRenderer import MapRenderer                           
+from MapRenderer import MapRenderer  
+from Config.Config import Config                         
                                      
 class MainWindow(Frame):
     def __init__(self, master=None):                    
@@ -215,7 +216,7 @@ class MainWindow(Frame):
         self.wndInfo = None    
 
     def startSimulation(self):
-        world = World()
+        world = World( Config("simple") )
         Global.World = world
         seed()
 
