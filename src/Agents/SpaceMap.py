@@ -86,7 +86,7 @@ class SpaceMap:
         return None
         
     
-    def ObjectNoticed(self, rObject, effect = 1):
+    def objectTrain(self, rObject, effect = 1):
         map = Global.Map
         if rObject in self.objectsToMemObjs:
             memObj = self.objectsToMemObjs[rObject]
@@ -95,12 +95,12 @@ class SpaceMap:
             memObj = MemoryObject(rObject)
             self.objectsToMemObjs[rObject] = memObj
         
-        self.Layer.ObjectNoticed(memObj)
+        self.Layer.Train(memObj, effect)
         
         inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
         nodesToIntensity = {}
         sumIntensity = 0
-        effect = Global.TrainEffectNotice * 4 * effect
+        effect = Global.TrainEffectNoticed * 4 * effect
         
         for node in inNodes:
             dist = map.DistanceObjs(node, memObj)
@@ -120,20 +120,22 @@ class SpaceMap:
                 self.affsToMemObjs[aff] = []
             if memObj not in self.affsToMemObjs[aff]:
                 self.affsToMemObjs[aff].append(memObj)
+
+    def ObjectNoticed(self, rObject, effect = 1):
+        self.objectTrain(rObject, Global.TrainEffectNoticed * effect)
                 
-    def ObjectNoticedAgain(self, rObject):
-        self.ObjectNoticed(rObject, 0.1)    
+    def ObjectNoticedAgain(self, rObject, effect = 1):
+        self.objectTrain(rObject, Global.TrainEffectNoticedAgain * effect)    
         
-    def ObjectFound(self, rObject):
-        pass
+    def ObjectFound(self, rObject, effect = 1):
+        self.objectTrain(rObject, Global.TrainEffectFound * effect)
         
-    def ObjectNotFound(self, rObject):
-        Global.Log("SM: object not found: " + rObject.type.name)
+    def ObjectNotFound(self, rObject, effect = 1):
+        Global.Log("SM: object not found: " + rObject.type.name) #objectTrain TrainEffectNotFound * effect
         
-    def ObjectUsed(self, rObject):
-        pass
+    def ObjectUsed(self, rObject, effect = 1):
+        self.objectTrain(rObject, Global.TrainEffectUsed * effect)
         
-        
-    def ObjectUsedUp(self, rObject):
-        pass
+    def ObjectUsedUp(self, rObject, effect = 1):
+        self.objectTrain(rObject, Global.TrainEffectUseUp * effect)
 
