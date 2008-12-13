@@ -100,7 +100,7 @@ class SpaceMap:
         inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
         nodesToIntensity = {}
         sumIntensity = 0
-        effect = Global.TrainEffectNoticed * 4 * effect
+        effect = 4 * effect
         
         for node in inNodes:
             dist = map.DistanceObjs(node, memObj)
@@ -112,8 +112,6 @@ class SpaceMap:
             intensity = nodesToIntensity[node] * effect / sumIntensity
             memObj.IntenseToNode(node, intensity)
             
-        #ToDo: lower and lower effect on learning of layer
-
         # put memObject to all its affordances
         for aff in rObject.type.affordances:
             if aff not in self.affsToMemObjs:

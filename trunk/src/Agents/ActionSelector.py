@@ -32,6 +32,7 @@ class ActionSelector:
         self.episodicMemory  = episodicMemory
         self.spaceMap        = spaceMap
         
+        #AgentsConfig\\intentions.simple.py"
         f = open(intentionsFile,'r')
         a = f.read()
         exec(a)

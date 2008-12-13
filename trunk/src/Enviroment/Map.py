@@ -40,13 +40,15 @@ class Edge:
 
 class Map:
     def __init__(self):
-        self.width = 100    #actually defining bounding box
-        self.height = 100
-        self.points = [ Point(0,0), Point(100,0), Point(100,100), Point(0, 100), Point(0, 80), Point(70, 50), Point(0, 20) ]
+        self.width = 0
+        self.height = 0
+        self.points = []
         self.edges = []  
         self.objects = []
         self.agentMoves = []
         self.guiObjectAppeared = None
+        
+    def CalculateEdges(self):
         lastPoint = self.points[-1]
         for point in self.points:
             edge = Edge(lastPoint, point)
@@ -197,19 +199,4 @@ class Map:
     def DistanceObjs(self, o1,o2):
         return sqrt((o1.x-o2.x)**2+(o1.y-o2.y)**2)
         
-        
-# Configuration part
-map = Map()
-
-#map.AddObject(Meal, 20, 25, amount=10)
-map.AddObject(Snickers, 80, 55)
-map.AddObject(CocaColaCan, 50, 35)
-#map.AddObject(Glasses, 50, 55)
-#map.AddObject(Book, 51, 56)
-map.AddObject(Plate, 90, 55)
-map.AddObject(Water, 80, 75)
-#map.AddObject(Wood, 51, 52)
-#map.AddObject(Torch, 50, 52)
-map.AddObject(Pipe, 30, 25)
-
-Global.Map = map
+    

@@ -7,9 +7,11 @@ from Global import Global
 
 class World:
     
-    def __init__(self):
+    def __init__(self, config):
         self.time = 0
         self.agent = None
+        
+        Global.Map = config.SetUpMap()
         
 
     def SetAgent(self, agent):

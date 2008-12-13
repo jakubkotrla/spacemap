@@ -1,3 +1,4 @@
+
 P_eat               = Process("Eating", [], [Eatability], [Eatability], [], 600, 10, 20)
 self.processes.AddProcess(P_eat)
 P_hunt               = Process("Hunting", [], [Killability], [Killability], [Meat], 7200, 120, 1)
