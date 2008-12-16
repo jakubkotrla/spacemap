@@ -22,7 +22,7 @@ class ActionSelector:
     # @param self pointer na selektor zámerov
     # @param intentionsFile súbor so zámermi a procesmi agenta
     # @param shortTermMemory pointer na krátkodobú pamäť 
-    def __init__(self, agent, intentionsFile, processesArea, perceptionField, episodicMemory, spaceMap):
+    def __init__(self, agent, config, processesArea, perceptionField, episodicMemory, spaceMap):
         self.agent           = agent
         self.intentions      = Intentions()
         self.processes       = Processes()
@@ -32,10 +32,7 @@ class ActionSelector:
         self.episodicMemory  = episodicMemory
         self.spaceMap        = spaceMap
         
-        #AgentsConfig\\intentions.simple.py"
-        f = open(intentionsFile,'r')
-        a = f.read()
-        exec(a)
+        config.GetAgentIntentions(self)
         
         self.intentions.wantInt = Intention("Want", [self.processes.atomic["Explore"],
                                                      self.processes.atomic["LookUpInMemory"],

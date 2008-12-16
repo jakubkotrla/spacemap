@@ -216,11 +216,12 @@ class MainWindow(Frame):
         self.wndInfo = None    
 
     def startSimulation(self):
-        world = World( Config("simple") )
+        config = Config("EmptyRoom")
+        world = World( config )
         Global.World = world
         seed()
 
-        self.agent = Agent("agent1", "AgentsConfig\\intentions.simple.py")
+        self.agent = Agent("agent1", config)
         world.SetAgent(self.agent)
         self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
         

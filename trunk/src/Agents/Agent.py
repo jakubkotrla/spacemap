@@ -5,9 +5,9 @@ from Enviroment.Global import Global
 
 
 class Agent:
-    def __init__(self, name, intentionsFile):
+    def __init__(self, name, config):
         self.name   = name
-        self.intelligence = Intelligence(self, intentionsFile)
+        self.intelligence = Intelligence(self, config)
         self.pocket = []    # list of RealObjects
         self.x = 10
         self.y = 10
