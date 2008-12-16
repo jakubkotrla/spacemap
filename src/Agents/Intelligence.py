@@ -11,14 +11,14 @@ from EpisodicMemory  import EpisodicMemory
 
 
 class Intelligence:
-    def __init__(self, agent, intentionsFile):
+    def __init__(self, agent, config):
         self.agent            = agent
         self.episodicMemory   = EpisodicMemory()
         self.spaceMap         = SpaceMap(agent)
         self.processesArea    = ProcessesArea(self.episodicMemory)
         self.memoryArea       = MemoryArea(self.agent, self.spaceMap, self.processesArea)
         self.perceptionField  = PerceptionField(self.processesArea, self.spaceMap, self.memoryArea)
-        self.actionSelector   = ActionSelector(agent, intentionsFile, self.processesArea, self.perceptionField, self.episodicMemory, self.spaceMap)
+        self.actionSelector   = ActionSelector(agent, config, self.processesArea, self.perceptionField, self.episodicMemory, self.spaceMap)
         self.stress           = 0
         self.curiousness      = 0
         self.emotion          = Emotion("emotion1", Global.Time)

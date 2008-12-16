@@ -45,7 +45,7 @@ class GlobalVariables:
         self.ELEnergyFadeCoef = 0.5
         self.ELEnergyFadeLimit = 10
         
-        self.ELForgetNodeChance = 1    #max=1..100% each step
+        self.ELForgetNodeChance = 5    #max=1..100% each step
                 
         
         
