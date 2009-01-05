@@ -2,9 +2,9 @@
 from Enviroment.Affordances import *
 
 class Object:
-    def __init__(self,name):
+    def __init__(self, name, affs = []):
         self.name = name
-        self.affordances = []
+        self.affordances = affs
         self.attractivity = 0
     
     def ToString(self):
@@ -14,37 +14,85 @@ class Object:
         
         
 # Configuration part
-InternalLearningObj = Object('InternalLearningObj')
-InternalLearningObj.affordances = [InternalLearningAff]
+Meal = Object('Meal', [Eatability])
+Sandwich = Object('Sandwich', [Eatability])
+Apple = Object('Apple', [Eatability, Throwability])
+Orange = Object('Orange', [Eatability, Throwability])
 
-Meal = Object('Meal')
-Meal.affordances = [Eatability]
+Sink = Object('Sink', [Wetability])
+Plate = Object('Plate', [Washability])
+Cup = Object('Cup', [Washability])
+Fork = Object('Fork', [Washability])
+Knife = Object('Knife', [Washability, Cutability])
+Cup = Object('Cup', [Washability])
+Pot = Object('Pot', [Washability])
+Cover = Object('Cover', [Washability])
 
-Snickers = Object('Snickers')
-Snickers.affordances = [Snackability]
+Book = Object('Book', [Readability])
+Journal = Object('Journal', [Readability])
+Newspapers = Object('Newspapers', [Readability])
+Glasses = Object('Glasses', [Zoomability])
 
-CocaColaCan = Object('CocaColaCan')
-CocaColaCan.affordances = [Drinkability]
+CocaColaCan = Object('CocaColaCan', [Drinkability])
+BottleOfWine = Object('BottleOfWine', [Drinkability])
 
-Pipe = Object('Pipe')
-Pipe.affordances = [Smokeability]
+Television = Object('Television', [Watchability])
+Painting = Object('Painting', [Watchability])
+Photoalbum = Object('Photoalbum', [Watchability])
+Video = Object('Video', [Watchability])
 
-Glasses = Object('Glasses')
-Glasses.affordances = [Zoomability]
+Sofa = Object('Sofa', [Restability])
+Armchair = Object('Armchair', [Restability])
 
-Book = Object('Book')
-Book.affordances = [Readability]
+Table = Object('Table', [Placeability])
+Shelf = Object('Shelf', [Placeability])
+Box = Object('Box', [Placeability])
 
-Plate = Object('Plate')
-Plate.affordances = [Washability]
+Hammer = Object('Hammer', [Hammerability])
+Nail = Object('Nail', [Nailability])
+Screwdriver = Object('Screwdriver', [Screwability])
 
-Water = Object('Water')
-Water.affordances = [Wetability]
+Pipe = Object('Pipe', [Smokeability])
+Wood = Object('Wood', [Fireability])
+Torch = Object('Torch', [Lightability])
 
-Wood = Object('Wood')
-Wood.affordances = [Fireability]
+#kartacek a pasta
 
-Torch = Object('Torch')
-Torch.affordances = [Lightability]
 
-Objects = [Meal,Snickers,CocaColaCan,Pipe,Glasses,Book,Plate,Water,Wood,Torch]
+Objects = [
+    Meal,
+    Sandwich,
+    Apple,
+    Orange,
+    Sink,
+    Plate,
+    Cup,
+    Fork,
+    Knife,
+    Cup,
+    Pot,
+    Cover,
+    Book,
+    Journal,
+    Newspapers,
+    Glasses,
+    CocaColaCan,
+    BottleOfWine,
+    Television,
+    Painting,
+    Photoalbum,
+    Video,
+    Sofa,
+    Armchair,
+    Table,
+    Shelf,
+    Box,
+    Hammer,
+    Nail,
+    Screwdriver,
+    Pipe,
+    Wood,
+    Torch
+]
+
+

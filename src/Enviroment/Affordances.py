@@ -9,32 +9,53 @@ class Affordance:
 
 
 # Configuration part    
-InternalLearningAff = Affordance('InternalLearningAff')
-
 NothingSpecial = Affordance('NothingSpecial')
+
 Cutability = Affordance('Cutability')
-Flushability = Affordance('Flushability')
 Eatability = Affordance('Eatability')
-Killability = Affordance('Killability')
-Fishability = Affordance('Fishability')
 Washability = Affordance('Washability')
-Stickability = Affordance('Stickability')
-Fireability = Affordance('Fireability')
 Drinkability = Affordance('Drinkability')
-Protectability = Affordance('Protectability')
-Sliceability = Affordance('Sliceability')
-Cookability = Affordance('Cookability')
-Repairability = Affordance('Repairability')
-Boilability = Affordance('Boilability')
-Screwability = Affordance('Screwability')
-Sewability = Affordance('Sewability')
 Smokeability = Affordance('Smokeability')
 Lightability = Affordance('Lightability')
 Wetability = Affordance('Wetability')
 Readability = Affordance('Readability')
 Zoomability = Affordance('Zoomability')
-Snackability = Affordance('Snackability')
+
+Throwability = Affordance('Throwability')
+Watchability = Affordance('Watchability')
+Playability = Affordance('Playability')
+Placeability = Affordance('Placeability')
+Restability = Affordance('Restability')
+Hammerability = Affordance('Hammerability')
+Nailability = Affordance('Nailability')
+
+Fireability = Affordance('Fireability')
+Repairability = Affordance('Repairability')
+Screwability = Affordance('Screwability')
+Sewability = Affordance('Sewability')
 
 
-Affordances = [InternalLearningAff,Cutability,Flushability,Eatability,Killability,Fishability,Washability,Stickability,Fireability,Drinkability,Protectability,
-               Sliceability,Cookability,Repairability,Boilability,Screwability,Sewability,Smokeability,Lightability,Wetability,Readability,Zoomability,Snackability]
+Affordances = [
+    NothingSpecial,
+    Cutability,
+    Eatability,
+    Washability,
+    Drinkability,
+    Smokeability,
+    Lightability,
+    Wetability,
+    Readability,
+    Zoomability,
+    Throwability,
+    Watchability,
+    Playability,
+    Placeability,
+    Restability,
+    Hammerability,
+    Nailability,
+    Fireability,
+    Repairability,
+    Screwability,
+    Sewability
+]
+
