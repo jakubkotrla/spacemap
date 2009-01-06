@@ -25,7 +25,7 @@ Throwability = Affordance('Throwability')
 Watchability = Affordance('Watchability')
 Playability = Affordance('Playability')
 Placeability = Affordance('Placeability')
-Restability = Affordance('Restability')
+Sitability = Affordance('Sitability')
 Hammerability = Affordance('Hammerability')
 Nailability = Affordance('Nailability')
 
@@ -50,7 +50,7 @@ Affordances = [
     Watchability,
     Playability,
     Placeability,
-    Restability,
+    Sitability,
     Hammerability,
     Nailability,
     Fireability,

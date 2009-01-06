@@ -41,8 +41,9 @@ Painting = Object('Painting', [Watchability])
 Photoalbum = Object('Photoalbum', [Watchability])
 Video = Object('Video', [Watchability])
 
-Sofa = Object('Sofa', [Restability])
-Armchair = Object('Armchair', [Restability])
+Sofa = Object('Sofa', [Sitability])
+Armchair = Object('Armchair', [Sitability])
+Chair = Object('Chair', [Sitability])
 
 Table = Object('Table', [Placeability])
 Shelf = Object('Shelf', [Placeability])
