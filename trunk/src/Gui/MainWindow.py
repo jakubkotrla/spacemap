@@ -216,7 +216,7 @@ class MainWindow(Frame):
         self.wndInfo = None    
 
     def startSimulation(self):
-        config = Config("EmptyRoom")
+        config = Config("CrazyRoom")
         world = World( config )
         Global.World = world
         seed()

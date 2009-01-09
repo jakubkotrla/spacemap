@@ -24,10 +24,12 @@ Zoomability = Affordance('Zoomability')
 Throwability = Affordance('Throwability')
 Watchability = Affordance('Watchability')
 Playability = Affordance('Playability')
-Placeability = Affordance('Placeability')
 Sitability = Affordance('Sitability')
 Hammerability = Affordance('Hammerability')
 Nailability = Affordance('Nailability')
+
+Placeability = Affordance('Placeability')
+Exitability = Affordance('Exitability')
 
 Fireability = Affordance('Fireability')
 Repairability = Affordance('Repairability')
@@ -49,10 +51,11 @@ Affordances = [
     Throwability,
     Watchability,
     Playability,
-    Placeability,
     Sitability,
     Hammerability,
     Nailability,
+    Placeability,
+    Exitability,
     Fireability,
     Repairability,
     Screwability,
