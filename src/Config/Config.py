@@ -8,12 +8,20 @@ from Enviroment.Global import Global
 from Enviroment.Map import Map, Point
 
 from EmptyRoom import EmptyRoom
+from FullRoom import FullRoom
+from Corridor import Corridor
+from Lobby import Lobby
+from CrazyRoom import CrazyRoom
 
 
 class Config:
     def __init__(self, configFile):
         self.configs = {}
         self.configs["EmptyRoom"] = EmptyRoom()
+        self.configs["FullRoom"] = FullRoom()
+        self.configs["Corridor"] = Corridor()
+        self.configs["Lobby"] = Lobby()
+        self.configs["CrazyRoom"] = CrazyRoom()
         
         self.config = self.configs[configFile] 
         

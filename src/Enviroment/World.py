@@ -17,7 +17,7 @@ class World:
     def SetAgent(self, agent):
         self.agent = agent
         map = Global.Map
-        map.PlaceAgent(agent, 20, 10)
+        map.PlaceAgent(agent)
 
     def Step(self):
         Global.Log("--- World step --- " + str(Global.TimeToHumanFormat()))

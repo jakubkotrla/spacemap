@@ -19,12 +19,11 @@ Sandwich = Object('Sandwich', [Eatability])
 Apple = Object('Apple', [Eatability, Throwability])
 Orange = Object('Orange', [Eatability, Throwability])
 
-Sink = Object('Sink', [Wetability])
+Sink = Object('Sink', [Wetability, Repairability])
 Plate = Object('Plate', [Washability])
 Cup = Object('Cup', [Washability])
 Fork = Object('Fork', [Washability])
 Knife = Object('Knife', [Washability, Cutability])
-Cup = Object('Cup', [Washability])
 Pot = Object('Pot', [Washability])
 Cover = Object('Cover', [Washability])
 
@@ -36,18 +35,21 @@ Glasses = Object('Glasses', [Zoomability])
 CocaColaCan = Object('CocaColaCan', [Drinkability])
 BottleOfWine = Object('BottleOfWine', [Drinkability])
 
-Television = Object('Television', [Watchability])
+Television = Object('Television', [Watchability, Repairability])
 Painting = Object('Painting', [Watchability])
 Photoalbum = Object('Photoalbum', [Watchability])
-Video = Object('Video', [Watchability])
+Video = Object('Video', [Watchability, Repairability])
+Flower = Object('Flower', [Watchability])
 
 Sofa = Object('Sofa', [Sitability])
 Armchair = Object('Armchair', [Sitability])
 Chair = Object('Chair', [Sitability])
 
-Table = Object('Table', [Placeability])
-Shelf = Object('Shelf', [Placeability])
-Box = Object('Box', [Placeability])
+Table = Object('Table', [Placeability, Repairability])
+Shelf = Object('Shelf', [Placeability, Repairability])
+Box = Object('Box', [Placeability, Repairability])
+
+Door = Object('Door', [Exitability])
 
 Hammer = Object('Hammer', [Hammerability])
 Nail = Object('Nail', [Nailability])
@@ -70,7 +72,6 @@ Objects = [
     Cup,
     Fork,
     Knife,
-    Cup,
     Pot,
     Cover,
     Book,
@@ -83,11 +84,13 @@ Objects = [
     Painting,
     Photoalbum,
     Video,
+    Flower,
     Sofa,
     Armchair,
     Table,
     Shelf,
     Box,
+    Door,
     Hammer,
     Nail,
     Screwdriver,

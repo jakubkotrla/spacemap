@@ -71,10 +71,11 @@ class Map:
             return True
         return False 
     
-    def PlaceAgent(self, agent, x, y):
-        self.agentMoves.append( {"x":agent.x, "y":agent.y} )
-        agent.x = x
-        agent.y = y
+    def SetAgentStart(self, x, y):
+        self.agentMoves.append( {"x":x, "y":y} )
+    def PlaceAgent(self, agent):
+        agent.x = self.agentMoves[0]['x']
+        agent.y = self.agentMoves[0]['y']
         
     
     def MoveAgent(self, agent, newX, newY):
@@ -147,7 +148,6 @@ class Map:
         c = False
 
         for edge in self.edges:
-            
             if (edge.start.y > point.y) != (edge.end.y > point.y):
                 if point.x < (edge.end.x - edge.start.x) * (point.y - edge.start.y) / (edge.end.y - edge.start.y) + edge.start.x:
                     c = not c
