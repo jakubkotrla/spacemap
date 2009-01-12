@@ -36,13 +36,21 @@ class Edge:
     def __init__(self, start, end):
         self.start = start
         self.end = end
-         
+
+class Path:
+    def __init__(self, points, dist):
+        self.points = []
+        self.dist = dist
+    def Last(self):
+        return self.points[-1]
+             
 
 class Map:
     def __init__(self):
         self.width = 0
         self.height = 0
         self.points = []
+        self.innerPoints = []
         self.edges = []  
         self.objects = []
         self.agentMoves = []
@@ -54,6 +62,10 @@ class Map:
             edge = Edge(lastPoint, point)
             self.edges.append(edge)
             lastPoint = point
+            
+        for point in self.points:
+            if point.x > 0 and point.y > 0 and point.x < self.width and point.y < self.height:
+                self.innerPoints.append(point)
         
     def Render(self, mapRenderer):
         for edge in self.edges:
@@ -107,8 +119,49 @@ class Map:
         if hitPoint == None:
             return Hit(0, 0, False)
         else:
-            #we know the point of hit!
             return hitPoint
+    
+    def GetPath(self, start, end):
+        path = []
+        if self.CanMove(start, end.x, end.y):
+            path.append(end)
+        else:
+            return self.findPath(start, end)
+        return path
+    
+    def findPath(self, start, end):
+        dist = {}
+        previous = {}
+        dist[start] = 0
+        queue = [start]
+        queue.extend(self.innerPoints)
+        queue.append(end)
+        for point in queue:
+            dist[point] = Global.MaxNumber
+            previouse[point] = None
+        
+        while len(queue) > 0:
+            minPoint = queue[0]
+            minPointDist = Global.MaxNumber
+            for point in queue:
+                if dist[point] < minPointDist:
+                    minPoint = point
+                    minPointDist = dist[point]
+            queue.remove(minPoint)
+            for point in queue:
+                if self.CanMove(minPoint, point.x, point.y):
+                    alt = dist[minPoint] + self.DistanceObjs(minPoint, point)
+                    if alt < dist[point]:
+                        dist[point] = alt
+                        previous[point] = minPoint
+        #all set, get data from previous
+        path = []
+        point = end
+        while point != start:
+            path.insert(0, point)
+            point = previous[point]
+        path.insert(0, start)
+        return path
     
     def AreIntersecting(self, edge1point1, edge1point2, edge2point1, edge2point2):
         # 0 = ax + by + c
