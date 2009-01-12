@@ -38,7 +38,7 @@ class Agent:
         elif action.process.name == "LookUpInMemory":
             pass #never happens - done as Remember, MoveTo or LookForObject child process
         elif action.process.name == "Walk":
-            pass #never happens - done as Remember, MoveTo or LookForObject child process
+            pass #never happens - done as MoveTo
             
         elif action.process.name == "Remember":
             actionDuration = random.randint(30,30)
