@@ -198,7 +198,7 @@ class ActionSelector:
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = newX
                 atomicProcess.data["newy"] = newY
-                return atomicProcess
+                return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)
         elif (excProcess.process.name == "MoveTo"):
             if excProcess.data["path"] == None:
                 map = Global.Map
