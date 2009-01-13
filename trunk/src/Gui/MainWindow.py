@@ -216,7 +216,7 @@ class MainWindow(Frame):
         self.wndInfo = None    
 
     def startSimulation(self):
-        config = Config("CrazyRoom")
+        config = Config("Lobby")
         world = World( config )
         Global.World = world
         seed()
@@ -224,6 +224,8 @@ class MainWindow(Frame):
         self.agent = Agent("agent1", config)
         world.SetAgent(self.agent)
         self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
+        
+        self.saveStep = Global.SaveFreq
         
         self.lock = Lock()
         self.lock.acquire()
@@ -256,7 +258,7 @@ class MainWindow(Frame):
                     im = ImageGrab.grab((x0,y0, x1,y1))
                     secs = Global.GetSeconds()
                     draw = ImageDraw.Draw(im)
-                    draw.text((5, 5), str(step) + " steps = " + Global.TimeToHumanFormat(True), font=self.font, fill="black")
+                    draw.text((5, 1050), str(step) + " steps = " + Global.TimeToHumanFormat(True), font=self.font, fill="black")
                     im.save("../../exs/sp" + str(secs).zfill(10) + ".png", "PNG")
             #end of captureScreen            
             
