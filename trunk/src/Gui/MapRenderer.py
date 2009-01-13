@@ -21,8 +21,8 @@ class MapRenderer:
         self.map.Render(self)
         
         self.agent.guiMoved = self.agentMoved
-        #self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
-        #self.agentVisibleOval = self.canvas.create_oval((self.agent.x-Global.MapVisibility)*self.zoom+10, (self.agent.y-Global.MapVisibility)*self.zoom+10, (self.agent.x+Global.MapVisibility)*self.zoom+10, (self.agent.y+Global.MapVisibility)*self.zoom+10, fill="", outline="red", tags="visible")
+        self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
+        self.agentVisibleOval = self.canvas.create_oval((self.agent.x-Global.MapVisibility)*self.zoom+10, (self.agent.y-Global.MapVisibility)*self.zoom+10, (self.agent.x+Global.MapVisibility)*self.zoom+10, (self.agent.y+Global.MapVisibility)*self.zoom+10, fill="", outline="red", tags="visible")
         self.agentMHlines = []
         
         self.map.guiObjectAppeared = self.objectAppeared

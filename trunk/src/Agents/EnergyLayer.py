@@ -17,7 +17,7 @@ class EnergyPoint:
         
         
     def Render(self, mapRenderer):
-        #self.guiId = mapRenderer.CircleC(self, self.x, self.y, "darkgreen", 0.5, "energylayerpoint info")
+        self.guiId = mapRenderer.CircleC(self, self.x, self.y, "darkgreen", 0.5, "energylayerpoint info")
         self.mapRenderer = mapRenderer
     def ToString(self):
         strInfo = []
@@ -59,12 +59,11 @@ class EnergyLayerNode:
         self.mapRenderer = None
         
     def Render(self, mapRenderer):
-        #self.guiId = mapRenderer.PixelC(self, self.x, self.y, "green", 2, "energylayernode info")
+        self.guiId = mapRenderer.PixelC(self, self.x, self.y, "green", 2, "energylayernode info")
         self.mapRenderer = mapRenderer
     def renderMove(self):
-        #self.mapRenderer.DeleteGuiObject(self.guiId)
-        #self.guiId = self.mapRenderer.PixelC(self, self.x, self.y, "green", 2, "energylayernode info")
-        pass
+        self.mapRenderer.DeleteGuiObject(self.guiId)
+        self.guiId = self.mapRenderer.PixelC(self, self.x, self.y, "green", 2, "energylayernode info")
     def renderDelete(self):
         self.mapRenderer.DeleteGuiObject(self.guiId)
     def ToString(self):
