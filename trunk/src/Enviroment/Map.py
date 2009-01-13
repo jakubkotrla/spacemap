@@ -121,13 +121,11 @@ class Map:
         else:
             return hitPoint
     
-    def GetPath(self, start, end):
-        path = []
-        if self.CanMove(start, end.x, end.y):
-            path.append(end)
+    def GetPath(self, start, newX, newY):
+        if self.CanMove(start, newX, newY):
+            return [start, Point(newX, newY)]
         else:
-            return self.findPath(start, end)
-        return path
+            return self.findPath(start, Point(newX, newY))
     
     def findPath(self, start, end):
         dist = {}

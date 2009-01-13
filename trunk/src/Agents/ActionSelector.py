@@ -37,14 +37,6 @@ class ActionSelector:
         self.intentions.wantInt = Intention("Want", [self.processes.atomic["Explore"],
                                                      self.processes.atomic["LookUpInMemory"],
                                                      self.processes.atomic["SearchRandom"]])
-        #to increase time spent by "SearchRandom"
-        I_Rest = Intention("Rest", [self.processes.atomic["Rest"]])
-        self.intentions.AddIntention(I_Rest)
-        self.intentions.AddHighLevelIntention(I_Rest)
-        #I_Walk = Intention("Walk", [self.processes.atomic["Walk"]])
-        #self.intentions.AddIntention(I_Walk)
-        #self.intentions.AddHighLevelIntention(I_Walk)
-        
         
     
     def GetAction(self, emotion):
@@ -149,7 +141,7 @@ class ActionSelector:
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = newX
                 atomicProcess.data["newy"] = newY
-                return atomicProcess                                
+                return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)                                
                 
             elif (excProcess.data["step"] == "Explore"):
                 excProcess.data["step"] = "MoveTo"
@@ -174,7 +166,7 @@ class ActionSelector:
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = excProcess.data["phantom"].object.x
                 atomicProcess.data["newy"] = excProcess.data["phantom"].object.y
-                return atomicProcess
+                return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)
             
             elif (excProcess.data["step"] == "LookForObject"):
                 atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["LookForObject"], excProcess.excParentIntention, excProcess)
@@ -206,7 +198,19 @@ class ActionSelector:
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = newX
                 atomicProcess.data["newy"] = newY
-                return atomicProcess  
+                return atomicProcess
+        elif (excProcess.process.name == "MoveTo"):
+            if excProcess.data["path"] == None:
+                map = Global.Map
+                path = map.GetPath(self.agent, excProcess.data["newx"],  excProcess.data["newy"])
+                excProcess.data["path"] = path[1:]
+            #we have path (without start)
+            nextPoint = excProcess.data["path"].pop(0)
+            atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveToPartial"], excProcess.excParentIntention, excProcess)
+            atomicProcess.data["process"] = excProcess.process
+            atomicProcess.data["newx"] = nextPoint.x
+            atomicProcess.data["newy"] = nextPoint.y
+            return atomicProcess
         else:
             return excProcess
 
@@ -226,17 +230,24 @@ class ActionSelector:
             self.processesArea.TerminateProcess(emotion)         #terminates the executed process
                                             #chooses another intention or no intention will be actual
         elif actProcess.name == "MoveTo":
-            #nothing smart to do here except of terminating atomic Moveto
-            self.processesArea.TerminateAtomicProcess(emotion)   #terminates Moveto
+            # check we're at the end - is done in child MoveToPartial process!
+            # this actually gets never called - its MoveToPartial child process!
+            pass
+        elif actProcess.name == "MoveToPartial":
+            #nothing smart to do here except of terminating atomic MoveToPartial and possilby MoveTo
+            self.processesArea.TerminateAtomicProcess(emotion) #terminates MoveToPartial
+            process = self.processesArea.GetActProcess()
+            if len(process.data["path"]) == 0:
+                self.processesArea.TerminateAtomicProcess(emotion)   #terminates Moveto
             
         elif actProcess.name == "SearchRandom":
             # check we got it.. - is done in child LookForObject process!
-            # this actually never called - its either MoveTo or Explore child process!
+            # this actually gets never called - its either MoveTo or Explore child process!
             pass
             
         elif actProcess.name == "LookUpInMemory":
             # check we got it.. - is done in child LookForObject process!
-            # this actually never called - its either Remember, MoveTo or LookForObject child process!
+            # this actually gets never called - its either Remember, MoveTo or LookForObject child process!
             pass
          
         elif actProcess.name == "Remember":

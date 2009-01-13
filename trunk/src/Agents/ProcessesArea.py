@@ -53,6 +53,8 @@ class ExcitedProcess:
             return True
         if (self.process.name == "LookUpInMemory"):
             return True
+        if (self.process.name == "MoveTo"):
+            return True
         return False    
     
     def EndIteration(self):
@@ -139,6 +141,8 @@ class ProcessesArea:
             self.actualProcess.data["affordance"] = parentExcIntention.data["affordance"]
         elif process.name == "Walk":
             self.actualProcess.data["step"] = 5
+        elif process.name == "MoveTo":
+            self.actualProcess.data["path"] = None
             
         return self.actualProcess
    
