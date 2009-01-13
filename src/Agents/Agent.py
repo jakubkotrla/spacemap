@@ -39,6 +39,8 @@ class Agent:
             pass #never happens - done as Remember, MoveTo or LookForObject child process
         elif action.process.name == "Walk":
             pass #never happens - done as MoveTo
+        elif action.process.name == "Rest":
+            pass #never happens - done as Explore
             
         elif action.process.name == "Remember":
             actionDuration = random.randint(30,30)
@@ -57,6 +59,8 @@ class Agent:
                 Global.Log("Agent " + self.name + " looking for " + action.data["phantom"].object.type.name + "(NotFound) for " + str(actionDuration) + " seconds")
 
         elif action.process.name == "MoveTo":
+            pass #never happens - done as MoveToPartial
+        elif action.process.name == "MoveToPartial":
             actionDuration = map.MoveAgent(self, action.data['newx'], action.data['newy'])
             self.intelligence.UpdatePhantomsBecauseOfMove()
             Global.Log("Agent " + self.name + " moving to " + str(action.data['newx']) + "," + str(action.data['newy']) + " for " + str(actionDuration) + " seconds")

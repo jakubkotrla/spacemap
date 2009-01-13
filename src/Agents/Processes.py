@@ -26,6 +26,7 @@ class Process:
 class Processes:
     def __init__(self):
         self.atomic = { "MoveTo"   : Process("MoveTo",[],[],[],[]),
+                        "MoveToPartial"   : Process("MoveToPartial",[],[],[],[]),
                         "Explore"  : Process("Explore",[],[],[],[]),
                         "PickUp"   : Process("PickUp",[],[],[],[]),
                         "PutDown"  : Process("PutDown",[],[],[],[]),
