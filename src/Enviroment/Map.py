@@ -13,6 +13,7 @@ class RealObject:
         self.amount = amount
         self.attractivity = attractivity
         self.maxAttractivity = 20
+        self.visibility = 0 #0.0 - 1.0
          
         self.memoryPhantom = None
     def Use(self):
@@ -45,6 +46,13 @@ class Path:
         return self.points[-1]
              
 
+class ViewCone:
+    def __init__(self, intensity, angle, distance):
+        self.intensity = intensity
+        self.angle = pi / (angle*2)
+        self.distance = distance        
+
+
 class Map:
     def __init__(self):
         self.width = 0
@@ -55,6 +63,11 @@ class Map:
         self.objects = []
         self.agentMoves = []
         self.guiObjectAppeared = None
+        
+        self.viewCones = []
+        self.viewCones.append( ViewCone(0.3, 1, 10) )
+        self.viewCones.append( ViewCone(0.3, 2, 20) )
+        self.viewCones.append( ViewCone(0.3, 4, 30) )
         
     def CalculateEdges(self):
         lastPoint = self.points[-1]
@@ -232,13 +245,52 @@ class Map:
             self.guiObjectDisAppeared(realObject)
             Global.Log("Map: agent used object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
  
-        
-    def GetVisibleObjects(self, centerX, centerY):
+    #agent has .x, .y, .direction represented as Point(x,y)
+    def GetVisibleObjects(self, agent):
         objs = []
         for obj in self.objects:
-            if self.DistanceObj(centerX, centerY, obj) < Global.MapVisibility:
+            visibility = self.GetVisibility(agent, obj)
+            if visibility > 0:
+                obj.visibility = visibility
                 objs.append(obj)
         return objs 
+      
+    def GetVisibility(self, agent, object):
+        dist = self.DistanceObjs(agent, object)
+        if dist == 0: return 1
+        
+        odx = object.x - agent.x
+        ody = object.y - agent.y
+        
+        ddx = agent.direction.x - agent.x
+        ddy = agent.direction.y - agent.y
+        
+        if ody == 0:
+            oangle = (pi / 2) * Global.Sign(odx)
+        else:
+            oangle = atan(odx/ody)
+        if ddy == 0:
+            dangle = (pi / 2) * Global.Sign(ddx)
+        else:
+            dangle = atan(ddx/ddy)
+        
+        if odx*ddx >= 0 and ody*ddy >= 0:
+            angle = abs(oangle - dangle)   #same quadrant
+        elif odx*ddx <= 0 and ody*ddy <= 0:
+            angle = pi - oangle + dangle   #opposite quadrants
+        elif odx*ddx > 0:
+            angle = oangle + dangle        #next to horizontally
+        elif ody*ddy > 0:
+            angle = pi - oangle - dangle   #next to vertically
+        else:
+            Global.Log("ViewCone angle error")
+        
+        visibility = 0
+        for vc in self.viewCones:
+            if angle < vc.angle and dist < vc.distance:
+                visibility = visibility + vc.intensity
+                 
+        return visibility
       
     def IsObjectVisibleFrom(self, object, x, y):
         return (self.DistanceObj(x,y,object) < Global.MapVisibility)

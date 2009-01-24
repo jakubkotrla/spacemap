@@ -19,12 +19,12 @@ class GlobalVariables:
         self.SaveFreq = 50
         self.AgentMoveHistoryLength = 10
         
-        self.MapVisibility = 10
+        self.MapVisibility = 20
         self.MapObjectPickupDistance = 10
         
         self.TrainEffectNoticed = 1.0
         self.TrainEffectNoticedAgain = 0.1
-        self.TrainEffectUsed = 5.0
+        self.TrainEffectUsed = 3.0
         self.TrainEffectFound = 2.0
         self.TrainEffectNotFound = 1.0
         self.TrainEffectUseUp = 1.0
@@ -40,7 +40,7 @@ class GlobalVariables:
         self.ELNodeUsageLimit = 15
         
         self.ELEnergyPointCreateCoef = 100
-        self.ELNodeAddCost = 50
+        self.ELNodeAddCost = 100
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5
         self.ELEnergyFadeLimit = 10
