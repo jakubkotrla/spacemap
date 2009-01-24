@@ -2,7 +2,7 @@
 from Intelligence import Intelligence
 import random
 from Enviroment.Global import Global
-
+from Enviroment.Map import Point
 
 class Agent:
     def __init__(self, name, config):
@@ -11,6 +11,7 @@ class Agent:
         self.pocket = []    # list of RealObjects
         self.x = 10
         self.y = 10
+        self.direction = Point(1,1)
         
     # does one agent step, returns number of seconds step took
     def Step(self):
@@ -61,13 +62,17 @@ class Agent:
         elif action.process.name == "MoveTo":
             pass #never happens - done as MoveToPartial
         elif action.process.name == "MoveToPartial":
+            dx = action.data['newx'] - self.x
+            dy = action.data['newy'] - self.y
+            self.direction = Point(dx, dy)
             actionDuration = map.MoveAgent(self, action.data['newx'], action.data['newy'])
             self.intelligence.UpdatePhantomsBecauseOfMove()
             Global.Log("Agent " + self.name + " moving to " + str(action.data['newx']) + "," + str(action.data['newy']) + " for " + str(actionDuration) + " seconds")
                 
         elif action.process.name == "Explore":
             actionDuration = random.randint(33,33)
-            self.intelligence.NoticeObjectsToPF(map.GetVisibleObjects(self.x, self.y))
+            visibleObjects = map.GetVisibleObjects(self)
+            self.intelligence.NoticeObjectsToPF(visibleObjects)
             Global.Log("Agent " + self.name + " exploring for " + action.data['affordance'].name + " for " + str(actionDuration) + " seconds")
         else:
             Global.Log("Agent " + self.name + " is a bit CONFUSED doing " + action.process.name + " for " + str(actionDuration) + " seconds")

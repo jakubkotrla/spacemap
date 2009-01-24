@@ -75,7 +75,6 @@ class MapRenderer:
     
     
     def agentMoved(self):
-        return
         oldX = self.map.agentMoves[len(self.map.agentMoves)-1]['x']
         oldY = self.map.agentMoves[len(self.map.agentMoves)-1]['y']
         offsetX = -(oldX - self.agent.x) * self.zoom
@@ -89,6 +88,8 @@ class MapRenderer:
                 
         self.canvas.move(self.agentRect, offsetX, offsetY)
         self.canvas.move(self.agentVisibleOval, offsetX, offsetY)
+        
+        #.itemconfigure ( tagOrId, option, ... )
 
 
     def objectAppeared(self, object):
