@@ -14,6 +14,7 @@ class RealObject:
         self.attractivity = attractivity
         self.maxAttractivity = 20
         self.visibility = 0 #0.0 - 1.0
+        self.guiId = None
          
         self.memoryPhantom = None
     def Use(self):
@@ -45,14 +46,6 @@ class Path:
     def Last(self):
         return self.points[-1]
              
-
-class ViewCone:
-    def __init__(self, intensity, angle, distance):
-        self.intensity = intensity
-        self.angle = pi / (angle*2)
-        self.distance = distance        
-
-
 class Map:
     def __init__(self):
         self.width = 0
@@ -62,12 +55,8 @@ class Map:
         self.edges = []  
         self.objects = []
         self.agentMoves = []
+        self.mapRenderer = None
         self.guiObjectAppeared = None
-        
-        self.viewCones = []
-        self.viewCones.append( ViewCone(0.3, 1, 10) )
-        self.viewCones.append( ViewCone(0.3, 2, 20) )
-        self.viewCones.append( ViewCone(0.3, 4, 30) )
         
     def CalculateEdges(self):
         lastPoint = self.points[-1]
@@ -81,6 +70,7 @@ class Map:
                 self.innerPoints.append(point)
         
     def Render(self, mapRenderer):
+        self.mapRenderer = mapRenderer
         for edge in self.edges:
             mapRenderer.Line(edge.start.x, edge.start.y, edge.end.x, edge.end.y, "#000", "map edge")
     
@@ -112,7 +102,7 @@ class Map:
             self.agentMoves.append( {"x":agent.x, "y":agent.y} )
             agent.x = newX
             agent.y = newY
-            agent.guiMoved()
+            agent.guiMoved(agent)
         return round(duration)
       
     #start has old position in .x and .y 
@@ -210,7 +200,6 @@ class Map:
          
     def IsInside(self, point):
         c = False
-
         for edge in self.edges:
             if (edge.start.y > point.y) != (edge.end.y > point.y):
                 if point.x < (edge.end.x - edge.start.x) * (point.y - edge.start.y) / (edge.end.y - edge.start.y) + edge.start.x:
@@ -249,44 +238,43 @@ class Map:
     def GetVisibleObjects(self, agent):
         objs = []
         for obj in self.objects:
-            visibility = self.GetVisibility(agent, obj)
-            if visibility > 0:
-                obj.visibility = visibility
+            #visibility = self.GetVisibility(agent, obj)
+            #obj.visibility = visibility
+            if obj.visibility > 0:
                 objs.append(obj)
         return objs 
       
     def GetVisibility(self, agent, object):
         dist = self.DistanceObjs(agent, object)
-        if dist == 0: return 1
+        visibility = 0
+        if dist == 0:
+            for vc in agent.viewCones:
+                visibility = visibility + vc.intensity
+            return visibility
         
         odx = object.x - agent.x
         ody = object.y - agent.y
-        
         ddx = agent.direction.x - agent.x
         ddy = agent.direction.y - agent.y
         
-        if ody == 0:
-            oangle = (pi / 2) * Global.Sign(odx)
-        else:
-            oangle = atan(odx/ody)
-        if ddy == 0:
-            dangle = (pi / 2) * Global.Sign(ddx)
-        else:
-            dangle = atan(ddx/ddy)
+        oangle = atan2(odx, ody)
+        #dangle = atan2(ddx, ddy)
+        dangle = agent.dirAngle
+        angle = abs(oangle - dangle)
         
-        if odx*ddx >= 0 and ody*ddy >= 0:
-            angle = abs(oangle - dangle)   #same quadrant
-        elif odx*ddx <= 0 and ody*ddy <= 0:
-            angle = pi - oangle + dangle   #opposite quadrants
-        elif odx*ddx > 0:
-            angle = oangle + dangle        #next to horizontally
-        elif ody*ddy > 0:
-            angle = pi - oangle - dangle   #next to vertically
-        else:
-            Global.Log("ViewCone angle error")
+#        if odx*ddx >= 0 and ody*ddy >= 0:
+#            angle = abs(oangle - dangle)   #same quadrant OK
+#        elif odx*ddx <= 0 and ody*ddy <= 0:
+#            angle = pi - oangle + dangle   #opposite quadrants WRONG
+#        elif odx*ddx > 0:
+#            angle = oangle + dangle        #next to horizontally
+#        elif ody*ddy > 0:
+#            angle = pi - oangle - dangle   #next to vertically OK
+#        else:
+#            Global.Log("ViewCone angle error")
         
         visibility = 0
-        for vc in self.viewCones:
+        for vc in agent.viewCones:
             if angle < vc.angle and dist < vc.distance:
                 visibility = visibility + vc.intensity
                  
@@ -294,6 +282,15 @@ class Map:
       
     def IsObjectVisibleFrom(self, object, x, y):
         return (self.DistanceObj(x,y,object) < Global.MapVisibility)
+    
+    def Step(self, agent):
+        self.calculateVisibility(agent)
+        self.mapRenderer.RenderObjectVisibility()
+        
+    def calculateVisibility(self, agent):
+        for obj in self.objects:
+            visibility = self.GetVisibility(agent, obj)
+            obj.visibility = visibility
       
     def Distance(self, x1,y1,x2,y2):
         return sqrt((x2-x1)**2+(y2-y1)**2)

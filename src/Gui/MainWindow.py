@@ -16,7 +16,7 @@ class MainWindow(Frame):
     def __init__(self, master=None):                    
         Frame.__init__(self, master)
         tl = self.winfo_toplevel()
-        tl.geometry("1100x1100+0+0")
+        tl.geometry("1500x1100+0+0")
         tl.title("SpaceMap MainWindow")
         self.lock = None
         self.mapRenderer = None
@@ -47,10 +47,10 @@ class MainWindow(Frame):
         
     
     def createWidgets(self):
-        self.wxCanvas = Canvas(self, width=1100, height=1100)
+        self.wxCanvas = Canvas(self, width=1500, height=1100)
         self.wxCanvas.grid(row=0, column=0)
         self.wxCanvas.bind('<Button-1>', self.canvasClick)
-        self.wxCanvas.width = 1100
+        self.wxCanvas.width = 1500
         self.wxCanvas.height = 1100
                                   
     def createMenu(self):
@@ -243,7 +243,7 @@ class MainWindow(Frame):
             if self.wndPF != None: self.agent.ShowPF(self.wndPF.txt)
             if self.wndMA != None: self.agent.ShowMA(self.wndMA.txt)
             # ShowPA done in Agent.Step to get more precise data
-            time.sleep(0.01)
+            time.sleep(1)
             step = step + 1
             
             if self.captureScreen:
