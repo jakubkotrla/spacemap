@@ -22,6 +22,8 @@ class World:
     def Step(self):
         Global.Log("--- World step --- " + str(Global.TimeToHumanFormat()))
         self.agent.Step()
+        map = Global.Map
+        map.Step(self.agent)
             
     
             

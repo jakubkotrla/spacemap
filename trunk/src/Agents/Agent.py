@@ -1,9 +1,17 @@
 
 from Intelligence import Intelligence
 import random
+from math import pi,atan2
 from Enviroment.Global import Global
 from Enviroment.Map import Point
 
+
+class ViewCone:
+    def __init__(self, intensity, angle, distance):
+        self.intensity = intensity
+        self.angle = pi / (angle*2)
+        self.distance = distance  
+        
 class Agent:
     def __init__(self, name, config):
         self.name   = name
@@ -12,6 +20,13 @@ class Agent:
         self.x = 10
         self.y = 10
         self.direction = Point(1,1)
+        self.dirAngle = pi / 4
+        
+        self.viewCones = []
+        self.viewCones.append( ViewCone(0.1, 0.5, 3) )
+        self.viewCones.append( ViewCone(0.3, 1, 15) )
+        self.viewCones.append( ViewCone(0.3, 2, 25) )
+        self.viewCones.append( ViewCone(0.3, 4, 40) )
         
     # does one agent step, returns number of seconds step took
     def Step(self):
@@ -65,6 +80,11 @@ class Agent:
             dx = action.data['newx'] - self.x
             dy = action.data['newy'] - self.y
             self.direction = Point(dx, dy)
+            angle = atan2(dx, dy)
+            if angle < 0:
+                angle = 2*pi + angle
+            self.dirAngle = angle
+            
             actionDuration = map.MoveAgent(self, action.data['newx'], action.data['newy'])
             self.intelligence.UpdatePhantomsBecauseOfMove()
             Global.Log("Agent " + self.name + " moving to " + str(action.data['newx']) + "," + str(action.data['newy']) + " for " + str(actionDuration) + " seconds")
