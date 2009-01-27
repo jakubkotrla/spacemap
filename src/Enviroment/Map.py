@@ -45,6 +45,11 @@ class Path:
         self.dist = dist
     def Last(self):
         return self.points[-1]
+    
+class VisibilityObject(Point):
+    def __init__(self, x, y, visibility):
+        Point.__init__(self, x, y)
+        self.visibility = visibility
              
 class Map:
     def __init__(self):
@@ -57,6 +62,7 @@ class Map:
         self.agentMoves = []
         self.mapRenderer = None
         self.guiObjectAppeared = None
+        self.visibilityHistory = []
         
     def CalculateEdges(self):
         lastPoint = self.points[-1]
@@ -68,6 +74,28 @@ class Map:
         for point in self.points:
             if point.x > 0 and point.y > 0 and point.x < self.width and point.y < self.height:
                 self.innerPoints.append(point)
+                
+        xCount = self.area.width / Global.ELDensity
+            yCount = self.area.height / Global.ELDensity
+            density = Global.ELDensity
+            for y in range(yCount):
+                for x in range(xCount):
+                    xNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
+                    yNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
+                    xx = x*density+density/2+xNoise
+                    yy = y*density+density/2+yNoise
+                    
+                    if self.area.IsInside( Point(xx,yy) ):    
+                        node = EnergyLayerNode(self, xx, yy, self.nodeIndex)
+                        self.nodeIndex = self.nodeIndex + 1
+                        self.nodes.append(node)
+                        
+                        
+                        
+                        
+                        
+                        
+                        
         
     def Render(self, mapRenderer):
         self.mapRenderer = mapRenderer
@@ -118,7 +146,6 @@ class Map:
                 else:
                     dist = self.DistanceObjs(hitResult, start)
                     if dist < hitPoint.dist: hitPoint = hitResult
-        
         if hitPoint == None:
             return Hit(0, 0, False)
         else:
@@ -130,6 +157,7 @@ class Map:
         else:
             return self.findPath(start, Point(newX, newY))
     
+    #using inner points as in http://alienryderflex.com/shortest_path/
     def findPath(self, start, end):
         dist = {}
         previous = {}
@@ -212,14 +240,11 @@ class Map:
     
     def GetArea(self):
         sum = 0
-        
         vertices = copy(self.points)
         vertices.reverse()
         vertices.append(vertices[0])
-        
         for i in range(len(self.points)):
             sum = sum + vertices[i].x * vertices[i+1].y - vertices[i].y * vertices[i+1].x
-            
         return ( sum * 1.0) / 2
     
     def GetRealObjectIfThere(self, memObject):
@@ -238,8 +263,6 @@ class Map:
     def GetVisibleObjects(self, agent):
         objs = []
         for obj in self.objects:
-            #visibility = self.GetVisibility(agent, obj)
-            #obj.visibility = visibility
             if obj.visibility > 0:
                 objs.append(obj)
         return objs 
@@ -258,20 +281,9 @@ class Map:
         ddy = agent.direction.y - agent.y
         
         oangle = atan2(odx, ody)
-        #dangle = atan2(ddx, ddy)
         dangle = agent.dirAngle
         angle = abs(oangle - dangle)
-        
-#        if odx*ddx >= 0 and ody*ddy >= 0:
-#            angle = abs(oangle - dangle)   #same quadrant OK
-#        elif odx*ddx <= 0 and ody*ddy <= 0:
-#            angle = pi - oangle + dangle   #opposite quadrants WRONG
-#        elif odx*ddx > 0:
-#            angle = oangle + dangle        #next to horizontally
-#        elif ody*ddy > 0:
-#            angle = pi - oangle - dangle   #next to vertically OK
-#        else:
-#            Global.Log("ViewCone angle error")
+
         
         visibility = 0
         for vc in agent.viewCones:
