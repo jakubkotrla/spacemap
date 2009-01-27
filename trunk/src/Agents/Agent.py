@@ -9,7 +9,7 @@ from Enviroment.Map import Point
 class ViewCone:
     def __init__(self, intensity, angle, distance):
         self.intensity = intensity
-        self.angle = pi / (angle*2)
+        self.angle = angle
         self.distance = distance  
         
 class Agent:
@@ -23,10 +23,10 @@ class Agent:
         self.dirAngle = pi / 4
         
         self.viewCones = []
-        self.viewCones.append( ViewCone(0.1, 0.5, 3) )
-        self.viewCones.append( ViewCone(0.3, 1, 15) )
-        self.viewCones.append( ViewCone(0.3, 2, 25) )
-        self.viewCones.append( ViewCone(0.3, 4, 40) )
+        self.viewCones.append( ViewCone(0.1, pi*0.9, 10 ) )
+        self.viewCones.append( ViewCone(0.3, pi/2, 15) )
+        self.viewCones.append( ViewCone(0.3, pi/4, 25) )
+        self.viewCones.append( ViewCone(0.3, pi/8, 40) )
         
     # does one agent step, returns number of seconds step took
     def Step(self):
@@ -81,8 +81,8 @@ class Agent:
             dy = action.data['newy'] - self.y
             self.direction = Point(dx, dy)
             angle = atan2(dx, dy)
-            if angle < 0:
-                angle = 2*pi + angle
+            #if angle < 0:
+            #    angle = 2*pi + angle
             self.dirAngle = angle
             
             actionDuration = map.MoveAgent(self, action.data['newx'], action.data['newy'])

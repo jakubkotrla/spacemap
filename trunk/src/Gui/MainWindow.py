@@ -243,8 +243,6 @@ class MainWindow(Frame):
             if self.wndPF != None: self.agent.ShowPF(self.wndPF.txt)
             if self.wndMA != None: self.agent.ShowMA(self.wndMA.txt)
             # ShowPA done in Agent.Step to get more precise data
-            time.sleep(1)
-            step = step + 1
             
             if self.captureScreen:
                 x0 = self.wxCanvas.winfo_rootx()
@@ -262,6 +260,8 @@ class MainWindow(Frame):
                     im.save("../../exs/sp" + str(secs).zfill(10) + ".png", "PNG")
             #end of captureScreen            
             
+            time.sleep(1)
+            step = step + 1
             if self.lock.acquire(False): break
             self.playbackLock.acquire()
             self.playbackLock.release()
