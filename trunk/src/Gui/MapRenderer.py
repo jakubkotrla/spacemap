@@ -22,7 +22,6 @@ class MapRenderer:
         
         self.agent.guiMoved = self.agentMoved
         self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
-        #self.agentVisibleOval = self.canvas.create_oval((self.agent.x-Global.MapVisibility)*self.zoom+10, (self.agent.y-Global.MapVisibility)*self.zoom+10, (self.agent.x+Global.MapVisibility)*self.zoom+10, (self.agent.y+Global.MapVisibility)*self.zoom+10, fill="", outline="red", tags="visible")
         self.agentMHlines = []
         
         self.map.guiObjectAppeared = self.objectAppeared
@@ -35,8 +34,6 @@ class MapRenderer:
         layer.mapRenderer = self
         for node in layer.nodes:
             node.Render(self)
-            
-        #self.canvas.create_arc(1100, 100, 1200, 200, start=0, extent=-270, style="pieslice", fill="", outline="blue") 
         
 
 
@@ -86,7 +83,7 @@ class MapRenderer:
         offsetX = -(oldX - self.agent.x) * self.zoom
         offsetY = -(oldY - self.agent.y) * self.zoom
                 
-        lId = self.Line(oldX, oldY, self.agent.x, self.agent.y, "#faa", "agenttrail")
+        lId = self.Line(oldX, oldY, self.agent.x, self.agent.y, "#fcc", "agenttrail")
         self.agentMHlines.append(lId)
         if len(self.agentMHlines) > Global.AgentMoveHistoryLength:
             lId = self.agentMHlines.pop(0)

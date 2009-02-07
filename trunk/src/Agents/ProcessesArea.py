@@ -207,7 +207,7 @@ class ProcessesArea:
                 phantom.affordance = aff
    
     def GetText(self):
-        txt = ' '
+        txt = '  '
         act = self.actualProcess
         if act == None: return ''
         txt = txt + act.ToString()
@@ -221,7 +221,7 @@ class ProcessesArea:
             else:
                 act = act.parentExcProcess
             if act == None: break            
-            txt = " " + act.ToString() + "\n" + txt
+            txt = "  " + act.ToString() + "\n" + txt
         return txt 
     
     

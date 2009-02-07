@@ -171,7 +171,7 @@ class MainWindow(Frame):
         while True:
             world.Step()
             
-            self.RenderState(world);
+            self.RenderState(world, step);
             
             if self.captureScreen:
                 x0 = self.wxCanvas.winfo_rootx()
@@ -185,8 +185,7 @@ class MainWindow(Frame):
                     im = ImageGrab.grab((x0,y0, x1,y1))
                     secs = Global.GetSeconds()
                     draw = ImageDraw.Draw(im)
-                    draw.text((5, 1050), str(step) + " steps = " + Global.TimeToHumanFormat(True), font=self.font, fill="black")
-                    im.save("../../exs/sp" + str(secs).zfill(10) + ".png", "PNG")
+                    im.save("../../exs/sp" + str(step).zfill(5) + ".png", "PNG")
             #end of captureScreen            
             
             time.sleep(0.1)
@@ -198,23 +197,32 @@ class MainWindow(Frame):
         self.lockBack.release()
         return
     
-    def RenderState(self, world):
+    def RenderState(self, world, step):
         self.wxCanvas.delete("infotxt")
+        
+        txt =  "Step:  " + str(step).zfill(5) + "\nTime:  " + Global.TimeToHumanFormat(True)
+        self.txtTime = self.wxCanvas.create_text(1100, 5, text=txt, width=400, anchor=NW, tags="infotxt")
+        
         pa = self.agent.intelligence.processesArea
         txt = "ProcessArea:\n" + self.agent.paText
-        self.txtPA = self.wxCanvas.create_text(1020, 10, text=txt, width=230, anchor=NW, tags="infotxt")
+        self.txtPA = self.wxCanvas.create_text(1050, 50, text=txt, width=200, anchor=NW, tags="infotxt")
         
         ma = self.agent.intelligence.memoryArea
-        txt = "MemoraArea:\n "
+        txt = "MemoraArea:\n  "
         for phantom in ma.memoryPhantoms:
-            txt = txt + phantom.ToString() + "\n "  
-        self.txtMA = self.wxCanvas.create_text(1270, 10, text=txt, width=230, anchor=NW, tags="infotxt")
+            txt = txt + phantom.ToString() + "\n  "  
+        self.txtMA = self.wxCanvas.create_text(1300, 50, text=txt, width=200, anchor=NW, tags="infotxt")
         
         pf = self.agent.intelligence.perceptionField
-        txt = "PerceptionField:\n "
+        txt = "PerceptionField:\n  "
         for phantom in pf.environmentPhantoms:
-            txt = txt + phantom.ToString() + "\n "
-        self.txtPF = self.wxCanvas.create_text(1270, 110, text=txt, width=230, anchor=NW, tags="infotxt")
+            txt = txt + phantom.ToString() + "\n  "
+        self.txtPF = self.wxCanvas.create_text(1300, 110, text=txt, width=200, anchor=NW, tags="infotxt")
+        
+        txt = "Log:\n  "
+        for line in Global.logLines:
+            txt = txt + line + "\n  "
+        self.txtLog = self.wxCanvas.create_text(1020, 500, text=txt, width=450, anchor=NW, tags="infotxt")
         
         
     

@@ -10,13 +10,15 @@ class GlobalVariables:
         self.MaxNumber = 9999999
         self.MinPositiveNumber = 0.00000001
         self.LogTags = ["error", "debug"]
+        self.logLines = []
+        self.LogLinesCount = 20
         
         self.World = None
         self.Map = None
         
         self.wndLog = None
         self.wndPA = None
-        self.SaveFreq = 1
+        self.SaveFreq = 0
         self.AgentMoveHistoryLength = 10
         
         self.MapObjectPickupDistance = 10
@@ -45,8 +47,7 @@ class GlobalVariables:
         self.ELEnergyFadeLimit = 10
         
         self.ELForgetNodeChance = 5    #max=1..100% each step
-                
-        
+           
         
         # OLD !!!
         self.WorstEffectivity = 999999999
@@ -64,11 +65,14 @@ class GlobalVariables:
         
         
     def Log(self, msg, tag="msg"):
-        if not tag in self.LogTags: return
+        #if not tag in self.LogTags: return
         msg = tag + "> " + msg
         print msg
         if self.wndLog != None:
             self.wndLog.txtLog.insert("end", msg)
+        self.logLines.append(msg)
+        if len(self.logLines) > self.LogLinesCount:
+            self.logLines.pop(0)
         
     def Gauss(self, x, c=1):
         return exp( - ((x)**2) / 2*(c**2) )
