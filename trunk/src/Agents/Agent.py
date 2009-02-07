@@ -16,7 +16,6 @@ class Agent:
     def __init__(self, name, config):
         self.name   = name
         self.intelligence = Intelligence(self, config)
-        self.pocket = []    # list of RealObjects
         self.x = 10
         self.y = 10
         self.direction = Point(1,1)
@@ -30,7 +29,7 @@ class Agent:
         self.viewCones.append( ViewCone(0.3, pi/4, 25) )
         self.viewCones.append( ViewCone(0.3, pi/8, 40) )
         
-    # does one agent step, returns number of seconds step took
+    # does one agent step
     def Step(self):
         action = self.intelligence.GetAction()
         actionDuration = 0
