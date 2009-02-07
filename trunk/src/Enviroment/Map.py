@@ -119,7 +119,7 @@ class Map:
             self.agentMoves.append( {"x":agent.x, "y":agent.y} )
             agent.x = newX
             agent.y = newY
-            agent.guiMoved(agent)
+            #agent.guiMoved(agent)
         return round(duration)
       
     #start has old position in .x and .y 
@@ -268,6 +268,9 @@ class Map:
         oangle = atan2(odx, ody)
         dangle = agent.dirAngle
         angle = abs(oangle - dangle)
+        if oangle * dangle < 0 and angle > pi:
+            angle = 2*pi - angle 
+        
         
         visibility = 0
         for vc in agent.viewCones:
@@ -275,12 +278,14 @@ class Map:
                 visibility = visibility + vc.intensity
         return visibility
       
-    def IsObjectVisible(self, object, agent):
+    def IsObjectVisible(self, agent, object):
+        object.visibility = self.GetVisibility(agent, object)
         return (object.visibility > 0)
     
     def Step(self, agent):
         self.calculateVisibility(agent)
         self.mapRenderer.RenderObjectVisibility()
+        agent.guiMoved(agent);
         
     def calculateVisibility(self, agent):
         for obj in self.objects:

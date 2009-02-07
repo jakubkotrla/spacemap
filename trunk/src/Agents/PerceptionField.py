@@ -26,7 +26,7 @@ class Phantom:
         
     def SetOwnerProcess(self, process):
         if self.ownerProcess != None:
-            Global.Log("PocketPhantom.Error:" + self.object.type.name)
+            Global.Log("EnviromentPhantom.Error:" + self.object.type.name)
         self.ownerProcess = process
         process.resources.append(self)
         
@@ -102,7 +102,7 @@ class PerceptionField:
                 #link to possible processes
                 self.processesArea.PhantomAdded(self.environmentPhantoms[rObj])
                 self.spaceMap.ObjectNoticed(rObj)
-                Global.Log("PF: Adding phantom for object " + rObj.type.name + " at " + str(rObj.y) + "," + str(rObj.x))
+                Global.Log("PF: Adding phantom for object " + rObj.ToString())
                 
         # vyhodíme najstaršie objekty do maximálnej veľkosti percepčného poľa
         if len(self.environmentPhantoms) > self.perceptionFieldSize:
@@ -154,7 +154,7 @@ class PerceptionField:
                     if rest < 1:
                         self.spaceMap.ObjectUsedUp(phantom.object)
                         del self.environmentPhantoms[phantom.object]
-                        Global.Log("PF: removing(used) phantom for object " + phantom.object.type.name + " at " + str(phantom.object.y) + "," + str(phantom.object.x))
+                        Global.Log("PF: removing(used) phantom for object " + phantom.object.ToString())
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
         phantoms = copy.copy(excProcess.resources)
         for phantom in phantoms:
@@ -165,7 +165,7 @@ class PerceptionField:
         map = Global.Map
         lostPhantoms = []
         for phantom in self.environmentPhantoms.values():
-            if not map.IsObjectVisible(phantom.object, agent):
+            if not map.IsObjectVisible(agent, phantom.object):
                 lostPhantoms.append(phantom)
         for phantom in lostPhantoms:
             del self.environmentPhantoms[phantom.object]

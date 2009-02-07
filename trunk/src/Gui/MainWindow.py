@@ -149,9 +149,9 @@ class MainWindow(Frame):
         config = Config("Lobby")
         world = World( config )
         Global.World = world
-        seed()
+        seed(10)
 
-        self.agent = Agent("agent1", config)
+        self.agent = Agent(config)
         world.SetAgent(self.agent)
         self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
         
@@ -169,9 +169,10 @@ class MainWindow(Frame):
         self.lockBack.acquire()
         step = 0
         while True:
-            world.Step()
+            world.Step(step)
             
             self.RenderState(world, step);
+            time.sleep(0.1)
             
             if self.captureScreen:
                 x0 = self.wxCanvas.winfo_rootx()
@@ -201,7 +202,10 @@ class MainWindow(Frame):
         self.wxCanvas.delete("infotxt")
         
         txt =  "Step:  " + str(step).zfill(5) + "\nTime:  " + Global.TimeToHumanFormat(True)
-        self.txtTime = self.wxCanvas.create_text(1100, 5, text=txt, width=400, anchor=NW, tags="infotxt")
+        self.txtTime = self.wxCanvas.create_text(1080, 5, text=txt, width=200, anchor=NW, tags="infotxt")
+        
+        txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
+        self.txtAgentInfo = self.wxCanvas.create_text(1300, 5, text=txt, width=200, anchor=NW, tags="infotxt")
         
         pa = self.agent.intelligence.processesArea
         txt = "ProcessArea:\n" + self.agent.paText
