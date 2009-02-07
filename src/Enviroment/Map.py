@@ -75,27 +75,16 @@ class Map:
             if point.x > 0 and point.y > 0 and point.x < self.width and point.y < self.height:
                 self.innerPoints.append(point)
                 
-        xCount = self.area.width / Global.ELDensity
-            yCount = self.area.height / Global.ELDensity
-            density = Global.ELDensity
-            for y in range(yCount):
-                for x in range(xCount):
-                    xNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
-                    yNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
-                    xx = x*density+density/2+xNoise
-                    yy = y*density+density/2+yNoise
-                    
-                    if self.area.IsInside( Point(xx,yy) ):    
-                        node = EnergyLayerNode(self, xx, yy, self.nodeIndex)
-                        self.nodeIndex = self.nodeIndex + 1
-                        self.nodes.append(node)
-                        
-                        
-                        
-                        
-                        
-                        
-                        
+        xCount = self.width / 10
+        yCount = self.height / 10
+        for y in range(yCount):
+            for x in range(xCount):
+                xx = x*10+5
+                yy = y*10+5
+                
+                if self.IsInside( Point(xx,yy) ):    
+                    vObj = VisibilityObject(xx, yy, 0)
+                    self.visibilityHistory.append(vObj)
         
     def Render(self, mapRenderer):
         self.mapRenderer = mapRenderer
@@ -274,26 +263,20 @@ class Map:
             for vc in agent.viewCones:
                 visibility = visibility + vc.intensity
             return visibility
-        
         odx = object.x - agent.x
         ody = object.y - agent.y
-        ddx = agent.direction.x - agent.x
-        ddy = agent.direction.y - agent.y
-        
         oangle = atan2(odx, ody)
         dangle = agent.dirAngle
         angle = abs(oangle - dangle)
-
         
         visibility = 0
         for vc in agent.viewCones:
             if angle < vc.angle and dist < vc.distance:
                 visibility = visibility + vc.intensity
-                 
         return visibility
       
-    def IsObjectVisibleFrom(self, object, x, y):
-        return (self.DistanceObj(x,y,object) < Global.MapVisibility)
+    def IsObjectVisible(self, object, agent):
+        return (object.visibility > 0)
     
     def Step(self, agent):
         self.calculateVisibility(agent)
@@ -303,6 +286,9 @@ class Map:
         for obj in self.objects:
             visibility = self.GetVisibility(agent, obj)
             obj.visibility = visibility
+        for obj in self.visibilityHistory:
+            visibility = self.GetVisibility(agent, obj)
+            obj.visibility += visibility
       
     def Distance(self, x1,y1,x2,y2):
         return sqrt((x2-x1)**2+(y2-y1)**2)

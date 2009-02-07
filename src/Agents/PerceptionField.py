@@ -165,7 +165,7 @@ class PerceptionField:
         map = Global.Map
         lostPhantoms = []
         for phantom in self.environmentPhantoms.values():
-            if not map.IsObjectVisibleFrom(phantom.object, agent.x, agent.y):
+            if not map.IsObjectVisible(phantom.object, agent):
                 lostPhantoms.append(phantom)
         for phantom in lostPhantoms:
             del self.environmentPhantoms[phantom.object]
@@ -188,13 +188,7 @@ class PerceptionField:
             self.memoryArea.RemovePhantom(memoryPhantom)
         return rObj
     
-    
-    def Show(self, txt):
-        txt.delete(0, 1000)
-        for  phantom in self.environmentPhantoms:
-            txt.insert("end", phantom.ToString())
-        
-        
+          
         
         
         

@@ -33,17 +33,13 @@ class MainWindow(Frame):
         self.wndObjects = None
         self.wndRealObjects = None
         self.wndLog = None
-        self.wndPF = None
-        self.wndPA = None
-        self.wndMA = None
         self.wndInfo = None
-        self.wndSM = None
         
         self.pack()  
         self.createWidgets()   
         self.createMenu()
         
-        #self.showPAPFMA()
+        self.captureScreenCheck()
         
     
     def createWidgets(self):
@@ -61,22 +57,11 @@ class MainWindow(Frame):
         worldMenu.add_command(label="Show Log", command=self.showLog)
         worldMenu.add_checkbutton(label="Capture screen", command=self.captureScreenCheck)
                   
-        spacemapMenu = Menu()
-        spacemapMenu.add_command(label="Show Nodes", command=self.showSMnodes)
-        
-        agentMenu = Menu()
-        agentMenu.add_command(label="Show PA-PF-MA", command=self.showPAPFMA)
-        agentMenu.add_command(label="Show ProcessArea", command=self.showPA)
-        agentMenu.add_command(label="Show PerceptionField", command=self.showPF)
-        agentMenu.add_command(label="Show MemoryArea", command=self.showMA)
-                  
         menubar = Menu(self)
         menubar.add_command(label="Start", command=self.startSimulation)
         menubar.add_command(label="Pause", command=self.pauseSimulation)
         menubar.add_command(label="Resume", command=self.resumeSimulation)
         menubar.add_cascade(label="World", menu=worldMenu)
-        menubar.add_cascade(label="Agent", menu=agentMenu)
-        menubar.add_cascade(label="SpaceMap", menu=spacemapMenu)
         menubar.add_command(label="Quit", command=self.quitSimulation)
         self.winfo_toplevel().config(menu=menubar)
         
@@ -129,61 +114,6 @@ class MainWindow(Frame):
     def captureScreenCheck(self):
         self.captureScreen = not self.captureScreen
         
-    def showSMnodes(self):
-        self.wndSM = Toplevel()
-        self.wndSM.geometry("400x200+820+0")
-        self.wndSM.title("SpaceMap - NodesList")
-        txt = Listbox(self.wndSM)
-        txt.pack(side=LEFT, fill=BOTH, expand=1)
-        self.wndSM.txt = txt
-        scrollBar = Scrollbar(self.wndSM, orient=VERTICAL, command=txt.yview)
-        txt["yscrollcommand"]  =  scrollBar.set
-        scrollBar.pack(side=RIGHT, fill=Y)
-        nodes = self.agent.GetSpaceMap().Layer.nodes
-        for node in nodes:
-            txt.insert("end", node.ToString()[0])
-        
-    
-    def showPAPFMA(self):
-        self.showPA()
-        self.showPF()
-        self.showMA()
-    def showPA(self):
-        self.wndPA = Toplevel()
-        Global.wndPA = self.wndPA
-        self.wndPA.geometry("400x200+1020+0")
-        self.wndPA.title("SpaceMap - Process Area")
-        txt = Listbox(self.wndPA)
-        txt.pack(side=LEFT, fill=BOTH, expand=1)
-        self.wndPA.txt = txt
-        scrollBar = Scrollbar(self.wndPA, orient=VERTICAL, command=txt.yview)
-        txt["yscrollcommand"]  =  scrollBar.set
-        scrollBar.pack(side=RIGHT, fill=Y)
-        if self.agent != None: self.agent.ShowPA(txt)
-        
-    def showPF(self):
-        self.wndPF = Toplevel()
-        self.wndPF.geometry("400x200+1020+250")
-        self.wndPF.title("SpaceMap - Perception Field")
-        txt = Listbox(self.wndPF)
-        txt.pack(side=LEFT, fill=BOTH, expand=1)
-        self.wndPF.txt = txt
-        scrollBar = Scrollbar(self.wndPF, orient=VERTICAL, command=txt.yview)
-        txt["yscrollcommand"]  =  scrollBar.set
-        scrollBar.pack(side=RIGHT, fill=Y)
-        if self.agent != None: self.agent.ShowPF(txt)
-        
-    def showMA(self):
-        self.wndMA = Toplevel()
-        self.wndMA.geometry("400x200+1020+500")
-        self.wndMA.title("SpaceMap - Memory Area")
-        txt = Listbox(self.wndMA)
-        txt.pack(side=LEFT, fill=BOTH, expand=1)
-        self.wndMA.txt = txt
-        scrollBar = Scrollbar(self.wndMA, orient=VERTICAL, command=txt.yview)
-        txt["yscrollcommand"]  =  scrollBar.set
-        scrollBar.pack(side=RIGHT, fill=Y)
-        if self.agent != None: self.agent.ShowMA(txt)
     
     def canvasClick(self, event):
         x = int(self.wxCanvas.canvasx(event.x))
@@ -240,9 +170,8 @@ class MainWindow(Frame):
         step = 0
         while True:
             world.Step()
-            if self.wndPF != None: self.agent.ShowPF(self.wndPF.txt)
-            if self.wndMA != None: self.agent.ShowMA(self.wndMA.txt)
-            # ShowPA done in Agent.Step to get more precise data
+            
+            self.RenderState(world);
             
             if self.captureScreen:
                 x0 = self.wxCanvas.winfo_rootx()
@@ -260,7 +189,7 @@ class MainWindow(Frame):
                     im.save("../../exs/sp" + str(secs).zfill(10) + ".png", "PNG")
             #end of captureScreen            
             
-            time.sleep(1)
+            time.sleep(0.1)
             step = step + 1
             if self.lock.acquire(False): break
             self.playbackLock.acquire()
@@ -268,6 +197,26 @@ class MainWindow(Frame):
             
         self.lockBack.release()
         return
+    
+    def RenderState(self, world):
+        self.wxCanvas.delete("infotxt")
+        pa = self.agent.intelligence.processesArea
+        txt = "ProcessArea:\n" + self.agent.paText
+        self.txtPA = self.wxCanvas.create_text(1020, 10, text=txt, width=230, anchor=NW, tags="infotxt")
+        
+        ma = self.agent.intelligence.memoryArea
+        txt = "MemoraArea:\n "
+        for phantom in ma.memoryPhantoms:
+            txt = txt + phantom.ToString() + "\n "  
+        self.txtMA = self.wxCanvas.create_text(1270, 10, text=txt, width=230, anchor=NW, tags="infotxt")
+        
+        pf = self.agent.intelligence.perceptionField
+        txt = "PerceptionField:\n "
+        for phantom in pf.environmentPhantoms:
+            txt = txt + phantom.ToString() + "\n "
+        self.txtPF = self.wxCanvas.create_text(1270, 110, text=txt, width=230, anchor=NW, tags="infotxt")
+        
+        
     
     def pauseSimulation(self):
         if self.playbackLock != None and not self.playbackLockLocked:
