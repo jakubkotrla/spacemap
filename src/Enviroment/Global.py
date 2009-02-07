@@ -1,6 +1,5 @@
-# -*- coding: UTF-8 -*-
 
-from __future__ import division
+
 from Time import Time
 from math import exp
 
@@ -11,7 +10,7 @@ class GlobalVariables:
         self.MinPositiveNumber = 0.00000001
         self.LogTags = ["error", "debug"]
         self.logLines = []
-        self.LogLinesCount = 20
+        self.LogLinesCount = 30
         
         self.World = None
         self.Map = None
@@ -86,31 +85,6 @@ class GlobalVariables:
     
     def GetSeconds(self):
         return self.Time.GetSeconds()
-    
-       
-        
-    # OLD !!!
-    def Explode(self,string,delimiter):
-        result = []
-        substring = ""
-        for char in string:
-            if char != delimiter:
-                substring = substring + char
-            else:
-                result.append(substring)
-                substring = ""
-        if substring != "":
-            result.append(substring)
-        return result
-    def PrintList(self,list):
-        result = "[ \"" + list.pop(0) +"\""
-        for item in list:
-            result = result + ", \"" + item + "\""
-        result = result + " ]"
-        return result
-    
-        
         
 
-Global = GlobalVariables()
-        
+Global = GlobalVariables()     
