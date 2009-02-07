@@ -34,12 +34,10 @@ class MapRenderer:
         layer.mapRenderer = self
         for node in layer.nodes:
             node.Render(self)
-        
-
+      
 
     def GuiIdToObject(self, id):
         return self.guiIdsToObjects[id]  
-            
         
         
     def Pixel(self, object, cx, cy, color, tags="pixel"):
