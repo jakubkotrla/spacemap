@@ -206,11 +206,11 @@ class ProcessesArea:
                 phantom.SetOwnerProcess(self.actualProcess.parent)
                 phantom.affordance = aff
    
-    def Show(self, txt):
-        txt.delete(0, 100)
+    def GetText(self):
+        txt = ' '
         act = self.actualProcess
-        if act == None: return
-        txt.insert(0, act.ToString())
+        if act == None: return ''
+        txt = txt + act.ToString()
         
         while True:
             if (act.IsProcess()):
@@ -221,9 +221,10 @@ class ProcessesArea:
             else:
                 act = act.parentExcProcess
             if act == None: break            
-            txt.insert(0, act.ToString())
-         
-   
+            txt = " " + act.ToString() + "\n" + txt
+        return txt 
+    
+    
    
     # old!!
         

@@ -16,10 +16,9 @@ class GlobalVariables:
         
         self.wndLog = None
         self.wndPA = None
-        self.SaveFreq = 50
+        self.SaveFreq = 1
         self.AgentMoveHistoryLength = 10
         
-        self.MapVisibility = 20
         self.MapObjectPickupDistance = 10
         
         self.TrainEffectNoticed = 1.0

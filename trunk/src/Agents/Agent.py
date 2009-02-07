@@ -22,6 +22,8 @@ class Agent:
         self.direction = Point(1,1)
         self.dirAngle = pi / 4
         
+        self.paText = ' '
+        
         self.viewCones = []
         self.viewCones.append( ViewCone(0.1, pi*0.9, 10 ) )
         self.viewCones.append( ViewCone(0.3, pi/2, 15) )
@@ -81,8 +83,6 @@ class Agent:
             dy = action.data['newy'] - self.y
             self.direction = Point(dx, dy)
             angle = atan2(dx, dy)
-            #if angle < 0:
-            #    angle = 2*pi + angle
             self.dirAngle = angle
             
             actionDuration = map.MoveAgent(self, action.data['newx'], action.data['newy'])
@@ -90,7 +90,7 @@ class Agent:
             Global.Log("Agent " + self.name + " moving to " + str(action.data['newx']) + "," + str(action.data['newy']) + " for " + str(actionDuration) + " seconds")
                 
         elif action.process.name == "Explore":
-            actionDuration = random.randint(33,33)
+            actionDuration = random.randint(30,30)
             visibleObjects = map.GetVisibleObjects(self)
             self.intelligence.NoticeObjectsToPF(visibleObjects)
             Global.Log("Agent " + self.name + " exploring for " + action.data['affordance'].name + " for " + str(actionDuration) + " seconds")
@@ -98,20 +98,13 @@ class Agent:
             Global.Log("Agent " + self.name + " is a bit CONFUSED doing " + action.process.name + " for " + str(actionDuration) + " seconds")
         
         
-        wndPA = Global.wndPA
-        if wndPA != None: self.ShowPA(wndPA.txt)
+        self.paText = self.intelligence.processesArea.GetText()
         
         Global.Time.AddSeconds(actionDuration)
         
         self.intelligence.ActionDone()
 
-    
-    def ShowPF(self, txt):
-        self.intelligence.ShowPF(txt)
-    def ShowPA(self, txt):
-        self.intelligence.ShowPA(txt)
-    def ShowMA(self, txt):
-        self.intelligence.ShowMA(txt)
+
     def GetSpaceMap(self):
         return self.intelligence.spaceMap
 

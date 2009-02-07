@@ -35,10 +35,6 @@ class Intelligence:
         self.episodicMemory.Print()
     def ShowPF(self, txt):
         self.perceptionField.Show(txt)
-    def ShowPA(self, txt):
-        self.processesArea.Show(txt)
-    def ShowMA(self, txt):
-        self.memoryArea.Show(txt)
 
         
     def NoticeObjectsToPF(self, visibleObjects):
