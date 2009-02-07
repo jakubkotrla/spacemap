@@ -41,15 +41,7 @@ class Agent:
             actionDuration = action.data['execution-time'] # resp. action.data['process'].durationTime
             Global.Log("Agent " + self.name + " doing " + action.data['process'].name + " for " + str(action.data['execution-time']) + " seconds")
             self.intelligence.UseObjects(action.parent)
-            #map.UseObjects(self, action.parent) done in PF.UseObjects - ok?
-            
-#        elif action.process.name == "PickUp":
-#            rObj = action.data["object"]
-#            map = Global.Map
-#            if map.PickUpObject(self, rObj):
-#                self.pocket.append(rObj)
-#                self.intelligence.PickUpObject(rObj)
-#            actionDuration = random.randint(1,10)
+            #map.UseObjects(self, action.parent) done in PF.UseObjects
 
         elif action.process.name == "SearchRandom":
             pass #never happens - done as MoveTo or Explore child process
@@ -97,11 +89,8 @@ class Agent:
         else:
             Global.Log("Agent " + self.name + " is a bit CONFUSED doing " + action.process.name + " for " + str(actionDuration) + " seconds")
         
-        
         self.paText = self.intelligence.processesArea.GetText()
-        
         Global.Time.AddSeconds(actionDuration)
-        
         self.intelligence.ActionDone()
 
 

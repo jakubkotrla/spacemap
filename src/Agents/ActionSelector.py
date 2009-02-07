@@ -243,8 +243,7 @@ class ActionSelector:
         elif actProcess.name == "SearchRandom":
             # check we got it.. - is done in child LookForObject process!
             # this actually gets never called - its either MoveTo or Explore child process!
-            pass
-            
+            pass            
         elif actProcess.name == "LookUpInMemory":
             # check we got it.. - is done in child LookForObject process!
             # this actually gets never called - its either Remember, MoveTo or LookForObject child process!
