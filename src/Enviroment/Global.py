@@ -22,6 +22,9 @@ class GlobalVariables:
         
         self.MapObjectPickupDistance = 10
         
+        self.PFSize = 10
+        self.PFPhantomHabituation = 10
+        
         self.TrainEffectNoticed = 1.0
         self.TrainEffectNoticedAgain = 0.1
         self.TrainEffectUsed = 3.0
@@ -47,20 +50,6 @@ class GlobalVariables:
         
         self.ELForgetNodeChance = 5    #max=1..100% each step
            
-        
-        # OLD !!!
-        self.WorstEffectivity = 999999999
-        self.CutObjects = []
-        self.MainCycle = None
-        self.Variables = {}
-        self.AgentSpeed = 3
-        self.MaxResults = 5
-        self.objectsList = []
-        self.gTerrainTypes = { "forest":"#008000", "wood":"#808000", "meadow": "#00b355", 
-                "stone_mountain": "#a0a0a0", "iron_mountain": "#ff9f71", "cave": "#996600",
-                "house": "#cc6600", "town": "#ffcc99", "road": "#a4a4a4", "default": "#e0e0e0",
-                "parcel": "#d2b48c", "room": "#4682b4", "park": "#9acd32", "chamber": "#b8860b" }
-        
         
         
     def Log(self, msg, tag="msg"):

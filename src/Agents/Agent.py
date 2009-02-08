@@ -88,9 +88,9 @@ class Agent:
             Global.Log("Agent is a bit CONFUSED doing " + action.process.name + " for " + str(actionDuration) + " seconds")
         
         #sees object around
-        #visibleObjects = map.GetVisibleObjects(self)
-        #self.intelligence.NoticeObjectsToPF(visibleObjects)
-        # some coef to attractivity by cur process and its affs
+        visibleObjects = map.GetVisibleObjects(self)
+        self.intelligence.NoticeObjectsToPF(visibleObjects, action.process)
+        
         
         self.paText = self.intelligence.processesArea.GetText()
         Global.Time.AddSeconds(actionDuration)
