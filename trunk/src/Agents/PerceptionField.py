@@ -70,7 +70,7 @@ class PocketPhantom:
 class PerceptionField:
 
     def __init__(self, processesArea, spaceMap, memoryArea):
-#        self.perceptionFilter = PerceptionFilter()
+#       self.perceptionFilter = PerceptionFilter()
         self.environmentPhantoms = {}
         self.pocketPhantoms = {}
         self.perceptionFieldSize = 50
@@ -79,11 +79,7 @@ class PerceptionField:
         self.spaceMap = spaceMap
         self.memoryArea = memoryArea
 
-    ## Funkcia ktorá pridá fantóm objektu do percepčného poľa
-    # @param self pointer na percepčné pole
-    # @param phantom pointer na fantóm
-    # @return vráti False ak sa objekt v percepčnom poli už nachádzal
-    def Update(self, realObjects):
+    def Update(self, realObjects, actProcess):
         # postupne zabúdame na objekty v percepčnom poli
         habituatedPhantoms = []
         for phantom in self.environmentPhantoms.items():
@@ -125,8 +121,8 @@ class PerceptionField:
                             del self.environmentPhantoms[object]
                 i += 1
                 
-    def NoticeObjects(self, visibleObjects):
-        self.Update(visibleObjects)
+    def NoticeObjects(self, visibleObjects, actProcess):
+        self.Update(visibleObjects, actProcess)
     
     def TryToLinkPhantomsFor(self, excProcess, missingSources):
         for wantedAff in missingSources:
