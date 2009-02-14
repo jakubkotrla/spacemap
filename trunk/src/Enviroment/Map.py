@@ -46,6 +46,8 @@ class Path:
         self.dist = dist
     def Last(self):
         return self.points[-1]
+    def ToString(self):
+        return "Point(" + str(self.x) + ", " + str(self.y) + ")"
     
 class VisibilityObject(Point):
     def __init__(self, x, y, visibility):
@@ -57,7 +59,7 @@ class Map:
         self.width = 0
         self.height = 0
         self.points = []
-        self.innerPoints = []
+        self.wayPoints = []
         self.edges = []  
         self.objects = []
         self.agentMoves = []
@@ -71,10 +73,6 @@ class Map:
             edge = Edge(lastPoint, point)
             self.edges.append(edge)
             lastPoint = point
-            
-        for point in self.points:
-            if point.x > 0 and point.y > 0 and point.x < self.width and point.y < self.height:
-                self.innerPoints.append(point)
                 
         xCount = self.width / 10
         yCount = self.height / 10
@@ -91,6 +89,8 @@ class Map:
         self.mapRenderer = mapRenderer
         for edge in self.edges:
             mapRenderer.Line(edge.start.x, edge.start.y, edge.end.x, edge.end.y, "#000", "map edge")
+        for wayPoint in self.wayPoints:
+            mapRenderer.PixelC(wayPoint, wayPoint.x, wayPoint.y, "#000", 2, "waypoint")
     
     def AddObject(self, type, x, y, attractivity = 10, amount=1):
         rObj = RealObject(type, x, y, attractivity, amount)    
@@ -114,37 +114,43 @@ class Map:
             self.agentMoves.append( {"x":agent.x, "y":agent.y} )
             agent.x = newX
             agent.y = newY
-            #agent.guiMoved(agent)
         return round(duration)
       
     #start has old position in .x and .y 
     def CanMove(self, start, newX, newY):
         hitPoint = None
-        for edge in self.edges:
-            hitResult = self.AreIntersecting(edge.start, edge.end, start, Point(newX,newY) )
-            if hitResult.hit:
-                if hitPoint == None:
-                    hitPoint = hitResult
-                    hitPoint.dist = self.DistanceObjs(hitResult, start)
-                else:
-                    dist = self.DistanceObjs(hitResult, start)
-                    if dist < hitPoint.dist: hitPoint = hitResult
-        if hitPoint == None:
-            return True
-        else:
-            return False
-    def CanMoveEx(self, start, newX, newY):
-        hitPoint = None
+        hitDist = Global.MaxNumber
         
         for edge in self.edges:
             hitResult = self.AreIntersecting(edge.start, edge.end, start, Point(newX,newY) )
             if hitResult.hit:
                 if hitPoint == None:
                     hitPoint = hitResult
-                    hitPoint.dist = self.DistanceObjs(hitResult, start)
+                    hitDist = self.DistanceObjs(hitResult, start)
                 else:
                     dist = self.DistanceObjs(hitResult, start)
-                    if dist < hitPoint.dist: hitPoint = hitResult
+                    if dist < hitDist:
+                        hitPoint = hitResult
+                        hitDist = dist
+        if hitPoint == None:
+            return True
+        else:
+            return False
+    def CanMoveEx(self, start, newX, newY):
+        hitPoint = None
+        hitDist = Global.MaxNumber
+        
+        for edge in self.edges:
+            hitResult = self.AreIntersecting(edge.start, edge.end, start, Point(newX,newY) )
+            if hitResult.hit:
+                if hitPoint == None:
+                    hitPoint = hitResult
+                    hitDist = self.DistanceObjs(hitResult, start)
+                else:
+                    dist = self.DistanceObjs(hitResult, start)
+                    if dist < hitDist:
+                        hitPoint = hitResult
+                        hitDist = dist
         if hitPoint == None:
             return Hit(0, 0, False)
         else:
@@ -201,26 +207,25 @@ class Map:
         previous = {}
         dist[start] = 0
         queue = [start]
-        queue.extend(self.innerPoints)
-        queue.append(end)
-        for point in queue:
+        allPoints = [end]
+        allPoints.extend(self.wayPoints)
+        donePoints = []
+        for point in allPoints:
             dist[point] = Global.MaxNumber
             previous[point] = None
         
         while len(queue) > 0:
-            minPoint = queue[0]
-            minPointDist = Global.MaxNumber
-            for point in queue:
-                if dist[point] < minPointDist:
-                    minPoint = point
-                    minPointDist = dist[point]
-            queue.remove(minPoint)
-            for point in queue:
-                if self.CanMove(minPoint, point.x, point.y):
-                    alt = dist[minPoint] + self.DistanceObjs(minPoint, point)
-                    if alt < dist[point]:
-                        dist[point] = alt
-                        previous[point] = minPoint
+            curPoint = queue.pop(0)
+            donePoints.append(curPoint)
+            neighbours = self.getNeighbours(curPoint, end)
+            for point in neighbours:
+                alt = dist[curPoint] + self.DistanceObjs(curPoint, point)
+                if alt < dist[point]:
+                    dist[point] = alt
+                    previous[point] = curPoint
+                if point not in donePoints:
+                    queue.append(point)
+            
         #all set, get data from previous
         path = []
         point = end
@@ -229,6 +234,16 @@ class Map:
             point = previous[point]
         path.insert(0, start)
         return path
+    def getNeighbours(self, point, end):
+        neighbours = []
+        for p in self.wayPoints:
+            if p == point: continue
+            if self.CanMove(point, p.x, p.y):
+                neighbours.append(p)
+        if point != end:
+            if self.CanMove(point, end.x, end.y):
+                neighbours.append(end)
+        return neighbours
     
     def AreIntersecting(self, edge1point1, edge1point2, edge2point1, edge2point2):
         # 0 = ax + by + c
@@ -271,10 +286,6 @@ class Map:
                 if point.x < (edge.end.x - edge.start.x) * (point.y - edge.start.y) / (edge.end.y - edge.start.y) + edge.start.x:
                     c = not c
         return c 
-
-    def IsVisible(self, start, end):
-        hitPoint = self.CanMove(start, end.x, end.y)
-        return not hitPoint.hit
     
     def GetArea(self):
         sum = 0
@@ -305,6 +316,8 @@ class Map:
         return objs 
       
     def GetVisibility(self, agent, object):
+        if not self.CanMove(agent, object.x, object.y):
+            return 0
         dist = self.DistanceObjs(agent, object)
         visibility = 0
         if dist == 0:
