@@ -18,8 +18,8 @@ class MemoryPhantom:
         self.positionY   = realObject.y
         self.habituation = habituation
     
-    def Habituate(self):
-        self.habituation -= 1
+    def Habituate(self, amount):
+        self.habituation -= amount
         return self.habituation < 1
         
     def SetOwnerProcess(self, process):
@@ -47,12 +47,11 @@ class MemoryArea:
         self.spaceMap = spaceMap
         self.processArea = processArea
         self.memoryPhantoms = []
-        self.perceptionHabituationTime = 10
         
     def RememberObjectsFor(self, affordance):
         memObject = self.spaceMap.GetMemoryObject(affordance)
         if memObject != None:
-            memPhantom = MemoryPhantom(memObject, self.perceptionHabituationTime)
+            memPhantom = MemoryPhantom(memObject, Global.MAPhantomHabituation)
             self.memoryPhantoms.append(memPhantom)
             self.processArea.PhantomRemembered(memPhantom)
             return memPhantom
@@ -65,6 +64,15 @@ class MemoryArea:
             Global.Log("Programmer Error: MemoryArea.RemovePhantom " + memoryPhantom.object.type.name)
             #return
         self.memoryPhantoms.remove(memoryPhantom)
+        
+    def Update(self, action):
+        habituatedPhantoms = []
+        for phantom in self.memoryPhantoms:
+            if phantom.Habituate(action.duration):
+                habituatedPhantoms.append(phantom)
+        for habituatedPhantom in habituatedPhantoms:
+            self.memoryPhantoms.remove(habituatedPhantom)
+        
         
         
         

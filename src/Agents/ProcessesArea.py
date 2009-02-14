@@ -47,6 +47,9 @@ class ExcitedProcess:
                 self.parent.completedIntentions.append(self.intention)
             else:
                 self.parent.failedProcesses.append(self.process)
+        for phantom in self.resources:
+            phantom.ResetOwnerProcess()
+            
     def IsProcess(self): return True            
     def IsSmartProcess(self):
         if (self.process.name == "SearchRandom"):
@@ -211,7 +214,6 @@ class ProcessesArea:
         act = self.actualProcess
         if act == None: return ''
         txt = txt + act.ToString()
-        
         while True:
             if (act.IsProcess()):
                 if (act.parent != None and act.parent.IsSmartProcess()) or act.process.name == "Execute":
@@ -224,33 +226,4 @@ class ProcessesArea:
             txt = "  " + act.ToString() + "\n" + txt
         return txt 
     
-    
    
-    # old!!
-        
-    
-    
-    ## Funkcia ktorá pridá proces do zoznamu aktivovaných procesov
-    # @param self pointer na procesnú procesnú časť
-    # @param process pointer na process    
-    def UpdateIntentionActivity(self, intention, activity):
-        if intention not in self.intentions:
-            self.intentions[intention] = ExcitedIntention(intention)
-        self.intentions[intention].activity = activity
-        
-    def GetMostActiveIntention(self):
-        maxActivity = -1
-        maxIntention = None
-        for excitedIntention in self.intentions.items():
-            if excitedIntention[1].activity > maxActivity:
-                maxActivity = excitedIntention[1].activity
-                maxIntention = excitedIntention[1]
-        return maxIntention
-        
-  
-    def TerminateExpiredProcesses(self):
-        self.TerminateProcess(False)
-        if self.actualProcess == None:
-            self.actualIntention = None
-        elif self.actualProcess.isExpired():
-            self.TerminateExpiredProcesses()

@@ -20,11 +20,12 @@ class GlobalVariables:
         self.SaveFreq = 0
         self.AgentMoveHistoryLength = 10
         
-        self.MapObjectPickupDistance = 10
+        self.MaxAgentMove = 10
         
-        self.PFSize = 10
-        self.PFPhantomHabituation = 10
-        
+        self.PFSize = 7
+        self.PFPhantomHabituation = 100
+        self.MAPhantomHabituation = 100
+                
         self.TrainEffectNoticed = 1.0
         self.TrainEffectNoticedAgain = 0.1
         self.TrainEffectUsed = 3.0

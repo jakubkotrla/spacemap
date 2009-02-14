@@ -135,7 +135,7 @@ class EnergyLayerNode:
         newX = self.x + self.stepDiffX * massCoef
         newY = self.y + self.stepDiffY * massCoef
         
-        hit = self.area.CanMove(self, newX, newY)
+        hit = self.area.CanMoveEx(self, newX, newY)
         if hit.hit:
             newX = hit.x
             newY = hit.y
@@ -159,7 +159,7 @@ class EnergyLayerNode:
         newX = self.x + diffX * gCoef
         newY = self.y + diffY * gCoef
         
-        hit = self.area.CanMove(self, newX, newY)
+        hit = self.area.CanMoveEx(self, newX, newY)
         if hit.hit:
             newX = hit.x
             newY = hit.y
