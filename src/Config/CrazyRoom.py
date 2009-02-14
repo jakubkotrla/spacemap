@@ -15,6 +15,7 @@ class CrazyRoom(BaseConfig):
        
     def prepareMap(self, map):
         map.points = [ Point(0,0), Point(30,0), Point(30,20), Point(50,10), Point(70,20), Point(100,0), Point(70,80), Point(100,80), Point(100,100), Point(0,100), Point(0,80), Point(40,50), Point(20,40), Point(0,40)]
+        map.wayPoints = [ Point(20,20), Point(60,50), Point(50,90) ]
         map.width = 100
         map.height = 100
         map.SetAgentStart(50, 50)
