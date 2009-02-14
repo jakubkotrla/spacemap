@@ -2,14 +2,14 @@
 from random import sample
 import copy
 from Enviroment.Global import Global
-#from PerceptionFilter import PerceptionFilter
+from PerceptionFilter import PerceptionFilter
 
 
 class Phantom:
     def __init__(self, realObject, habituation, memoryPhantom=None):
         self.object      = realObject
         self.affordance  = None     #which object affordance will be used - to speed up things
-        self.ownerProcess  = None
+        self.ownerProcess = None
         self.positionX   = realObject.x
         self.positionY   = realObject.y
         self.habituation = habituation
@@ -20,8 +20,8 @@ class Phantom:
         self.positionY   = realObject.y
         self.habituation = habituation
     
-    def Habituate(self):
-        self.habituation -= 1
+    def Habituate(self, amount):
+        self.habituation -= amount
         return self.habituation < 1
         
     def SetOwnerProcess(self, process):
@@ -42,87 +42,58 @@ class Phantom:
         else:
             str = "Phantom(E) of " + self.object.ToString()
         return str
-        
-class PocketPhantom:
-    def __init__(self, objectPlacement):
-        self.object        = objectPlacement.object
-        self.oldLocation   = objectPlacement.location
-        self.oldPositionX  = objectPlacement.positionX
-        self.oldPpositionY = objectPlacement.positionY
-        self.ownerProcess  = None
-    
-    def SetOwnerProcess(self, process):
-        if self.ownerProcess != None:
-            Global.Log("PocketPhantom.Error")
-        self.ownerProcess = process
-        process.resources.append(self)
-        
-    def ResetOwnerProcess(self, process):
-        self.ownerProcess = None
-        process.resources.remove(self)
 
-## Trieda reprezentujúca percepčné pole krátkodobej pamäte
-# - Atribúty triedy:
-#   - perceptionFilter ... percepčný filter
-#   - phantoms ... slovník fantómov v percepčnom poli
-#   - perceptionFieldSize ... maximálny počet fantómov v percepčnom poli
-#   - perceptionHabituationTime ... čas za ktorý agent zabudne na objekt
+
 class PerceptionField:
 
     def __init__(self, processesArea, spaceMap, memoryArea):
-#       self.perceptionFilter = PerceptionFilter()
-        self.environmentPhantoms = {}
-        self.pocketPhantoms = {}
-        self.perceptionFieldSize = 50
-        self.perceptionHabituationTime = 10
+        self.environmentPhantoms = []
         self.processesArea = processesArea
         self.spaceMap = spaceMap
         self.memoryArea = memoryArea
+        self.perceptionFilter = PerceptionFilter()
 
-    def Update(self, realObjects, actProcess):
-        # postupne zabúdame na objekty v percepčnom poli
+    def getPhantoms(self):
+        phantoms = self.environmentPhantoms
+        phantoms.sort(self.cmpHabituation)
+        return phantoms[:Global.PFSize]
+    def cmpHabituation(x, y):
+        if x.habituation > y.habituation:
+            return -1
+        elif x.habituation == y.habituation:
+            return 0
+        else: # x<y
+            return 1
+
+    def Update(self, action):
         habituatedPhantoms = []
-        for phantom in self.environmentPhantoms.items():
-            if phantom[1].Habituate():
-                habituatedPhantoms.append(phantom[0])
-        # odstránime zabudnuté objekty z percepčného poľa
+        for phantom in self.environmentPhantoms:
+            if phantom.Habituate(action.duration):
+                habituatedPhantoms.append(phantom)
         for habituatedPhantom in habituatedPhantoms:
-            del self.environmentPhantoms[habituatedPhantom]
-        # pridáme spozorované objekty do percepčného poľa
-        for rObj in realObjects:
-            if rObj in self.environmentPhantoms.keys():
-                self.environmentPhantoms[rObj].Update(rObj, self.perceptionHabituationTime)
-                self.spaceMap.ObjectNoticedAgain(rObj)
-            else:
-                self.environmentPhantoms[rObj] = Phantom(rObj, self.perceptionHabituationTime, rObj.memoryPhantom)
-                #link to possible processes
-                self.processesArea.PhantomAdded(self.environmentPhantoms[rObj])
-                self.spaceMap.ObjectNoticed(rObj)
-                Global.Log("PF: Adding phantom for object " + rObj.ToString())
-                
-        # vyhodíme najstaršie objekty do maximálnej veľkosti percepčného poľa
-        if len(self.environmentPhantoms) > self.perceptionFieldSize:
-            habituatedObjects = {}
-            for object, phantom in self.environmentPhantoms.items():
-                if phantom.habituation not in habituatedObjects.keys():
-                    habituatedObjects[phantom.habituation] = []
-                habituatedObjects[phantom.habituation].append(object)
-            forgetCnt = len(self.environmentPhantoms) - self.perceptionFieldSize
-            i = 1
-            while forgetCnt > 0:
-                if i in habituatedObjects.keys():
-                    if len(habituatedObjects[i]) > forgetCnt:
-                        for object in sample(habituatedObjects[i], forgetCnt):
-                            del self.environmentPhantoms[object]
-                        forgetCnt = 0
-                    else:
-                        forgetCnt -= len(habituatedObjects[i])
-                        for object in habituatedObjects[i]:
-                            del self.environmentPhantoms[object]
-                i += 1
+            self.environmentPhantoms.remove(habituatedPhantom)
+            habituatedPhantom.ResetOwnerProcess()
+            Global.Log("PF: removing(habituated) phantom for object " + habituatedPhantom.object.type.name + " at " + str(habituatedPhantom.object.y) + "," + str(habituatedPhantom.object.x))
                 
     def NoticeObjects(self, visibleObjects, actProcess):
-        self.Update(visibleObjects, actProcess)
+        self.perceptionFilter.ProcessObjects(visibleObjects, actProcess)
+        for rObj in visibleObjects:
+            phantom = self.GetPhantomForObj(rObj)
+            if phantom != None:
+                phantom.Update(rObj, Global.PFPhantomHabituation)
+                self.spaceMap.ObjectNoticedAgain(rObj)
+            else:
+                phantom = Phantom(rObj, Global.PFPhantomHabituation, rObj.memoryPhantom)
+                self.environmentPhantoms.append(phantom)
+                self.processesArea.PhantomAdded(phantom) #link to possible processes
+                self.spaceMap.ObjectNoticed(rObj)
+                Global.Log("PF: Adding phantom for object " + rObj.ToString())
+
+    def GetPhantomForObj(self, rObj):
+        for phantom in self.environmentPhantoms:
+            if phantom.object == rObj:
+                return phantom
+        return None 
     
     def TryToLinkPhantomsFor(self, excProcess, missingSources):
         for wantedAff in missingSources:
@@ -132,9 +103,9 @@ class PerceptionField:
                 phantom.affordance = wantedAff
                         
     def GetPhantomOfSeenAffordance(self, affordance):
-        for objectPhantom in self.environmentPhantoms.values():
-            if affordance in objectPhantom.object.type.affordances:
-                return objectPhantom
+        for phantom in self.environmentPhantoms:
+            if affordance in phantom.object.type.affordances:
+                return phantom
         return None
     
     def UseObjectPhantoms(self, excProcess):
@@ -149,7 +120,7 @@ class PerceptionField:
                     rest = map.UseObject(excProcess, phantom.object)
                     if rest < 1:
                         self.spaceMap.ObjectUsedUp(phantom.object)
-                        del self.environmentPhantoms[phantom.object]
+                        self.environmentPhantoms.remove(phantom)
                         Global.Log("PF: removing(used) phantom for object " + phantom.object.ToString())
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
         phantoms = copy.copy(excProcess.resources)
@@ -160,11 +131,11 @@ class PerceptionField:
     def UpdatePhantomsBecauseOfMove(self, agent):
         map = Global.Map
         lostPhantoms = []
-        for phantom in self.environmentPhantoms.values():
+        for phantom in self.environmentPhantoms:
             if not map.IsObjectVisible(agent, phantom.object):
                 lostPhantoms.append(phantom)
         for phantom in lostPhantoms:
-            del self.environmentPhantoms[phantom.object]
+            self.environmentPhantoms.remove(phantom)
             phantom.ResetOwnerProcess()
             Global.Log("PF: removing(lost) phantom for object " + phantom.object.type.name + " at " + str(phantom.object.y) + "," + str(phantom.object.x))
     
@@ -174,11 +145,19 @@ class PerceptionField:
         rObj = map.GetRealObjectIfThere(memObject)
         
         if rObj != None:
-            rObj.memoryPhantom = memoryPhantom
-            self.NoticeObjects([rObj])  #ToDo: even better
-            rObj.memoryPhantom = None   #hack jak svina            
-            
-            self.spaceMap.ObjectFound(memoryPhantom.object)
+            phantom = self.GetPhantomForObj(rObj)
+            if phantom != None:
+                phantom.Update(rObj, Global.PFPhantomHabituation)
+                phantom.memoryPhantom = memoryPhantom
+                self.spaceMap.ObjectNoticedAgain(rObj)
+                #self.spaceMap.ObjectFound(rObj)
+                Global.Log("PF: RE-adding phantom(lookFor) for object " + rObj.ToString())
+            else:
+                phantom = Phantom(rObj, Global.PFPhantomHabituation, rObj.memoryPhantom)
+                self.environmentPhantoms.append(phantom)
+                self.processesArea.PhantomAdded(phantom) #link to possible processes
+                self.spaceMap.ObjectFound(rObj)
+                Global.Log("PF: Adding phantom(lookFor) for object " + rObj.ToString())
         else:
             self.spaceMap.ObjectNotFound(memoryPhantom.object)
             self.memoryArea.RemovePhantom(memoryPhantom)
@@ -186,49 +165,4 @@ class PerceptionField:
     
           
         
-        
-        
-    #old!
-                 
-    def SeeAffordance(self, affordance):
-        for objectPhantom in self.environmentPhantoms.values():
-            if affordance in objectPhantom.object.type.affordances:
-                return True
-        return False
-    
-    
-    def HaveAffordance(self, affordance):
-        for objectPhantom in self.pocketPhantoms.values():
-            if affordance in objectPhantom.object.my_type.affordances:
-                return True
-        return False
 
-        
-    def GetPocketObject(self, affordance, process):
-        for objectPhantom in self.pocketPhantoms.values():
-            if objectPhantom.ownerProcess == None:
-                if affordance in objectPhantom.object.my_type.affordances:
-                    objectPhantom.SetOwnerProcess(process)
-    
-    ## Funkcia ktorá vráti objekt v percepčného poli s danou afordanciou
-    # @param self pointer na percepčné pole
-    # @param affordance hľadaná afordancia
-    # @return objekt s danou afordanciou            
-    def GetEnvironmentObject(self, affordance):
-        for objectPhantom in self.environmentPhantoms.values():
-            if affordance in objectPhantom.object.my_type.affordances:
-                return objectPhantom
-
-    # pickups object to pocket - PF will be aware of it via its pocetPhantoms
-    # link to process which needs it for required affordance          
-    def PickUpObject(self, rObject, process, affordance):
-        Global.Log("PF.PickUpObject")
-        ppo = PocketPhantom(rObject)
-        self.pocketPhantoms[rObject] = ppo
-        for aff in rObject.type.affordances:
-            if aff == affordance: 
-                ppo.SetOwnerProcess(process)
-        
-    def PlaceObject(self, objectPlacement):
-        Global.Log("PF.PlaceObject")
-        del self.pocketPhantoms[objectPlacement.object]

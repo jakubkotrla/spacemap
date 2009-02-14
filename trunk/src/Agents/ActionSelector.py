@@ -5,6 +5,7 @@ from Enviroment.Affordances import *
 from Processes import Processes, Process
 from Scenarios import Scenarios, Scenario
 from Enviroment.Global import Global
+from Enviroment.Map import Hit
 from sets import *
 import random
 
@@ -112,12 +113,12 @@ class ActionSelector:
                 #we have everything
                 atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["Execute"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
-                atomicProcess.data["execution-time"] = excProcess.process.durationTime
+                atomicProcess.duration = excProcess.process.durationTime
         else:
             #we have everything
             atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["Execute"], excProcess.excParentIntention, excProcess)
             atomicProcess.data["process"] = excProcess.process
-            atomicProcess.data["execution-time"] = excProcess.process.durationTime
+            atomicProcess.duration = excProcess.process.durationTime
         return atomicProcess
 
 
@@ -202,7 +203,7 @@ class ActionSelector:
         elif (excProcess.process.name == "MoveTo"):
             if excProcess.data["path"] == None:
                 map = Global.Map
-                path = map.GetPath(self.agent, excProcess.data["newx"],  excProcess.data["newy"])
+                path = map.GetPath(self.agent, excProcess.data["newx"], excProcess.data["newy"])
                 excProcess.data["path"] = path[1:]
             #we have path (without start)
             nextPoint = excProcess.data["path"].pop(0)
@@ -234,7 +235,7 @@ class ActionSelector:
             # this actually gets never called - its MoveToPartial child process!
             pass
         elif actProcess.name == "MoveToPartial":
-            #nothing smart to do here except of terminating atomic MoveToPartial and possilby MoveTo
+            #nothing smart to do here except of terminating atomic MoveToPartial and possibly MoveTo
             self.processesArea.TerminateAtomicProcess(emotion) #terminates MoveToPartial
             process = self.processesArea.GetActProcess()
             if len(process.data["path"]) == 0:

@@ -37,8 +37,8 @@ class Intelligence:
         self.perceptionField.Show(txt)
 
         
-    def NoticeObjectsToPF(self, visibleObjects):
-        self.perceptionField.NoticeObjects(visibleObjects)
+    def NoticeObjects(self, visibleObjects, action):
+        self.perceptionField.NoticeObjects(visibleObjects, action)
         
     def RememberObjectsFor(self, affordance):
         return self.memoryArea.RememberObjectsFor(affordance)

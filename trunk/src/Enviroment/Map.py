@@ -12,6 +12,7 @@ class RealObject:
         self.y = y
         self.amount = amount
         self.attractivity = attractivity
+        self.curAttractivity = attractivity
         self.maxAttractivity = 20
         self.visibility = 0 #0.0 - 1.0
         self.guiId = None
@@ -97,12 +98,6 @@ class Map:
         if self.guiObjectAppeared != None:
             self.guiObjectAppeared(rObj)
     
-    def PickUpObject(self, agent, rObject):
-        if self.DistanceObjs(agent, rObject) < Global.MapObjectPickupDistance:
-            self.objects.remove(rObject)
-            return True
-        return False 
-    
     def SetAgentStart(self, x, y):
         self.agentMoves.append( {"x":x, "y":y} )
     def PlaceAgent(self, agent):
@@ -111,8 +106,8 @@ class Map:
         
     
     def MoveAgent(self, agent, newX, newY):
-        hitPoint = self.CanMove(agent, newX, newY)
-        if hitPoint.hit:
+        if not self.CanMove(agent, newX, newY):
+            Global.Log("Map.MoveAgent Programmer.Error out of map")
             return 0
         else:
             duration = self.Distance(agent.x, agent.y, newX, newY)
@@ -124,6 +119,21 @@ class Map:
       
     #start has old position in .x and .y 
     def CanMove(self, start, newX, newY):
+        hitPoint = None
+        for edge in self.edges:
+            hitResult = self.AreIntersecting(edge.start, edge.end, start, Point(newX,newY) )
+            if hitResult.hit:
+                if hitPoint == None:
+                    hitPoint = hitResult
+                    hitPoint.dist = self.DistanceObjs(hitResult, start)
+                else:
+                    dist = self.DistanceObjs(hitResult, start)
+                    if dist < hitPoint.dist: hitPoint = hitResult
+        if hitPoint == None:
+            return True
+        else:
+            return False
+    def CanMoveEx(self, start, newX, newY):
         hitPoint = None
         
         for edge in self.edges:
@@ -142,9 +152,48 @@ class Map:
     
     def GetPath(self, start, newX, newY):
         if self.CanMove(start, newX, newY):
-            return [start, Point(newX, newY)]
+            return self.dividePath([start, Point(newX, newY)])
         else:
-            return self.findPath(start, Point(newX, newY))
+            path = self.findPath(start, Point(newX, newY))
+            path = self.dividePath(path)
+            return path
+    
+    def dividePath(self, path):
+        last = path[0]
+        path2 = path[1:]
+        newPath = [last]
+        for part in path2:
+            points = self.dividePathPart(last, part)
+            if points != None:
+                for point in points:
+                    newPath.append(point)
+            newPath.append(part)
+            last = part
+        return newPath
+    
+    def dividePathPart(self, start, end):
+        dist = self.DistanceObjs(start, end)
+        if dist > Global.MaxAgentMove:
+            dividerCount = ceil(dist / Global.MaxAgentMove)
+            dividerLength = dist *1.0 / dividerCount
+            dividerCoef = dividerLength *1.0 / dist
+            dx = end.x - start.x
+            dy = end.y - start.y
+            
+            dividers = []
+            sx = start.x
+            sy = start.y
+            for i in range(dividerCount-1):
+                px = round(sx + dx * dividerCoef)   #round leads to zigzag movement.. like human
+                py = round(sy + dy * dividerCoef)
+                divider = Point(px, py)
+                dividers.append(divider)
+                sx = sx + dx * dividerCoef
+                sy = sy + dy * dividerCoef
+                
+            return dividers
+        else:
+            return None
     
     #using inner points as in http://alienryderflex.com/shortest_path/
     def findPath(self, start, end):
@@ -156,7 +205,7 @@ class Map:
         queue.append(end)
         for point in queue:
             dist[point] = Global.MaxNumber
-            previouse[point] = None
+            previous[point] = None
         
         while len(queue) > 0:
             minPoint = queue[0]
@@ -248,7 +297,6 @@ class Map:
             self.guiObjectDisAppeared(realObject)
             Global.Log("Map: agent used object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
  
-    #agent has .x, .y, .direction represented as Point(x,y)
     def GetVisibleObjects(self, agent):
         objs = []
         for obj in self.objects:
@@ -270,7 +318,6 @@ class Map:
         angle = abs(oangle - dangle)
         if oangle * dangle < 0 and angle > pi:
             angle = 2*pi - angle 
-        
         
         visibility = 0
         for vc in agent.viewCones:

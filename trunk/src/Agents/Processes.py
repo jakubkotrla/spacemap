@@ -10,7 +10,7 @@
 #   - baseTimeLimit ... základný čas ktorý sa môže proces vykonávať
 #   - durationTime ... čas ktorý sa proces vykonáva po zhromaždení všetkých zdrojov
 class Process:
-    def __init__(self, name, intentions, sources, usedSources=[], newObjects=[], baseTimeLimit=86400, durationTime=0, iteration=1):
+    def __init__(self, name, intentions, sources, usedSources=[], newObjects=[], durationTime=0, baseTimeLimit=86400, iteration=1):
         self.name          = name
         self.intentions    = intentions
         self.sources       = sources
@@ -28,8 +28,6 @@ class Processes:
         self.atomic = { "MoveTo"   : Process("MoveTo",[],[],[],[]),
                         "MoveToPartial"   : Process("MoveToPartial",[],[],[],[]),
                         "Explore"  : Process("Explore",[],[],[],[]),
-                        "PickUp"   : Process("PickUp",[],[],[],[]),
-                        "PutDown"  : Process("PutDown",[],[],[],[]),
                         "Execute"  : Process("Execute",[],[],[],[]),
                         "LookUpInMemory"  : Process("LookUpInMemory",[],[],[],[]),
                         "Remember"  : Process("Remember",[],[],[],[]),
