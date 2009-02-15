@@ -2,6 +2,7 @@
 from Tkinter import *   
 from threading import *
 import time
+import os
 from random import seed
 from PIL import ImageGrab, ImageDraw, ImageFont
 from Enviroment.Global import Global
@@ -156,6 +157,9 @@ class MainWindow(Frame):
         self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
         
         self.saveStep = Global.SaveFreq
+        dirList = os.listdir("../../exs/")
+        for fname in dirList:
+            os.remove("../../exs/" + fname)
         
         self.lock = Lock()
         self.lock.acquire()

@@ -203,10 +203,12 @@ class ProcessesArea:
     #links given phantom to current process - when Agents remembers objects via Remember
     def PhantomRemembered(self, phantom):
         affs = phantom.object.type.affordances
-        wantedAffs = self.actualProcess.parent.GetMissingSources()
+        #is called whne active process tree is: Remember,LookUpInMemory, Real process
+        realProcess = self.actualProcess.parent.parent
+        wantedAffs = realProcess.GetMissingSources()
         for aff in affs:
             if aff in wantedAffs:
-                phantom.SetOwnerProcess(self.actualProcess.parent)
+                phantom.SetOwnerProcess(realProcess)
                 phantom.affordance = aff
    
     def GetText(self):
