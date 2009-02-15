@@ -48,7 +48,13 @@ class Path:
         return self.points[-1]
     def ToString(self):
         return "Point(" + str(self.x) + ", " + str(self.y) + ")"
-    
+
+class Waypoint(Point):
+    def __init__(self, x, y):
+        Point.__init__(self, x, y)
+        self.lastVisited = 0
+        self.lastSeen = 0
+
 class VisibilityObject(Point):
     def __init__(self, x, y, visibility):
         Point.__init__(self, x, y)
@@ -180,7 +186,7 @@ class Map:
     def dividePathPart(self, start, end):
         dist = self.DistanceObjs(start, end)
         if dist > Global.MaxAgentMove:
-            dividerCount = ceil(dist / Global.MaxAgentMove)
+            dividerCount = int(ceil(dist / Global.MaxAgentMove))
             dividerLength = dist *1.0 / dividerCount
             dividerCoef = dividerLength *1.0 / dist
             dx = end.x - start.x
