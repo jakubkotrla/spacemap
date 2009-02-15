@@ -60,6 +60,9 @@ class ExcitedProcess:
             return True
         return False    
     
+    def IsInProgress(self):
+        return self.endTime == None
+    
     def EndIteration(self):
         self.iteration += 1
         

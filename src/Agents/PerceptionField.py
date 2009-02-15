@@ -35,7 +35,10 @@ class Phantom:
             self.ownerProcess.resources.remove(self)
         self.ownerProcess = None
         self.memoryPhantom = None #ToDo: this is nasty hack
-        
+    
+    def GetType(self):
+        return "e"
+     
     def ToString(self):
         if (self.ownerProcess != None):
             str = "Phantom(E) of " + self.object.ToString() + " linked to " + self.ownerProcess.process.name
@@ -125,7 +128,10 @@ class PerceptionField:
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
         phantoms = copy.copy(excProcess.resources)
         for phantom in phantoms:
-            self.memoryArea.RemovePhantom(phantom.memoryPhantom)    #ToDo - not ok, move to only when used
+            if phantom.GetType() == "m":
+                self.memoryArea.RemovePhantom(phantom)    #ToDo - not ok, move to only when used
+            else:
+                self.memoryArea.RemovePhantom(phantom.memoryPhantom)    #ToDo - not ok, move to only when used
             phantom.ResetOwnerProcess()
         
     def UpdatePhantomsBecauseOfMove(self, agent):
@@ -155,7 +161,7 @@ class PerceptionField:
             else:
                 phantom = Phantom(rObj, Global.PFPhantomHabituation, rObj.memoryPhantom)
                 self.environmentPhantoms.append(phantom)
-                self.processesArea.PhantomAdded(phantom) #link to possible processes
+                self.processesArea.PhantomAdded(phantom) #link to possible processes - ERROR - slot obsazen memoryPhantomem, nutno udelat lepe.. hezky propojit
                 self.spaceMap.ObjectFound(rObj)
                 Global.Log("PF: Adding phantom(lookFor) for object " + rObj.ToString())
         else:
