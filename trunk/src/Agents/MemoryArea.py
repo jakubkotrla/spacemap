@@ -10,8 +10,8 @@ class MemoryPhantom:
         self.ownerProcess  = None
         self.habituation = habituation
         
-    def IsMemoryPhantom(self):
-        return True
+    def GetType(self):
+        return "m"
         
     def Update(self, realObject, habituation):
         self.positionX   = realObject.x
@@ -68,8 +68,9 @@ class MemoryArea:
     def Update(self, action):
         habituatedPhantoms = []
         for phantom in self.memoryPhantoms:
-            if phantom.Habituate(action.duration):
-                habituatedPhantoms.append(phantom)
+            if not phantom.ownerProcess.IsInProgress():
+                if phantom.Habituate(action.duration):
+                    habituatedPhantoms.append(phantom)
         for habituatedPhantom in habituatedPhantoms:
             self.memoryPhantoms.remove(habituatedPhantom)
         
