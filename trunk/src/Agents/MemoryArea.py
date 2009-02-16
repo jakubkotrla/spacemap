@@ -57,6 +57,14 @@ class MemoryArea:
             return memPhantom
         else:
             return None
+    
+    #return first memory phantom for given object if exists - i.e. agent thinks of it
+    def GetPhantomForObject(self, rObj):
+        for phantom in self.memoryPhantoms:
+            memObj = phantom.object
+            if memObj.type == rObj.type and memObj.x == rObj.x and memObj.y == rObj.y:
+                 return phantom
+        return None
         
     def RemovePhantom(self, memoryPhantom):
         if memoryPhantom == None: return

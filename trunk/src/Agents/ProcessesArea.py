@@ -120,6 +120,7 @@ class ProcessesArea:
         self.processes       = {}
         self.actualIntention = None
         self.actualProcess   = None
+        self.actualBasicProcess = None
         
     def HasNoIntention(self):
         return self.actualIntention == None    
@@ -138,6 +139,9 @@ class ProcessesArea:
         self.actualProcess = ExcitedProcess(process, parentExcIntention, parent)
         self.episodicMemory.StoreProcess(self.actualProcess, emotion)
         
+        if process.HasSources():
+            self.actualBasicProcess = self.actualProcess
+            
         if process.name == "SearchRandom":
             self.actualProcess.data["step"] = "MoveTo"
             self.actualProcess.data["tries"] = 10
@@ -149,7 +153,7 @@ class ProcessesArea:
             self.actualProcess.data["step"] = 5
         elif process.name == "MoveTo":
             self.actualProcess.data["path"] = None
-            
+        
         return self.actualProcess
    
    
@@ -194,25 +198,41 @@ class ProcessesArea:
     def TerminateIntentionWant(self, emotion):
         self.actualIntention = self.actualProcess.excParentIntention
     
-    #links given phantom to current process - when Agents notice objects via explore
-    def PhantomAdded(self, phantom):
-        affs = phantom.object.type.affordances
-        wantedAffs = self.actualProcess.parent.GetMissingSources()
-        for aff in affs:
-            if aff in wantedAffs:
-                phantom.SetOwnerProcess(self.actualProcess.parent)
-                phantom.affordance = aff
+    #links given phantom to current process - when Agents notice objects via explore, may replace memoryPhantom if given
+    def PhantomAdded(self, phantom, memoryPhantom):
+        realProcess = self.actualBasicProcess
+        if memoryPhantom != None:
+            realProcess.resources.append(phantom)
+            if memoryPhantom not in realProcess.resources:
+                Global.Log("PA.PhantomAdded: Programmer.Error")
+            realProcess.resources.remove(memoryPhantom)
+        else:
+            affs = phantom.object.type.affordances
+            wantedAffs = realProcess.GetMissingSources()
+            for aff in affs:
+                if aff in wantedAffs:
+                    phantom.SetOwnerProcess(realProcess)
+                    phantom.affordance = aff
+                    break
     
+    #links given phantom instead of MemoryPhantom to current process - when Agents notice objects via LookForObject
+    def PhantomAddedForMemoryPhatom(self, phantom, memoryPhantom):
+        #is called when active process tree is: LookForObject,LookUpInMemory, Real process
+        realProcess = self.actualBasicProcess
+        realProcess.resources.append(phantom)
+        realProcess.resources.remove(memoryPhantom)
+        
     #links given phantom to current process - when Agents remembers objects via Remember
     def PhantomRemembered(self, phantom):
         affs = phantom.object.type.affordances
-        #is called whne active process tree is: Remember,LookUpInMemory, Real process
-        realProcess = self.actualProcess.parent.parent
+        realProcess = self.actualBasicProcess
+
         wantedAffs = realProcess.GetMissingSources()
         for aff in affs:
             if aff in wantedAffs:
                 phantom.SetOwnerProcess(realProcess)
                 phantom.affordance = aff
+                break
    
     def GetText(self):
         txt = '  '

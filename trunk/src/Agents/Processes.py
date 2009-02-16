@@ -21,6 +21,9 @@ class Process:
         self.iteration     = iteration
         self.pleasure      = 0
         self.intensity     = 0
+        
+    def HasSources(self):
+        return len(self.sources) > 0
 
 
 class Processes:
