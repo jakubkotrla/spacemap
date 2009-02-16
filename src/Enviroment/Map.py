@@ -17,7 +17,7 @@ class RealObject:
         self.visibility = 0 #0.0 - 1.0
         self.guiId = None
          
-        self.memoryPhantom = None
+        #self.memoryPhantom = None
     def Use(self):
         self.amount =- 1
         return (self.amount > 0)
@@ -109,6 +109,7 @@ class Map:
     def PlaceAgent(self, agent):
         agent.x = self.agentMoves[0]['x']
         agent.y = self.agentMoves[0]['y']
+        self.calculateVisibility(agent)
         
     
     def MoveAgent(self, agent, newX, newY):
@@ -350,6 +351,7 @@ class Map:
     
     def Step(self, agent):
         self.calculateVisibility(agent)
+        #ToDo: calculate last seen of waypoints
         self.mapRenderer.RenderObjectVisibility()
         agent.guiMoved(agent);
         

@@ -81,14 +81,16 @@ class PerceptionField:
     def NoticeObjects(self, visibleObjects, actProcess):
         self.perceptionFilter.ProcessObjects(visibleObjects, actProcess)
         for rObj in visibleObjects:
+            if rObj.curAttractivity == 0: continue
             phantom = self.GetPhantomForObj(rObj)
             if phantom != None:
                 phantom.Update(rObj, Global.PFPhantomHabituation)
                 self.spaceMap.ObjectNoticedAgain(rObj)
             else:
-                phantom = Phantom(rObj, Global.PFPhantomHabituation, rObj.memoryPhantom)
+                memPhantom = self.memoryArea.GetPhantomForObject(rObj)
+                phantom = Phantom(rObj, Global.PFPhantomHabituation, memPhantom)
                 self.environmentPhantoms.append(phantom)
-                self.processesArea.PhantomAdded(phantom) #link to possible processes
+                self.processesArea.PhantomAdded(phantom, memPhantom) #link to possible processes may replace memoryPhantom
                 self.spaceMap.ObjectNoticed(rObj)
                 Global.Log("PF: Adding phantom for object " + rObj.ToString())
 
@@ -151,7 +153,7 @@ class PerceptionField:
         rObj = map.GetRealObjectIfThere(memObject)
         
         if rObj != None:
-            phantom = self.GetPhantomForObj(rObj)
+            phantom = self.GetPhantomForObj(rObj)   #ToDo - check code below   
             if phantom != None:
                 phantom.Update(rObj, Global.PFPhantomHabituation)
                 phantom.memoryPhantom = memoryPhantom
@@ -159,9 +161,9 @@ class PerceptionField:
                 #self.spaceMap.ObjectFound(rObj)
                 Global.Log("PF: RE-adding phantom(lookFor) for object " + rObj.ToString())
             else:
-                phantom = Phantom(rObj, Global.PFPhantomHabituation, rObj.memoryPhantom)
+                phantom = Phantom(rObj, Global.PFPhantomHabituation, memoryPhantom)
                 self.environmentPhantoms.append(phantom)
-                self.processesArea.PhantomAdded(phantom) #link to possible processes - ERROR - slot obsazen memoryPhantomem, nutno udelat lepe.. hezky propojit
+                self.processesArea.PhantomAddedForMemoryPhatom(phantom)
                 self.spaceMap.ObjectFound(rObj)
                 Global.Log("PF: Adding phantom(lookFor) for object " + rObj.ToString())
         else:
