@@ -17,6 +17,8 @@ class Agent:
         self.intelligence = Intelligence(self, config)
         self.x = 10
         self.y = 10
+        self.newX = self.x
+        self.newY = self.y
         self.direction = Point(1,1)
         self.dirAngle = pi / 4
         
@@ -24,17 +26,25 @@ class Agent:
         
         self.paText = ' '
         
-        self.viewCones = []
-        self.viewCones.append( ViewCone(0.1, pi*0.9, 10 ) )
-        self.viewCones.append( ViewCone(0.3, pi/2, 15) )
-        self.viewCones.append( ViewCone(0.3, pi/4, 25) )
-        self.viewCones.append( ViewCone(0.3, pi/8, 40) )
+        self.viewConesNormal = []
+        self.viewConesNormal.append( ViewCone(0.1, pi*0.9, 7 ) )
+        self.viewConesNormal.append( ViewCone(0.3, pi/2, 15) )
+        self.viewConesNormal.append( ViewCone(0.3, pi/4, 25) )
+        self.viewConesNormal.append( ViewCone(0.3, pi/8, 40) )
+        self.viewConesForExplore = []
+        self.viewConesForExplore.append( ViewCone(0.5, pi, 10 ) )
+        self.viewConesForExplore.append( ViewCone(0.5, pi, 20 ) )
+        self.viewCones = self.viewConesNormal
         
     # does one agent step
     def Step(self):
         action = self.intelligence.GetAction()
         map = Global.Map
         
+        self.x = self.newX
+        self.y = self.newY
+        self.viewCones = self.viewConesNormal   #fake else than "Explore" branch
+                
         #execute action - world/agent-impacting part of atomic process
         if action.process.name == "Execute":
             action.sources = action.parent.process.sources
@@ -46,10 +56,6 @@ class Agent:
             pass #never happens - done as MoveTo or Explore child process
         elif action.process.name == "LookUpInMemory":
             pass #never happens - done as Remember, MoveTo or LookForObject child process
-        elif action.process.name == "Walk":
-            pass #never happens - done as MoveTo
-        elif action.process.name == "Rest":
-            pass #never happens - done as Explore
             
         elif action.process.name == "Remember":
             action.duration = random.randint(1,10)
@@ -70,8 +76,8 @@ class Agent:
         elif action.process.name == "MoveTo":
             pass #never happens - done as MoveToPartial
         elif action.process.name == "MoveToPartial":
-            dx = action.data['newx'] - self.x
-            dy = action.data['newy'] - self.y
+            dx = action.data['newx'] - self.newX
+            dy = action.data['newy'] - self.newY
             self.direction = Point(dx, dy)
             angle = atan2(dx, dy)
             self.dirAngle = angle
@@ -81,11 +87,9 @@ class Agent:
             Global.Log("Agent moving to " + str(action.data['newx']) + "," + str(action.data['newy']) + " for " + str(action.duration) + " seconds")
                 
         elif action.process.name == "Explore":
-            #ToDo change view cones
+            self.viewCones = self.viewConesForExplore
             action.duration = random.randint(30,60)
             action.sources = [action.data['affordance']]
-            #visibleObjects = map.GetVisibleObjects(self)
-            #self.intelligence.NoticeObjectsToPF(visibleObjects, action.process)
             Global.Log("Agent exploring for " + action.data['affordance'].name + " for " + str(action.duration) + " seconds")
         else:
             Global.Log("Agent is a bit CONFUSED doing " + action.process.name)

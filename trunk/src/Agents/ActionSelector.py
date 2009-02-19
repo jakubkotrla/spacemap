@@ -1,28 +1,16 @@
-# -*- coding: UTF-8 -*-
 
 from Intentions import Intentions, Intention
 from Enviroment.Affordances import *
 from Processes import Processes, Process
 from Scenarios import Scenarios, Scenario
 from Enviroment.Global import Global
-from Enviroment.Map import Hit
+from Enviroment.Map import Hit, Point
 from sets import *
+from copy import copy
 import random
 
 
-## Trieda reprezentujúca selektor zámerov
-# - Atribúty triedy:
-#   - agent ... pointer na agenta    
-#   - intentions ... zámery agenta
-#   - processes ... procesy ktoré môže agent vykonávať
-#   - scenarios ... scenáre pre výber zámerov
-#   - actualScenario ... aktuálne vykonávaný scenár
-#   - shortTermMemory ... pointer na krátkodobú pamäť
 class ActionSelector:
-    ## Inicializácia inštancie triedy
-    # @param self pointer na selektor zámerov
-    # @param intentionsFile súbor so zámermi a procesmi agenta
-    # @param shortTermMemory pointer na krátkodobú pamäť 
     def __init__(self, agent, config, processesArea, perceptionField, episodicMemory, spaceMap):
         self.agent           = agent
         self.intentions      = Intentions()
@@ -34,7 +22,6 @@ class ActionSelector:
         self.spaceMap        = spaceMap
         
         config.GetAgentIntentions(self)
-        
         self.intentions.wantInt = Intention("Want", [self.processes.atomic["Explore"],
                                                      self.processes.atomic["LookUpInMemory"],
                                                      self.processes.atomic["SearchRandom"]])
@@ -53,7 +40,7 @@ class ActionSelector:
             process = self.ChooseProcessForIntention(emotion, excIntention.intention, excIntention.parentExcProcess)
             if process == None:
                 self.processesArea.TerminateIntentionFalse(emotion)
-                #impossible to finnish this intention -> terminate int and parent process, try to choose another process in parent intention
+                #impossible to finish this intention -> terminate int and parent process, try to choose another process in parent intention
                 return self.GetAction(emotion)
             excProcess = self.processesArea.ActivateProcess(emotion, process, excIntention, excIntention.parentExcProcess)
         else:
@@ -69,7 +56,7 @@ class ActionSelector:
             self.processesArea.ActivateIntention(intention, excProcess)
             return self.GetAction(emotion)    #go deeper for atomic process
         else:
-            # proces is atomic
+            # process is atomic
             return self.GetAtomicAction(emotion, excProcess)
 
 
@@ -98,6 +85,7 @@ class ActionSelector:
         if len(missingSources) > 0:
             #try to use something already seen
             self.perceptionField.TryToLinkPhantomsFor(excProcess, missingSources)
+                        
             #still missing?
             missingSources = excProcess.GetMissingSources()
             if len(missingSources) > 0:            
@@ -126,18 +114,25 @@ class ActionSelector:
         if (excProcess.process.name == "SearchRandom"):
 
             if (excProcess.data["step"] == "MoveTo"):
-                excProcess.data["tries"] = excProcess.data["tries"] - 1
-                if excProcess.data["tries"] < 1:
+                
+                if excProcess.data["waypoints"] == None:
+                    map = Global.Map
+                    excProcess.data["waypoints"] = copy(map.wayPoints)
+                if len(excProcess.data["waypoints"]) < 1:
                     self.processesArea.TerminateProcess(emotion, False)
                     return self.GetAction(emotion)
+                
+                wayPointToGo = random.choice(excProcess.data["waypoints"])
+                excProcess.data["waypoints"].remove(wayPointToGo)
                 excProcess.data["step"] = "Explore"
                 
-                map = Global.Map
                 canMove = False
+                map = Global.Map
                 while not canMove:
-                    newX = random.randint(-20, 20) + self.agent.x
-                    newY = random.randint(-20, 20) + self.agent.y
-                    canMove = map.CanMove(self.agent, newX, newY)
+                    newX = random.randint(-Global.WayPointNoise, Global.WayPointNoise) + wayPointToGo.x
+                    newY = random.randint(-Global.WayPointNoise, Global.WayPointNoise) + wayPointToGo.y
+                    canMove = map.IsInside( Point(newX,newY) )
+                    
                 atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = newX
@@ -177,29 +172,6 @@ class ActionSelector:
                 return atomicProcess    
             
             return None    
-        elif (excProcess.process.name == "Rest"):
-            atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["Explore"], excProcess.excParentIntention, excProcess)
-            atomicProcess.data["parent"] = "process"
-            atomicProcess.data["process"] = excProcess.excParentIntention.parentExcProcess
-            atomicProcess.data["affordance"] = NothingSpecial
-            return atomicProcess
-        elif (excProcess.process.name == "Walk"):
-            excProcess.data["step"] = excProcess.data["step"] - 1 
-            if excProcess.data["step"] < 1:
-                self.processesArea.TerminateProcess(emotion, True)
-                return self.GetAction(emotion)
-            else:
-                map = Global.Map
-                canMove = False
-                while not canMove:
-                    newX = random.randint(-20, 20) + self.agent.x
-                    newY = random.randint(-20, 20) + self.agent.y
-                    canMove = map.CanMove(self.agent, newX, newY)
-                atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
-                atomicProcess.data["process"] = excProcess.process
-                atomicProcess.data["newx"] = newX
-                atomicProcess.data["newy"] = newY
-                return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)
         elif (excProcess.process.name == "MoveTo"):
             if excProcess.data["path"] == None:
                 map = Global.Map

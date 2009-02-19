@@ -62,6 +62,7 @@ class ExcitedProcess:
     
     def IsInProgress(self):
         return self.endTime == None
+        #future: won't work for intention-competing
     
     def EndIteration(self):
         self.iteration += 1
@@ -144,13 +145,11 @@ class ProcessesArea:
             
         if process.name == "SearchRandom":
             self.actualProcess.data["step"] = "MoveTo"
-            self.actualProcess.data["tries"] = 10
+            self.actualProcess.data["waypoints"] = None
             self.actualProcess.data["affordance"] = parentExcIntention.data["affordance"]
         elif process.name == "LookUpInMemory":
             self.actualProcess.data["step"] = "Remember"
             self.actualProcess.data["affordance"] = parentExcIntention.data["affordance"]
-        elif process.name == "Walk":
-            self.actualProcess.data["step"] = 5
         elif process.name == "MoveTo":
             self.actualProcess.data["path"] = None
         
@@ -198,29 +197,29 @@ class ProcessesArea:
     def TerminateIntentionWant(self, emotion):
         self.actualIntention = self.actualProcess.excParentIntention
     
-    #links given phantom to current process - when Agents notice objects via explore, may replace memoryPhantom if given
-    def PhantomAdded(self, phantom, memoryPhantom):
+    #links given phantom to current process - when Agents notice objects via explore
+    def PhantomAdded(self, phantom):
         realProcess = self.actualBasicProcess
-        if memoryPhantom != None:
-            realProcess.resources.append(phantom)
-            if memoryPhantom not in realProcess.resources:
-                Global.Log("PA.PhantomAdded: Programmer.Error")
-            realProcess.resources.remove(memoryPhantom)
-        else:
-            affs = phantom.object.type.affordances
-            wantedAffs = realProcess.GetMissingSources()
-            for aff in affs:
-                if aff in wantedAffs:
-                    phantom.SetOwnerProcess(realProcess)
-                    phantom.affordance = aff
-                    break
+        affs = phantom.object.type.affordances
+        wantedAffs = realProcess.GetMissingSources()
+        for aff in affs:
+            if aff in wantedAffs:
+                phantom.SetOwnerProcess(realProcess)
+                phantom.affordance = aff
+                break
     
     #links given phantom instead of MemoryPhantom to current process - when Agents notice objects via LookForObject
-    def PhantomAddedForMemoryPhatom(self, phantom, memoryPhantom):
-        #is called when active process tree is: LookForObject,LookUpInMemory, Real process
+    def PhantomAddedForMemoryPhantom(self, phantom, memoryPhantom):
+        phantom.affordance = memoryPhantom.affordance
+        #ToDo: better check for aff
         realProcess = self.actualBasicProcess
+        if realProcess != memoryPhantom.ownerProcess:
+            Global.Log("PA.PhantomAddedForMemoryPhantom: Programmer.Error ??")
         realProcess.resources.append(phantom)
+        if memoryPhantom not in realProcess.resources:
+            Global.Log("PA.PhantomAddedForMemoryPhantom: Programmer.Error")
         realProcess.resources.remove(memoryPhantom)
+        #ToDo call PhantomAdded to link to other slots/processes ?
         
     #links given phantom to current process - when Agents remembers objects via Remember
     def PhantomRemembered(self, phantom):
@@ -233,6 +232,12 @@ class ProcessesArea:
                 phantom.SetOwnerProcess(realProcess)
                 phantom.affordance = aff
                 break
+            
+    def IsPhantomUsedNow(self, phantom):
+        realProcess = self.actualBasicProcess
+        if self.actualProcess.process.name == "Execute":
+            return phantom.ownerProcess == realProcess
+        return False
    
     def GetText(self):
         txt = '  '

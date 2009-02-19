@@ -17,7 +17,7 @@ class EnergyPoint:
         
         
     def Render(self, mapRenderer):
-        self.guiId = mapRenderer.CircleC(self, self.x, self.y, "darkgreen", 0.5, "energylayerpoint info")
+        self.guiId = mapRenderer.PointC(self, self.x, self.y, "darkgreen", 0.5, "energylayerpoint info")
         self.mapRenderer = mapRenderer
     def ToString(self):
         strInfo = []

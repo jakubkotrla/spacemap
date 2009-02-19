@@ -1,5 +1,5 @@
 
-from Tkinter import *   
+from Tkinter import *  
 from threading import *
 import time
 import os
@@ -16,9 +16,9 @@ from Config.Config import Config
 class MainWindow(Frame):
     def __init__(self, master=None):                    
         Frame.__init__(self, master)
-        tl = self.winfo_toplevel()
-        tl.geometry("1500x1100+0+0")
-        tl.title("SpaceMap MainWindow")
+        self.tl = self.winfo_toplevel()
+        self.tl.geometry("1500x1100+0+0")
+        self.tl.title("SpaceMap MainWindow")
         self.lock = None
         self.mapRenderer = None
         self.agent = None
@@ -57,6 +57,7 @@ class MainWindow(Frame):
         worldMenu.add_command(label="Show Objects", command=self.showObjects)
         worldMenu.add_command(label="Show Log", command=self.showLog)
         worldMenu.add_checkbutton(label="Capture screen", command=self.captureScreenCheck)
+        worldMenu.add_checkbutton(label="Show visibility history", command=self.visibilityHistoryCheck)
                   
         menubar = Menu(self)
         menubar.add_command(label="Start", command=self.startSimulation)
@@ -114,7 +115,8 @@ class MainWindow(Frame):
         scrollBar.pack(side=RIGHT, fill=Y)
     def captureScreenCheck(self):
         self.captureScreen = not self.captureScreen
-        
+    def visibilityHistoryCheck(self):
+        Global.RenderVisibilityHistory = not Global.RenderVisibilityHistory    
     
     def canvasClick(self, event):
         x = int(self.wxCanvas.canvasx(event.x))
@@ -128,7 +130,7 @@ class MainWindow(Frame):
                 strInfo.append( self.mapRenderer.GuiIdToObject(id).ToString() )
         if self.wndInfo == None:
             self.wndInfo = Toplevel()
-            self.wndInfo.geometry("400x200+1020+500")
+            self.wndInfo.geometry("400x200+50+50")
             self.wndInfo.title("SpaceMap - Objects Info")
             self.wndInfo.txt = Listbox(self.wndInfo)
             self.wndInfo.txt.pack(side=LEFT, fill=BOTH, expand=1)

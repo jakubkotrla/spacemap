@@ -16,8 +16,7 @@ class RealObject:
         self.maxAttractivity = 20
         self.visibility = 0 #0.0 - 1.0
         self.guiId = None
-         
-        #self.memoryPhantom = None
+        
     def Use(self):
         self.amount =- 1
         return (self.amount > 0)
@@ -53,12 +52,14 @@ class Waypoint(Point):
     def __init__(self, x, y):
         Point.__init__(self, x, y)
         self.lastVisited = 0
-        self.lastSeen = 0
 
 class VisibilityObject(Point):
-    def __init__(self, x, y, visibility):
+    def __init__(self, x, y):
         Point.__init__(self, x, y)
-        self.visibility = visibility
+        self.visibility = 0
+        self.guiId = None
+    def ToString(self):
+        return "VO(" + str(self.x) + ", " + str(self.y) + ").visibility = " + str(self.visibility)
              
 class Map:
     def __init__(self):
@@ -72,6 +73,7 @@ class Map:
         self.mapRenderer = None
         self.guiObjectAppeared = None
         self.visibilityHistory = []
+        self.visibilityMaxEver = Global.MinPositiveNumber
         
     def CalculateEdges(self):
         lastPoint = self.points[-1]
@@ -80,23 +82,27 @@ class Map:
             self.edges.append(edge)
             lastPoint = point
                 
-        xCount = self.width / 10
-        yCount = self.height / 10
+        xCount = self.width / Global.VisibilityHistoryArea
+        yCount = self.height / Global.VisibilityHistoryArea
         for y in range(yCount):
             for x in range(xCount):
-                xx = x*10+5
-                yy = y*10+5
+                xx = x*Global.VisibilityHistoryArea + Global.VisibilityHistoryArea/2
+                yy = y*Global.VisibilityHistoryArea + Global.VisibilityHistoryArea/2
                 
                 if self.IsInside( Point(xx,yy) ):    
-                    vObj = VisibilityObject(xx, yy, 0)
+                    vObj = VisibilityObject(xx, yy)
                     self.visibilityHistory.append(vObj)
         
     def Render(self, mapRenderer):
         self.mapRenderer = mapRenderer
+        firstLine = None
         for edge in self.edges:
-            mapRenderer.Line(edge.start.x, edge.start.y, edge.end.x, edge.end.y, "#000", "map edge")
+            guiId = mapRenderer.Line(edge.start.x, edge.start.y, edge.end.x, edge.end.y, "#000", "map edge")
+            if firstLine == None:
+                firstLine = guiId
         for wayPoint in self.wayPoints:
             mapRenderer.PixelC(wayPoint, wayPoint.x, wayPoint.y, "#000", 2, "waypoint")
+        return firstLine
     
     def AddObject(self, type, x, y, attractivity = 10, amount=1):
         rObj = RealObject(type, x, y, attractivity, amount)    
@@ -107,8 +113,8 @@ class Map:
     def SetAgentStart(self, x, y):
         self.agentMoves.append( {"x":x, "y":y} )
     def PlaceAgent(self, agent):
-        agent.x = self.agentMoves[0]['x']
-        agent.y = self.agentMoves[0]['y']
+        agent.newX = agent.x = self.agentMoves[0]['x']
+        agent.newY = agent.y = self.agentMoves[0]['y']
         self.calculateVisibility(agent)
         
     
@@ -119,8 +125,10 @@ class Map:
         else:
             duration = self.Distance(agent.x, agent.y, newX, newY)
             self.agentMoves.append( {"x":agent.x, "y":agent.y} )
-            agent.x = newX
-            agent.y = newY
+            #agent.x = agent.newX - done in Agent.step
+            #agent.y = agent.newY - done in Agent.step
+            agent.newX = newX
+            agent.newY = newY
         return round(duration)
       
     #start has old position in .x and .y 
@@ -238,6 +246,9 @@ class Map:
         point = end
         while point != start:
             path.insert(0, point)
+            if point == None:
+                Global.Log("pointNone start: " + start.ToString())
+                Global.Log("pointNone end: " + end.ToString())
             point = previous[point]
         path.insert(0, start)
         return path
@@ -263,10 +274,8 @@ class Map:
         c2 = edge2point2.x*edge2point1.y - edge2point1.x*edge2point2.y
 
         denom = a1*b2 - a2*b1;
-  
         if denom == 0:
             return Hit(0,0, False)
-      
         x =(b1*c2 - b2*c1)/denom;
         y =(a2*c1 - a1*c2)/denom;
         
@@ -285,14 +294,22 @@ class Map:
         if not ly2 <= y <= ry2: return Hit(x,y, False)
         
         return Hit(x,y, True)       
-         
+   
+    
     def IsInside(self, point):
-        c = False
+        count = 0
+        endPoint = Point(self.width+1, point.y)
+        
         for edge in self.edges:
-            if (edge.start.y > point.y) != (edge.end.y > point.y):
-                if point.x < (edge.end.x - edge.start.x) * (point.y - edge.start.y) / (edge.end.y - edge.start.y) + edge.start.x:
-                    c = not c
-        return c 
+            hitResult = self.AreIntersecting(edge.start, edge.end, point, endPoint)
+            if hitResult.hit:
+                count = count + 1
+
+        if (count % 2) == 0:
+            return False
+        else:
+            return True
+        
     
     def GetArea(self):
         sum = 0
@@ -316,6 +333,7 @@ class Map:
             Global.Log("Map: agent used object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
  
     def GetVisibleObjects(self, agent):
+        self.calculateVisibility(agent)
         objs = []
         for obj in self.objects:
             if obj.visibility > 0:
@@ -350,18 +368,32 @@ class Map:
         return (object.visibility > 0)
     
     def Step(self, agent):
-        self.calculateVisibility(agent)
-        #ToDo: calculate last seen of waypoints
+        self.calculateWayPointsVisited(agent)
         self.mapRenderer.RenderObjectVisibility()
-        agent.guiMoved(agent);
-        
+        self.mapRenderer.RenderAgent(agent)
+        self.calculateVisibilityHistory(agent)
+        if Global.RenderVisibilityHistory:
+            self.mapRenderer.RenderVisibilityHistory()
+        else:
+            self.mapRenderer.HideVisibilityHistory()
+    
+    def calculateWayPointsVisited(self, agent):
+        for wayPoint in self.wayPoints:
+            if self.DistanceObjs(wayPoint, agent) < Global.WayPointArea:
+                wayPoint.lastVisited = Global.GetSeconds()
+            
     def calculateVisibility(self, agent):
         for obj in self.objects:
             visibility = self.GetVisibility(agent, obj)
             obj.visibility = visibility
+            
+    def calculateVisibilityHistory(self, agent):
         for obj in self.visibilityHistory:
             visibility = self.GetVisibility(agent, obj)
             obj.visibility += visibility
+            if obj.visibility > self.visibilityMaxEver:
+                self.visibilityMaxEver = obj.visibility
+            
       
     def Distance(self, x1,y1,x2,y2):
         return sqrt((x2-x1)**2+(y2-y1)**2)
