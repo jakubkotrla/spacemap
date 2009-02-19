@@ -11,6 +11,8 @@ class GlobalVariables:
         self.LogTags = ["error", "debug"]
         self.logLines = []
         self.LogLinesCount = 30
+        self.RenderVisibilityHistory = False
+        self.VisibilityHistoryArea = 2
         
         self.World = None
         self.Map = None
@@ -21,6 +23,9 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 10
         
         self.MaxAgentMove = 10
+        
+        self.WayPointArea = 10
+        self.WayPointNoise = 5
         
         self.PFSize = 7
         self.PFPhantomHabituation = 100

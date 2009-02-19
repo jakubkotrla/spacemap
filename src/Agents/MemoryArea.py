@@ -49,14 +49,16 @@ class MemoryArea:
         self.memoryPhantoms = []
         
     def RememberObjectsFor(self, affordance):
-        memObject = self.spaceMap.GetMemoryObject(affordance)
-        if memObject != None:
-            memPhantom = MemoryPhantom(memObject, Global.MAPhantomHabituation)
-            self.memoryPhantoms.append(memPhantom)
-            self.processArea.PhantomRemembered(memPhantom)
-            return memPhantom
-        else:
-            return None
+        memPhantom = self.GetPhantomOfThinkedAffordance(affordance)
+        if memPhantom == None:
+            memObject = self.spaceMap.GetMemoryObject(affordance)
+            if memObject != None:
+                memPhantom = MemoryPhantom(memObject, Global.MAPhantomHabituation)
+            else:
+                return None
+        self.memoryPhantoms.append(memPhantom)
+        self.processArea.PhantomRemembered(memPhantom)
+        return memPhantom
     
     #return first memory phantom for given object if exists - i.e. agent thinks of it
     def GetPhantomForObject(self, rObj):
@@ -72,6 +74,12 @@ class MemoryArea:
             Global.Log("Programmer Error: MemoryArea.RemovePhantom " + memoryPhantom.object.type.name)
             #return
         self.memoryPhantoms.remove(memoryPhantom)
+                
+    def GetPhantomOfThinkedAffordance(self, affordance):
+        for phantom in self.memoryPhantoms:
+            if affordance in phantom.object.type.affordances:
+                return phantom
+        return None
         
     def Update(self, action):
         habituatedPhantoms = []

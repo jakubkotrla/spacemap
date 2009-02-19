@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-from random import sample
+
 import copy
 from Enviroment.Global import Global
 from PerceptionFilter import PerceptionFilter
@@ -48,7 +48,6 @@ class Phantom:
 
 
 class PerceptionField:
-
     def __init__(self, processesArea, spaceMap, memoryArea):
         self.environmentPhantoms = []
         self.processesArea = processesArea
@@ -71,6 +70,7 @@ class PerceptionField:
     def Update(self, action):
         habituatedPhantoms = []
         for phantom in self.environmentPhantoms:
+            if self.processesArea.IsPhantomUsedNow(phantom): continue
             if phantom.Habituate(action.duration):
                 habituatedPhantoms.append(phantom)
         for habituatedPhantom in habituatedPhantoms:
@@ -90,9 +90,14 @@ class PerceptionField:
                 memPhantom = self.memoryArea.GetPhantomForObject(rObj)
                 phantom = Phantom(rObj, Global.PFPhantomHabituation, memPhantom)
                 self.environmentPhantoms.append(phantom)
-                self.processesArea.PhantomAdded(phantom, memPhantom) #link to possible processes may replace memoryPhantom
-                self.spaceMap.ObjectNoticed(rObj)
-                Global.Log("PF: Adding phantom for object " + rObj.ToString())
+                if memPhantom != None:
+                    self.processesArea.PhantomAddedForMemoryPhantom(phantom, memPhantom) #link to possible processes may replace memoryPhantom
+                    self.spaceMap.ObjectFound(rObj)
+                    Global.Log("PF: Adding phantom for object " + rObj.ToString() + " instead of memoryPhantom " + memPhantom.ToString())
+                else:
+                    self.processesArea.PhantomAdded(phantom)
+                    self.spaceMap.ObjectNoticed(rObj)
+                    Global.Log("PF: Adding phantom for object " + rObj.ToString())
 
     def GetPhantomForObj(self, rObj):
         for phantom in self.environmentPhantoms:
@@ -158,12 +163,11 @@ class PerceptionField:
                 phantom.Update(rObj, Global.PFPhantomHabituation)
                 phantom.memoryPhantom = memoryPhantom
                 self.spaceMap.ObjectNoticedAgain(rObj)
-                #self.spaceMap.ObjectFound(rObj)
                 Global.Log("PF: RE-adding phantom(lookFor) for object " + rObj.ToString())
             else:
                 phantom = Phantom(rObj, Global.PFPhantomHabituation, memoryPhantom)
                 self.environmentPhantoms.append(phantom)
-                self.processesArea.PhantomAddedForMemoryPhatom(phantom)
+                self.processesArea.PhantomAddedForMemoryPhantom(phantom, memoryPhantom)
                 self.spaceMap.ObjectFound(rObj)
                 Global.Log("PF: Adding phantom(lookFor) for object " + rObj.ToString())
         else:

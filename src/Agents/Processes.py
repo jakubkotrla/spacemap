@@ -35,9 +35,7 @@ class Processes:
                         "LookUpInMemory"  : Process("LookUpInMemory",[],[],[],[]),
                         "Remember"  : Process("Remember",[],[],[],[]),
                         "LookForObject"  : Process("LookForObject",[],[],[],[]),
-                        "SearchRandom"  : Process("SearchRandom",[],[],[],[]),
-                        "Rest"  : Process("Rest",[],[],[],[]),
-                        "Walk"  : Process("Walk",[],[],[],[])
+                        "SearchRandom"  : Process("SearchRandom",[],[],[],[])
                         }        
         self.processes = []
     
