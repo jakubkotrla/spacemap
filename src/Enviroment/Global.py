@@ -41,6 +41,7 @@ class GlobalVariables:
         self.TrainEffectUsedUp = 1.0
         
         self.MemObjMaxIntensity = 10
+        self.LinkMemObjToNodeFadeOut = 0.001
         
         self.ELDensity = 10             #one node will represent area of appr. ELDensity x ELDensity
         self.ELCreateNoise = 2

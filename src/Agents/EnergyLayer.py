@@ -96,7 +96,6 @@ class EnergyLayerNode:
             if maxObject.type.name == objectName:
                 return True
         return False
-
                 
     def StepUpdate(self, nodesAround):
         diffX = 0
