@@ -11,12 +11,12 @@ import random
 
 
 class ActionSelector:
-    def __init__(self, agent, config, processesArea, perceptionField, episodicMemory, spaceMap):
+    def __init__(self, agent, config, processArea, perceptionField, episodicMemory, spaceMap):
         self.agent           = agent
         self.intentions      = Intentions()
         self.processes       = Processes()
         self.scenarios       = Scenarios()
-        self.processesArea   = processesArea
+        self.processArea   = processArea
         self.perceptionField = perceptionField
         self.episodicMemory  = episodicMemory
         self.spaceMap        = spaceMap
@@ -28,21 +28,21 @@ class ActionSelector:
         
     
     def GetAction(self, emotion):
-        if self.processesArea.HasNoIntention():
+        if self.processArea.HasNoIntention():
             self.ChooseIntention()
         #agent has intention (in self.PA.actInt)
-        excIntention = self.processesArea.GetActIntention()
-        excProcess = self.processesArea.GetActProcess()
+        excIntention = self.processArea.GetActIntention()
+        excProcess = self.processArea.GetActProcess()
         
         #what is active - I or P ?
         if excIntention.parentExcProcess == excProcess:
             #if I under P -> we have active I and need some process to do it  (or this is HL intention)
             process = self.ChooseProcessForIntention(emotion, excIntention.intention, excIntention.parentExcProcess)
             if process == None:
-                self.processesArea.TerminateIntentionFalse(emotion)
+                self.processArea.TerminateIntentionFalse(emotion)
                 #impossible to finish this intention -> terminate int and parent process, try to choose another process in parent intention
                 return self.GetAction(emotion)
-            excProcess = self.processesArea.ActivateProcess(emotion, process, excIntention, excIntention.parentExcProcess)
+            excProcess = self.processArea.ActivateProcess(emotion, process, excIntention, excIntention.parentExcProcess)
         else:
             #if P under I -> we have already selected process for this intention previously, go on
             process = excProcess.process         
@@ -53,7 +53,7 @@ class ActionSelector:
         if process.intentions != []:
             #process is not atomic -> choose first not completed sub-intention
             intention = SetFirstDifference(process.intentions, excProcess.completedIntentions)
-            self.processesArea.ActivateIntention(intention, excProcess)
+            self.processArea.ActivateIntention(intention, excProcess)
             return self.GetAction(emotion)    #go deeper for atomic process
         else:
             # process is atomic
@@ -90,21 +90,21 @@ class ActionSelector:
             missingSources = excProcess.GetMissingSources()
             if len(missingSources) > 0:            
                 #actually add intention Want(Aff) and immediately start with process Explore
-                excWantInt = self.processesArea.ActivateIntention(self.intentions.wantInt, excProcess)
+                excWantInt = self.processArea.ActivateIntention(self.intentions.wantInt, excProcess)
                 excWantInt.data["affordance"] = missingSources[0] 
                 
-                atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["Explore"], excWantInt, excProcess)
+                atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["Explore"], excWantInt, excProcess)
                 atomicProcess.data["parent"] = "intention"
                 atomicProcess.data["process"] = excProcess
                 atomicProcess.data["affordance"] = missingSources[0]
             else:
                 #we have everything
-                atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["Execute"], excProcess.excParentIntention, excProcess)
+                atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["Execute"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.duration = excProcess.process.durationTime
         else:
             #we have everything
-            atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["Execute"], excProcess.excParentIntention, excProcess)
+            atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["Execute"], excProcess.excParentIntention, excProcess)
             atomicProcess.data["process"] = excProcess.process
             atomicProcess.duration = excProcess.process.durationTime
         return atomicProcess
@@ -119,7 +119,7 @@ class ActionSelector:
                     map = Global.Map
                     excProcess.data["waypoints"] = copy(map.wayPoints)
                 if len(excProcess.data["waypoints"]) < 1:
-                    self.processesArea.TerminateProcess(emotion, False)
+                    self.processArea.TerminateProcess(emotion, False)
                     return self.GetAction(emotion)
                 
                 wayPointToGo = random.choice(excProcess.data["waypoints"])
@@ -133,7 +133,7 @@ class ActionSelector:
                     newY = random.randint(-Global.WayPointNoise, Global.WayPointNoise) + wayPointToGo.y
                     canMove = map.IsInside( Point(newX,newY) )
                     
-                atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
+                atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = newX
                 atomicProcess.data["newy"] = newY
@@ -141,7 +141,7 @@ class ActionSelector:
                 
             elif (excProcess.data["step"] == "Explore"):
                 excProcess.data["step"] = "MoveTo"
-                atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["Explore"], excProcess.excParentIntention, excProcess)
+                atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["Explore"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["parent"] = "process"
                 atomicProcess.data["process"] = excProcess.excParentIntention.parentExcProcess
                 atomicProcess.data["affordance"] = excProcess.data["affordance"]
@@ -151,21 +151,21 @@ class ActionSelector:
             
             if (excProcess.data["step"] == "Remember"):
                 excProcess.data["step"] = "MoveTo"
-                atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["Remember"], excProcess.excParentIntention, excProcess)
+                atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["Remember"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["affordance"] = excProcess.data["affordance"]
                 return atomicProcess
             
             elif (excProcess.data["step"] == "MoveTo"):
                 excProcess.data["step"] = "LookForObject"
-                atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
+                atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["newx"] = excProcess.data["phantom"].object.x
                 atomicProcess.data["newy"] = excProcess.data["phantom"].object.y
                 return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)
             
             elif (excProcess.data["step"] == "LookForObject"):
-                atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["LookForObject"], excProcess.excParentIntention, excProcess)
+                atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["LookForObject"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.data["affordance"] = excProcess.data["affordance"]
                 atomicProcess.data["phantom"] = excProcess.data["phantom"]
@@ -179,7 +179,7 @@ class ActionSelector:
                 excProcess.data["path"] = path[1:]
             #we have path (without start)
             nextPoint = excProcess.data["path"].pop(0)
-            atomicProcess = self.processesArea.ActivateProcess(emotion, self.processes.atomic["MoveToPartial"], excProcess.excParentIntention, excProcess)
+            atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["MoveToPartial"], excProcess.excParentIntention, excProcess)
             atomicProcess.data["process"] = excProcess.process
             atomicProcess.data["newx"] = nextPoint.x
             atomicProcess.data["newy"] = nextPoint.y
@@ -192,15 +192,15 @@ class ActionSelector:
         mostActiveIntention = self.scenarios.GetMostActiveIntention()
         if mostActiveIntention == None:
             mostActiveIntention = self.intentions.GetRandomHighLevelIntention()
-        self.processesArea.ActivateIntention(mostActiveIntention, None) 
+        self.processArea.ActivateIntention(mostActiveIntention, None) 
         
         
     def ActionDone(self, emotion):
-        actExcProcess = self.processesArea.GetActProcess()
+        actExcProcess = self.processArea.GetActProcess()
         actProcess = actExcProcess.process
         if actProcess.name == "Execute":
-            self.processesArea.TerminateAtomicProcess(emotion)   #terminates Execute
-            self.processesArea.TerminateProcess(emotion)         #terminates the executed process
+            self.processArea.TerminateAtomicProcess(emotion)   #terminates Execute
+            self.processArea.TerminateProcess(emotion)         #terminates the executed process
                                             #chooses another intention or no intention will be actual
         elif actProcess.name == "MoveTo":
             # check we're at the end - is done in child MoveToPartial process!
@@ -208,10 +208,10 @@ class ActionSelector:
             pass
         elif actProcess.name == "MoveToPartial":
             #nothing smart to do here except of terminating atomic MoveToPartial and possibly MoveTo
-            self.processesArea.TerminateAtomicProcess(emotion) #terminates MoveToPartial
-            process = self.processesArea.GetActProcess()
+            self.processArea.TerminateAtomicProcess(emotion) #terminates MoveToPartial
+            process = self.processArea.GetActProcess()
             if len(process.data["path"]) == 0:
-                self.processesArea.TerminateAtomicProcess(emotion)   #terminates Moveto
+                self.processArea.TerminateAtomicProcess(emotion)   #terminates Moveto
             
         elif actProcess.name == "SearchRandom":
             # check we got it.. - is done in child LookForObject process!
@@ -226,24 +226,24 @@ class ActionSelector:
             if actExcProcess.data["phantom"] != None:
                 #success, terminates, next step AS will go for MoveTo
                 actExcProcess.parent.data["phantom"] = actExcProcess.data["phantom"]
-                self.processesArea.TerminateAtomicProcess(emotion)
+                self.processArea.TerminateAtomicProcess(emotion)
             else:
                 # whole LookUpInMemory failed - terminate Remember and LookUpInMemory
                 # ToDo - now try different location
-                self.processesArea.TerminateAtomicProcess(emotion, False)
-                self.processesArea.TerminateProcess(emotion, False)
+                self.processArea.TerminateAtomicProcess(emotion, False)
+                self.processArea.TerminateProcess(emotion, False)
             
         elif actProcess.name == "LookForObject":
             if actExcProcess.data["object"] != None:
                 #success, whole LookUpInMemory is done - terminate LookForObject, LookUpInMemory, I_Want
-                self.processesArea.TerminateAtomicProcess(emotion, True)
-                self.processesArea.TerminateAtomicProcess(emotion, True)
-                self.processesArea.TerminateIntentionWant(emotion)
+                self.processArea.TerminateAtomicProcess(emotion, True)
+                self.processArea.TerminateAtomicProcess(emotion, True)
+                self.processArea.TerminateIntentionWant(emotion)
             else:
                 # whole LookUpInMemory failed - terminate LookForObject and LookUpInMemory
                 # ToDo - now try different location
-                self.processesArea.TerminateAtomicProcess(emotion, False)
-                self.processesArea.TerminateProcess(emotion, False)
+                self.processArea.TerminateAtomicProcess(emotion, False)
+                self.processArea.TerminateProcess(emotion, False)
             
         elif actProcess.name == "Explore":
             excProcess = actExcProcess.data["process"]
@@ -251,9 +251,9 @@ class ActionSelector:
             
             if wantedAff == NothingSpecial:
                 #just Resting - terminate with success
-                self.processesArea.TerminateAtomicProcess(emotion, True)    #terminate Explore
-                self.processesArea.TerminateAtomicProcess(emotion, True)    #terminate Rest
-                self.processesArea.TerminateIntentionWant(emotion)          #misnamed - terminates I_Rest
+                self.processArea.TerminateAtomicProcess(emotion, True)    #terminate Explore
+                self.processArea.TerminateAtomicProcess(emotion, True)    #terminate Rest
+                self.processArea.TerminateIntentionWant(emotion)          #misnamed - terminates I_Rest
                 return
                 
             #check if we got required affordance
@@ -262,15 +262,15 @@ class ActionSelector:
                 #still we do not have it - fail
                 if (actExcProcess.data["parent"] == "process"):
                     #we have to terminate only Explore, no SearchRandom
-                    self.processesArea.TerminateAtomicProcess(emotion, False)
+                    self.processArea.TerminateAtomicProcess(emotion, False)
                 else:
-                    self.processesArea.TerminateProcess(emotion, False)
+                    self.processArea.TerminateProcess(emotion, False)
             else:
                 #we got it - success
-                self.processesArea.TerminateAtomicProcess(emotion, True)
+                self.processArea.TerminateAtomicProcess(emotion, True)
                 if (actExcProcess.data["parent"] == "process"):
                     #we have to terminate SearchRandom - the only other place P_Explore can be in And-Or tree
-                    self.processesArea.TerminateAtomicProcess(emotion, True)
-                self.processesArea.TerminateIntentionWant(emotion)
+                    self.processArea.TerminateAtomicProcess(emotion, True)
+                self.processArea.TerminateIntentionWant(emotion)
     
   

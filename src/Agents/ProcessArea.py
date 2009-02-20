@@ -106,16 +106,8 @@ class ExcitedIntention:
     def ToString(self):
         return "I_" + self.intention.name
           
-## Trieda reprezentujúca procesnú časť krátkodobej pamäte
-# - Atribúty triedy:
-#   - processes ... slovník aktivovaných procesov
-#   - actualIntention ... aktuálne splňovaný zámer
-#   - actualProcess ... aktuálne vykonávaný proces
-class ProcessesArea:
-    ## Inicializácia inštancie triedy
-    # @param self pointer na procesnú časť
+class ProcessArea:
     def __init__(self, episodicMemory):
-        #self.longTermMemory  = longTermMemory
         self.episodicMemory = episodicMemory
         self.intentions      = {}
         self.processes       = {}
