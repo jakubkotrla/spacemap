@@ -1,8 +1,6 @@
 
-
 from Enviroment.Global import Global
 from EnergyLayer import EnergyLayer
-
 
 class MemoryObject:
     def __init__(self, rObject, intensity=1):
@@ -12,7 +10,6 @@ class MemoryObject:
         self.y = rObject.y
         self.linkToNodes = []
         self.intensity = intensity
-        self.maxIntensity = 10
         
     def AddLinkToNode(self, node, intensity=1):
         l = LinkMemoryObjectToNode(self, node, intensity)
@@ -34,10 +31,10 @@ class MemoryObject:
         
     def Intense(self, intensity = 1):
         self.intensity = self.intensity + intensity
-        if self.intensity > self.maxIntensity: self.intensity = self.maxIntensity
+        if self.intensity > Global.MemObjMaxIntensity: self.intensity = Global.MemObjMaxIntensity
             
     def ToString(self):
-        return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
+        return self.type.name + "(Memory) at [" + str(self.x) + "," + str(self.y) + "]"
 
 class LinkMemoryObjectToNode:
     def __init__(self, object, node, intensity):
@@ -119,21 +116,22 @@ class SpaceMap:
             if memObj not in self.affsToMemObjs[aff]:
                 self.affsToMemObjs[aff].append(memObj)
 
-    def ObjectNoticed(self, rObject, effect = 1):
-        self.objectTrain(rObject, Global.TrainEffectNoticed * effect)
+    def ObjectNoticed(self, rObject):
+        self.objectTrain(rObject, Global.TrainEffectNoticed)
                 
-    def ObjectNoticedAgain(self, rObject, effect = 1):
-        self.objectTrain(rObject, Global.TrainEffectNoticedAgain * effect)    
+    def ObjectNoticedAgain(self, rObject):
+        self.objectTrain(rObject, Global.TrainEffectNoticedAgain)    
         
-    def ObjectFound(self, rObject, effect = 1):
-        self.objectTrain(rObject, Global.TrainEffectFound * effect)
+    def ObjectFound(self, rObject):
+        self.objectTrain(rObject, Global.TrainEffectFound)
         
-    def ObjectNotFound(self, rObject, effect = 1):
-        Global.Log("SM: object not found: " + rObject.type.name) #objectTrain TrainEffectNotFound * effect
+    def ObjectNotFound(self, rObject):
+        Global.Log("SM: object not found: " + rObject.type.name)
+        #objectTrain TrainEffectNotFound * effect
         
-    def ObjectUsed(self, rObject, effect = 1):
-        self.objectTrain(rObject, Global.TrainEffectUsed * effect)
+    def ObjectUsed(self, rObject):
+        self.objectTrain(rObject, Global.TrainEffectUsed)
         
-    def ObjectUsedUp(self, rObject, effect = 1):
-        self.objectTrain(rObject, Global.TrainEffectUseUp * effect)
+    def ObjectUsedUp(self, rObject):
+        self.objectTrain(rObject, Global.TrainEffectUsedUp)
 

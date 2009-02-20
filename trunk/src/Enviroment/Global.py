@@ -20,7 +20,7 @@ class GlobalVariables:
         self.wndLog = None
         self.wndPA = None
         self.SaveFreq = 0
-        self.AgentMoveHistoryLength = 10
+        self.AgentMoveHistoryLength = 4
         
         self.MaxAgentMove = 10
         
@@ -31,12 +31,16 @@ class GlobalVariables:
         self.PFPhantomHabituation = 100
         self.MAPhantomHabituation = 100
                 
+        self.ObjDefaultAttractivity = 10        
+                
         self.TrainEffectNoticed = 1.0
         self.TrainEffectNoticedAgain = 0.1
         self.TrainEffectUsed = 3.0
         self.TrainEffectFound = 2.0
         self.TrainEffectNotFound = 1.0
-        self.TrainEffectUseUp = 1.0
+        self.TrainEffectUsedUp = 1.0
+        
+        self.MemObjMaxIntensity = 10
         
         self.ELDensity = 10             #one node will represent area of appr. ELDensity x ELDensity
         self.ELCreateNoise = 2
@@ -74,6 +78,10 @@ class GlobalVariables:
         if(int < 0): return -1;
         elif(int > 0): return 1;
         else: return int;
+        
+    #for weakBy=2 maps coef range 0-1 to coef range 0.5-1
+    def WeakCoef(self, coef, weakBy):
+        coef = coef / weakBy + 1 - (weakBy-1)/weakBy     
         
     def TimeToHumanFormat(self, full=False):
         return self.Time.TimeToHumanFormat(full)

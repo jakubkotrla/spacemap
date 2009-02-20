@@ -12,7 +12,7 @@ class RealObject:
         self.y = y
         self.amount = amount
         self.attractivity = attractivity
-        self.curAttractivity = attractivity
+        self.curAttractivity = attractivity #0.0 - 1.0
         self.maxAttractivity = 20
         self.visibility = 0 #0.0 - 1.0
         self.guiId = None
@@ -104,7 +104,7 @@ class Map:
             mapRenderer.PixelC(wayPoint, wayPoint.x, wayPoint.y, "#000", 2, "waypoint")
         return firstLine
     
-    def AddObject(self, type, x, y, attractivity = 10, amount=1):
+    def AddObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
         rObj = RealObject(type, x, y, attractivity, amount)    
         self.objects.append(rObj)
         if self.guiObjectAppeared != None:
