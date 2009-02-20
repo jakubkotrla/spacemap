@@ -46,15 +46,16 @@ class LinkMemoryObjectToNode:
     def Intense(self, i = 1.0):
         self.intensity = self.intensity + i
         if self.intensity > self.maxIntensity: self.intensity = self.maxIntensity
-        
+    
+    #called from Node.StepUpdate
     def StepUpdate(self):
-        self.intensity = self.intensity - 0.001
+        self.intensity = self.intensity - Global.LinkMemObjToNodeFadeOut
         if self.intensity < 0: self.intensity = 0 
             
     def NodeDeleted(self):
         self.object.linkToNodes.remove(self)
     def ToString(self):
-        strInt =  '%.4f'%(self.intensity)
+        strInt = '%.4f'%(self.intensity)
         return "LinkTo( " + strInt + " ): " + self.object.ToString()
     
 

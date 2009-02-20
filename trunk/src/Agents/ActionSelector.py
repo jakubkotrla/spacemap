@@ -229,7 +229,6 @@ class ActionSelector:
                 self.processArea.TerminateAtomicProcess(emotion)
             else:
                 # whole LookUpInMemory failed - terminate Remember and LookUpInMemory
-                # ToDo - now try different location
                 self.processArea.TerminateAtomicProcess(emotion, False)
                 self.processArea.TerminateProcess(emotion, False)
             
