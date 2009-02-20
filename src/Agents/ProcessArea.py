@@ -211,7 +211,6 @@ class ProcessArea:
         if memoryPhantom not in realProcess.resources:
             Global.Log("PA.PhantomAddedForMemoryPhantom: Programmer.Error")
         realProcess.resources.remove(memoryPhantom)
-        #ToDo call PhantomAdded to link to other slots/processes ?
         
     #links given phantom to current process - when Agents remembers objects via Remember
     def PhantomRemembered(self, phantom):
