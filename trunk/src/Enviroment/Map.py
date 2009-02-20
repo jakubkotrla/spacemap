@@ -3,7 +3,7 @@ from math import *
 from Enviroment.Objects import *
 from Enviroment.World import *
 from Global import Global
-from Agents.ProcessesArea import *
+from Agents.ProcessArea import *
 
 class RealObject:
     def __init__(self, type, x, y, attractivity, amount):

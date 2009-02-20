@@ -100,7 +100,7 @@ class Agent:
         self.intelligence.perceptionField.Update(action)
         self.intelligence.memoryArea.Update(action)
         
-        self.paText = self.intelligence.processesArea.GetText()
+        self.paText = self.intelligence.processArea.GetText()
         Global.Time.AddSeconds(action.duration)
         self.intelligence.ActionDone()
 
