@@ -33,7 +33,7 @@ class Phantom:
         if self.ownerProcess != None:
             self.ownerProcess.resources.remove(self)
         self.ownerProcess = None
-        self.memoryPhantom = None #ToDo: this is nasty hack
+        self.memoryPhantom = None
     
     def GetType(self):
         return "e"
@@ -116,10 +116,10 @@ class PerceptionField:
         return None 
     
     def TryToLinkPhantomsFor(self, excProcess, missingSources):
-        #ToDo: use only phantoms of size of PF ?
+        realPhantoms = self.getPhantoms()
         for wantedAff in missingSources:
             phantomForAff = None
-            for phantom in self.environmentPhantoms:
+            for phantom in realPhantoms:
                 if wantedAff in phantom.object.type.affordances:
                     phantomForAff = phantom
             if phantomForAff != None:
@@ -143,10 +143,10 @@ class PerceptionField:
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
         phantoms = copy.copy(excProcess.resources)
         for phantom in phantoms:
-            if phantom.GetType() == "m":
-                self.memoryArea.RemovePhantom(phantom)    #ToDo - not ok, move to only when used
-            else:
-                self.memoryArea.RemovePhantom(phantom.memoryPhantom)    #ToDo - not ok, move to only when used
+            #if phantom.GetType() == "m":
+            #    self.memoryArea.RemovePhantom(phantom)    #ToDo - not ok, move to only when used
+            #else:
+            #   self.memoryArea.RemovePhantom(phantom.memoryPhantom)    #ToDo - not ok, move to only when used
             phantom.ResetOwnerProcess()
         
     def UpdatePhantomsBecauseOfMove(self, agent):
