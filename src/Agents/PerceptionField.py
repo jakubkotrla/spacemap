@@ -106,18 +106,16 @@ class PerceptionField:
         return None 
     
     def TryToLinkPhantomsFor(self, excProcess, missingSources):
+        #ToDo: use only phantoms of size of PF ?
         for wantedAff in missingSources:
-            phantom = self.GetPhantomOfSeenAffordance(wantedAff)
-            if phantom != None:
-                phantom.SetOwnerProcess(excProcess)
-                phantom.affordance = wantedAff
+            phantomForAff = None
+            for phantom in self.environmentPhantoms:
+                if wantedAff in phantom.object.type.affordances:
+                    phantomForAff = phantom
+            if phantomForAff != None:
+                phantomForAff.SetOwnerProcess(excProcess)
+                phantomForAff.affordance = wantedAff
                         
-    def GetPhantomOfSeenAffordance(self, affordance):
-        for phantom in self.environmentPhantoms:
-            if affordance in phantom.object.type.affordances:
-                return phantom
-        return None
-    
     def UseObjectPhantoms(self, excProcess):
         for phantom in excProcess.resources:
             self.spaceMap.ObjectUsed(phantom.object)
@@ -156,9 +154,9 @@ class PerceptionField:
         memObject = memoryPhantom.object
         map = Global.Map
         rObj = map.GetRealObjectIfThere(memObject)
-        
+
         if rObj != None:
-            phantom = self.GetPhantomForObj(rObj)   #ToDo - check code below   
+            phantom = self.GetPhantomForObj(rObj)
             if phantom != None:
                 phantom.Update(rObj, Global.PFPhantomHabituation)
                 phantom.memoryPhantom = memoryPhantom
