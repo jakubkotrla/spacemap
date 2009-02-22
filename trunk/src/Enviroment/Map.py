@@ -120,7 +120,7 @@ class Map:
     
     def MoveAgent(self, agent, newX, newY):
         if not self.CanMove(agent, newX, newY):
-            Global.Log("Map.MoveAgent Programmer.Error out of map")
+            Global.Log("Programmer.Error: Map.MoveAgent out of map")
             return 0
         else:
             duration = self.Distance(agent.x, agent.y, newX, newY)
@@ -247,8 +247,8 @@ class Map:
         while point != start:
             path.insert(0, point)
             if point == None:
-                Global.Log("pointNone start: " + start.ToString())
-                Global.Log("pointNone end: " + end.ToString())
+                Global.Log("Map.findPath: pointNone start: " + start.ToString())
+                Global.Log("Map.findPath: pointNone end: " + end.ToString())
             point = previous[point]
         path.insert(0, start)
         return path
@@ -330,7 +330,7 @@ class Map:
         if realObject.Use():
             self.objects.remove(realObject)
             self.guiObjectDisAppeared(realObject)
-            Global.Log("Map: agent used object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
+            Global.Log("Map.UseObject: agent used object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
  
     def GetVisibleObjects(self, agent):
         self.calculateVisibility(agent)

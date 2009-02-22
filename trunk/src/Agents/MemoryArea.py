@@ -24,7 +24,7 @@ class MemoryPhantom:
         
     def SetOwnerProcess(self, process):
         if self.ownerProcess != None:
-            Global.Log("MemoryPhantom.Error:" + self.object.type.name)
+            Global.Log("Programmer.Error MemoryPhantom with owner process set again:" + self.object.ToString())
         self.ownerProcess = process
         process.resources.append(self)
         
@@ -71,8 +71,8 @@ class MemoryArea:
     def RemovePhantom(self, memoryPhantom):
         if memoryPhantom == None: return
         if memoryPhantom not in self.memoryPhantoms:
-            Global.Log("Programmer Error: MemoryArea.RemovePhantom " + memoryPhantom.object.type.name)
-            #return
+            Global.Log("Programmer.Error: MemoryArea.RemovePhantom not in MA: " + memoryPhantom.object.ToString())
+            return
         self.memoryPhantoms.remove(memoryPhantom)
                 
     def GetPhantomOfThinkedAffordance(self, affordance):

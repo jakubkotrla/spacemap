@@ -126,8 +126,8 @@ class SpaceMap:
         self.objectTrain(rObject, Global.TrainEffectFound)
         
     def ObjectNotFound(self, rObject):
-        Global.Log("SM: object not found: " + rObject.type.name)
-        #objectTrain TrainEffectNotFound
+        Global.Log("SM.ObjectNotFound: object not found: " + rObject.ToString())
+        #ToDo: objectTrain TrainEffectNotFound
         
     def ObjectUsed(self, rObject):
         self.objectTrain(rObject, Global.TrainEffectUsed)

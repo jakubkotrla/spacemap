@@ -48,7 +48,7 @@ class Agent:
         #execute action - world/agent-impacting part of atomic process
         if action.process.name == "Execute":
             action.sources = action.parent.process.sources
-            Global.Log("Agent is doing " + action.data['process'].name + " for " + str(action.duration) + " seconds")
+            Global.Log("AGENT is doing " + action.data['process'].name + " for " + str(action.duration) + " seconds")
             self.intelligence.UseObjects(action.parent)
             #map.UseObjects(self, action.parent) done in PF.UseObjects
 
@@ -61,17 +61,17 @@ class Agent:
             action.duration = random.randint(1,10)
             action.data["phantom"] = self.intelligence.RememberObjectsFor(action.data["affordance"])
             if action.data["phantom"] != None:
-                Global.Log("Agent is remembering for " + action.data["affordance"].name + "(there should be " + action.data["phantom"].object.type.name + " at " + str(action.data["phantom"].object.x) + "," + str(action.data["phantom"].object.y) + ")  for " + str(action.duration) + " seconds")
+                Global.Log("AGENT is remembering for " + action.data["affordance"].name + "(there should be " + action.data["phantom"].object.type.name + " at " + str(action.data["phantom"].object.x) + "," + str(action.data["phantom"].object.y) + ")  for " + str(action.duration) + " seconds")
             else:
-                Global.Log("Agent is remembering for " + action.data["affordance"].name + "( nothing :( )  for " + str(action.duration) + " seconds")
+                Global.Log("AGENT is remembering for " + action.data["affordance"].name + "( nothing in SM/MA )  for " + str(action.duration) + " seconds")
             
         elif action.process.name == "LookForObject":
             action.duration = random.randint(1,5)
             action.data["object"] = self.intelligence.LookForObject(action.data["phantom"])
             if action.data["object"] != None:
-                Global.Log("Agent is looking for " + action.data["phantom"].object.type.name + "(Found) for " + str(action.duration) + " seconds")
+                Global.Log("AGENT is looking for " + action.data["phantom"].object.type.name + "(Found) for " + str(action.duration) + " seconds")
             else:
-                Global.Log("Agent is looking for " + action.data["phantom"].object.type.name + "(NotFound) for " + str(action.duration) + " seconds")
+                Global.Log("AGENT is looking for " + action.data["phantom"].object.type.name + "(NotFound) for " + str(action.duration) + " seconds")
 
         elif action.process.name == "MoveTo":
             pass #never happens - done as MoveToPartial
@@ -84,15 +84,15 @@ class Agent:
             
             action.duration = map.MoveAgent(self, action.data['newx'], action.data['newy'])
             self.intelligence.UpdatePhantomsBecauseOfMove()
-            Global.Log("Agent is moving to " + str(action.data['newx']) + "," + str(action.data['newy']) + " for " + str(action.duration) + " seconds")
+            Global.Log("AGENT is moving to " + str(action.data['newx']) + "," + str(action.data['newy']) + " for " + str(action.duration) + " seconds")
                 
         elif action.process.name == "Explore":
             self.viewCones = self.viewConesForExplore
-            action.duration = random.randint(30,60)
+            action.duration = random.randint(5,20)
             action.sources = [action.data['affordance']]
-            Global.Log("Agent is exploring for " + action.data['affordance'].name + " for " + str(action.duration) + " seconds")
+            Global.Log("AGENT is exploring for " + action.data['affordance'].name + " for " + str(action.duration) + " seconds")
         else:
-            Global.Log("Agent is a bit CONFUSED doing " + action.process.name)
+            Global.Log("AGENT is a bit CONFUSED doing " + action.process.name)
         
         #sees object around
         visibleObjects = map.GetVisibleObjects(self)
@@ -109,7 +109,7 @@ class Agent:
         return self.intelligence.spaceMap
 
     def ToString(self):
-        return "Agent "
+        return "Agent"
     def TellTheStory(self, txt):
         self.intelligence.TellTheStory(txt)
     

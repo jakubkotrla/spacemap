@@ -25,7 +25,7 @@ class Phantom:
         
     def SetOwnerProcess(self, process):
         if self.ownerProcess != None:
-            Global.Log("EnviromentPhantom.Error:" + self.object.type.name)
+            Global.Log("Programmer.Error: Phantom with owner process set again: " + self.object.ToString())
         self.ownerProcess = process
         process.resources.append(self)
         
@@ -75,7 +75,7 @@ class PerceptionField:
         for habituatedPhantom in habituatedPhantoms:
             self.environmentPhantoms.remove(habituatedPhantom)
             habituatedPhantom.ResetOwnerProcess()
-            Global.Log("PF: removing(habituated) phantom for object " + habituatedPhantom.object.type.name + " at " + str(habituatedPhantom.object.y) + "," + str(habituatedPhantom.object.x))
+            Global.Log("PF: removing(habituated) phantom for object " + habituatedPhantom.object.ToString())
                 
     def NoticeObjects(self, visibleObjects, actProcess):
         self.perceptionFilter.ProcessObjects(visibleObjects, actProcess)
@@ -93,7 +93,7 @@ class PerceptionField:
                     self.environmentPhantoms.append(phantom)
                     self.processArea.PhantomAddedForMemoryPhantom(phantom, memPhantom) #link to possible processes may replace memoryPhantom
                     phantomsToSpaceMap[phantom] = "ObjectFound"
-                    Global.Log("PF: Adding phantom for object " + rObj.ToString() + " instead of memoryPhantom " + memPhantom.ToString())
+                    Global.Log("PF: Adding phantom for object " + rObj.ToString() + " instead of " + memPhantom.ToString())
                 else:
                     phantom = Phantom(rObj, Global.PFPhantomHabituation)
                     self.environmentPhantoms.append(phantom)
@@ -160,7 +160,7 @@ class PerceptionField:
         for phantom in lostPhantoms:
             self.environmentPhantoms.remove(phantom)
             phantom.ResetOwnerProcess()
-            Global.Log("PF: removing(lost) phantom for object " + phantom.object.type.name + " at " + str(phantom.object.y) + "," + str(phantom.object.x))
+            Global.Log("PF: removing(lost) phantom for object " + phantom.object.ToString())
     
     def LookForObject(self, memoryPhantom):
         memObject = memoryPhantom.object
