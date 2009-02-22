@@ -8,7 +8,7 @@ from Global import Global
 class World:
     
     def __init__(self, config):
-        self.time = 0
+        self.step = 0
         self.agent = None
         
         Global.Map = config.SetUpMap()
@@ -19,11 +19,12 @@ class World:
         map = Global.Map
         map.PlaceAgent(agent)
 
-    def Step(self, step):
-        Global.Log("----------- Step " + str(step).zfill(5) + " - " + str(Global.TimeToHumanFormat()))
+    def Step(self):
+        Global.Log("------------------------------ Step " + str(self.step).zfill(5) + " --- " + str(Global.TimeToHumanFormat()) + " ----------")
         self.agent.Step()
         map = Global.Map
         map.Step(self.agent)
+        self.step = self.step + 1
             
     
             

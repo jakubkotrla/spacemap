@@ -149,6 +149,8 @@ class Map:
                         hitDist = dist
         if hitPoint == None:
             return True
+        elif hitPoint.hit and hitPoint.x == newX and hitPoint.y == newY:
+            return True
         else:
             return False
     def CanMoveEx(self, start, newX, newY):
@@ -247,8 +249,8 @@ class Map:
         while point != start:
             path.insert(0, point)
             if point == None:
-                Global.Log("Map.findPath: pointNone start: " + start.ToString())
-                Global.Log("Map.findPath: pointNone end: " + end.ToString())
+                Global.Log("Map.findPath: pointNone start: " + str(start.x) + "," + str(start.y))
+                Global.Log("Map.findPath: pointNone end: " + str(end.x) + "," + str(end.y))
             point = previous[point]
         path.insert(0, start)
         return path

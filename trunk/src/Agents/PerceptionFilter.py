@@ -1,4 +1,5 @@
 
+from Enviroment.Global import Global
 
 class PerceptionFilter:
     def __init__(self):
@@ -32,7 +33,7 @@ class PerceptionFilter:
             for aff in rObj.type.affordances:
                 if aff in sources:
                     affs.append(aff)
-            rObj.curAttractivity = coef * len(affs)*1.0 / sourcesCount
+            rObj.curAttractivity = Global.WeakCoef(coef * len(affs)*1.0 / sourcesCount, 2)
         
         
         

@@ -14,8 +14,8 @@ from Lobby import Lobby
 from CrazyRoom import CrazyRoom
 
 
-class Config:
-    def __init__(self, configFile):
+class ConfigSingleton:
+    def __init__(self):
         self.configs = {}
         self.configs["EmptyRoom"] = EmptyRoom()
         self.configs["FullRoom"] = FullRoom()
@@ -23,8 +23,11 @@ class Config:
         self.configs["Lobby"] = Lobby()
         self.configs["CrazyRoom"] = CrazyRoom()
         
-        self.config = self.configs[configFile] 
-        
+         
+    
+    def Get(self, configFile):
+        self.config = self.configs[configFile]
+        return self  
         
     def GetAgentIntentions(self, actionSelector):
         self.config.GetAgentIntentions(actionSelector)
@@ -35,5 +38,5 @@ class Config:
         map.CalculateEdges()
         return map 
         
-        
+Config = ConfigSingleton()
         
