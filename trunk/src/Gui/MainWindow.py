@@ -17,7 +17,7 @@ class MainWindow(Frame):
     def __init__(self, master=None):                    
         Frame.__init__(self, master)
         self.tl = self.winfo_toplevel()
-        self.tl.geometry("1500x1100+0+0")
+        self.tl.geometry("1500x1020+0+0")
         self.tl.title("SpaceMap MainWindow")
         self.lock = None
         self.mapRenderer = None
@@ -44,11 +44,11 @@ class MainWindow(Frame):
         
     
     def createWidgets(self):
-        self.wxCanvas = Canvas(self, width=1500, height=1100)
+        self.wxCanvas = Canvas(self, width=1500, height=1020)
         self.wxCanvas.grid(row=0, column=0)
         self.wxCanvas.bind('<Button-1>', self.canvasClick)
         self.wxCanvas.width = 1500
-        self.wxCanvas.height = 1100
+        self.wxCanvas.height = 1020
                                   
     def createMenu(self):
         worldMenu = Menu()
@@ -216,23 +216,23 @@ class MainWindow(Frame):
         pa = self.agent.intelligence.processArea
         txt = "ProcessArea:\n" + self.agent.paText
         self.txtPA = self.wxCanvas.create_text(1050, 50, text=txt, width=200, anchor=NW, tags="infotxt")
-        
+           
         ma = self.agent.intelligence.memoryArea
         txt = "MemoraArea:\n  "
         for phantom in ma.memoryPhantoms:
             txt = txt + phantom.ToString() + "\n  "  
-        self.txtMA = self.wxCanvas.create_text(1300, 50, text=txt, width=200, anchor=NW, tags="infotxt")
+        self.txtMA = self.wxCanvas.create_text(1050, 200, text=txt, width=400, anchor=NW, tags="infotxt")
         
         pf = self.agent.intelligence.perceptionField
         txt = "PerceptionField:\n  "
         for phantom in pf.environmentPhantoms:
             txt = txt + phantom.ToString() + "\n  "
-        self.txtPF = self.wxCanvas.create_text(1300, 110, text=txt, width=200, anchor=NW, tags="infotxt")
+        self.txtPF = self.wxCanvas.create_text(1050, 300, text=txt, width=400, anchor=NW, tags="infotxt")
         
         txt = "Log:\n  "
         for line in Global.logLines:
             txt = txt + line + "\n  "
-        self.txtLog = self.wxCanvas.create_text(1020, 500, text=txt, width=450, anchor=NW, tags="infotxt")
+        self.txtLog = self.wxCanvas.create_text(1050, 600, text=txt, width=450, anchor=NW, tags="infotxt")
         
         
     

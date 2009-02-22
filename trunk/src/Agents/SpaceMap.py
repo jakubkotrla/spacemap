@@ -77,7 +77,7 @@ class SpaceMap:
             return None
         memObjs = self.affsToMemObjs[affordance]
         if len(memObjs) > 0:
-            memObjs.sort(lambda a,b: cmp(a.intensity,b.intensity))
+            memObjs.sort(lambda a,b: cmp(a.intensity,b.intensity)) #ToDo: include distance as cmp param
             if (memObjs[0].intensity > 0):
                 return memObjs[0]
         return None
