@@ -8,7 +8,6 @@ class GlobalVariables:
         self.Time    = Time()
         self.MaxNumber = 9999999
         self.MinPositiveNumber = 0.00000001
-        self.LogTags = ["error", "debug"]
         self.logLines = []
         self.LogLinesCount = 30
         self.RenderVisibilityHistory = False
@@ -68,9 +67,7 @@ class GlobalVariables:
            
         
         
-    def Log(self, msg, tag="msg"):
-        #if not tag in self.LogTags: return
-        msg = tag + "> " + msg
+    def Log(self, msg):
         print msg
         if self.wndLog != None:
             self.wndLog.txtLog.insert("end", msg)

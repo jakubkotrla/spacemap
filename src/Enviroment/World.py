@@ -20,7 +20,7 @@ class World:
         map.PlaceAgent(agent)
 
     def Step(self, step):
-        Global.Log("--- World step " + str(step).zfill(5) + " --- " + str(Global.TimeToHumanFormat()))
+        Global.Log("----------- Step " + str(step).zfill(5) + " - " + str(Global.TimeToHumanFormat()))
         self.agent.Step()
         map = Global.Map
         map.Step(self.agent)

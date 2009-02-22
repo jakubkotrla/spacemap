@@ -139,7 +139,7 @@ class MapRenderer:
     
     def objectAppeared(self, object):
         if (object in self.objectsRects):
-            Global.Log("Programmer Error: MapRenderer.objectAppeared")
+            Global.Log("Programmer.Error: MapRenderer.objectAppeared")
         else:
             if object.type.name == "InternalLearningObj":
                 objId = self.PixelC(object, object.x, object.y, "darkgreen", 3, tags="info internalobject")
@@ -154,6 +154,6 @@ class MapRenderer:
         #    objId = self.objectsRects[object]
         #    self.canvas.delete(objId)
         #else:
-        #    Global.Log("Programmer Error: MapRenderer.objectDisAppeared")
+        #    Global.Log("Programmer.Error: MapRenderer.objectDisAppeared")
     
            
