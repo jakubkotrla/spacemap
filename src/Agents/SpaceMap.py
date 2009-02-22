@@ -16,7 +16,7 @@ class MemoryObject:
         self.linkToNodes.append(l)
         node.linkToObjects.append(l)
         
-    def IntenseToNode(self, node, intensity=1.0):
+    def IntenseToNode(self, node, intensity):
         foundLink = None
         for l in self.linkToNodes:
             if l.node == node:
@@ -29,7 +29,7 @@ class MemoryObject:
         else:
             foundLink.Intense(intensity)
         
-    def Intense(self, intensity = 1):
+    def Intense(self, intensity):
         self.intensity = self.intensity + intensity
         if self.intensity > Global.MemObjMaxIntensity: self.intensity = Global.MemObjMaxIntensity
             
@@ -41,11 +41,10 @@ class LinkMemoryObjectToNode:
         self.object = object
         self.node = node
         self.intensity = intensity
-        self.maxIntensity = 10
         
-    def Intense(self, i = 1.0):
-        self.intensity = self.intensity + i
-        if self.intensity > self.maxIntensity: self.intensity = self.maxIntensity
+    def Intense(self, intensity):
+        self.intensity = self.intensity + intensity
+        if self.intensity > Global.LinkMemObjToNodeMaxIntensity: self.intensity = Global.LinkMemObjToNodeMaxIntensity
     
     #called from Node.StepUpdate
     def StepUpdate(self):
@@ -84,11 +83,11 @@ class SpaceMap:
         return None
         
     
-    def objectTrain(self, rObject, effect = 1):
+    def objectTrain(self, rObject, effect):
         map = Global.Map
         if rObject in self.objectsToMemObjs:
             memObj = self.objectsToMemObjs[rObject]
-            memObj.Intense()
+            memObj.Intense(effect)
         else:  #seen for first time
             memObj = MemoryObject(rObject)
             self.objectsToMemObjs[rObject] = memObj
@@ -98,11 +97,11 @@ class SpaceMap:
         inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
         nodesToIntensity = {}
         sumIntensity = 0
-        effect = 4 * effect
+        effect = Global.SMTRainEffectCoef * effect
         
         for node in inNodes:
             dist = map.DistanceObjs(node, memObj)
-            intensity = Global.Gauss(dist/10.0)
+            intensity = Global.Gauss( dist / Global.SMNodeAreaDivCoef, Global.SMNodeAreaGaussCoef)
             nodesToIntensity[node] = intensity
             sumIntensity = sumIntensity + intensity
         for node in inNodes:
@@ -128,7 +127,7 @@ class SpaceMap:
         
     def ObjectNotFound(self, rObject):
         Global.Log("SM: object not found: " + rObject.type.name)
-        #objectTrain TrainEffectNotFound * effect
+        #objectTrain TrainEffectNotFound
         
     def ObjectUsed(self, rObject):
         self.objectTrain(rObject, Global.TrainEffectUsed)
