@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 
 from Enviroment.Global import Global
-import random
 
 ## Trieda reprezentujúca funkciu aktivity zámeru
 # - Atribúty triedy:
@@ -70,7 +69,7 @@ class Scenarios:
         if self.actualDay != Global.Time.GetDay():
             self.actualDay = Global.Time.GetDay()
             if self.scenarios[Global.Time.GetDay()] != []:
-                self.actualScenario = self.scenarios[Global.Time.GetDay()][random.randint(0,len(self.scenarios[Global.Time.GetDay()])-1)]
+                self.actualScenario = Global.Choice(self.scenarios[Global.Time.GetDay()])
             else:
                 self.actualScenario = None
         if self.actualScenario != None:
@@ -81,6 +80,7 @@ class Scenarios:
     ## Funkcia ktorá vráti náhodný scenár pre konkrétny deň
     # @param self pointer na zoznam scenárov    
     def GetTodaysScenario(self):
-        return self.scenarios[Global.Time.GetDay()][random.randint(0,len(self.scenarios[Global.Time.GetDay()])-1)]
+        possibleScenarios = self.scenarios[Global.Time.GetDay()]
+        return Global.Choice(possibleScenarios)
 
 

@@ -7,7 +7,7 @@ from Enviroment.Global import Global
 from Enviroment.Map import Hit, Point
 from sets import *
 from copy import copy
-import random
+
 
 
 class ActionSelector:
@@ -70,7 +70,7 @@ class ActionSelector:
         if intention.name == "Want":    #for Want intention the order of process matters
             return processes[0]
         else:
-            return processes[random.randint(0,len(processes)-1)]
+            return Global.Choice(processes)
 
 
 
@@ -122,15 +122,15 @@ class ActionSelector:
                     self.processArea.TerminateProcess(emotion, False)
                     return self.GetAction(emotion)
                 
-                wayPointToGo = random.choice(excProcess.data["waypoints"])
+                wayPointToGo = Global.Choice(excProcess.data["waypoints"])
                 excProcess.data["waypoints"].remove(wayPointToGo)
                 excProcess.data["step"] = "Explore"
                 
                 canMove = False
                 map = Global.Map
                 while not canMove:
-                    newX = random.randint(-Global.WayPointNoise, Global.WayPointNoise) + wayPointToGo.x
-                    newY = random.randint(-Global.WayPointNoise, Global.WayPointNoise) + wayPointToGo.y
+                    newX = Global.Randint(-Global.WayPointNoise, Global.WayPointNoise) + wayPointToGo.x
+                    newY = Global.Randint(-Global.WayPointNoise, Global.WayPointNoise) + wayPointToGo.y
                     canMove = map.IsInside( Point(newX,newY) )
                     
                 atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)

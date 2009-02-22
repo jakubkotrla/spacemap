@@ -15,7 +15,7 @@ class MapRenderer:
         self.zoom = 10
         self.guiIdsToObjects = {}
         
-        self.canvas.create_polygon(0,0, self.canvas.width, 0, self.canvas.width, self.canvas.height, 0, self.canvas.height, fill="white")
+        self.Clear()
         self.mapEdges = self.map.Render(self)
         
         self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
@@ -32,10 +32,12 @@ class MapRenderer:
         for node in layer.nodes:
             node.Render(self)
       
-
+      
+    def Clear(self):
+        self.canvas.create_polygon(0,0, self.canvas.width, 0, self.canvas.width, self.canvas.height, 0, self.canvas.height, fill="white")
+        
     def GuiIdToObject(self, id):
         return self.guiIdsToObjects[id]  
-        
         
     def Pixel(self, object, cx, cy, color, tags="pixel"):
         x = cx*self.zoom - round(self.zoom/2) 

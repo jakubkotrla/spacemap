@@ -3,6 +3,7 @@ from Tkinter import *
 from threading import *
 import time
 import os
+from random import seed
 from PIL import ImageGrab, ImageDraw, ImageFont
 from Enviroment.Global import Global
 from Enviroment.World import World
@@ -153,9 +154,11 @@ class MainWindow(Frame):
         self.wndInfo = None    
 
     def startSimulation(self, configName):
+        Global.Log("Starting new simulation and world for Config: " + configName)
         config = Config.Get(configName)
         world = World( config )
         Global.World = world
+        #seed(100)
 
         self.agent = Agent(config)
         world.SetAgent(self.agent)
@@ -252,10 +255,17 @@ class MainWindow(Frame):
             self.lockBack.acquire()
             self.lockBack.release()
     def stopSimulation(self):
+        Global.Log("Stoping simulation...")
         self.exitLocks()
+        Global.Reset()
+        self.agent = None
+        self.mapRenderer.Clear()
+        self.mapRenderer = None
+        self.lock = None
         
     def quitSimulation(self):
-        self.exitLocks()
+        if self.lock != None:
+            self.exitLocks()
         self.quit()
                  
                      

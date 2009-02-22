@@ -1,6 +1,5 @@
 
 from Intelligence import Intelligence
-import random
 from math import pi,atan2
 from Enviroment.Global import Global
 from Enviroment.Map import Point
@@ -58,7 +57,7 @@ class Agent:
             pass #never happens - done as Remember, MoveTo or LookForObject child process
             
         elif action.process.name == "Remember":
-            action.duration = random.randint(1,10)
+            action.duration = Global.Randint(1,10)
             action.data["phantom"] = self.intelligence.RememberObjectsFor(action.data["affordance"])
             if action.data["phantom"] != None:
                 Global.Log("AGENT is remembering for " + action.data["affordance"].name + "(there should be " + action.data["phantom"].object.type.name + " at " + str(action.data["phantom"].object.x) + "," + str(action.data["phantom"].object.y) + ")  for " + str(action.duration) + " seconds")
@@ -66,7 +65,7 @@ class Agent:
                 Global.Log("AGENT is remembering for " + action.data["affordance"].name + "( nothing in SM/MA )  for " + str(action.duration) + " seconds")
             
         elif action.process.name == "LookForObject":
-            action.duration = random.randint(1,5)
+            action.duration = Global.Randint(1,5)
             action.data["object"] = self.intelligence.LookForObject(action.data["phantom"])
             if action.data["object"] != None:
                 Global.Log("AGENT is looking for " + action.data["phantom"].object.type.name + "(Found) for " + str(action.duration) + " seconds")
@@ -88,7 +87,7 @@ class Agent:
                 
         elif action.process.name == "Explore":
             self.viewCones = self.viewConesForExplore
-            action.duration = random.randint(5,20)
+            action.duration = Global.Randint(5,20)
             action.sources = [action.data['affordance']]
             Global.Log("AGENT is exploring for " + action.data['affordance'].name + " for " + str(action.duration) + " seconds")
         else:

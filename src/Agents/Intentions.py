@@ -1,5 +1,5 @@
 
-import random
+from Enviroment.Global import Global
 
 class Intention:
     def __init__(self, name, processes):
@@ -19,4 +19,4 @@ class Intentions:
         self.highLevelIntentions.append(intention)
         
     def GetRandomHighLevelIntention(self):
-        return self.highLevelIntentions[random.randint(0,len(self.highLevelIntentions)-1)]
+        return Global.Choice(self.highLevelIntentions)
