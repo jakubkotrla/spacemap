@@ -69,7 +69,7 @@ class ExcitedProcess:
         
     def GetMissingSources(self):
         affordances = copy(self.process.sources)
-        for objectPhantom in self.resources:
+        for objectPhantom in self.resources: #ToDo add only used affordance - check if set etc.
             for affordance in objectPhantom.object.type.affordances:
                 if affordance in affordances:
                     affordances.remove(affordance)
@@ -198,18 +198,21 @@ class ProcessArea:
             if aff in wantedAffs:
                 phantom.SetOwnerProcess(realProcess)
                 phantom.affordance = aff
-                break
+    
+    def LookingForPhantom(self, memPhantom):
+        p = self.actualProcess
+        while p.process.name != "LookUpInMemory":
+            p = p.parent
+            if p == None: return False  #not looking for anything now
+        return p.data["phantom"] == memPhantom
     
     #links given phantom instead of MemoryPhantom to current process - when Agents notice objects via LookForObject
     def PhantomAddedForMemoryPhantom(self, phantom, memoryPhantom):
         phantom.affordance = memoryPhantom.affordance
-        #ToDo: better check for aff
         realProcess = self.actualBasicProcess
         if realProcess != memoryPhantom.ownerProcess:
-            Global.Log("PA.PhantomAddedForMemoryPhantom: Programmer.Error ??")
-        realProcess.resources.append(phantom)
-        if memoryPhantom not in realProcess.resources:
             Global.Log("PA.PhantomAddedForMemoryPhantom: Programmer.Error")
+        realProcess.resources.append(phantom)
         realProcess.resources.remove(memoryPhantom)
         
     #links given phantom to current process - when Agents remembers objects via Remember
@@ -222,7 +225,6 @@ class ProcessArea:
             if aff in wantedAffs:
                 phantom.SetOwnerProcess(realProcess)
                 phantom.affordance = aff
-                break
             
     def IsPhantomUsedNow(self, phantom):
         realProcess = self.actualBasicProcess

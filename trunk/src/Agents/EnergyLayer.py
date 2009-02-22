@@ -114,7 +114,7 @@ class EnergyLayerNode:
             gCoef = gCoef * usageCoef
             
             gCoef = min(1, gCoef)
-            gCoef = gCoef * (random() * 0.4 + 0.8) #Global.ELAntigravityNoise
+            gCoef = gCoef * (random() * 0.4 + 0.8) #Global.ELAntigravityNoise ToDo
             
             gDiff = Global.ELAntigravityCoef * gCoef
             gDiffCoef = gDiff /  max(Global.MinPositiveNumber, dist) 
@@ -151,7 +151,7 @@ class EnergyLayerNode:
         
         gCoef = 1.0 / (diffX**2+diffY**2)
         gCoef = gCoef * (1.0/max(0.1, self.GetUsage()))
-        gCoef = gCoef * (random() * 0.4 + 0.8) #Global.ELGravityNoise
+        gCoef = gCoef * (random() * 0.4 + 0.8) #Global.ELGravityNoise ToDo
         gCoef = gCoef * effect
         
         gCoef = min(1, gCoef)
@@ -246,7 +246,7 @@ class EnergyLayer:
         #ToDo: melo by zaviset na poctu node
         diceRoll = randint(0, 100)
         self.forgetEnergy = self.forgetEnergy + 1
-        if diceRoll < Global.ELForgetNodeChance*0:
+        if diceRoll < Global.ELForgetNodeChance:
             if self.forgetEnergy > self.GetNodeDeleteCost():
                 self.forgetEnergy = self.forgetEnergy - self.GetNodeCreateDeleteCost()
                 chosenNode = choice(self.nodes)

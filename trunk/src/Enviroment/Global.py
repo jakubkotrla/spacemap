@@ -40,8 +40,13 @@ class GlobalVariables:
         self.TrainEffectNotFound = 1.0
         self.TrainEffectUsedUp = 1.0
         
+        self.SMTRainEffectCoef = 4
+        self.SMNodeAreaDivCoef = 10  #when MemObj's linkToNodes are intensed - alter node's gauss area
+        self.SMNodeAreaGaussCoef = 1 #as above
+        
         self.MemObjMaxIntensity = 10
         self.LinkMemObjToNodeFadeOut = 0.001
+        self.LinkMemObjToNodeMaxIntensity = 10
         
         self.ELDensity = 10             #one node will represent area of appr. ELDensity x ELDensity
         self.ELCreateNoise = 2
@@ -59,7 +64,7 @@ class GlobalVariables:
         self.ELEnergyFadeCoef = 0.5
         self.ELEnergyFadeLimit = 10
         
-        self.ELForgetNodeChance = 5    #max=1..100% each step
+        self.ELForgetNodeChance = 0    #max=1..100% each step
            
         
         

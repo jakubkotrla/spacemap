@@ -88,13 +88,15 @@ class PerceptionField:
                 phantomsToSpaceMap[phantom] = "ObjectNoticedAgain"
             else:
                 memPhantom = self.memoryArea.GetPhantomForObject(rObj)
-                phantom = Phantom(rObj, Global.PFPhantomHabituation, memPhantom)
-                self.environmentPhantoms.append(phantom)
-                if memPhantom != None:
+                if memPhantom != None and self.processArea.LookingForPhantom(memPhantom):
+                    phantom = Phantom(rObj, Global.PFPhantomHabituation, memPhantom)
+                    self.environmentPhantoms.append(phantom)
                     self.processArea.PhantomAddedForMemoryPhantom(phantom, memPhantom) #link to possible processes may replace memoryPhantom
                     phantomsToSpaceMap[phantom] = "ObjectFound"
                     Global.Log("PF: Adding phantom for object " + rObj.ToString() + " instead of memoryPhantom " + memPhantom.ToString())
                 else:
+                    phantom = Phantom(rObj, Global.PFPhantomHabituation)
+                    self.environmentPhantoms.append(phantom)
                     self.processArea.PhantomAdded(phantom)
                     phantomsToSpaceMap[phantom] = "ObjectNoticed"
                     Global.Log("PF: Adding phantom for object " + rObj.ToString())

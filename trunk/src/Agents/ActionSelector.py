@@ -214,7 +214,7 @@ class ActionSelector:
                 self.processArea.TerminateAtomicProcess(emotion)   #terminates Moveto
             
         elif actProcess.name == "SearchRandom":
-            # check we got it.. - is done in child LookForObject process!
+            # check we got it.. - is done in child Explore process!
             # this actually gets never called - its either MoveTo or Explore child process!
             pass            
         elif actProcess.name == "LookUpInMemory":
@@ -224,7 +224,7 @@ class ActionSelector:
          
         elif actProcess.name == "Remember":
             if actExcProcess.data["phantom"] != None:
-                #success, terminates, next step AS will go for MoveTo
+                #success, terminates, next step AS will go for MoveTo and MoveToPartial
                 actExcProcess.parent.data["phantom"] = actExcProcess.data["phantom"]
                 self.processArea.TerminateAtomicProcess(emotion)
             else:
