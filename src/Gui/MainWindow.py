@@ -3,7 +3,6 @@ from Tkinter import *
 from threading import *
 import time
 import os
-from random import seed
 from PIL import ImageGrab, ImageDraw, ImageFont
 from Enviroment.Global import Global
 from Enviroment.World import World
@@ -51,6 +50,10 @@ class MainWindow(Frame):
         self.wxCanvas.height = 1020
                                   
     def createMenu(self):
+        startMenu = Menu()
+        for config in Config.configs:
+             startMenu.add_command(label=config, command= lambda config=config: self.startSimulation(config))
+        
         worldMenu = Menu()
         worldMenu.add_command(label="Show Affordances", command=self.showAffordances)
         worldMenu.add_command(label="Show Object Types", command=self.showObjectTypes)
@@ -60,9 +63,10 @@ class MainWindow(Frame):
         worldMenu.add_checkbutton(label="Show visibility history", command=self.visibilityHistoryCheck)
                   
         menubar = Menu(self)
-        menubar.add_command(label="Start", command=self.startSimulation)
+        menubar.add_cascade(label="Start", menu=startMenu)
         menubar.add_command(label="Pause", command=self.pauseSimulation)
         menubar.add_command(label="Resume", command=self.resumeSimulation)
+        menubar.add_command(label="Stop", command=self.stopSimulation)
         menubar.add_cascade(label="World", menu=worldMenu)
         menubar.add_command(label="Quit", command=self.quitSimulation)
         self.winfo_toplevel().config(menu=menubar)
@@ -148,11 +152,10 @@ class MainWindow(Frame):
     def wndInfoClosed(self, event):
         self.wndInfo = None    
 
-    def startSimulation(self):
-        config = Config("CrazyRoom")
+    def startSimulation(self, configName):
+        config = Config.Get(configName)
         world = World( config )
         Global.World = world
-        seed(10)
 
         self.agent = Agent(config)
         world.SetAgent(self.agent)
@@ -173,11 +176,10 @@ class MainWindow(Frame):
         world = Global.World
         self.lockBack = Lock()
         self.lockBack.acquire()
-        step = 0
         while True:
-            world.Step(step)
+            world.Step()
             
-            self.RenderState(world, step);
+            self.RenderState(world);
             time.sleep(0.1)
             
             if self.captureScreen:
@@ -190,13 +192,10 @@ class MainWindow(Frame):
                 if self.saveStep > Global.SaveFreq:
                     self.saveStep = 0
                     im = ImageGrab.grab((x0,y0, x1,y1))
-                    secs = Global.GetSeconds()
                     draw = ImageDraw.Draw(im)
-                    im.save("../../exs/sp" + str(step).zfill(5) + ".png", "PNG")
+                    im.save("../../exs/sp" + str(world.step).zfill(5) + ".png", "PNG")
             #end of captureScreen            
             
-            time.sleep(0.1)
-            step = step + 1
             if self.lock.acquire(False): break
             self.playbackLock.acquire()
             self.playbackLock.release()
@@ -204,8 +203,9 @@ class MainWindow(Frame):
         self.lockBack.release()
         return
     
-    def RenderState(self, world, step):
+    def RenderState(self, world):
         self.wxCanvas.delete("infotxt")
+        step = world.step
         
         txt =  "Step:  " + str(step).zfill(5) + "\nTime:  " + Global.TimeToHumanFormat(True)
         self.txtTime = self.wxCanvas.create_text(1080, 5, text=txt, width=200, anchor=NW, tags="infotxt")
@@ -218,7 +218,7 @@ class MainWindow(Frame):
         self.txtPA = self.wxCanvas.create_text(1050, 50, text=txt, width=200, anchor=NW, tags="infotxt")
            
         ma = self.agent.intelligence.memoryArea
-        txt = "MemoraArea:\n  "
+        txt = "MemoryArea:\n  "
         for phantom in ma.memoryPhantoms:
             txt = txt + phantom.ToString() + "\n  "  
         self.txtMA = self.wxCanvas.create_text(1050, 200, text=txt, width=400, anchor=NW, tags="infotxt")
@@ -244,14 +244,18 @@ class MainWindow(Frame):
         if self.playbackLock != None and self.playbackLockLocked:
             self.playbackLock.release()
             self.playbackLockLocked = False
-    
-    def quitSimulation(self):
+    def exitLocks(self):        
         if self.playbackLock != None and self.playbackLockLocked:
             self.playbackLock.release()
         if self.lock != None:
             self.lock.release()
             self.lockBack.acquire()
             self.lockBack.release()
+    def stopSimulation(self):
+        self.exitLocks()
+        
+    def quitSimulation(self):
+        self.exitLocks()
         self.quit()
                  
                      

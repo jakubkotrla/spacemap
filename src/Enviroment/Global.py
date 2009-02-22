@@ -2,9 +2,11 @@
 
 from Time import Time
 from math import exp
+from random import seed
 
 class GlobalVariables:
     def __init__(self):
+        seed(10)
         self.Time    = Time()
         self.MaxNumber = 9999999
         self.MinPositiveNumber = 0.00000001
