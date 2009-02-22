@@ -17,7 +17,7 @@ class GlobalVariables:
         self.LogLinesCount = 30
         self.RenderVisibilityHistory = False
         self.VisibilityHistoryArea = 2
-        
+
         self.World = None
         self.Map = None
         
