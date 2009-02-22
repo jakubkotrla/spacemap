@@ -7,11 +7,15 @@ from Agents.Scenarios import Scenarios, Scenario
 
 class BaseConfig:
     def __init__(self):
-        self.intentions      = Intentions()
-        self.processes       = Processes()
-        self.scenarios       = Scenarios()
+        self.intentions = Intentions()
+        self.processes = Processes()
+        self.scenarios = Scenarios()
         
     def prepareScenarios(self):
+        self.intentions = Intentions()
+        self.processes = Processes()
+        self.scenarios = Scenarios()
+        
         P_Eat = Process("Eating", [], [Eatability], [Eatability], [], 1800)
         self.processes.AddProcess(P_Eat)
         I_Eat = Intention("Eat", [P_Eat])

@@ -2,11 +2,14 @@
 
 from Time import Time
 from math import exp
-from random import seed
+from random import seed, randint, choice, random
 
 class GlobalVariables:
     def __init__(self):
-        seed(10)
+        self.Reset()
+    
+    def Reset(self):
+        seed(100)
         self.Time    = Time()
         self.MaxNumber = 9999999
         self.MinPositiveNumber = 0.00000001
@@ -66,8 +69,22 @@ class GlobalVariables:
         self.ELEnergyFadeLimit = 10
         
         self.ELForgetNodeChance = 0    #max=1..100% each step
-           
-        
+  
+    def Random(self):
+        r = random()
+        #self.Log("RandomRandom:" + str(r))
+        return r
+    def Randint(self, min, max):
+        r = randint(min, max)
+        #self.Log("RandomRandint:" + str(r))
+        return r
+    def DiceRoll(self):
+        r = randint(0, 100)
+        #self.Log("RandomDiceRoll:" + str(r))
+        return r
+    def Choice(self, list):
+        #self.Log("RandomChoice")
+        return choice(list)
         
     def Log(self, msg):
         print msg

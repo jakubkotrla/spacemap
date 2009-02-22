@@ -15,7 +15,7 @@ class Intelligence:
         self.agent            = agent
         self.episodicMemory   = EpisodicMemory()
         self.spaceMap         = SpaceMap(agent)
-        self.processArea    = ProcessArea(self.episodicMemory)
+        self.processArea      = ProcessArea(self.episodicMemory)
         self.memoryArea       = MemoryArea(self.agent, self.spaceMap, self.processArea)
         self.perceptionField  = PerceptionField(self.processArea, self.spaceMap, self.memoryArea)
         self.actionSelector   = ActionSelector(agent, config, self.processArea, self.perceptionField, self.episodicMemory, self.spaceMap)

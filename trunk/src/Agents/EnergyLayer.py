@@ -1,7 +1,6 @@
 
 from Enviroment.Global import Global
 from math import sqrt
-from random import randint, choice, random
 from Enviroment.Map import Point
 
 class EnergyPoint:
@@ -27,7 +26,7 @@ class EnergyPoint:
     def StepUpdate(self, nodesAround):
         cost = self.layer.GetNodeCreateCost()
         chanceNew = self.energy - cost
-        diceRoll = randint(0, 100)
+        diceRoll = Global.DiceRoll()
         if diceRoll < chanceNew:
             self.layer.CreateNode(self, self.memObject)
             self.energy = self.energy - cost
@@ -114,7 +113,7 @@ class EnergyLayerNode:
             gCoef = gCoef * usageCoef
             
             gCoef = min(1, gCoef)
-            gCoef = gCoef * (random() * 0.4 + 0.8) #Global.ELAntigravityNoise ToDo
+            gCoef = gCoef * (Global.Random() * 0.4 + 0.8) #Global.ELAntigravityNoise ToDo
             
             gDiff = Global.ELAntigravityCoef * gCoef
             gDiffCoef = gDiff /  max(Global.MinPositiveNumber, dist) 
@@ -151,7 +150,7 @@ class EnergyLayerNode:
         
         gCoef = 1.0 / (diffX**2+diffY**2)
         gCoef = gCoef * (1.0/max(0.1, self.GetUsage()))
-        gCoef = gCoef * (random() * 0.4 + 0.8) #Global.ELGravityNoise ToDo
+        gCoef = gCoef * (Global.Random() * 0.4 + 0.8) #Global.ELGravityNoise ToDo
         gCoef = gCoef * effect
         
         gCoef = min(1, gCoef)
@@ -185,8 +184,8 @@ class EnergyLayer:
         
         if Global.ELCreateNoise > Global.ELDensity or Global.ELCreateNoise == -1:
             while len(self.nodes) < nodeCount:
-                x = randint(0, self.area.width-1)
-                y = randint(0, self.area.height-1)
+                x = Global.Randint(0, self.area.width-1)
+                y = Global.Randint(0, self.area.height-1)
                 
                 if self.area.IsInside( Point(x,y) ):                
                     node = EnergyLayerNode(self, x, y, self.nodeIndex)
@@ -198,8 +197,8 @@ class EnergyLayer:
             density = Global.ELDensity
             for y in range(yCount):
                 for x in range(xCount):
-                    xNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
-                    yNoise = randint(-Global.ELCreateNoise, Global.ELCreateNoise)
+                    xNoise = Global.Randint(-Global.ELCreateNoise, Global.ELCreateNoise)
+                    yNoise = Global.Randint(-Global.ELCreateNoise, Global.ELCreateNoise)
                     xx = x*density+density/2+xNoise
                     yy = y*density+density/2+yNoise
                     
@@ -244,7 +243,7 @@ class EnergyLayer:
         self.energyPointsToDelete = []
 
         #ToDo: melo by zaviset na poctu node
-        diceRoll = randint(0, 100)
+        diceRoll = Global.DiceRoll()
         self.forgetEnergy = self.forgetEnergy + 1
         if diceRoll < Global.ELForgetNodeChance:
             if self.forgetEnergy > self.GetNodeDeleteCost():
@@ -257,14 +256,14 @@ class EnergyLayer:
                 pass 
         
     def CreateNode(self, point, memObject):
-        xNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
-        yNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
+        xNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
+        yNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
         x = point.x + xNoise
         y = point.y + yNoise
         
         while not self.area.IsInside( Point(x,y) ):
-            xNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
-            yNoise = randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
+            xNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
+            yNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
             x = point.x + xNoise
             y = point.y + yNoise
             
