@@ -4,8 +4,6 @@ class Affordance:
 
     def __init__(self, name):
         self.name = name
-        self.attractivity = 0  
-
 
 
 # Configuration part    

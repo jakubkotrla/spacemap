@@ -2,7 +2,6 @@
 
 from copy import copy
 from Enviroment.Global import Global
-from Agents.sets import SetDifference
 
 ## Trieda reprezentujúca aktivovaný proces
 # - Atribúty triedy:
@@ -37,7 +36,6 @@ class ExcitedProcess:
         self.hierarchyLevel      = 0
         self.timeLimit           = 0 
         self.data                = {}
-        self.ExploreTried        = False
         
     def TerminateProcess(self, successful=True):
         self.endTime    = copy(Global.Time)
@@ -63,9 +61,6 @@ class ExcitedProcess:
     def IsInProgress(self):
         return self.endTime == None
         #future: won't work for intention-competing
-    
-    def EndIteration(self):
-        self.iteration += 1
         
     def GetMissingSources(self):
         affordances = copy(self.process.sources)
@@ -148,7 +143,7 @@ class ProcessArea:
         return self.actualProcess
    
    
-    #only for terminationg atomic processes
+    #only for terminating atomic processes
     def TerminateAtomicProcess(self, emotion, successful=True):
         if self.actualProcess != None:
             self.actualProcess.TerminateProcess(successful)
@@ -171,7 +166,7 @@ class ProcessArea:
             self.actualProcess = self.actualProcess.parent
                 
             if self.actualProcess != None:
-                notFinishedIntentions = SetDifference(self.actualProcess.process.intentions, self.actualProcess.completedIntentions) 
+                notFinishedIntentions = Global.SetDifference(self.actualProcess.process.intentions, self.actualProcess.completedIntentions) 
                 if len(notFinishedIntentions) == 0:
                     self.TerminateProcess(True)
                 else:

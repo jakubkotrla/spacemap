@@ -2,7 +2,6 @@
 from Intelligence import Intelligence
 from math import pi,atan2
 from Enviroment.Global import Global
-from Enviroment.Map import Point
 
 
 class ViewCone:
@@ -18,10 +17,7 @@ class Agent:
         self.y = 10
         self.newX = self.x
         self.newY = self.y
-        self.direction = Point(1,1)
         self.dirAngle = pi / 4
-        
-        self.curAffs = []
         
         self.paText = ' '
         
@@ -35,14 +31,13 @@ class Agent:
         self.viewConesForExplore.append( ViewCone(0.5, pi, 20 ) )
         self.viewCones = self.viewConesNormal
         
-    # does one agent step
     def Step(self):
         action = self.intelligence.GetAction()
         map = Global.Map
         
         self.x = self.newX
         self.y = self.newY
-        self.viewCones = self.viewConesNormal   #fake else than "Explore" branch
+        self.viewCones = self.viewConesNormal   #fake else-than-Explore-action branch
                 
         #execute action - world/agent-impacting part of atomic process
         if action.process.name == "Execute":
@@ -77,7 +72,6 @@ class Agent:
         elif action.process.name == "MoveToPartial":
             dx = action.data['newx'] - self.newX
             dy = action.data['newy'] - self.newY
-            self.direction = Point(dx, dy)
             angle = atan2(dx, dy)
             self.dirAngle = angle
             
@@ -103,9 +97,6 @@ class Agent:
         Global.Time.AddSeconds(action.duration)
         self.intelligence.ActionDone()
 
-
-    def GetSpaceMap(self):
-        return self.intelligence.spaceMap
 
     def ToString(self):
         return "Agent"

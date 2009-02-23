@@ -105,7 +105,7 @@ class SpaceMap:
             nodesToIntensity[node] = intensity
             sumIntensity = sumIntensity + intensity
         for node in inNodes:
-            #ToDo use rObject.attractivity
+            #ToDo: use rObject.attractivity
             intensity = nodesToIntensity[node] * effect / sumIntensity
             memObj.IntenseToNode(node, intensity)
             

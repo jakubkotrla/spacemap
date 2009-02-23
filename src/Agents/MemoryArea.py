@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+
 
 from Enviroment.Global import Global
 
@@ -6,7 +6,7 @@ from Enviroment.Global import Global
 class MemoryPhantom:
     def __init__(self, memoryObject, habituation):
         self.object  = memoryObject
-        self.affordance  = None     #which object affordance will be used - to speed up things
+        self.affordance  = None
         self.ownerProcess  = None
         self.habituation = habituation
         

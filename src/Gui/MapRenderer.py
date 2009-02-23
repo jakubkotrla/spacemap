@@ -27,7 +27,7 @@ class MapRenderer:
         for obj in self.map.objects:
             self.objectAppeared(obj)
           
-        layer = self.agent.GetSpaceMap().Layer
+        layer = self.agent.intelligence.spaceMap.Layer
         layer.mapRenderer = self
         for node in layer.nodes:
             node.Render(self)
