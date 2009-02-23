@@ -149,6 +149,8 @@ class Map:
             return True
         elif hitPoint.hit and hitPoint.x == newX and hitPoint.y == newY:
             return True
+        elif hitPoint.hit and hitPoint.x == start.x and hitPoint.y == start.y:
+            return True
         else:
             return False
     def CanMoveEx(self, start, newX, newY):

@@ -24,7 +24,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4
 
         self.RandomSeeds = [100, 1024, 123456789, 718597]
-        self.MaxTestSteps = 3600*24     #should be more than one day 
+        self.MaxTestSteps = 1200     #should be more than one day 
         
         self.MaxAgentMove = 10
         self.WayPointArea = 10
