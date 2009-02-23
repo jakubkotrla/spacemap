@@ -1,8 +1,9 @@
 
 from Tkinter import *  
 from threading import *
-import time
+from shutil import copyfile
 import os
+import time
 from random import seed
 from PIL import ImageGrab, ImageDraw, ImageFont
 from Enviroment.Global import Global
@@ -52,6 +53,8 @@ class MainWindow(Frame):
                                   
     def createMenu(self):
         startMenu = Menu()
+        startMenu.add_command(label="Test All", command=self.startAll)
+        startMenu.add_separator()
         for config in Config.configs:
              startMenu.add_command(label=config, command= lambda config=config: self.startSimulation(config))
         
@@ -153,12 +156,60 @@ class MainWindow(Frame):
     def wndInfoClosed(self, event):
         self.wndInfo = None    
 
+    def startAll(self):
+        th = Thread(None, self.simulationTestAllThread, name="simulationTestAllThread")
+        th.start()
+            
+    def simulationTestAllThread(self):
+        nowTime = time.strftime("%Y-%m-%d--%H-%M-%S")
+        
+        configsToTestDo = Config.configs
+        for configName in configsToTestDo:
+            savingPath = "../../tests/" + nowTime + "/" + configName + "/"
+            os.makedirs(savingPath)
+            copyfile("Enviroment/Global.py", "../../tests/" + nowTime + "/Global.py")
+            
+            
+            Global.Log("Starting new simulation and world for Config: " + configName)
+            config = Config.Get(configName)
+            world = World( config )
+            Global.World = world
+
+            self.agent = Agent(config)
+            world.SetAgent(self.agent)
+            self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
+            self.saveStep = Global.SaveFreq
+        
+            while world.step < Global.MaxTestSteps:
+                world.Step()
+                self.RenderState(world);
+                time.sleep(0.1)
+                
+                if self.captureScreen:
+                    x0 = self.wxCanvas.winfo_rootx()
+                    y0 = self.wxCanvas.winfo_rooty()
+                    x1 = x0 + self.wxCanvas.winfo_reqwidth()
+                    y1 = y0 + self.wxCanvas.winfo_reqheight()
+    
+                    self.saveStep = self.saveStep + 1
+                    if self.saveStep > Global.SaveFreq:
+                        self.saveStep = 0
+                        im = ImageGrab.grab((x0,y0, x1,y1))
+                        draw = ImageDraw.Draw(im)
+                        im.save(savingPath + "sp" + str(world.step).zfill(5) + ".png", "PNG")
+                #end of captureScreen
+            Global.Log("Stoping simulation...")
+            Global.Reset()
+            self.agent = None
+            self.mapRenderer.Clear()
+            self.mapRenderer = None
+        return
+
     def startSimulation(self, configName):
         Global.Log("Starting new simulation and world for Config: " + configName)
         config = Config.Get(configName)
         world = World( config )
         Global.World = world
-        #seed(100)
 
         self.agent = Agent(config)
         world.SetAgent(self.agent)
@@ -172,16 +223,15 @@ class MainWindow(Frame):
         self.lock = Lock()
         self.lock.acquire()
         self.playbackLock = Lock()
-        th = Thread(None, self.step, name="steps")
+        th = Thread(None, self.simulationThread, name="simulationThread")
         th.start()     
     
-    def step(self):
+    def simulationThread(self):
         world = Global.World
         self.lockBack = Lock()
         self.lockBack.acquire()
         while True:
             world.Step()
-            
             self.RenderState(world);
             time.sleep(0.1)
             
@@ -202,7 +252,6 @@ class MainWindow(Frame):
             if self.lock.acquire(False): break
             self.playbackLock.acquire()
             self.playbackLock.release()
-            
         self.lockBack.release()
         return
     
@@ -236,8 +285,7 @@ class MainWindow(Frame):
         for line in Global.logLines:
             txt = txt + line + "\n  "
         self.txtLog = self.wxCanvas.create_text(1050, 600, text=txt, width=450, anchor=NW, tags="infotxt")
-        
-        
+  
     
     def pauseSimulation(self):
         if self.playbackLock != None and not self.playbackLockLocked:
