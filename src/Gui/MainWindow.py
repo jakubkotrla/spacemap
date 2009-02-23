@@ -24,8 +24,6 @@ class MainWindow(Frame):
         self.mapRenderer = None
         self.agent = None
         
-        self.captureScreen = False
-        self.saveStep = 0
         self.font = ImageFont.truetype("arial.ttf", 12) 
         
         self.playbackLock = None
@@ -40,8 +38,6 @@ class MainWindow(Frame):
         self.pack()  
         self.createWidgets()   
         self.createMenu()
-        
-        self.captureScreenCheck()
         
     
     def createWidgets(self):
@@ -63,7 +59,6 @@ class MainWindow(Frame):
         worldMenu.add_command(label="Show Object Types", command=self.showObjectTypes)
         worldMenu.add_command(label="Show Objects", command=self.showObjects)
         worldMenu.add_command(label="Show Log", command=self.showLog)
-        worldMenu.add_checkbutton(label="Capture screen", command=self.captureScreenCheck)
         worldMenu.add_checkbutton(label="Show visibility history", command=self.visibilityHistoryCheck)
                   
         menubar = Menu(self)
@@ -121,8 +116,6 @@ class MainWindow(Frame):
         scrollBar = Scrollbar(wndLog, orient=VERTICAL, command=txtLog.yview)
         txtLog["yscrollcommand"]  =  scrollBar.set
         scrollBar.pack(side=RIGHT, fill=Y)
-    def captureScreenCheck(self):
-        self.captureScreen = not self.captureScreen
     def visibilityHistoryCheck(self):
         Global.RenderVisibilityHistory = not Global.RenderVisibilityHistory    
     
@@ -156,57 +149,66 @@ class MainWindow(Frame):
     def wndInfoClosed(self, event):
         self.wndInfo = None    
 
+    def captureScreen(self, savePath):
+        x0 = self.wxCanvas.winfo_rootx()
+        y0 = self.wxCanvas.winfo_rooty()
+        x1 = x0 + self.wxCanvas.winfo_reqwidth()
+        y1 = y0 + self.wxCanvas.winfo_reqheight()
+        im = ImageGrab.grab((x0,y0, x1,y1))
+        draw = ImageDraw.Draw(im)
+        im.save(savePath, "PNG")
+
     def startAll(self):
         th = Thread(None, self.simulationTestAllThread, name="simulationTestAllThread")
         th.start()
             
     def simulationTestAllThread(self):
         nowTime = time.strftime("%Y-%m-%d--%H-%M-%S")
+        configsToTest = Config.configs
+        randomSeeds = Global.RandomSeeds
         
-        configsToTestDo = Config.configs
-        for configName in configsToTestDo:
-            savingPath = "../../tests/" + nowTime + "/" + configName + "/"
-            os.makedirs(savingPath)
-            copyfile("Enviroment/Global.py", "../../tests/" + nowTime + "/Global.py")
-            
-            
-            Global.Log("Starting new simulation and world for Config: " + configName)
-            config = Config.Get(configName)
-            world = World( config )
-            Global.World = world
-
-            self.agent = Agent(config)
-            world.SetAgent(self.agent)
-            self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
-            self.saveStep = Global.SaveFreq
-        
-            while world.step < Global.MaxTestSteps:
-                world.Step()
-                self.RenderState(world);
-                time.sleep(0.1)
+        savePath = "../../tests/" + nowTime + "/"
+        os.makedirs(savePath)
+        copyfile("Enviroment/Global.py", savePath + "Global.py")
                 
-                if self.captureScreen:
-                    x0 = self.wxCanvas.winfo_rootx()
-                    y0 = self.wxCanvas.winfo_rooty()
-                    x1 = x0 + self.wxCanvas.winfo_reqwidth()
-                    y1 = y0 + self.wxCanvas.winfo_reqheight()
-    
-                    self.saveStep = self.saveStep + 1
-                    if self.saveStep > Global.SaveFreq:
-                        self.saveStep = 0
-                        im = ImageGrab.grab((x0,y0, x1,y1))
-                        draw = ImageDraw.Draw(im)
-                        im.save(savingPath + "sp" + str(world.step).zfill(5) + ".png", "PNG")
-                #end of captureScreen
-            Global.Log("Stoping simulation...")
-            Global.Reset()
-            self.agent = None
-            self.mapRenderer.Clear()
-            self.mapRenderer = None
+        for randomSeed in randomSeeds:
+            for configName in configsToTest:
+                self.runOneSimulation(savePath, configName, randomSeed)
         return
+
+    def runOneSimulation(self, savePath, configName, randomSeed):
+        Global.Log("Starting new simulation and world for Config: " + configName)
+        savePath = savePath + str(randomSeed) + "-" + configName + "/"
+        os.makedirs(savePath)
+        
+        seed(randomSeed)
+        config = Config.Get(configName)
+        world = World(config)
+        Global.World = world
+
+        self.agent = Agent(config)
+        world.SetAgent(self.agent)
+        self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
+    
+        while world.step < Global.MaxTestSteps:
+            world.Step()
+            self.RenderState(world);
+            time.sleep(0.1)
+            self.captureScreen(savePath + "sp" + str(world.step).zfill(5) + ".png")
+        
+        self.mapRenderer.RenderVisibilityHistory()
+        time.sleep(0.1)
+        self.captureScreen(savePath + "visibilityheatmap.png")
+        
+        Global.Log("Stoping simulation...")
+        Global.Reset()
+        self.agent = None
+        self.mapRenderer.Clear()
+        self.mapRenderer = None
 
     def startSimulation(self, configName):
         Global.Log("Starting new simulation and world for Config: " + configName)
+        seed(Global.RandomSeeds[0])
         config = Config.Get(configName)
         world = World( config )
         Global.World = world
@@ -215,7 +217,6 @@ class MainWindow(Frame):
         world.SetAgent(self.agent)
         self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
         
-        self.saveStep = Global.SaveFreq
         dirList = os.listdir("../../exs/")
         for fname in dirList:
             os.remove("../../exs/" + fname)
@@ -235,31 +236,19 @@ class MainWindow(Frame):
             self.RenderState(world);
             time.sleep(0.1)
             
-            if self.captureScreen:
-                x0 = self.wxCanvas.winfo_rootx()
-                y0 = self.wxCanvas.winfo_rooty()
-                x1 = x0 + self.wxCanvas.winfo_reqwidth()
-                y1 = y0 + self.wxCanvas.winfo_reqheight()
-
-                self.saveStep = self.saveStep + 1
-                if self.saveStep > Global.SaveFreq:
-                    self.saveStep = 0
-                    im = ImageGrab.grab((x0,y0, x1,y1))
-                    draw = ImageDraw.Draw(im)
-                    im.save("../../exs/sp" + str(world.step).zfill(5) + ".png", "PNG")
-            #end of captureScreen            
+            self.captureScreen("../../exs/sp" + str(world.step).zfill(5) + ".png")
             
             if self.lock.acquire(False): break
             self.playbackLock.acquire()
             self.playbackLock.release()
+            
         self.lockBack.release()
         return
     
     def RenderState(self, world):
         self.wxCanvas.delete("infotxt")
-        step = world.step
         
-        txt =  "Step:  " + str(step).zfill(5) + "\nTime:  " + Global.TimeToHumanFormat(True)
+        txt =  "Step:  " + str(world.step).zfill(5) + "\nTime:  " + Global.TimeToHumanFormat(True)
         self.txtTime = self.wxCanvas.create_text(1080, 5, text=txt, width=200, anchor=NW, tags="infotxt")
         
         txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
