@@ -18,6 +18,8 @@ class GlobalVariables:
         self.RenderVisibilityHistory = False
         self.VisibilityHistoryArea = 2
 
+        self.MaxTestSteps = 10 #3600*24
+
         self.World = None
         self.Map = None
         
