@@ -34,6 +34,8 @@ class MapRenderer:
       
       
     def Clear(self):
+        self.canvas.addtag_all("2del")
+        self.canvas.delete("2del")
         self.canvas.create_polygon(0,0, self.canvas.width, 0, self.canvas.width, self.canvas.height, 0, self.canvas.height, fill="white")
         
     def GuiIdToObject(self, id):
@@ -125,7 +127,8 @@ class MapRenderer:
     def RenderVisibilityHistory(self):
         for vObj in self.map.visibilityHistory:
             intensity = 255 - int(255 * vObj.visibility*1.0 / self.map.visibilityMaxEver)
-            color = "#" + str(hex(intensity)[2:]) + str(hex(intensity)[2:]) + str(hex(intensity)[2:])
+            color = str(hex(intensity*65536 + intensity*256 + intensity)[2:])
+            color = "#" + color.zfill(6)
             if vObj.guiId == None:
                 x = vObj.x - Global.VisibilityHistoryArea/2
                 y = vObj.y - Global.VisibilityHistoryArea/2

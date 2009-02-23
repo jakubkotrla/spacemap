@@ -9,7 +9,7 @@ class GlobalVariables:
         self.Reset()
     
     def Reset(self):
-        seed(100)
+        self.RandomSeeds = [100, 1024]
         self.Time    = Time()
         self.MaxNumber = 9999999
         self.MinPositiveNumber = 0.00000001
@@ -18,14 +18,13 @@ class GlobalVariables:
         self.RenderVisibilityHistory = False
         self.VisibilityHistoryArea = 2
 
-        self.MaxTestSteps = 10 #3600*24
+        self.MaxTestSteps = 10 #3600*24     #souhld be more than one day 
 
         self.World = None
         self.Map = None
         
         self.wndLog = None
         self.wndPA = None
-        self.SaveFreq = 0
         self.AgentMoveHistoryLength = 4
         
         self.MaxAgentMove = 10
