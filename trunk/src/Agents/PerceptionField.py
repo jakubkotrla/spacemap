@@ -56,15 +56,8 @@ class PerceptionField:
 
     def getPhantoms(self):
         phantoms = self.environmentPhantoms
-        phantoms.sort(self.cmpHabituation)
+        phantoms.sort(lambda b,a: cmp(a.habituation,b.habituation))
         return phantoms[:Global.PFSize]
-    def cmpHabituation(self, x, y):
-        if x.habituation > y.habituation:
-            return -1
-        elif x.habituation == y.habituation:
-            return 0
-        else: # x<y
-            return 1
 
     def Update(self, action):
         habituatedPhantoms = []
@@ -145,10 +138,6 @@ class PerceptionField:
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
         phantoms = copy.copy(excProcess.resources)
         for phantom in phantoms:
-            #if phantom.GetType() == "m":
-            #    self.memoryArea.RemovePhantom(phantom)    #ToDo - not ok, move to only when used
-            #else:
-            #   self.memoryArea.RemovePhantom(phantom.memoryPhantom)    #ToDo - not ok, move to only when used
             phantom.ResetOwnerProcess()
         
     def UpdatePhantomsBecauseOfMove(self, agent):

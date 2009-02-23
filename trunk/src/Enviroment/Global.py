@@ -9,26 +9,24 @@ class GlobalVariables:
         self.Reset()
     
     def Reset(self):
-        self.RandomSeeds = [100, 1024]
-        self.Time    = Time()
+        self.Time = Time()
+        self.World = None
+        self.Map = None
+        self.wndLog = None
+        self.wndPA = None
         self.MaxNumber = 9999999
         self.MinPositiveNumber = 0.00000001
         self.logLines = []
         self.LogLinesCount = 30
+        
         self.RenderVisibilityHistory = False
         self.VisibilityHistoryArea = 2
-
-        self.MaxTestSteps = 10 #3600*24     #souhld be more than one day 
-
-        self.World = None
-        self.Map = None
-        
-        self.wndLog = None
-        self.wndPA = None
         self.AgentMoveHistoryLength = 4
+
+        self.RandomSeeds = [100, 1024, 123456789, 718597]
+        self.MaxTestSteps = 3600*24     #should be more than one day 
         
         self.MaxAgentMove = 10
-        
         self.WayPointArea = 10
         self.WayPointNoise = 5
         
@@ -105,10 +103,17 @@ class GlobalVariables:
     #for weakBy=2 maps coef range 0-1 to coef range 0.5-1
     def WeakCoef(self, coef, weakBy):
         coef = coef / weakBy + 1 - (weakBy-1)/weakBy     
+
+    def SetDifference(self, a, b):
+        return filter(lambda x:x not in b,a)
+    def SetFirstDifference(self, a, b):
+        difference = SetDifference(a,b)
+        if len(difference) == 0:
+            return None
+        return difference[0]
         
     def TimeToHumanFormat(self, full=False):
         return self.Time.TimeToHumanFormat(full)
-    
     def GetSeconds(self):
         return self.Time.GetSeconds()
         

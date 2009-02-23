@@ -45,8 +45,6 @@ class Path:
         self.dist = dist
     def Last(self):
         return self.points[-1]
-    def ToString(self):
-        return "Point(" + str(self.x) + ", " + str(self.y) + ")"
 
 class Waypoint(Point):
     def __init__(self, x, y):
@@ -73,7 +71,7 @@ class Map:
         self.mapRenderer = None
         self.guiObjectAppeared = None
         self.visibilityHistory = []
-        self.visibilityMaxEver = Global.MinPositiveNumber
+        self.visibilityMaxEver = 0
         
     def CalculateEdges(self):
         lastPoint = self.points[-1]
@@ -306,11 +304,7 @@ class Map:
             hitResult = self.AreIntersecting(edge.start, edge.end, point, endPoint)
             if hitResult.hit:
                 count = count + 1
-
-        if (count % 2) == 0:
-            return False
-        else:
-            return True
+        return ((count % 2) == 1)
         
     
     def GetArea(self):

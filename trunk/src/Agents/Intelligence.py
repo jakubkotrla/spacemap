@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+
 
 from PerceptionField import PerceptionField
 from ProcessArea   import ProcessArea
@@ -33,8 +33,6 @@ class Intelligence:
         
     def TellTheStory(self, txt):
         self.episodicMemory.Print()
-    def ShowPF(self, txt):
-        self.perceptionField.Show(txt)
 
         
     def NoticeObjects(self, visibleObjects, action):

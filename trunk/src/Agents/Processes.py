@@ -1,7 +1,5 @@
 # -*- coding: UTF-8 -*-
 
-
-
 ## Trieda reprezentujúca proces ktorý môže agent vykonať
 # - Atribúty triedy
 #   - name ... meno procesu

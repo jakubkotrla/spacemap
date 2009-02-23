@@ -1,8 +1,7 @@
-# -*- coding: UTF-8 -*-
 
 import string
 
-## Represents smart time
+
 class Time:
     def __init__(self, day=0, hour=0, minute=0, second=0, week = 0):
         self.day = day
@@ -11,7 +10,7 @@ class Time:
         self.second = second
         self.week = week
 
-    # returns true if given time was before this
+
     def Before(self, time):
         if time.day > self.day:
             return True

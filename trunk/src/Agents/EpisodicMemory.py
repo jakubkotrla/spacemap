@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
+#untouched, original from Tomas Korenko source code
 
-import parameters
-#from pylab import *
+import Emotion
 
 ## Trieda reprezentujúca časový ukazateľ
 # - Atribúty triedy:

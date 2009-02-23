@@ -5,9 +5,7 @@ from Processes import Processes, Process
 from Scenarios import Scenarios, Scenario
 from Enviroment.Global import Global
 from Enviroment.Map import Hit, Point
-from sets import *
 from copy import copy
-
 
 
 class ActionSelector:
@@ -25,7 +23,6 @@ class ActionSelector:
         self.intentions.wantInt = Intention("Want", [self.processes.atomic["Explore"],
                                                      self.processes.atomic["LookUpInMemory"],
                                                      self.processes.atomic["SearchRandom"]])
-        
     
     def GetAction(self, emotion):
         if self.processArea.HasNoIntention():
@@ -52,7 +49,7 @@ class ActionSelector:
         #process atomic?
         if process.intentions != []:
             #process is not atomic -> choose first not completed sub-intention
-            intention = SetFirstDifference(process.intentions, excProcess.completedIntentions)
+            intention = Global.SetFirstDifference(process.intentions, excProcess.completedIntentions)
             self.processArea.ActivateIntention(intention, excProcess)
             return self.GetAction(emotion)    #go deeper for atomic process
         else:
@@ -63,7 +60,7 @@ class ActionSelector:
     def ChooseProcessForIntention(self, emotion, intention, parentProcess):
         processes = intention.processes
         if parentProcess != None:
-            processes = SetDifference(processes, parentProcess.failedProcesses)
+            processes = Global.SetDifference(processes, parentProcess.failedProcesses)
             
         if len(processes) == 0:
             return None

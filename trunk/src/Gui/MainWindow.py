@@ -20,12 +20,10 @@ class MainWindow(Frame):
         self.tl = self.winfo_toplevel()
         self.tl.geometry("1500x1020+0+0")
         self.tl.title("SpaceMap MainWindow")
-        self.lock = None
-        self.mapRenderer = None
-        self.agent = None
         
         self.font = ImageFont.truetype("arial.ttf", 12) 
         
+        self.lock = None
         self.playbackLock = None
         self.playbackLockLocked = False 
         
