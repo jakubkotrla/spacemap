@@ -285,9 +285,9 @@ class EnergyLayer:
                 foundEP = ep
                 break
         if foundEP != None:
-            foundEP.energy = foundEP.energy + effect * Global.ELEnergyPointCreateCoef
+            foundEP.energy = foundEP.energy + effect * Global.ELEnergyPointCreateEnergy
         else:                
-            ep = EnergyPoint(self, memObject, memObject.x, memObject.y, effect * Global.ELEnergyPointCreateCoef)
+            ep = EnergyPoint(self, memObject, memObject.x, memObject.y, effect * Global.ELEnergyPointCreateEnergy)
             self.energyPoints.append(ep)
             ep.Render(self.mapRenderer)
         

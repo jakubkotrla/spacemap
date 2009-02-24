@@ -65,7 +65,7 @@ class GlobalVariables:
         self.ELNodeUsageCoef = 10.0
         self.ELNodeUsageLimit = 15
         
-        self.ELEnergyPointCreateCoef = 100
+        self.ELEnergyPointCreateEnergy = 100
         self.ELNodeAddCost = 100
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5

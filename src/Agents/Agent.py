@@ -96,6 +96,8 @@ class Agent:
         self.paText = self.intelligence.processArea.GetText()
         Global.Time.AddSeconds(action.duration)
         self.intelligence.ActionDone()
+        
+        self.intelligence.spaceMap.StepUpdate()
 
 
     def ToString(self):
