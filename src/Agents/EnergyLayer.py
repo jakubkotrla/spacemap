@@ -173,6 +173,7 @@ class EnergyLayer:
         self.area = area
         self.nodes = []
         self.energyPoints = []
+        self.energyPointsCountHistory = []
         self.energyPointsToDelete = []
         self.forgetEnergy = 0
         self.mapRenderer = None
@@ -253,7 +254,8 @@ class EnergyLayer:
                 self.nodes.remove(chosenNode)
             else:
                 #nothing - not enough energy - should be in chance
-                pass 
+                pass
+        self.energyPointsCountHistory.append(len(self.energyPoints))
         
     def CreateNode(self, point, memObject):
         xNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
