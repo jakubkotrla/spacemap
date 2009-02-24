@@ -175,9 +175,10 @@ class MainWindow(Frame):
         return
 
     def runOneSimulation(self, savePath, configName, randomSeed):
-        Global.Log("Starting new simulation and world for Config: " + configName)
         savePath = savePath + str(randomSeed) + "-" + configName + "/"
         os.makedirs(savePath)
+        Global.SetupOutputFiles(savePath)   
+        Global.Log("Starting new simulation and world for Config: " + configName)
         
         seed(randomSeed)
         config = Config.Get(configName)
@@ -205,7 +206,12 @@ class MainWindow(Frame):
         self.mapRenderer = None
 
     def startSimulation(self, configName):
+        dirList = os.listdir("../../exs/")
+        for fname in dirList:
+            os.remove("../../exs/" + fname)
+        Global.SetupOutputFiles("../../exs/")
         Global.Log("Starting new simulation and world for Config: " + configName)
+        
         seed(Global.RandomSeeds[0])
         config = Config.Get(configName)
         world = World( config )
@@ -214,11 +220,7 @@ class MainWindow(Frame):
         self.agent = Agent(config)
         world.SetAgent(self.agent)
         self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
-        
-        dirList = os.listdir("../../exs/")
-        for fname in dirList:
-            os.remove("../../exs/" + fname)
-        
+         
         self.lock = Lock()
         self.lock.acquire()
         self.playbackLock = Lock()
@@ -231,7 +233,7 @@ class MainWindow(Frame):
         self.lockBack.acquire()
         while True:
             world.Step()
-            self.RenderState(world);
+            self.RenderState(world)
             time.sleep(0.1)
             
             self.captureScreen("../../exs/sp" + str(world.step).zfill(5) + ".png")
@@ -239,39 +241,45 @@ class MainWindow(Frame):
             if self.lock.acquire(False): break
             self.playbackLock.acquire()
             self.playbackLock.release()
-            
+  
         self.lockBack.release()
         return
     
     def RenderState(self, world):
-        self.wxCanvas.delete("infotxt")
+        self.mapRenderer.RenderObjectVisibility()
+        self.mapRenderer.RenderAgent(world.agent)
+        if Global.RenderVisibilityHistory:
+            self.mapRenderer.RenderVisibilityHistory()
+        else:
+            self.mapRenderer.HideVisibilityHistory()
         
+        self.wxCanvas.delete("infotxt")
         txt =  "Step:  " + str(world.step).zfill(5) + "\nTime:  " + Global.TimeToHumanFormat(True)
         self.txtTime = self.wxCanvas.create_text(1080, 5, text=txt, width=200, anchor=NW, tags="infotxt")
-        
         txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
+        nc = len(world.agent.intelligence.spaceMap.Layer.nodes)
+        txt = txt + "\n EnergyLayer.nodeCount: " + str(nc)
         self.txtAgentInfo = self.wxCanvas.create_text(1300, 5, text=txt, width=200, anchor=NW, tags="infotxt")
-        
         pa = self.agent.intelligence.processArea
         txt = "ProcessArea:\n" + self.agent.paText
         self.txtPA = self.wxCanvas.create_text(1050, 50, text=txt, width=200, anchor=NW, tags="infotxt")
-           
         ma = self.agent.intelligence.memoryArea
         txt = "MemoryArea:\n  "
         for phantom in ma.memoryPhantoms:
             txt = txt + phantom.ToString() + "\n  "  
         self.txtMA = self.wxCanvas.create_text(1050, 200, text=txt, width=400, anchor=NW, tags="infotxt")
-        
         pf = self.agent.intelligence.perceptionField
         txt = "PerceptionField:\n  "
         for phantom in pf.environmentPhantoms:
             txt = txt + phantom.ToString() + "\n  "
         self.txtPF = self.wxCanvas.create_text(1050, 300, text=txt, width=400, anchor=NW, tags="infotxt")
-        
         txt = "Log:\n  "
         for line in Global.logLines:
             txt = txt + line + "\n  "
         self.txtLog = self.wxCanvas.create_text(1050, 600, text=txt, width=450, anchor=NW, tags="infotxt")
+        
+        line = str(nc)
+        Global.LogData(line)
   
     
     def pauseSimulation(self):

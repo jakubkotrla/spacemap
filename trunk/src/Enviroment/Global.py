@@ -7,6 +7,8 @@ from random import seed, randint, choice, random
 class GlobalVariables:
     def __init__(self):
         self.Reset()
+        self.fileLogData = None
+        self.fileLog = None
     
     def Reset(self):
         self.Time = Time()
@@ -18,6 +20,7 @@ class GlobalVariables:
         self.MinPositiveNumber = 0.00000001
         self.logLines = []
         self.LogLinesCount = 30
+ 
         
         self.RenderVisibilityHistory = False
         self.VisibilityHistoryArea = 2
@@ -84,7 +87,10 @@ class GlobalVariables:
     def Choice(self, list):
         #self.Log("RandomChoice")
         return choice(list)
-        
+    
+    def SetupOutputFiles(self, path):
+        self.fileLogData = open(path+"data.txt",'w')
+        self.fileLog = open(path+"log.txt",'w')
     def Log(self, msg):
         print msg
         if self.wndLog != None:
@@ -92,6 +98,8 @@ class GlobalVariables:
         self.logLines.append(msg)
         if len(self.logLines) > self.LogLinesCount:
             self.logLines.pop(0)
+    def LogData(self, data):
+        self.fileLogData.write(data + "\n")
         
     def Gauss(self, x, c=1):
         return exp( - ((x)**2) / 2*(c**2) )

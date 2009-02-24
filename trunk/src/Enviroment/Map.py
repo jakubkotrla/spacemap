@@ -367,13 +367,7 @@ class Map:
     
     def Step(self, agent):
         self.calculateWayPointsVisited(agent)
-        self.mapRenderer.RenderObjectVisibility()
-        self.mapRenderer.RenderAgent(agent)
         self.calculateVisibilityHistory(agent)
-        if Global.RenderVisibilityHistory:
-            self.mapRenderer.RenderVisibilityHistory()
-        else:
-            self.mapRenderer.HideVisibilityHistory()
     
     def calculateWayPointsVisited(self, agent):
         for wayPoint in self.wayPoints:
