@@ -22,22 +22,22 @@ class GlobalVariables:
         self.LogLinesCount = 30
  
         
-        self.RenderVisibilityHistory = False
-        self.VisibilityHistoryArea = 2
-        self.AgentMoveHistoryLength = 4
+        self.RenderVisibilityHistory = False    #show visibility objects
+        self.VisibilityHistoryArea = 2          #visibility object is square AxA
+        self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
-        self.RandomSeeds = [100, 1024, 123456789, 718597]
-        self.MaxTestSteps = 1200     #should be more than one day 
+        self.RandomSeeds = [100, 1024, 123456789, 718597]   #seeds to test
+        self.MaxTestSteps = 1200    #should be more than one day 
         
-        self.MaxAgentMove = 10
-        self.WayPointArea = 10
-        self.WayPointNoise = 5
+        self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
+        self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
+        self.WayPointNoise = 5      #how much can agent miss waypoint (when going to it)
         
-        self.PFSize = 7
-        self.PFPhantomHabituation = 100
-        self.MAPhantomHabituation = 100
+        self.PFSize = 7         #number of active/real phatoms in PF
+        self.PFPhantomHabituation = 100    #habituation of new phantom(e)
+        self.MAPhantomHabituation = 100    #habituation of new phantom(m)
                 
-        self.ObjDefaultAttractivity = 10        
+        self.ObjDefaultAttractivity = 10    #default object attractivity    
                 
         self.TrainEffectNoticed = 1.0
         self.TrainEffectNoticedAgain = 0.1
@@ -46,16 +46,17 @@ class GlobalVariables:
         self.TrainEffectNotFound = 1.0
         self.TrainEffectUsedUp = 1.0
         
-        self.SMTRainEffectCoef = 4
+        self.SMTRainEffectCoef = 4   #coef increasing intensity of links memObj-node   
         self.SMNodeAreaDivCoef = 10  #when MemObj's linkToNodes are intensed - alter node's gauss area
         self.SMNodeAreaGaussCoef = 1 #as above
         
-        self.MemObjMaxIntensity = 10
-        self.LinkMemObjToNodeFadeOut = 0.001
-        self.LinkMemObjToNodeMaxIntensity = 10
+        self.MemObjMaxIntensity = 10            #max intensity of memory objects
+        self.LinkMemObjToNodeFadeOut = 0.001    #amount to decrease intensity of links memObj-node every step
+        self.LinkMemObjToNodeMaxIntensity = 10  #max intensity of links memObj-node
         
-        self.ELDensity = 10             #one node will represent area of appr. ELDensity x ELDensity
-        self.ELCreateNoise = 2
+        self.ELDensity = 10       #one node will be created for area of appr. ELDensity x ELDensity
+        self.ELCreateNoise = 2    #noise when creating nodes
+        
         self.ELGravityRange = 20
         self.ELGravityCoef = 1
         self.ELAntigravityCoef = 2.0
