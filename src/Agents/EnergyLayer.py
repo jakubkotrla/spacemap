@@ -31,7 +31,7 @@ class EnergyPoint:
             self.layer.CreateNode(self, self.memObject)
             self.energy = self.energy - cost
         
-        effect = self.energy / Global.ELEnergyPointCreateCoef
+        effect = self.energy / Global.ELEnergyPointCreateEnergy
             
         for node in nodesAround:
             node.Train(self, effect)

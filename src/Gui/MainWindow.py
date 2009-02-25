@@ -161,6 +161,27 @@ class MainWindow(Frame):
         th.start()
             
     def simulationTestAllThread(self):
+        settingsToRun = {}
+        settings = dir(Global)
+        for setting in settings:
+            if setting.endswith("TESTSET"):
+                a = getattr(Global, setting)
+                settingName = setting.split("TESTSET")[0]
+                settingsToRun[settingName] = a
+        #settingsToRun contains all set data to run
+        self.simulationTestAllRecursive(settingsToRun)
+    
+    def simulationTestAllRecursive(self, settingsToRun, settingsText=''):  
+        if len(settingsToRun) < 1:  
+            self.runOneTestSuite(settingsText)
+        else:
+            (name, value) = settingsToRun.popitem()
+            for settings in value:
+                setattr(Global, name, settings)
+                settingsTextIn = settingsText + "#" + name + "=" + str(settings) + "\n"
+                self.simulationTestAllRecursive(settingsToRun, settingsTextIn)
+        
+    def runOneTestSuite(self, settingsText):
         nowTime = time.strftime("%Y-%m-%d--%H-%M-%S")
         configsToTest = Config.configs
         randomSeeds = Global.RandomSeeds
@@ -168,6 +189,9 @@ class MainWindow(Frame):
         savePath = "../../tests/" + nowTime + "/"
         os.makedirs(savePath)
         copyfile("Enviroment/Global.py", savePath + "Global.py")
+        f = open(savePath + "Global.py", "a")
+        f.write("\n#real settings of Global.py\n")
+        f.write(settingsText)
                 
         for randomSeed in randomSeeds:
             for configName in configsToTest:
