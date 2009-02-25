@@ -27,7 +27,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [100, 1024, 123456789, 718597]   #seeds to test
-        self.MaxTestSteps = 1200    #should be more than one day 
+        self.MaxTestSteps = 3#1200    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -46,7 +46,8 @@ class GlobalVariables:
         self.TrainEffectNotFound = 1.0
         self.TrainEffectUsedUp = 1.0
         
-        self.SMTRainEffectCoef = 4   #coef increasing intensity of links memObj-node   
+        self.SMTRainEffectCoef = 4   #coef increasing intensity of links memObj-node
+        self.SMTRainEffectCoefTESTSET = [4,8]   
         self.SMNodeAreaDivCoef = 10  #when MemObj's linkToNodes are intensed - alter node's gauss area
         self.SMNodeAreaGaussCoef = 1 #as above
         
@@ -56,6 +57,7 @@ class GlobalVariables:
         
         self.ELDensity = 10       #one node will be created for area of appr. ELDensity x ELDensity
         self.ELCreateNoise = 2    #noise when creating nodes
+        self.ELCreateNoiseTESTSET = [2, 4, 5]
         
         self.ELGravityRange = 20
         self.ELGravityCoef = 1
