@@ -7,8 +7,7 @@ from random import seed, randint, choice, random
 class GlobalVariables:
     def __init__(self):
         self.Reset()
-        self.fileLogData = None
-        self.fileLog = None
+        self.path = ""
     
     def Reset(self):
         self.Time = Time()
@@ -27,7 +26,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [100, 1024, 123456789, 718597]   #seeds to test
-        self.MaxTestSteps = 3#1200    #should be more than one day 
+        self.MaxTestSteps = 5#1200    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -92,17 +91,21 @@ class GlobalVariables:
         return choice(list)
     
     def SetupOutputFiles(self, path):
-        self.fileLogData = open(path+"data.txt",'w')
-        self.fileLog = open(path+"log.txt",'w')
+        self.path = path
     def Log(self, msg):
         print msg
+        f = open(self.path+"log.txt",'a')
+        f.write(msg + "\n")
+        f.close()
         if self.wndLog != None:
             self.wndLog.txtLog.insert("end", msg)
         self.logLines.append(msg)
         if len(self.logLines) > self.LogLinesCount:
             self.logLines.pop(0)
     def LogData(self, data):
-        self.fileLogData.write(data + "\n")
+        f = open(self.path+"data.txt",'a')
+        f.write(data + "\n")
+        f.close()
         
     def Gauss(self, x, c=1):
         return exp( - ((x)**2) / 2*(c**2) )

@@ -4,6 +4,7 @@ from threading import *
 from shutil import copyfile
 import os
 import time
+import copy
 from random import seed
 from PIL import ImageGrab, ImageDraw, ImageFont
 from Enviroment.Global import Global
@@ -175,11 +176,12 @@ class MainWindow(Frame):
         if len(settingsToRun) < 1:  
             self.runOneTestSuite(settingsText)
         else:
-            (name, value) = settingsToRun.popitem()
+            settingsToRunNext = copy.copy(settingsToRun)
+            (name, value) = settingsToRunNext.popitem()
             for settings in value:
                 setattr(Global, name, settings)
                 settingsTextIn = settingsText + "#" + name + "=" + str(settings) + "\n"
-                self.simulationTestAllRecursive(settingsToRun, settingsTextIn)
+                self.simulationTestAllRecursive(settingsToRunNext, settingsTextIn)
         
     def runOneTestSuite(self, settingsText):
         nowTime = time.strftime("%Y-%m-%d--%H-%M-%S")
@@ -192,6 +194,7 @@ class MainWindow(Frame):
         f = open(savePath + "Global.py", "a")
         f.write("\n#real settings of Global.py\n")
         f.write(settingsText)
+        f.close()
                 
         for randomSeed in randomSeeds:
             for configName in configsToTest:
@@ -218,6 +221,7 @@ class MainWindow(Frame):
             self.RenderState(world);
             time.sleep(0.1)
             self.captureScreen(savePath + "sp" + str(world.step).zfill(5) + ".png")
+            self.mapRenderer.RenderToFile(savePath + "PIL" + str(world.step).zfill(5) + ".png")
         
         self.mapRenderer.RenderVisibilityHistory()
         time.sleep(0.1)
