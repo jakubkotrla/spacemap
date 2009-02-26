@@ -210,8 +210,8 @@ class MapRenderer:
             y = node.y*self.zoom - 2 + 10
             draw.rectangle([x,y, x+4,y+4], fill=(0, 255, 0), outline=clBlack)
         
-        draw.text([0, 0], "ahoj", font=self.font, fill=(0, 0, 0))
-       
+        #draw.text([0, 0], "ahoj", font=self.font, fill=(0, 0, 0))
+        #chybi pouze steps
         
         
         im.save(filename, "PNG")
