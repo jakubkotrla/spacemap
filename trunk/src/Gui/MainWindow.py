@@ -221,7 +221,7 @@ class MainWindow(Frame):
             self.RenderState(world);
             time.sleep(0.1)
             self.captureScreen(savePath + "sp" + str(world.step).zfill(5) + ".png")
-            self.mapRenderer.RenderToFile(savePath + "PIL" + str(world.step).zfill(5) + ".png")
+            self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(5) + ".png")
         
         self.mapRenderer.RenderVisibilityHistory()
         time.sleep(0.1)
@@ -289,7 +289,7 @@ class MainWindow(Frame):
         txt = txt + "\n EnergyLayer.nodeCount: " + str(nc)
         self.txtAgentInfo = self.wxCanvas.create_text(1300, 5, text=txt, width=200, anchor=NW, tags="infotxt")
         pa = self.agent.intelligence.processArea
-        txt = "ProcessArea:\n" + self.agent.paText
+        txt = "ProcessArea:\n" + "\n".join(self.agent.paText)
         self.txtPA = self.wxCanvas.create_text(1050, 50, text=txt, width=200, anchor=NW, tags="infotxt")
         ma = self.agent.intelligence.memoryArea
         txt = "MemoryArea:\n  "
