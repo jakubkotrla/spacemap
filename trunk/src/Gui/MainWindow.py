@@ -148,19 +148,9 @@ class MainWindow(Frame):
     def wndInfoClosed(self, event):
         self.wndInfo = None    
 
-    def captureScreen(self, savePath):
-        x0 = self.wxCanvas.winfo_rootx()
-        y0 = self.wxCanvas.winfo_rooty()
-        x1 = x0 + self.wxCanvas.winfo_reqwidth()
-        y1 = y0 + self.wxCanvas.winfo_reqheight()
-        im = ImageGrab.grab((x0,y0, x1,y1))
-        draw = ImageDraw.Draw(im)
-        im.save(savePath, "PNG")
-
     def startAll(self):
         th = Thread(None, self.simulationTestAllThread, name="simulationTestAllThread")
         th.start()
-            
     def simulationTestAllThread(self):
         settingsToRun = {}
         settings = dir(Global)
@@ -219,13 +209,10 @@ class MainWindow(Frame):
         while world.step < Global.MaxTestSteps:
             world.Step()
             self.RenderState(world);
-            time.sleep(0.1)
-            self.captureScreen(savePath + "sp" + str(world.step).zfill(5) + ".png")
-            self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(5) + ".png")
+            self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
         
-        self.mapRenderer.RenderVisibilityHistory()
-        time.sleep(0.1)
-        self.captureScreen(savePath + "visibilityheatmap.png")
+        self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
+        self.mapRenderer.RenderToFile(world, savePath + "objectheatmap.png", ["ovh"])
         
         Global.Log("Stoping simulation...")
         Global.Reset()
@@ -262,9 +249,7 @@ class MainWindow(Frame):
         while True:
             world.Step()
             self.RenderState(world)
-            time.sleep(0.1)
-            
-            self.captureScreen("../../exs/sp" + str(world.step).zfill(5) + ".png")
+            self.mapRenderer.RenderToFile(world, "../../exs/PIL" + str(world.step).zfill(6) + ".png")
             
             if self.lock.acquire(False): break
             self.playbackLock.acquire()
@@ -282,7 +267,7 @@ class MainWindow(Frame):
             self.mapRenderer.HideVisibilityHistory()
         
         self.wxCanvas.delete("infotxt")
-        txt =  "Step:  " + str(world.step).zfill(5) + "\nTime:  " + Global.TimeToHumanFormat(True)
+        txt =  "Step:  " + str(world.step).zfill(6) + "\nTime:  " + Global.TimeToHumanFormat(True)
         self.txtTime = self.wxCanvas.create_text(1080, 5, text=txt, width=200, anchor=NW, tags="infotxt")
         txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
         nc = len(world.agent.intelligence.spaceMap.Layer.nodes)
