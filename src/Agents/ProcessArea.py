@@ -228,10 +228,10 @@ class ProcessArea:
         return False
    
     def GetText(self):
-        txt = '  '
+        txt = []
         act = self.actualProcess
-        if act == None: return ''
-        txt = txt + act.ToString()
+        if act == None: return []
+        txt.insert(0, "  " + act.ToString())
         while True:
             if (act.IsProcess()):
                 if (act.parent != None and act.parent.IsSmartProcess()) or act.process.name == "Execute":
@@ -241,7 +241,7 @@ class ProcessArea:
             else:
                 act = act.parentExcProcess
             if act == None: break            
-            txt = "  " + act.ToString() + "\n" + txt
+            txt.insert(0, "  " + act.ToString() )
         return txt 
     
    

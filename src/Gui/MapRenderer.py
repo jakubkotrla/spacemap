@@ -144,7 +144,7 @@ class MapRenderer:
         for vObj in self.map.visibilityHistory:
             vObj.guiId = None
     
-    def RenderToFile(self, filename):
+    def RenderToFile(self, world, filename):
         im = Image.new("RGB", (1500, 1020), (255, 2555, 255))
         draw = ImageDraw.Draw(im)
         
@@ -210,8 +210,42 @@ class MapRenderer:
             y = node.y*self.zoom - 2 + 10
             draw.rectangle([x,y, x+4,y+4], fill=(0, 255, 0), outline=clBlack)
         
-        #draw.text([0, 0], "ahoj", font=self.font, fill=(0, 0, 0))
-        #chybi pouze steps
+        draw.text([1080,5], "Step:  " + str(world.step).zfill(5), font=self.font, fill=(0, 0, 0))
+        draw.text([1080,20], "Time:  " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
+        
+        txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
+        nc = len(world.agent.intelligence.spaceMap.Layer.nodes)
+        draw.text([1300,5], "Agent:  " + str(self.agent.x) + "," + str(self.agent.y), font=self.font, fill=(0, 0, 0))
+        draw.text([1300,20], "EnergyLayer.nodeCount: " + str(nc), font=self.font, fill=(0, 0, 0))
+        
+        txt = self.agent.paText
+        draw.text([1050,50], "ProcessArea:", font=self.font, fill=(0, 0, 0))
+        ypos = 50
+        for t in txt:
+            ypos = ypos + 20
+            draw.text([1050,ypos], t, font=self.font, fill=(0, 0, 0))
+        
+        ma = self.agent.intelligence.memoryArea
+        draw.text([1050,200], "MemoryArea:", font=self.font, fill=(0, 0, 0))
+        ypos = 200
+        for phantom in ma.memoryPhantoms:
+            ypos = ypos + 20
+            txt = txt + phantom.ToString() + "\n  "  
+            draw.text([1050,ypos], " "+phantom.ToString(), font=self.font, fill=(0, 0, 0))
+        pf = self.agent.intelligence.perceptionField
+
+        draw.text([1050,300], "PerceptionField:", font=self.font, fill=(0, 0, 0))
+        ypos = 300
+        for phantom in pf.environmentPhantoms:
+            ypos = ypos + 20
+            draw.text([1050,ypos], " " + phantom.ToString(), font=self.font, fill=(0, 0, 0))
+        
+        draw.text([1050,600], "Log:", font=self.font, fill=(0, 0, 0))
+        ypos = 600
+        for line in Global.logLines:
+            ypos = ypos + 20
+            draw.text([1050,ypos], line, font=self.font, fill=(0, 0, 0))
+        
         
         
         im.save(filename, "PNG")
