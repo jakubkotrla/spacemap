@@ -109,10 +109,10 @@ class Map:
             self.guiObjectAppeared(rObj)
     
     def SetAgentStart(self, x, y):
-        self.agentMoves.append( {"x":x, "y":y} )
+        self.agentMoves.append( Point(x, y) )
     def PlaceAgent(self, agent):
-        agent.newX = agent.x = self.agentMoves[0]['x']
-        agent.newY = agent.y = self.agentMoves[0]['y']
+        agent.newX = agent.x = self.agentMoves[0].x
+        agent.newY = agent.y = self.agentMoves[0].y
         self.calculateVisibility(agent)
         
     
@@ -122,7 +122,7 @@ class Map:
             return 0
         else:
             duration = self.Distance(agent.x, agent.y, newX, newY)
-            self.agentMoves.append( {"x":agent.x, "y":agent.y} )
+            self.agentMoves.append( Point(agent.x, agent.y) )
             #agent.x = agent.newX - done in Agent.step
             #agent.y = agent.newY - done in Agent.step
             agent.newX = newX
