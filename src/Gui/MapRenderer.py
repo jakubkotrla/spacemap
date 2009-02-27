@@ -205,7 +205,7 @@ class MapRenderer:
             elif obj.visibility > 0 and "ov" in layers:
                 color = (150, 220, 255)
             else:
-                color = (150, 220, 255)
+                color = (0, 0, 255)
             draw.rectangle([x,y, x+10,y+10], fill=color, outline=clBlack)
                 
         elayer = self.agent.intelligence.spaceMap.Layer
