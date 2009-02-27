@@ -1,6 +1,6 @@
 
 import string
-
+import math
 
 class Time:
     def __init__(self, day=0, hour=0, minute=0, second=0, week = 0):
@@ -24,36 +24,22 @@ class Time:
             return True
         else:
             return False
-    
-    def Difference(self, time):
-        pass
-    
-    def AddMinutes(self, minutes):
-        self.minute += minutes
-        while self.minute > 59:
-            self.minute -= 60
-            self.hour += 1
-        while self.hour > 23:
-            self.hour -= 24
-            self.day +=1
-        while self.day > 6:
-            self.day -= 1
-            self.week += 1
             
     def AddSeconds(self, seconds):
-        self.second += seconds
-        while self.second > 59:
-            self.second -= 60
-            self.minute += 1
-        while self.minute > 59:
-            self.minute -= 60
-            self.hour += 1
-        while self.hour > 23:
-            self.hour -= 24
-            self.day +=1
-        while self.day > 6:
-            self.day -= 1
-            self.week += 1
+        self.second += int(math.floor(seconds))
+        if self.second > 59:
+            self.minute = self.minute + int(math.floor(self.second / 60))
+            self.second = self.second % 60
+        if self.minute > 59:
+            self.hour = self.hour + int(math.floor(self.minute / 60))
+            self.minute = self.minute % 60
+        if self.hour > 23:
+            self.day = self.day + int(math.floor(self.hour / 24))
+            self.hour = self.hour % 24
+        if self.day > 6:
+            self.week = self.week + int(math.floor(self.day / 7))
+            self.day = self.day % 7
+      
     
     def GetDay(self):
         return self.day
@@ -90,7 +76,7 @@ class Time:
         else: strSecs = str(self.second)
         
         if full:
-            return "Week " + str(self.week) + ", Day " + strDay + ", " + strHours + ":" + strMinute + ":" + strSecs
+            return "Week " + str(self.week) + ", Day " + str(self.day) + ", " + strHours + ":" + strMinute + ":" + strSecs
         else:
             return "Day " + strDay + ", " + strHours + ":" + strMinute + ":" + strSecs
         

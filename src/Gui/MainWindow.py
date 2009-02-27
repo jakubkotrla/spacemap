@@ -6,7 +6,7 @@ import os
 import time
 import copy
 from random import seed
-from PIL import ImageGrab, ImageDraw, ImageFont
+from PIL import ImageGrab, ImageDraw
 from Enviroment.Global import Global
 from Enviroment.World import World
 from Enviroment.Affordances import Affordances
@@ -21,8 +21,11 @@ class MainWindow(Frame):
         self.tl = self.winfo_toplevel()
         self.tl.geometry("1500x1020+0+0")
         self.tl.title("SpaceMap MainWindow")
+        self.mapRenderer = None
         
-        self.font = ImageFont.truetype("arial.ttf", 12) 
+        self.testToRunCount = 0
+        self.currentTestIndex = 0
+        self.testRunStarted = 0
         
         self.lock = None
         self.playbackLock = None
@@ -154,12 +157,19 @@ class MainWindow(Frame):
     def simulationTestAllThread(self):
         settingsToRun = {}
         settings = dir(Global)
+        settingsToRunLen = []
         for setting in settings:
             if setting.endswith("TESTSET"):
                 a = getattr(Global, setting)
                 settingName = setting.split("TESTSET")[0]
                 settingsToRun[settingName] = a
+                settingsToRunLen.append(len(a))
         #settingsToRun contains all set data to run
+        settingsCount = reduce(lambda x,y: x*y, settingsToRunLen)
+        self.testToRunCount = settingsCount * len(Config.configs) * len(Global.RandomSeeds)
+        self.currentTestIndex = 0
+        self.testRunStarted = time.time()
+        
         self.simulationTestAllRecursive(settingsToRun)
     
     def simulationTestAllRecursive(self, settingsToRun, settingsText=''):  
@@ -204,15 +214,20 @@ class MainWindow(Frame):
 
         self.agent = Agent(config)
         world.SetAgent(self.agent)
-        self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self)
-    
+        self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self, False)
+        
+        self.currentTestIndex = self.currentTestIndex + 1
+        self.mapRenderer.RenderProgress(self)
+        self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
+        time.sleep(0.1)
+        
         while world.step < Global.MaxTestSteps:
             world.Step()
-            self.RenderState(world);
             self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
+            self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
         
         self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
-        self.mapRenderer.RenderToFile(world, savePath + "objectheatmap.png", ["ovh"])
+        self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
         
         Global.Log("Stoping simulation...")
         Global.Reset()
@@ -260,6 +275,7 @@ class MainWindow(Frame):
     
     def RenderState(self, world):
         self.mapRenderer.RenderObjectVisibility()
+        self.mapRenderer.RenderSpaceMap()
         self.mapRenderer.RenderAgent(world.agent)
         if Global.RenderVisibilityHistory:
             self.mapRenderer.RenderVisibilityHistory()
