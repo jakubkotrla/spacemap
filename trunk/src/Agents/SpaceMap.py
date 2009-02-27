@@ -65,6 +65,7 @@ class SpaceMap:
         self.map = Global.Map
         self.affsToMemObjs = {}
         self.objectsToMemObjs = {}
+        self.maxTrained = 0
         
         self.Layer = EnergyLayer(self.map)
         self.Layer.CreateMap()
@@ -84,6 +85,9 @@ class SpaceMap:
         
     
     def objectTrain(self, rObject, effect):
+        rObject.trainHistory = rObject.trainHistory + effect
+        self.maxTrained = max(rObject.trainHistory, self.maxTrained)
+        
         map = Global.Map
         if rObject in self.objectsToMemObjs:
             memObj = self.objectsToMemObjs[rObject]

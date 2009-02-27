@@ -16,6 +16,7 @@ class RealObject:
         self.maxAttractivity = 20
         self.visibility = 0 #0.0 - 1.0
         self.guiId = None
+        self.trainHistory = 0
         
     def Use(self):
         self.amount =- 1

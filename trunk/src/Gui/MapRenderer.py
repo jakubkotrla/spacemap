@@ -193,14 +193,20 @@ class MapRenderer:
                     x = self.agent.x*self.zoom - round(vc.distance*self.zoom) + 10
                     y = self.agent.y*self.zoom - round(vc.distance*self.zoom) + 10
                     draw.pieslice([x,y, x+round(2*vc.distance*self.zoom),y+round(2*vc.distance*self.zoom)], start, end, outline=(255, 0, 0))
-                
+        
+        spaceMap = self.agent.intelligence.spaceMap        
         for obj in self.map.objects:
             x = obj.x*self.zoom - 5 + 10
             y = obj.y*self.zoom - 5 + 10
-            if obj.visibility > 0 and "ov" in layers:
-                draw.rectangle([x,y, x+10,y+10], fill=(150, 220, 255), outline=clBlack)
+            if "ovh" in layers:
+                intensity = 255 - int(255 * obj.trainHistory*1.0 / spaceMap.maxTrained)
+                color = (intensity, intensity, intensity)
+                draw.text([x+5,y+10], str(obj.trainHistory), font=self.font, fill=(0, 0, 0))
+            elif obj.visibility > 0 and "ov" in layers:
+                color = (150, 220, 255)
             else:
-                draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 255), outline=clBlack)
+                color = (150, 220, 255)
+            draw.rectangle([x,y, x+10,y+10], fill=color, outline=clBlack)
                 
         elayer = self.agent.intelligence.spaceMap.Layer
         if "eps" in layers:
@@ -233,8 +239,7 @@ class MapRenderer:
         ypos = 200
         for phantom in ma.memoryPhantoms:
             ypos = ypos + 15
-            txt = txt + phantom.ToString() + "\n  "  
-            draw.text([1050,ypos], " "+phantom.ToString(), font=self.font, fill=(0, 0, 0))
+            draw.text([1050,ypos], " " + phantom.ToString(), font=self.font, fill=(0, 0, 0))
         pf = self.agent.intelligence.perceptionField
 
         draw.text([1050,300], "PerceptionField:", font=self.font, fill=(0, 0, 0))
