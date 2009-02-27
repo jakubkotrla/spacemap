@@ -79,8 +79,11 @@ class GlobalVariables:
         self.ELEnergyFadeCoefTESTSET = [0.1, 0.3,  0.5, 0.7, 0.8]
         self.ELEnergyFadeLimit = 10
         
-        self.ELForgetNodeChance = 0    #max=1..100% each step
+        self.ELForgetNodeChance = 8    #max=1..100% each step
         self.ELForgetNodeChanceTESTSET = [0, 2, 5, 7, 10]
+        self.ELBlackHoleTTL = 5
+        self.ELBlackHoleGravityCoef = 1
+        self.ELBlackHoleGravityRange = 20
   
     def Random(self):
         r = random()
