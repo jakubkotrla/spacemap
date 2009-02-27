@@ -19,14 +19,13 @@ class GlobalVariables:
         self.MinPositiveNumber = 0.00000001
         self.logLines = []
         self.LogLinesCount = 30
- 
-        
+      
         self.RenderVisibilityHistory = False    #show visibility objects
         self.VisibilityHistoryArea = 2          #visibility object is square AxA
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [100, 1024, 123456789, 718597]   #seeds to test
-        self.MaxTestSteps = 50#1200    #should be more than one day 
+        self.MaxTestSteps = 1200    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -48,7 +47,9 @@ class GlobalVariables:
         self.SMTRainEffectCoef = 4   #coef increasing intensity of links memObj-node
         self.SMTRainEffectCoefTESTSET = [4,8]   
         self.SMNodeAreaDivCoef = 10  #when MemObj's linkToNodes are intensed - alter node's gauss area
+        self.SMNodeAreaDivCoefTESTSET = [1, 2, 5, 10]
         self.SMNodeAreaGaussCoef = 1 #as above
+        self.SMNodeAreaGaussCoefTESTSET = [1, 2, 3, 4, 5]
         
         self.MemObjMaxIntensity = 10            #max intensity of memory objects
         self.LinkMemObjToNodeFadeOut = 0.001    #amount to decrease intensity of links memObj-node every step
@@ -56,23 +57,30 @@ class GlobalVariables:
         
         self.ELDensity = 10       #one node will be created for area of appr. ELDensity x ELDensity
         self.ELCreateNoise = 2    #noise when creating nodes
-        self.ELCreateNoiseTESTSET = [2, 4, 5]
-        
+                
         self.ELGravityRange = 20
+        self.ELGravityRangeTESTSET = [10, 15, 20, 25, 30]
         self.ELGravityCoef = 1
+        self.ELGravityCoefTESTSET = [0.5, 1, 1.5, 2]
         self.ELAntigravityCoef = 2.0
+        self.ELAntigravityCoefTESTSET = [1.0, 1.5, 2.0, 2.5, 3.0]
         self.ELAntigravityRange = 15
+        self.ELAntigravityRangeTESTSET = [10, 15, 20]
         self.ELAntigravityNoise = 0.2
         self.ELNodeUsageCoef = 10.0
         self.ELNodeUsageLimit = 15
         
         self.ELEnergyPointCreateEnergy = 100
+        self.ELEnergyPointCreateEnergyTESTSET = [75, 100, 125, 150, 175, 200]
         self.ELNodeAddCost = 100
+        self.ELNodeAddCostTESTSET = [75, 100, 125, 150, 175, 200]
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5
+        self.ELEnergyFadeCoefTESTSET = [0.1, 0.3,  0.5, 0.7, 0.8]
         self.ELEnergyFadeLimit = 10
         
         self.ELForgetNodeChance = 0    #max=1..100% each step
+        self.ELForgetNodeChanceTESTSET = [0, 2, 5, 7, 10]
   
     def Random(self):
         r = random()

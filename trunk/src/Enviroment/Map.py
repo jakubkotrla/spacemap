@@ -124,10 +124,12 @@ class Map:
         else:
             duration = self.Distance(agent.x, agent.y, newX, newY)
             self.agentMoves.append( Point(agent.x, agent.y) )
+            if len(self.agentMoves) > Global.AgentMoveHistoryLength:
+                self.agentMoves.pop(0)
             #agent.x = agent.newX - done in Agent.step
             #agent.y = agent.newY - done in Agent.step
-            agent.newX = newX
-            agent.newY = newY
+            agent.newX = int(newX)
+            agent.newY = int(newY)
         return round(duration)
       
     #start has old position in .x and .y 
