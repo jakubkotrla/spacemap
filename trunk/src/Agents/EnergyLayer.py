@@ -10,14 +10,8 @@ class EnergyPoint:
         self.x = x
         self.y = y
         self.energy = energy
+       
         
-        self.guiId = None
-        self.mapRenderer = None
-        
-        
-    def Render(self, mapRenderer):
-        self.guiId = mapRenderer.PointC(self, self.x, self.y, "darkgreen", 0.5, "energylayerpoint info")
-        self.mapRenderer = mapRenderer
     def ToString(self):
         strInfo = []
         strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
@@ -38,8 +32,7 @@ class EnergyPoint:
 
         self.energy = self.energy * Global.ELEnergyFadeCoef
         if self.energy < Global.ELEnergyFadeLimit:
-            self.mapRenderer.DeleteGuiObject(self.guiId)
-            self.layer.DeleteEneryPoint(self)
+            self.layer.DeleteEnergyPoint(self)
     
 
 class EnergyLayerNode:
@@ -53,18 +46,7 @@ class EnergyLayerNode:
                 
         self.stepDiffX = 0
         self.stepDiffY = 0
-        
-        self.guiId = None
-        self.mapRenderer = None
-        
-    def Render(self, mapRenderer):
-        self.guiId = mapRenderer.PixelC(self, self.x, self.y, "green", 2, "energylayernode info")
-        self.mapRenderer = mapRenderer
-    def renderMove(self):
-        self.mapRenderer.DeleteGuiObject(self.guiId)
-        self.guiId = self.mapRenderer.PixelC(self, self.x, self.y, "green", 2, "energylayernode info")
-    def renderDelete(self):
-        self.mapRenderer.DeleteGuiObject(self.guiId)
+
     def ToString(self):
         strInfo = []
         strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
@@ -74,7 +56,6 @@ class EnergyLayerNode:
         return strInfo
 
     def Delete(self):
-        self.renderDelete()
         for link in self.linkToObjects:
             link.NodeDeleted()
 
@@ -140,7 +121,6 @@ class EnergyLayerNode:
          
         self.x = newX
         self.y = newY
-        self.renderMove()
         self.stepDiffX = self.stepDiffY = 0
             
     def Train(self, point, effect):
@@ -161,10 +141,8 @@ class EnergyLayerNode:
         if hit.hit:
             newX = hit.x
             newY = hit.y
-        
         self.x = newX
         self.y = newY        
-        self.renderMove()
             
 
 
@@ -176,7 +154,6 @@ class EnergyLayer:
         self.energyPointsCountHistory = []
         self.energyPointsToDelete = []
         self.forgetEnergy = 0
-        self.mapRenderer = None
         self.nodeIndex = 1
         
     def CreateMap(self):
@@ -272,7 +249,6 @@ class EnergyLayer:
         newNode = EnergyLayerNode(self, x, y, self.nodeIndex)
         self.nodeIndex = self.nodeIndex + 1
         self.nodes.append(newNode)
-        newNode.Render(self.mapRenderer)
         
         memObject.AddLinkToNode(newNode)
         memObject.IntenseToNode(newNode, 1.0)   #ToDo should be some constant
@@ -289,9 +265,8 @@ class EnergyLayer:
         else:                
             ep = EnergyPoint(self, memObject, memObject.x, memObject.y, effect * Global.ELEnergyPointCreateEnergy)
             self.energyPoints.append(ep)
-            ep.Render(self.mapRenderer)
         
-    def DeleteEneryPoint(self, energyPoint):
+    def DeleteEnergyPoint(self, energyPoint):
         self.energyPointsToDelete.append(energyPoint)
         
     def GetNodeCreateCost(self):

@@ -1,14 +1,17 @@
 
+import time
 from math import *
 from Enviroment.Objects import *
 from Enviroment.World import *
 from Enviroment.Global import Global
 from Enviroment.Map import Point
 from PIL import Image, ImageDraw, ImageFont, ImageColor
+from Tkinter import NW
+from Enviroment.Time import Time 
 
 
 class MapRenderer:
-    def __init__(self, canvas, map, agent, mainWindow):
+    def __init__(self, canvas, map, agent, mainWindow, renderAtStart=True):
         self.canvas = canvas
         self.map = map
         self.agent = agent
@@ -19,21 +22,17 @@ class MapRenderer:
         self.font = ImageFont.truetype("arial.ttf", 12)
         
         self.Clear()
-        self.mapEdges = self.map.Render(self)
+        if renderAtStart:
+            self.mapEdges = self.map.Render(self)
         
-        self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
-        self.agentMHlines = []
+            self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
+            self.agentMHlines = []
         
-        self.map.guiObjectAppeared = self.objectAppeared
-        self.map.guiObjectDisAppeared = self.objectDisAppeared
-        self.objectsRects = []
-        for obj in self.map.objects:
-            self.objectAppeared(obj)
-          
-        layer = self.agent.intelligence.spaceMap.Layer
-        layer.mapRenderer = self
-        for node in layer.nodes:
-            node.Render(self)
+            self.map.guiObjectAppeared = self.objectAppeared
+            self.map.guiObjectDisAppeared = self.objectDisAppeared
+            self.objectsRects = []
+            for obj in self.map.objects:
+                self.objectAppeared(obj)
       
     def Clear(self):
         self.canvas.addtag_all("2del")
@@ -143,6 +142,43 @@ class MapRenderer:
         self.canvas.delete("visibilityobject")
         for vObj in self.map.visibilityHistory:
             vObj.guiId = None
+            
+    def RenderSpaceMap(self):
+        energyPoints = self.agent.intelligence.spaceMap.Layer.energyPoints
+        self.canvas.delete("energylayerpoint")
+        for ep in energyPoints:
+            self.PointC(ep, ep.x, ep.y, "darkgreen", 0.5, "energylayerpoint info")
+        
+        elnodes = self.agent.intelligence.spaceMap.Layer.nodes
+        self.canvas.delete("energylayernode")
+        for node in elnodes:
+            self.PixelC(node, node.x, node.y, "green", 2, "energylayernode info")
+    
+    def RenderProgress(self, progressObject):
+        txt = "Progress:\n\n\n"
+        txt = txt + " Total test to run: "
+        txt = txt + str(progressObject.testToRunCount) + "\n\n"
+        txt = txt + " Current test running: "
+        txt = txt + str(progressObject.currentTestIndex) + "\n\n"
+        txt = txt + " Time passed: "
+        secs = time.time() - progressObject.testRunStarted
+        timePassed = Time()
+        timePassed.AddSeconds(secs)
+        txt = txt + timePassed.TimeToHumanFormat(True) + "\n\n"
+        txt = txt + " Percentage done: "
+        per = (100.0*progressObject.currentTestIndex / progressObject.testToRunCount)
+        txt = txt +  '%.3f'%(per) + "%\n\n"
+        txt = txt + " Time left: "
+        secs = 100.0*secs / per
+        timeLeft = Time()
+        timeLeft.AddSeconds(secs)
+        txt = txt + timeLeft.TimeToHumanFormat(True) + "\n\n"
+        self.canvas.create_text(200, 100, text=txt, width=1000, anchor=NW, tags="progress")
+    def RenderProgressInTest(self, step, stepCount):
+        self.canvas.delete("progresstest")
+        txt = "Test: " + str(step) + "/" + str(stepCount)
+        self.canvas.create_text(200, 400, text=txt, width=1000, anchor=NW, tags="progresstest")
+        
     
     #layers full: [agent, eps(energyPoints), ov(object.visibility), vh(visibilityHistory), objvh(objectVisibilityHistory)]
     def RenderToFile(self, world, filename, layers=["agent", "ov", "eps"]):

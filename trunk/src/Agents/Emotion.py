@@ -34,7 +34,7 @@ class Emotion:
     
     def Update(self, time):
         while self.time.Before(time):
-            self.time.AddMinutes(1)
+            self.time.AddSeconds(60)
             self.pleasure = self.pleasure - pleasureRecoveryRate*(self.pleasure - self.Function(self.time)[0])
             self.intensity = self.intensity - intensityRecoveryRate*(self.intensity - self.Function(self.time)[1])
     
