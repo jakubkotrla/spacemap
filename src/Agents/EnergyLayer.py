@@ -3,6 +3,22 @@ from Enviroment.Global import Global
 from math import sqrt
 from Enviroment.Map import Point
 
+class BlackHole:
+    def __init__(self, node):
+        self.x = node.x
+        self.y = node.y
+        self.ttl = Global.ELBlackHoleTTL
+    
+    def ToString(self):
+        strInfo = []
+        strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
+        strInfo.append("BlackHole[" + strXY + "] energy:" + str(self.energy))
+    
+    def StepUpdate(self, nodesAround):
+        #gravity for nodes around
+        pass
+        
+
 class EnergyPoint:
     def __init__(self, layer, memObject, x, y, energy):
         self.layer = layer
@@ -15,7 +31,7 @@ class EnergyPoint:
     def ToString(self):
         strInfo = []
         strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
-        strInfo.append("EnergyLayerPoint(" + self.info + ") [" + strXY + "] energy:" + str(self.energy))
+        strInfo.append("EnergyLayerPoint[" + strXY + "] energy:" + str(self.energy))
         
     def StepUpdate(self, nodesAround):
         cost = self.layer.GetNodeCreateCost()
@@ -225,14 +241,21 @@ class EnergyLayer:
         self.forgetEnergy = self.forgetEnergy + 1
         if diceRoll < Global.ELForgetNodeChance:
             if self.forgetEnergy > self.GetNodeDeleteCost():
-                self.forgetEnergy = self.forgetEnergy - self.GetNodeCreateDeleteCost()
-                chosenNode = choice(self.nodes)
-                chosenNode.Delete()
-                self.nodes.remove(chosenNode)
+                self.forgetEnergy = self.forgetEnergy - self.GetNodeDeleteCost()
+                self.DeleteNode(Global.Choice(self.nodes))
             else:
                 #nothing - not enough energy - should be in chance
                 pass
         self.energyPointsCountHistory.append(len(self.energyPoints))
+     
+    def DeleteNode(self, node):
+        node.Delete()
+        self.nodes.remove(node)
+        for i in range(100):
+            nodes = self.getNodesAround(node, 20)
+            for n in nodes:
+                n.StepUpdate(self.getNodesAround(n, 20))
+                n.StepUpdateMove() 
         
     def CreateNode(self, point, memObject):
         xNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
