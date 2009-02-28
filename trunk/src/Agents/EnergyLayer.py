@@ -120,9 +120,7 @@ class EnergyLayerNode:
             
             self.stepDiffX += diffX
             self.stepDiffY += diffY
-        for link in self.linkToObjects:
-            link.StepUpdate()
-        
+       
         
     def StepUpdateMove(self):
         massCoef = 1.0/max(1, self.GetUsage())
@@ -201,11 +199,10 @@ class EnergyLayer:
                         self.nodeIndex = self.nodeIndex + 1
                         self.nodes.append(node)
         
-    def PositionToNodes(self, x, y):
+    def PositionToNodes(self, x, y, per):
         inNodes = []
         closestNode = None
         closestDistance = Global.MaxNumber
-        per = Global.ELGravityRange
         map = Global.Map
         for node in self.nodes:
             distance = map.DistanceObj(x, y, node)

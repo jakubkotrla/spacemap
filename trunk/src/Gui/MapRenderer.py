@@ -45,10 +45,10 @@ class MapRenderer:
     def Pixel(self, object, cx, cy, color, tags="pixel"):
         x = cx*self.zoom - round(self.zoom/2) 
         y = cy*self.zoom - round(self.zoom/2)
-        id = self.canvas.create_rectangle(x+10,y+10, x+self.zoom+10,y+self.zoom+10, fill=color, tags=tags)
+        id = self.canvas.create_rectangle(x+10,y+10, x+self.zoom+10,y+self.zoom+10, fill=color, outline="", tags=tags)
         self.guiIdsToObjects[id] = object
         return id 
-    def PixelC(self, object, cx, cy, color, coef, tags="pixelc", outline="black"):
+    def PixelC(self, object, cx, cy, color, coef, tags="pixelc", outline=""):
         coef = coef * 2
         x = cx*self.zoom - round(self.zoom/coef) 
         y = cy*self.zoom - round(self.zoom/coef)
@@ -121,9 +121,9 @@ class MapRenderer:
     def RenderObjectVisibility(self):
         for obj in self.objectsRects:
             if obj.visibility > 0:
-                self.canvas.itemconfigure(obj.guiId, fill="LightSkyBlue1")
+                self.canvas.itemconfigure(obj.guiId, fill="#6496ff")
             else:
-                self.canvas.itemconfigure(obj.guiId, fill="blue")
+                self.canvas.itemconfigure(obj.guiId, fill="#0000ff")
     
     def RenderVisibilityHistory(self):
         for vObj in self.map.visibilityHistory:
@@ -147,12 +147,12 @@ class MapRenderer:
         energyPoints = self.agent.intelligence.spaceMap.Layer.energyPoints
         self.canvas.delete("energylayerpoint")
         for ep in energyPoints:
-            self.PointC(ep, ep.x, ep.y, "darkgreen", 0.5, "energylayerpoint info")
+            self.PointC(ep, ep.x, ep.y, "#0000ff", 0.5, "energylayerpoint info")
         
         elnodes = self.agent.intelligence.spaceMap.Layer.nodes
         self.canvas.delete("energylayernode")
         for node in elnodes:
-            self.PixelC(node, node.x, node.y, "green", 2, "energylayernode info")
+            self.PixelC(node, node.x, node.y, "#00c800", 2, "energylayernode info")
     
     def RenderProgress(self, progressObject):
         txt = "Progress:\n\n\n"
@@ -192,15 +192,14 @@ class MapRenderer:
                 x = (vObj.x - Global.VisibilityHistoryArea/2) *self.zoom + 10
                 y = (vObj.y - Global.VisibilityHistoryArea/2) *self.zoom + 10
                 length = Global.VisibilityHistoryArea * self.zoom
-                draw.rectangle([x,y, x+length,y+length], fill=color, outline=color)
+                draw.rectangle([x,y, x+length,y+length], fill=color, outline=None)
         
-        clBlack = (0,0,0)
         for edge in self.map.edges:
-            draw.line( [self.zoom*edge.start.x+10, self.zoom*edge.start.y+10, self.zoom*edge.end.x+10, self.zoom*edge.end.y+10], fill=clBlack)
+            draw.line( [self.zoom*edge.start.x+10, self.zoom*edge.start.y+10, self.zoom*edge.end.x+10, self.zoom*edge.end.y+10], fill=(0,0,0))
         for wayPoint in self.map.wayPoints:
              x = wayPoint.x*self.zoom - 2 + 10
              y = wayPoint.y*self.zoom - 2 + 10
-             draw.rectangle([x,y, x+4,y+4], fill=clBlack, outline=clBlack)
+             draw.rectangle([x,y, x+4,y+4], fill=(0,0,0), outline=None)
         
         if "agent" in layers:
             lastPoint = self.map.agentMoves[0]
@@ -211,7 +210,7 @@ class MapRenderer:
                 lastPoint = point
             x = self.agent.x*self.zoom - 5 + 10
             y = self.agent.y*self.zoom - 5 + 10
-            draw.rectangle([x,y, x+10,y+10], fill=(255, 0, 0), outline=clBlack)
+            draw.rectangle([x,y, x+10,y+10], fill=(255, 0, 0), outline=None)
             agStart = (self.agent.dirAngle - pi/2)
             for vc in self.agent.viewCones:
                 if vc.angle == pi:
@@ -230,7 +229,13 @@ class MapRenderer:
                     y = self.agent.y*self.zoom - round(vc.distance*self.zoom) + 10
                     draw.pieslice([x,y, x+round(2*vc.distance*self.zoom),y+round(2*vc.distance*self.zoom)], start, end, outline=(255, 0, 0))
         
-        spaceMap = self.agent.intelligence.spaceMap        
+        spaceMap = self.agent.intelligence.spaceMap
+        elayer = spaceMap.Layer
+        if "eps" in layers:
+            for ep in elayer.energyPoints:
+                x = ep.x*self.zoom #- 10 + 10
+                y = ep.y*self.zoom #- 10 + 10
+                draw.ellipse([x,y, x+20,y+20], fill=(0, 0, 255), outline=None)
         for obj in self.map.objects:
             x = obj.x*self.zoom - 5 + 10
             y = obj.y*self.zoom - 5 + 10
@@ -239,21 +244,14 @@ class MapRenderer:
                 color = (intensity, intensity, intensity)
                 draw.text([x+5,y+10], str(obj.trainHistory), font=self.font, fill=(0, 0, 0))
             elif obj.visibility > 0 and "ov" in layers:
-                color = (150, 220, 255)
+                color = (100, 150, 255)
             else:
                 color = (0, 0, 255)
-            draw.rectangle([x,y, x+10,y+10], fill=color, outline=clBlack)
-                
-        elayer = self.agent.intelligence.spaceMap.Layer
-        if "eps" in layers:
-            for ep in elayer.energyPoints:
-                x = ep.x*self.zoom #- 10 + 10
-                y = ep.y*self.zoom #- 10 + 10
-                draw.ellipse([x,y, x+20,y+20], outline=(0, 0, 255))
+            draw.rectangle([x,y, x+10,y+10], fill=color, outline=None)
         for node in elayer.nodes:    
             x = node.x*self.zoom - 2 + 10
             y = node.y*self.zoom - 2 + 10
-            draw.rectangle([x,y, x+4,y+4], fill=(0, 255, 0), outline=clBlack)
+            draw.rectangle([x,y, x+4,y+4], fill=(0, 200, 0), outline=None)
         
         draw.text([1080,5], "Step:  " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
         draw.text([1080,20], "Time:  " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))

@@ -34,7 +34,6 @@ class MainWindow(Frame):
         self.wndAffordances = None
         self.wndObjects = None
         self.wndRealObjects = None
-        self.wndLog = None
         self.wndInfo = None
         
         self.pack()  
@@ -60,7 +59,6 @@ class MainWindow(Frame):
         worldMenu.add_command(label="Show Affordances", command=self.showAffordances)
         worldMenu.add_command(label="Show Object Types", command=self.showObjectTypes)
         worldMenu.add_command(label="Show Objects", command=self.showObjects)
-        worldMenu.add_command(label="Show Log", command=self.showLog)
         worldMenu.add_checkbutton(label="Show visibility history", command=self.visibilityHistoryCheck)
                   
         menubar = Menu(self)
@@ -107,17 +105,6 @@ class MainWindow(Frame):
         map = Global.Map
         for obj in map.objects:
             txt.insert("end", obj.ToString())
-    def showLog(self):
-        wndLog = Toplevel()
-        wndLog.geometry("700x200+0+1000")
-        wndLog.title("SpaceMap - Log")
-        Global.wndLog = wndLog
-        txtLog = Listbox(wndLog)
-        txtLog.pack(side=LEFT, fill=BOTH, expand=1)
-        Global.wndLog.txtLog = txtLog
-        scrollBar = Scrollbar(wndLog, orient=VERTICAL, command=txtLog.yview)
-        txtLog["yscrollcommand"]  =  scrollBar.set
-        scrollBar.pack(side=RIGHT, fill=Y)
     def visibilityHistoryCheck(self):
         Global.RenderVisibilityHistory = not Global.RenderVisibilityHistory    
     
@@ -204,7 +191,7 @@ class MainWindow(Frame):
     def runOneSimulation(self, savePath, configName, randomSeed):
         savePath = savePath + str(randomSeed) + "-" + configName + "/"
         os.makedirs(savePath)
-        Global.SetupOutputFiles(savePath)   
+        Global.LogStart(savePath)   
         Global.Log("Starting new simulation and world for Config: " + configName)
         
         seed(randomSeed)
@@ -221,15 +208,18 @@ class MainWindow(Frame):
         self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
         time.sleep(0.1)
         
+        elayer = world.agent.intelligence.spaceMap.Layer
         while world.step < Global.MaxTestSteps:
             world.Step()
             self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
             self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
+            Global.LogData(str( len(elayer.nodes) ))
         
         self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
         self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
         
         Global.Log("Stoping simulation...")
+        Global.LogEnd()
         Global.Reset()
         self.agent = None
         self.mapRenderer.Clear()
@@ -239,7 +229,7 @@ class MainWindow(Frame):
         dirList = os.listdir("../../exs/")
         for fname in dirList:
             os.remove("../../exs/" + fname)
-        Global.SetupOutputFiles("../../exs/")
+        Global.LogStart("../../exs/")
         Global.Log("Starting new simulation and world for Config: " + configName)
         
         seed(Global.RandomSeeds[0])
@@ -271,6 +261,7 @@ class MainWindow(Frame):
             self.playbackLock.release()
   
         self.lockBack.release()
+        Global.LogEnd()
         return
     
     def RenderState(self, world):
