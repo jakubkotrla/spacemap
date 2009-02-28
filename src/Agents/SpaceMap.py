@@ -28,13 +28,18 @@ class MemoryObject:
             node.linkToObjects.append(link)
         else:
             foundLink.Intense(intensity)
-        
     def Intense(self, intensity):
         self.intensity = self.intensity + intensity
         if self.intensity > Global.MemObjMaxIntensity: self.intensity = Global.MemObjMaxIntensity
+
+    def StepUpdate(self):
+        #ToDo: decrease intensity here ? Global.SMMemObjIntensityFadeOut = 0.001 ?
+        for link in self.linkToNodes:
+            link.StepUpdate()
             
     def ToString(self):
         return self.type.name + "(Memory) at [" + str(self.x) + "," + str(self.y) + "]"
+    
 
 class LinkMemoryObjectToNode:
     def __init__(self, object, node, intensity):
@@ -46,7 +51,7 @@ class LinkMemoryObjectToNode:
         self.intensity = self.intensity + intensity
         if self.intensity > Global.LinkMemObjToNodeMaxIntensity: self.intensity = Global.LinkMemObjToNodeMaxIntensity
     
-    #called from Node.StepUpdate
+    #called from MemoryObject.StepUpdate
     def StepUpdate(self):
         self.intensity = self.intensity - Global.LinkMemObjToNodeFadeOut
         if self.intensity < 0: self.intensity = 0 
@@ -71,7 +76,10 @@ class SpaceMap:
         self.Layer.CreateMap()
         
     def StepUpdate(self):
-        self.Layer.StepUpdate() 
+        self.Layer.StepUpdate()
+        memObjs = self.objects.values()
+        for meObj in memObjs:
+            memObj.StepUpdate()
        
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:
@@ -98,7 +106,7 @@ class SpaceMap:
         
         self.Layer.Train(memObj, effect)
         
-        inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y)
+        inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y, Global.ELGravityRange)
         nodesToIntensity = {}
         sumIntensity = 0
         effect = Global.SMTRainEffectCoef * effect

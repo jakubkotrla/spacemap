@@ -7,14 +7,13 @@ from random import seed, randint, choice, random
 class GlobalVariables:
     def __init__(self):
         self.Reset()
-        self.path = ""
+        self.outLog = None
+        self.outData = None
     
     def Reset(self):
         self.Time = Time()
         self.World = None
         self.Map = None
-        self.wndLog = None
-        self.wndPA = None
         self.MaxNumber = 9999999
         self.MinPositiveNumber = 0.00000001
         self.logLines = []
@@ -101,22 +100,19 @@ class GlobalVariables:
         #self.Log("RandomChoice")
         return choice(list)
     
-    def SetupOutputFiles(self, path):
-        self.path = path
+    def LogStart(self, path):
+        self.outLog = open(path+"log.txt",'a')
+        self.outData = open(path+"data.txt",'a')
     def Log(self, msg):
-        print msg
-        f = open(self.path+"log.txt",'a')
-        f.write(msg + "\n")
-        f.close()
-        if self.wndLog != None:
-            self.wndLog.txtLog.insert("end", msg)
+        self.outLog.write(msg + "\n")
         self.logLines.append(msg)
         if len(self.logLines) > self.LogLinesCount:
             self.logLines.pop(0)
     def LogData(self, data):
-        f = open(self.path+"data.txt",'a')
-        f.write(data + "\n")
-        f.close()
+        self.outData.write(data + "\n")
+    def LogEnd(self):
+        self.outLog.close()
+        self.outData.close()
         
     def Gauss(self, x, c=1):
         return exp( - ((x)**2) / 2*(c**2) )
