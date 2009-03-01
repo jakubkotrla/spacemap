@@ -33,7 +33,9 @@ class Phantom:
         if self.ownerProcess != None:
             self.ownerProcess.resources.remove(self)
         self.ownerProcess = None
-        self.memoryPhantom = None
+        if self.memoryPhantom != None:
+            self.memoryPhantom.UnlinkFromOwnerProcess()
+            self.memoryPhantom = None
     
     def GetType(self):
         return "e"
@@ -123,6 +125,8 @@ class PerceptionField:
                         
     def UseObjectPhantoms(self, excProcess):
         for phantom in excProcess.resources:
+            if phantom.GetType() != "e":
+                Global.Log("Error haha")
             self.spaceMap.ObjectUsed(phantom.object)
         
         map = Global.Map
@@ -172,6 +176,7 @@ class PerceptionField:
         else:
             self.spaceMap.ObjectNotFound(memoryPhantom.object)
             self.memoryArea.RemovePhantom(memoryPhantom)
+            memoryPhantom.ResetOwnerProcess()
         return rObj
     
           

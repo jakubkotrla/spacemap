@@ -33,6 +33,9 @@ class MemoryPhantom:
             self.ownerProcess.resources.remove(self)
         self.ownerProcess = None
         
+    def UnlinkFromOwnerProcess(self):
+        self.ownerProcess = None
+        
     def ToString(self):
         if (self.ownerProcess != None):
             str = "Phantom(M) of " + self.object.ToString() + " linked to " + self.ownerProcess.process.name
@@ -84,7 +87,7 @@ class MemoryArea:
     def Update(self, action):
         habituatedPhantoms = []
         for phantom in self.memoryPhantoms:
-            if not phantom.ownerProcess.IsInProgress():
+            if phantom.ownerProcess == None or (not phantom.ownerProcess.IsInProgress()):
                 if phantom.Habituate(action.duration):
                     habituatedPhantoms.append(phantom)
         for habituatedPhantom in habituatedPhantoms:

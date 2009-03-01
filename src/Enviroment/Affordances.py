@@ -7,7 +7,6 @@ class Affordance:
 
 
 # Configuration part    
-NothingSpecial = Affordance('NothingSpecial')
 
 Cutability = Affordance('Cutability')
 Eatability = Affordance('Eatability')
@@ -36,7 +35,6 @@ Sewability = Affordance('Sewability')
 
 
 Affordances = [
-    NothingSpecial,
     Cutability,
     Eatability,
     Washability,
