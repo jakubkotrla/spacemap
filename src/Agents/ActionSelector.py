@@ -114,7 +114,10 @@ class ActionSelector:
                 
                 if excProcess.data["waypoints"] == None:
                     map = Global.Map
-                    excProcess.data["waypoints"] = copy(map.wayPoints)
+                    ws = copy(map.wayPoints)
+                    ws.sort(lambda a,b: cmp(a.lastVisited,b.lastVisited))
+                    excProcess.data["waypoints"] = ws
+                    
                 if len(excProcess.data["waypoints"]) < 1:
                     self.processArea.TerminateProcess(emotion, False)
                     return self.GetAction(emotion)

@@ -4,7 +4,7 @@ from Enviroment.Global import Global
 
 
 class MemoryPhantom:
-    def __init__(self, memoryObject, habituation):
+    def __init__(self, memoryObject, habituation=Global.MAPhantomHabituation):
         self.object  = memoryObject
         self.affordance  = None
         self.ownerProcess  = None
@@ -12,11 +12,6 @@ class MemoryPhantom:
         
     def GetType(self):
         return "m"
-        
-    def Update(self, realObject, habituation):
-        self.positionX   = realObject.x
-        self.positionY   = realObject.y
-        self.habituation = habituation
     
     def Habituate(self, amount):
         self.habituation -= amount
@@ -56,7 +51,7 @@ class MemoryArea:
         if memPhantom == None:
             memObject = self.spaceMap.GetMemoryObject(affordance)
             if memObject != None:
-                memPhantom = MemoryPhantom(memObject, Global.MAPhantomHabituation)
+                memPhantom = MemoryPhantom(memObject)
             else:
                 return None
         self.memoryPhantoms.append(memPhantom)

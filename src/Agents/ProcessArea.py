@@ -209,6 +209,7 @@ class ProcessArea:
         realProcess = self.actualBasicProcess
         if realProcess != memoryPhantom.ownerProcess:
             Global.Log("Programmer.Error: PA.PhantomAddedForMemoryPhantom relinking memPhantom for in-active process")
+        phantom.ownerProcess = realProcess
         realProcess.resources.append(phantom)
         realProcess.resources.remove(memoryPhantom)
         

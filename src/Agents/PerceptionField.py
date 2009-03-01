@@ -5,19 +5,17 @@ from PerceptionFilter import PerceptionFilter
 
 
 class Phantom:
-    def __init__(self, realObject, habituation, memoryPhantom=None):
-        self.object      = realObject
+    def __init__(self, rObject, memoryPhantom=None):
+        self.object      = rObject
         self.affordance  = None
         self.ownerProcess = None
-        self.positionX   = realObject.x
-        self.positionY   = realObject.y
-        self.habituation = habituation
+        habEffect = rObject.curAttractivity * rObject.visibility
+        self.habituation = Global.PFPhantomHabCreate * habEffect
         self.memoryPhantom = memoryPhantom
         
-    def Update(self, realObject, habituation):
-        self.positionX   = realObject.x
-        self.positionY   = realObject.y
-        self.habituation = habituation
+    def Update(self, rObject):
+        hab = Global.PFPhantomHabUpdate * rObject.curAttractivity * rObject.visibility
+        self.habituation += hab
     
     def Habituate(self, amount):
         self.habituation -= amount
@@ -42,10 +40,10 @@ class Phantom:
      
     def ToString(self):
         if (self.ownerProcess != None):
-            str = "Phantom(E) of " + self.object.ToString() + " linked to " + self.ownerProcess.process.name
+            s = "Phantom(E," + str(self.habituation) + ") of " + self.object.ToString() + " linked to " + self.ownerProcess.process.name
         else:
-            str = "Phantom(E) of " + self.object.ToString()
-        return str
+            s = "Phantom(E," + str(self.habituation) + ") of " + self.object.ToString()
+        return s
 
 
 class PerceptionField:
@@ -79,18 +77,18 @@ class PerceptionField:
             if rObj.curAttractivity == 0: continue
             phantom = self.GetPhantomForObj(rObj)
             if phantom != None:
-                phantom.Update(rObj, Global.PFPhantomHabituation)
+                phantom.Update(rObj)
                 phantomsToSpaceMap[phantom] = "ObjectNoticedAgain"
             else:
                 memPhantom = self.memoryArea.GetPhantomForObject(rObj)
                 if memPhantom != None and self.processArea.LookingForPhantom(memPhantom):
-                    phantom = Phantom(rObj, Global.PFPhantomHabituation, memPhantom)
+                    phantom = Phantom(rObj, memPhantom)
                     self.environmentPhantoms.append(phantom)
-                    self.processArea.PhantomAddedForMemoryPhantom(phantom, memPhantom) #link to possible processes may replace memoryPhantom
+                    self.processArea.PhantomAddedForMemoryPhantom(phantom, memPhantom)
                     phantomsToSpaceMap[phantom] = "ObjectFound"
                     Global.Log("PF: Adding phantom for object " + rObj.ToString() + " instead of " + memPhantom.ToString())
                 else:
-                    phantom = Phantom(rObj, Global.PFPhantomHabituation)
+                    phantom = Phantom(rObj)
                     self.environmentPhantoms.append(phantom)
                     self.processArea.PhantomAdded(phantom)
                     phantomsToSpaceMap[phantom] = "ObjectNoticed"
@@ -160,12 +158,12 @@ class PerceptionField:
         if rObj != None:
             phantom = self.GetPhantomForObj(rObj)
             if phantom != None:
-                phantom.Update(rObj, Global.PFPhantomHabituation)
+                phantom.Update(rObj)
                 phantom.memoryPhantom = memoryPhantom
                 self.spaceMap.ObjectNoticedAgain(rObj)
                 Global.Log("PF: RE-adding phantom(lookFor) for object " + rObj.ToString())
             else:
-                phantom = Phantom(rObj, Global.PFPhantomHabituation, memoryPhantom)
+                phantom = Phantom(rObj, memoryPhantom)
                 self.environmentPhantoms.append(phantom)
                 self.processArea.PhantomAddedForMemoryPhantom(phantom, memoryPhantom)
                 self.spaceMap.ObjectFound(rObj)
