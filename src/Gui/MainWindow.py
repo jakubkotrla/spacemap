@@ -257,7 +257,7 @@ class MainWindow(Frame):
         while True:
             world.Step()
             self.RenderState(world)
-            self.mapRenderer.RenderToFile(world, "../../exs/PIL" + str(world.step).zfill(6) + ".png")
+            self.mapRenderer.RenderToFile(world, "../../exs/PIL" + str(world.step).zfill(6) + ".png", ["agent", "ov", "eps", "info"])
             
             if self.lock.acquire(False): break
             self.playbackLock.acquire()

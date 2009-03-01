@@ -147,7 +147,7 @@ class MapRenderer:
         energyPoints = self.agent.intelligence.spaceMap.Layer.energyPoints
         self.canvas.delete("energylayerpoint")
         for ep in energyPoints:
-            self.PointC(ep, ep.x, ep.y, "#0000ff", 0.5, "energylayerpoint info")
+            self.PointC(ep, ep.x, ep.y, "#00c800", 0.5, "energylayerpoint info")
         
         elnodes = self.agent.intelligence.spaceMap.Layer.nodes
         self.canvas.delete("energylayernode")
@@ -180,9 +180,12 @@ class MapRenderer:
         self.canvas.create_text(200, 400, text=txt, width=1000, anchor=NW, tags="progresstest")
         
     
-    #layers full: [agent, eps(energyPoints), ov(object.visibility), vh(visibilityHistory), objvh(objectVisibilityHistory)]
-    def RenderToFile(self, world, filename, layers=["agent", "ov", "eps"]):
-        im = Image.new("RGB", (1500, 1020), (255, 2555, 255))
+    #layers full: [agent, eps(energyPoints), ov(object.visibility), vh(visibilityHistory), objvh(objectVisibilityHistory), info(text info, log, etc.)]
+    def RenderToFile(self, world, filename, layers=[]):
+        if "info" in layers:
+            im = Image.new("RGB", (1500, 1020), (255, 2555, 255))
+        else:
+            im = Image.new("RGB", (1100, 1100), (255, 2555, 255))
         draw = ImageDraw.Draw(im)
         
         if "vh" in layers:
@@ -235,58 +238,68 @@ class MapRenderer:
             for ep in elayer.energyPoints:
                 x = ep.x*self.zoom #- 10 + 10
                 y = ep.y*self.zoom #- 10 + 10
-                draw.ellipse([x,y, x+20,y+20], fill=(0, 0, 255), outline=None)
-        for obj in self.map.objects:
-            x = obj.x*self.zoom - 5 + 10
-            y = obj.y*self.zoom - 5 + 10
-            if "ovh" in layers:
+                draw.ellipse([x,y, x+20,y+20], fill=None, outline=(0, 200, 0))
+        if "ovh" in layers:    
+            for obj in self.map.objects:
+                x = obj.x*self.zoom - 5 + 10
+                y = obj.y*self.zoom - 5 + 10
                 intensity = 255 - int(255 * obj.trainHistory*1.0 / spaceMap.maxTrained)
                 color = (intensity, intensity, intensity)
                 draw.text([x+5,y+10], str(obj.trainHistory), font=self.font, fill=(0, 0, 0))
-            elif obj.visibility > 0 and "ov" in layers:
-                color = (100, 150, 255)
-            else:
-                color = (0, 0, 255)
-            draw.rectangle([x,y, x+10,y+10], fill=color, outline=None)
+                draw.rectangle([x,y, x+10,y+10], fill=color, outline=None)        
+        elif "ov" in layers:
+            for obj in self.map.objects:
+                x = obj.x*self.zoom - 5 + 10
+                y = obj.y*self.zoom - 5 + 10
+                if obj.visibility > 0:
+                    draw.rectangle([x,y, x+10,y+10], fill=(100, 150, 255), outline=None)
+                else:
+                    draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 255), outline=None)
+        else:
+            for obj in self.map.objects:
+                x = obj.x*self.zoom - 5 + 10
+                y = obj.y*self.zoom - 5 + 10
+                draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 255), outline=None)
+            
         for node in elayer.nodes:    
             x = node.x*self.zoom - 2 + 10
             y = node.y*self.zoom - 2 + 10
             draw.rectangle([x,y, x+4,y+4], fill=(0, 200, 0), outline=None)
         
-        draw.text([1080,5], "Step:  " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
-        draw.text([1080,20], "Time:  " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
-        
-        txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
-        nc = len(world.agent.intelligence.spaceMap.Layer.nodes)
-        draw.text([1300,5], "Agent:  " + str(self.agent.x) + "," + str(self.agent.y), font=self.font, fill=(0, 0, 0))
-        draw.text([1300,20], "EnergyLayer.nodeCount: " + str(nc), font=self.font, fill=(0, 0, 0))
-        
-        txt = self.agent.paText
-        draw.text([1050,50], "ProcessArea:", font=self.font, fill=(0, 0, 0))
-        ypos = 50
-        for t in txt:
-            ypos = ypos + 14
-            draw.text([1050,ypos], t, font=self.font, fill=(0, 0, 0))
-        
-        ma = self.agent.intelligence.memoryArea
-        draw.text([1050,200], "MemoryArea:", font=self.font, fill=(0, 0, 0))
-        ypos = 200
-        for phantom in ma.memoryPhantoms:
-            ypos = ypos + 15
-            draw.text([1050,ypos], " " + phantom.ToString(), font=self.font, fill=(0, 0, 0))
-        pf = self.agent.intelligence.perceptionField
-
-        draw.text([1050,300], "PerceptionField:", font=self.font, fill=(0, 0, 0))
-        ypos = 300
-        for phantom in pf.environmentPhantoms:
-            ypos = ypos + 15
-            draw.text([1050,ypos], " " + phantom.ToString(), font=self.font, fill=(0, 0, 0))
-        
-        draw.text([1050,550], "Log:", font=self.font, fill=(0, 0, 0))
-        ypos = 550
-        for line in Global.logLines:
-            ypos = ypos + 15
-            draw.text([1050,ypos], "  " + line, font=self.font, fill=(0, 0, 0))
+        if "info" in layers:
+            draw.text([1080,5], "Step:  " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
+            draw.text([1080,20], "Time:  " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
+            txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
+            nc = len(world.agent.intelligence.spaceMap.Layer.nodes)
+            draw.text([1300,5], "Agent:  " + str(self.agent.x) + "," + str(self.agent.y), font=self.font, fill=(0, 0, 0))
+            draw.text([1300,20], "EnergyLayer.nodeCount: " + str(nc), font=self.font, fill=(0, 0, 0))
+            txt = self.agent.paText
+            draw.text([1050,50], "ProcessArea:", font=self.font, fill=(0, 0, 0))
+            ypos = 50
+            for t in txt:
+                ypos = ypos + 14
+                draw.text([1050,ypos], t, font=self.font, fill=(0, 0, 0))
+            ma = self.agent.intelligence.memoryArea
+            draw.text([1050,200], "MemoryArea:", font=self.font, fill=(0, 0, 0))
+            ypos = 200
+            for phantom in ma.memoryPhantoms:
+                ypos = ypos + 15
+                draw.text([1050,ypos], " " + phantom.ToString(), font=self.font, fill=(0, 0, 0))
+            pf = self.agent.intelligence.perceptionField
+            draw.text([1050,300], "PerceptionField:", font=self.font, fill=(0, 0, 0))
+            ypos = 300
+            for phantom in pf.environmentPhantoms:
+                ypos = ypos + 15
+                draw.text([1050,ypos], " " + phantom.ToString(), font=self.font, fill=(0, 0, 0))
+            draw.text([1050,550], "Log:", font=self.font, fill=(0, 0, 0))
+            ypos = 550
+            for line in Global.logLines:
+                ypos = ypos + 15
+                draw.text([1050,ypos], "  " + line, font=self.font, fill=(0, 0, 0))
+        else:
+            draw.text([10,1020], "Step:  " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
+            draw.text([500,1020], "Time:  " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
+                
          
         im.save(filename, "PNG")
     
