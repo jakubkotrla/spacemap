@@ -30,7 +30,6 @@ class MemoryObject:
             foundLink.Intense(intensity)
     def Intense(self, intensity):
         self.intensity = self.intensity + intensity
-        if self.intensity > Global.MemObjMaxIntensity: self.intensity = Global.MemObjMaxIntensity
 
     def StepUpdate(self):
         self.intensity = self.intensity - Global.MemObjIntensityFadeOut
@@ -92,6 +91,7 @@ class SpaceMap:
         
     
     def objectTrain(self, rObject, effect):
+        effect = effect * rObject.curAttractivity * rObject.visibility
         rObject.trainHistory = rObject.trainHistory + effect
         self.maxTrained = max(rObject.trainHistory, self.maxTrained)
         

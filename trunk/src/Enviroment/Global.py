@@ -30,11 +30,12 @@ class GlobalVariables:
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
         self.WayPointNoise = 5      #how much can agent miss waypoint (when going to it)
         
-        self.PFSize = 7         #number of active/real phatoms in PF
-        self.PFPhantomHabituation = 100    #habituation of new phantom(e)
+        self.PFSize = 7                    #number of active/real phatoms in PF
+        self.PFPhantomHabCreate = 100      #habituation of new phantom(e)
+        self.PFPhantomHabUpdate = 50       #habituation added when objNoticed again in PF
         self.MAPhantomHabituation = 100    #habituation of new phantom(m)
                 
-        self.ObjDefaultAttractivity = 10    #default object attractivity    
+        self.ObjDefaultAttractivity = 10   #default object attractivity    
                 
         self.TrainEffectNoticed = 1.0
         self.TrainEffectNoticedAgain = 0.1
@@ -51,7 +52,6 @@ class GlobalVariables:
         self.SMNodeAreaGaussCoefTESTSET = [1, 2, 3, 4, 5]
         
         self.MemObjIntensityFadeOut = 0.01      #amount to decrease intensity of memObjs every step
-        self.MemObjMaxIntensity = 10            #max intensity of memory objects
         self.LinkMemObjToNodeFadeOut = 0.001    #amount to decrease intensity of links memObj-node every step
         self.LinkMemObjToNodeMaxIntensity = 10  #max intensity of links memObj-node
                 
@@ -65,12 +65,9 @@ class GlobalVariables:
         self.ELAntigravityRange = 15
         self.ELAntigravityRangeTESTSET = [10, 15, 20]
         self.ELNodeUsageCoef = 10.0
-        self.ELNodeUsageLimit = 15
         
         self.ELEnergyPointCreateEnergy = 100
         self.ELEnergyPointCreateEnergyTESTSET = [75, 100, 125, 150, 175, 200]
-        self.ELNodeAddCost = 100
-        self.ELNodeAddCostTESTSET = [75, 100, 125, 150, 175, 200]
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5
         self.ELEnergyFadeCoefTESTSET = [0.1, 0.3,  0.5, 0.7, 0.8]
@@ -121,7 +118,7 @@ class GlobalVariables:
         
     #for weakBy=2 maps coef range 0-1 to coef range 0.5-1
     def WeakCoef(self, coef, weakBy):
-        coef = coef / weakBy + 1 - (weakBy-1)/weakBy     
+        return coef / weakBy + 1 - float(weakBy-1)/weakBy     
 
     def SetDifference(self, a, b):
         return filter(lambda x:x not in b,a)
