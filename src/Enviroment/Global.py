@@ -50,22 +50,20 @@ class GlobalVariables:
         self.SMNodeAreaGaussCoef = 1 #as above
         self.SMNodeAreaGaussCoefTESTSET = [1, 2, 3, 4, 5]
         
+        self.MemObjIntensityFadeOut = 0.01      #amount to decrease intensity of memObjs every step
         self.MemObjMaxIntensity = 10            #max intensity of memory objects
         self.LinkMemObjToNodeFadeOut = 0.001    #amount to decrease intensity of links memObj-node every step
         self.LinkMemObjToNodeMaxIntensity = 10  #max intensity of links memObj-node
-        
+                
         self.ELDensity = 10       #one node will be created for area of appr. ELDensity x ELDensity
         self.ELCreateNoise = 2    #noise when creating nodes
                 
         self.ELGravityRange = 20
         self.ELGravityRangeTESTSET = [10, 15, 20, 25, 30]
-        self.ELGravityCoef = 1
-        self.ELGravityCoefTESTSET = [0.5, 1, 1.5, 2]
         self.ELAntigravityCoef = 2.0
         self.ELAntigravityCoefTESTSET = [1.0, 1.5, 2.0, 2.5, 3.0]
         self.ELAntigravityRange = 15
         self.ELAntigravityRangeTESTSET = [10, 15, 20]
-        self.ELAntigravityNoise = 0.2
         self.ELNodeUsageCoef = 10.0
         self.ELNodeUsageLimit = 15
         

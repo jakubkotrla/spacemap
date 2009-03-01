@@ -33,7 +33,7 @@ class MemoryObject:
         if self.intensity > Global.MemObjMaxIntensity: self.intensity = Global.MemObjMaxIntensity
 
     def StepUpdate(self):
-        #ToDo: decrease intensity here ? Global.SMMemObjIntensityFadeOut = 0.001 ?
+        self.intensity = self.intensity - Global.MemObjIntensityFadeOut
         for link in self.linkToNodes:
             link.StepUpdate()
             
