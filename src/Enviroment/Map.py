@@ -20,7 +20,7 @@ class RealObject:
         
     def Use(self):
         self.amount =- 1
-        return True#(self.amount > 0) ToDo - object.amount
+        return (self.amount < 1)
     
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
@@ -331,6 +331,8 @@ class Map:
         if realObject.Use():
             self.objects.remove(realObject)
             Global.Log("Map.UseObject: agent used up object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
+            return True
+        return False    
  
     def GetVisibleObjects(self, agent):
         self.calculateVisibility(agent)
