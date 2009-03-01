@@ -66,7 +66,6 @@ class LinkMemoryObjectToNode:
 class SpaceMap:
     def __init__(self, agent):
         self.agent   = agent
-        self.objects = []
         self.map = Global.Map
         self.affsToMemObjs = {}
         self.objectsToMemObjs = {}
@@ -77,8 +76,8 @@ class SpaceMap:
         
     def StepUpdate(self):
         self.Layer.StepUpdate()
-        memObjs = self.objects.values()
-        for meObj in memObjs:
+        memObjs = self.objectsToMemObjs.values()
+        for memObj in memObjs:
             memObj.StepUpdate()
        
     def GetMemoryObject(self, affordance):

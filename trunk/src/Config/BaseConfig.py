@@ -11,11 +11,7 @@ class BaseConfig:
         self.processes = Processes()
         self.scenarios = Scenarios()
         
-    def prepareScenarios(self):
-        self.intentions = Intentions()
-        self.processes = Processes()
-        self.scenarios = Scenarios()
-        
+    def prepareProcessIntentions(self):
         P_Eat = Process("Eating", [], [Eatability], [Eatability], [], 1800)
         self.processes.AddProcess(P_Eat)
         I_Eat = Intention("Eat", [P_Eat])
@@ -86,11 +82,19 @@ class BaseConfig:
         self.intentions.AddIntention(I_Nail)
         self.intentions.AddHighLevelIntention(I_Nail)
                      
+    
+    def prepareScenarios(self):             
         S_1 = Scenario()
         self.scenarios.AddScenario([0,1,2,3,4,5,6], S_1)
         
     def GetAgentIntentions(self, actionSelector):
+        self.intentions = Intentions()
+        self.processes = Processes()
+        self.scenarios = Scenarios()
+        
+        self.prepareProcessIntentions()
         self.prepareScenarios()
+        
         actionSelector.processes = self.processes
         actionSelector.intentions = self.intentions
         actionSelector.scenarios = self.scenarios

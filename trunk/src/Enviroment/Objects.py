@@ -41,6 +41,10 @@ Photoalbum = Object('Photoalbum', [Watchability])
 Video = Object('Video', [Watchability, Repairability])
 Flower = Object('Flower', [Watchability])
 
+Chess = Object('Chess', [Playability])
+Cards = Object('Cards', [Playability])
+GameBoy = Object('GameBoy', [Playability])
+
 Sofa = Object('Sofa', [Sitability])
 Armchair = Object('Armchair', [Sitability])
 Chair = Object('Chair', [Sitability])

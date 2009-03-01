@@ -221,13 +221,13 @@ class MapRenderer:
                     start = agStart + vc.angle
                     if start < 0: start = 2*pi + start
                     if start > 2*pi: start = start - 2*pi
-                    start = 360 - (180.0 * start / pi)
+                    start = int(360 - (180.0 * start / pi))
                     end = agStart - vc.angle
                     if end < 0: end = 2*pi + end
-                    end = 360 - (180.0 * end / pi)
-                    x = self.agent.x*self.zoom - round(vc.distance*self.zoom) + 10
-                    y = self.agent.y*self.zoom - round(vc.distance*self.zoom) + 10
-                    draw.pieslice([x,y, x+round(2*vc.distance*self.zoom),y+round(2*vc.distance*self.zoom)], start, end, outline=(255, 0, 0))
+                    end = int(360 - (180.0 * end / pi))
+                    x = int(self.agent.x*self.zoom - round(vc.distance*self.zoom) + 10)
+                    y = int(self.agent.y*self.zoom - round(vc.distance*self.zoom) + 10)
+                    draw.pieslice([x,y, x+int(2*vc.distance*self.zoom),y+int(2*vc.distance*self.zoom)], start, end, outline=(255, 0, 0))
         
         spaceMap = self.agent.intelligence.spaceMap
         elayer = spaceMap.Layer

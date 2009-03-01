@@ -11,6 +11,37 @@ from BaseConfig import BaseConfig
 class Lobby(BaseConfig):
     def __init__(self):
         BaseConfig.__init__(self)
+    
+    def prepareProcessIntentions(self):
+        P_Eat = Process("Eating", [], [Eatability], [Eatability], [], 1800)
+        self.processes.AddProcess(P_Eat)
+        I_Eat = Intention("Eat", [P_Eat])
+        self.intentions.AddIntention(I_Eat)
+        self.intentions.AddHighLevelIntention(I_Eat)
+        
+        P_Drink = Process("Drinking", [], [Drinkability], [Drinkability], [], 60)
+        self.processes.AddProcess(P_Drink)
+        I_Drink = Intention("Drink", [P_Drink])
+        self.intentions.AddIntention(I_Drink)
+        self.intentions.AddHighLevelIntention(I_Drink)
+    
+        P_Read = Process("Reading", [], [Zoomability, Readability], [], [], 4000)
+        self.processes.AddProcess(P_Read)
+        I_Read = Intention("Read", [P_Read])
+        self.intentions.AddIntention(I_Read)
+        self.intentions.AddHighLevelIntention(I_Read)
+        
+        P_Watch = Process("Watching", [], [Watchability], [], [], 4000)
+        self.processes.AddProcess(P_Watch)
+        I_Watch = Intention("Watch", [P_Watch])
+        self.intentions.AddIntention(I_Watch)
+        self.intentions.AddHighLevelIntention(I_Watch)
+        
+        P_Sit = Process("Sitting", [], [Sitability], [], [], 1200)
+        self.processes.AddProcess(P_Sit)
+        I_Sit = Intention("Sit", [P_Sit])
+        self.intentions.AddIntention(I_Sit)
+        self.intentions.AddHighLevelIntention(I_Sit)
         
        
     def prepareMap(self, map):
