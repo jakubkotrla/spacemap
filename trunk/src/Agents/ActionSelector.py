@@ -244,13 +244,6 @@ class ActionSelector:
         elif actProcess.name == "Explore":
             excProcess = actExcProcess.data["process"]
             wantedAff = actExcProcess.data["affordance"]
-            
-            if wantedAff == NothingSpecial:
-                #just Resting - terminate with success
-                self.processArea.TerminateAtomicProcess(emotion, True)    #terminate Explore
-                self.processArea.TerminateAtomicProcess(emotion, True)    #terminate Rest
-                self.processArea.TerminateIntentionWant(emotion)          #misnamed - terminates I_Rest
-                return
                 
             #check if we got required affordance
             missingSources = excProcess.GetMissingSources()

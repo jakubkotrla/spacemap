@@ -20,7 +20,7 @@ class RealObject:
         
     def Use(self):
         self.amount =- 1
-        return (self.amount > 0)
+        return True#(self.amount > 0) ToDo - object.amount
     
     def ToString(self):
         return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
@@ -330,8 +330,7 @@ class Map:
     def UseObject(self, excProcess, realObject):
         if realObject.Use():
             self.objects.remove(realObject)
-            self.guiObjectDisAppeared(realObject)
-            Global.Log("Map.UseObject: agent used object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
+            Global.Log("Map.UseObject: agent used up object " + realObject.type.name + " at " + str(realObject.y) + "," + str(realObject.x))
  
     def GetVisibleObjects(self, agent):
         self.calculateVisibility(agent)

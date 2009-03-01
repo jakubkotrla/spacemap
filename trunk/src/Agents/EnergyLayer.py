@@ -248,9 +248,9 @@ class EnergyLayer:
     def DeleteNode(self, node):
         node.Delete()
         self.nodes.remove(node)
+        nodesToRun = nodes = self.getNodesAround(node, 20) 
         for i in range(100):
-            nodes = self.getNodesAround(node, 20)
-            for n in nodes:
+            for n in nodesToRun:
                 n.StepUpdate(self.getNodesAround(n, 20))
                 n.StepUpdateMove() 
         

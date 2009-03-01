@@ -93,7 +93,7 @@ class CrazyRoom(BaseConfig):
         map.AddObject(Knife, 93, 84)
         map.AddObject(Cover, 95, 92)
         
-        map.AddObject(CocaColaCan, 51, 92)
+        map.AddObject(CocaColaCan, 51, 92, amount=10)
         map.AddObject(Photoalbum, 57, 97)
         
         map.AddObject(Plate, 60, 68)
