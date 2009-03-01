@@ -108,9 +108,7 @@ class EnergyLayerNode:
             usageCoef = Global.ELNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
             usageCoef = min(1, usageCoef)
             gCoef = gCoef * usageCoef
-            
             gCoef = min(1, gCoef)
-            gCoef = gCoef * (Global.Random() * 0.4 + 0.8) #Global.ELAntigravityNoise ToDo
             
             gDiff = Global.ELAntigravityCoef * gCoef
             gDiffCoef = gDiff /  max(Global.MinPositiveNumber, dist) 
@@ -132,7 +130,6 @@ class EnergyLayerNode:
         if hit.hit:
             newX = hit.x
             newY = hit.y
-         
         self.x = newX
         self.y = newY
         self.stepDiffX = self.stepDiffY = 0
@@ -144,7 +141,6 @@ class EnergyLayerNode:
         
         gCoef = 1.0 / (diffX**2+diffY**2)
         gCoef = gCoef * (1.0/max(0.1, self.GetUsage()))
-        gCoef = gCoef * (Global.Random() * 0.4 + 0.8) #Global.ELGravityNoise ToDo
         gCoef = gCoef * effect
         
         gCoef = min(1, gCoef)
