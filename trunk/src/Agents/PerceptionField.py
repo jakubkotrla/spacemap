@@ -125,8 +125,6 @@ class PerceptionField:
                         
     def UseObjectPhantoms(self, excProcess):
         for phantom in excProcess.resources:
-            if phantom.GetType() != "e":
-                Global.Log("Error haha")
             self.spaceMap.ObjectUsed(phantom.object)
         
         map = Global.Map
@@ -134,8 +132,7 @@ class PerceptionField:
         for usedSource in usedSources:
             for phantom in excProcess.resources:
                 if usedSource == phantom.affordance:
-                    rest = map.UseObject(excProcess, phantom.object)
-                    if rest < 1:
+                    if map.UseObject(excProcess, phantom.object):   #true means object is used Up
                         self.spaceMap.ObjectUsedUp(phantom.object)
                         self.environmentPhantoms.remove(phantom)
                         Global.Log("PF: removing(used) phantom for object " + phantom.object.ToString())
