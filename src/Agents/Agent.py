@@ -30,6 +30,13 @@ class Agent:
         self.viewConesForExplore.append( ViewCone(0.5, pi, 10 ) )
         self.viewConesForExplore.append( ViewCone(0.5, pi, 20 ) )
         self.viewCones = self.viewConesNormal
+        self.viewConeNormalMaxDist = 0
+        for vc in self.viewConesNormal:
+            self.viewConeNormalMaxDist = max(self.viewConeNormalMaxDist, vc.distance)
+        self.viewConeForExploreMaxDist = 0
+        for vc in self.viewConesForExplore:
+            self.viewConeForExploreMaxDist = max(self.viewConeForExploreMaxDist, vc.distance)
+        self.viewConeMaxDist = self.viewConeNormalMaxDist 
         
     def Step(self):
         action = self.intelligence.GetAction()
@@ -38,6 +45,7 @@ class Agent:
         self.x = self.newX
         self.y = self.newY
         self.viewCones = self.viewConesNormal   #fake else-than-Explore-action branch
+        self.viewConeMaxDist = self.viewConeNormalMaxDist
                 
         #execute action - world/agent-impacting part of atomic process
         if action.process.name == "Execute":
@@ -81,6 +89,7 @@ class Agent:
                 
         elif action.process.name == "Explore":
             self.viewCones = self.viewConesForExplore
+            self.viewConeMaxDist = self.viewConeForExploreMaxDist
             action.duration = Global.Randint(5,20)
             action.sources = [action.data['affordance']]
             Global.Log("AGENT is exploring for " + action.data['affordance'].name + " for " + str(action.duration) + " seconds")
