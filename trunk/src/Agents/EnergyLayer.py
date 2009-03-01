@@ -165,10 +165,12 @@ class EnergyLayer:
         self.energyPointsToDelete = []
         self.forgetEnergy = 0
         self.nodeIndex = 1
+        self.desiredNodeCount = 0
         
     def CreateMap(self):
         areaArea = self.area.GetArea()
         nodeCount = areaArea / Global.ELDensity ** 2
+        self.desiredNodeCount = nodeCount * 2
         
         if Global.ELCreateNoise > Global.ELDensity or Global.ELCreateNoise == -1:
             while len(self.nodes) < nodeCount:

@@ -13,7 +13,6 @@ class RealObject:
         self.amount = amount
         self.attractivity = attractivity
         self.curAttractivity = attractivity #0.0 - 1.0
-        self.maxAttractivity = 20
         self.visibility = 0 #0.0 - 1.0
         self.guiId = None
         self.trainHistory = 0
@@ -135,27 +134,16 @@ class Map:
     #start has old position in .x and .y 
     def CanMove(self, start, newX, newY):
         hitPoint = None
-        hitDist = Global.MaxNumber
-        
         for edge in self.edges:
             hitResult = self.AreIntersecting(edge.start, edge.end, start, Point(newX,newY) )
             if hitResult.hit:
-                if hitPoint == None:
-                    hitPoint = hitResult
-                    hitDist = self.DistanceObjs(hitResult, start)
+                if hitResult.x == newX and hitResult.y == newY:
+                    pass
+                elif hitResult.x == start.x and hitResult.y == start.y:
+                    pass
                 else:
-                    dist = self.DistanceObjs(hitResult, start)
-                    if dist < hitDist:
-                        hitPoint = hitResult
-                        hitDist = dist
-        if hitPoint == None:
-            return True
-        elif hitPoint.hit and hitPoint.x == newX and hitPoint.y == newY:
-            return True
-        elif hitPoint.hit and hitPoint.x == start.x and hitPoint.y == start.y:
-            return True
-        else:
-            return False
+                    return False
+        return True
     def CanMoveEx(self, start, newX, newY):
         hitPoint = None
         hitDist = Global.MaxNumber
@@ -311,7 +299,7 @@ class Map:
                 count = count + 1
         return ((count % 2) == 1)
         
-    
+    #from http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
     def GetArea(self):
         sum = 0
         vertices = copy(self.points)
@@ -319,7 +307,7 @@ class Map:
         vertices.append(vertices[0])
         for i in range(len(self.points)):
             sum = sum + vertices[i].x * vertices[i+1].y - vertices[i].y * vertices[i+1].x
-        return ( sum * 1.0) / 2
+        return fabs( sum * 0.5)
     
     def GetRealObjectIfThere(self, memObject):
         for rObj in self.objects:
@@ -343,13 +331,13 @@ class Map:
         return objs 
       
     def GetVisibility(self, agent, object):
-        if not self.CanMove(agent, object.x, object.y):
-            return 0
         dist = self.DistanceObjs(agent, object)
+        if dist > agent.viewConeMaxDist: return 0
+        if not self.CanMove(agent, object.x, object.y): return 0
+        
         visibility = 0
         if dist == 0:
-            for vc in agent.viewCones:
-                visibility = visibility + vc.intensity
+            for vc in agent.viewCones: visibility = visibility + vc.intensity
             return visibility
         odx = object.x - agent.x
         ody = object.y - agent.y

@@ -56,7 +56,7 @@ class GlobalVariables:
         self.LinkMemObjToNodeMaxIntensity = 10  #max intensity of links memObj-node
                 
         self.ELDensity = 10       #one node will be created for area of appr. ELDensity x ELDensity
-        self.ELCreateNoise = 2    #noise when creating nodes
+        self.ELCreateNoise = -1   #noise when creating nodes, >ELDensity or ==-1 leads to completely random xy
                 
         self.ELGravityRange = 20
         self.ELGravityRangeTESTSET = [10, 15, 20, 25, 30]
