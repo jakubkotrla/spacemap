@@ -180,7 +180,7 @@ class MapRenderer:
         self.canvas.create_text(200, 400, text=txt, width=1000, anchor=NW, tags="progresstest")
         
     
-    #layers full: [agent, eps(energyPoints), ov(object.visibility), vh(visibilityHistory), objvh(objectVisibilityHistory), info(text info, log, etc.)]
+    #layers full: [agent, eps(energyPoints), ov(object.visibility), vh(visibilityHistory), objvh(objectVisibilityHistory), info(text info, log, etc.), wp(waypoint)]
     def RenderToFile(self, world, filename, layers=[]):
         if "info" in layers:
             im = Image.new("RGB", (1500, 1020), (255, 2555, 255))
@@ -199,10 +199,11 @@ class MapRenderer:
         
         for edge in self.map.edges:
             draw.line( [self.zoom*edge.start.x+10, self.zoom*edge.start.y+10, self.zoom*edge.end.x+10, self.zoom*edge.end.y+10], fill=(0,0,0))
-        for wayPoint in self.map.wayPoints:
-             x = wayPoint.x*self.zoom - 2 + 10
-             y = wayPoint.y*self.zoom - 2 + 10
-             draw.rectangle([x,y, x+4,y+4], fill=(0,0,0), outline=None)
+        if "wp" in layers:
+            for wayPoint in self.map.wayPoints:
+                x = wayPoint.x*self.zoom - 2 + 10
+                y = wayPoint.y*self.zoom - 2 + 10
+                draw.rectangle([x,y, x+4,y+4], fill=(0,0,0), outline=None)
         
         if "agent" in layers:
             lastPoint = self.map.agentMoves[0]

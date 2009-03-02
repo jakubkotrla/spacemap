@@ -88,15 +88,8 @@ class EnergyLayerNode:
             dist2 = ldx**2+ldy**2
             dist = sqrt(dist2)
 
-            gCoef = 1.0 / max(Global.MinPositiveNumber, dist2)
-
-            usageCoef = Global.ELNodeUsageCoef / (max(1, self.GetUsage())*max(1,node.GetUsage()))
-            usageCoef = min(1, usageCoef)
-            gCoef = gCoef * usageCoef
-            gCoef = min(1, gCoef)
-            
-            gDiff = Global.ELAntigravityCoef * gCoef
-            gDiffCoef = gDiff /  max(Global.MinPositiveNumber, dist) 
+            gDiffCoef = dist2 * max(0.5, self.GetUsage())*max(0.5,node.GetUsage())
+            gDiffCoef = Global.ELAntigravityCoef*1.0 / max(Global.MinPositiveNumber, gDiffCoef)
             
             diffX = ldx * gDiffCoef
             diffY = ldy * gDiffCoef
@@ -128,7 +121,7 @@ class EnergyLayerNode:
         gCoef = gCoef * (1.0/max(0.1, self.GetUsage()))
         gCoef = gCoef * effect
         
-        gCoef = min(1, gCoef)
+        gCoef = Global.ELGravityCoef * min(1, gCoef)
         newX = self.x + diffX * gCoef
         newY = self.y + diffY * gCoef
         
