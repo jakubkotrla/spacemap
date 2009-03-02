@@ -64,7 +64,7 @@ class ExcitedProcess:
         
     def GetMissingSources(self):
         affordances = copy(self.process.sources)
-        for objectPhantom in self.resources: #ToDo add only used affordance - check if set etc.
+        for objectPhantom in self.resources:
             if objectPhantom.GetType() != "e": continue
             
             for affordance in objectPhantom.object.type.affordances:

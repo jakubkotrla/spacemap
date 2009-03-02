@@ -231,7 +231,6 @@ class EnergyLayer:
             self.energyPoints.remove(ep)
         self.energyPointsToDelete = []
 
-        #ToDo: melo by zaviset na poctu node
         diceRoll = Global.DiceRoll()
         self.forgetEnergy = self.forgetEnergy + 1
         if diceRoll < Global.ELForgetNodeChance:
@@ -246,10 +245,10 @@ class EnergyLayer:
     def DeleteNode(self, node):
         node.Delete()
         self.nodes.remove(node)
-        nodesToRun = nodes = self.getNodesAround(node, 20) 
-        for i in range(100):
+        nodesToRun = nodes = self.getNodesAround(node, Global.ELDeleteNodeReTrainRange) 
+        for i in range(Global.ELDeleteNodeReTrainCount):
             for n in nodesToRun:
-                n.StepUpdate(self.getNodesAround(n, 20))
+                n.StepUpdate(self.getNodesAround(n, Global.ELAntigravityRange))
                 n.StepUpdateMove() 
         
     def CreateNode(self, point, memObject):
@@ -269,7 +268,7 @@ class EnergyLayer:
         self.nodes.append(newNode)
         
         memObject.AddLinkToNode(newNode)
-        memObject.IntenseToNode(newNode, 1.0)   #ToDo should be some constant
+        memObject.IntenseToNode(newNode, Global.MemObjIntenseToNewNode)
         return newNode
     
     def Train(self, memObject, effect):
