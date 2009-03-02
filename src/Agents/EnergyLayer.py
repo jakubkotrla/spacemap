@@ -288,15 +288,12 @@ class EnergyLayer:
         self.energyPointsToDelete.append(energyPoint)
         
     def GetNodeCreateCost(self):
-        desiredNodeCount = self.area.width * self.area.height / 100
-        #cost = max(1, (1.0* len(self.nodes) - desiredNodeCount)) ** 2
-        if len(self.nodes) - desiredNodeCount < 10: return 10
-        cost = len(self.nodes) - desiredNodeCount + 10
-        if cost > 100: cost = 100
+        x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        cost = 100 * (3 ** (float(x)/50))
         return cost
     def GetNodeDeleteCost(self):
-        desiredNodeCount = self.area.width * self.area.height / 100
-        cost = max(1, (desiredNodeCount - 1.0* len(self.nodes))) ** 2
+        x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        cost = 100 * (3 ** (float(-x)/50))
         return cost
         
     def getNodesAround(self, node, range):
