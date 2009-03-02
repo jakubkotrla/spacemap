@@ -3,21 +3,6 @@ from Enviroment.Global import Global
 from math import sqrt
 from Enviroment.Map import Point
 
-class BlackHole:
-    def __init__(self, node):
-        self.x = node.x
-        self.y = node.y
-        self.ttl = Global.ELBlackHoleTTL
-    
-    def ToString(self):
-        strInfo = []
-        strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
-        strInfo.append("BlackHole[" + strXY + "] energy:" + str(self.energy))
-    
-    def StepUpdate(self, nodesAround):
-        #gravity for nodes around
-        pass
-        
 
 class EnergyPoint:
     def __init__(self, layer, memObject, x, y, energy):
@@ -35,7 +20,7 @@ class EnergyPoint:
         
     def StepUpdate(self, nodesAround):
         cost = self.layer.GetNodeCreateCost()
-        chanceNew = self.energy - cost
+        chanceNew = 100 * float(self.energy - cost) / cost
         diceRoll = Global.DiceRoll()
         if diceRoll < chanceNew:
             self.layer.CreateNode(self, self.memObject)
@@ -232,14 +217,12 @@ class EnergyLayer:
         self.energyPointsToDelete = []
 
         diceRoll = Global.DiceRoll()
-        self.forgetEnergy = self.forgetEnergy + 1
-        if diceRoll < Global.ELForgetNodeChance:
-            if self.forgetEnergy > self.GetNodeDeleteCost():
-                self.forgetEnergy = self.forgetEnergy - self.GetNodeDeleteCost()
-                self.DeleteNode(Global.Choice(self.nodes))
-            else:
-                #nothing - not enough energy - should be in chance
-                pass
+        self.forgetEnergy = self.forgetEnergy + Global.ELForgetNodeRate
+        cost = self.GetNodeDeleteCost()
+        chanceForget = 100 * float(self.forgetEnergy - cost) / cost
+        if diceRoll < chanceForget:
+            self.forgetEnergy = self.forgetEnergy - cost
+            self.DeleteNode(Global.Choice(self.nodes))
         self.energyPointsCountHistory.append(len(self.energyPoints))
      
     def DeleteNode(self, node):
