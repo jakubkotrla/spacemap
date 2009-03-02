@@ -99,7 +99,7 @@ class SpaceMap:
         if rObject in self.objectsToMemObjs:
             memObj = self.objectsToMemObjs[rObject]
             memObj.Intense(effect)
-        else:  #seen for first time
+        else:
             memObj = MemoryObject(rObject)
             self.objectsToMemObjs[rObject] = memObj
         
@@ -108,15 +108,14 @@ class SpaceMap:
         inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y, Global.ELGravityRange)
         nodesToIntensity = {}
         sumIntensity = 0
-        effect = Global.SMTRainEffectCoef * effect
         
-        for node in inNodes:
-            dist = map.DistanceObjs(node, memObj)
+        for (node,dist) in inNodes.iteritems():
             intensity = Global.Gauss( dist / Global.SMNodeAreaDivCoef, Global.SMNodeAreaGaussCoef)
+            intensity = max(Global.MinPositiveNumber, intensity)
             nodesToIntensity[node] = intensity
             sumIntensity = sumIntensity + intensity
         for node in inNodes:
-            intensity = nodesToIntensity[node] * effect / sumIntensity
+            intensity = effect * nodesToIntensity[node] / sumIntensity
             memObj.IntenseToNode(node, intensity)
             
         # put memObject to all its affordances
