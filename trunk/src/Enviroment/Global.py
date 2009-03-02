@@ -51,6 +51,7 @@ class GlobalVariables:
         self.SMNodeAreaGaussCoef = 1 #as above
         self.SMNodeAreaGaussCoefTESTSET = [1, 2, 3, 4, 5]
         
+        self.MemObjIntenseToNewNode = 1.0       #intensity of new link to new ELNode
         self.MemObjIntensityFadeOut = 0.01      #amount to decrease intensity of memObjs every step
         self.LinkMemObjToNodeFadeOut = 0.001    #amount to decrease intensity of links memObj-node every step
         self.LinkMemObjToNodeMaxIntensity = 10  #max intensity of links memObj-node
@@ -75,9 +76,8 @@ class GlobalVariables:
         
         self.ELForgetNodeChance = 0    #max=1..100% each step
         self.ELForgetNodeChanceTESTSET = [0, 2, 5, 7, 10]
-        self.ELBlackHoleTTL = 5
-        self.ELBlackHoleGravityCoef = 1
-        self.ELBlackHoleGravityRange = 20
+        self.ELDeleteNodeReTrainCount = 50
+        self.ELDeleteNodeReTrainRange = 20
   
     def Random(self):
         r = random()
