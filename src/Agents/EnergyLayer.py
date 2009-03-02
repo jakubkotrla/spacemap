@@ -86,7 +86,6 @@ class EnergyLayerNode:
             ldx = (self.x - node.x) 
             ldy = (self.y - node.y)
             dist2 = ldx**2+ldy**2
-            dist = sqrt(dist2)
 
             gDiffCoef = dist2 * max(0.5, self.GetUsage())*max(0.5,node.GetUsage())
             gDiffCoef = Global.ELAntigravityCoef*1.0 / max(Global.MinPositiveNumber, gDiffCoef)
@@ -176,7 +175,7 @@ class EnergyLayer:
                         self.nodes.append(node)
         
     def PositionToNodes(self, x, y, per):
-        inNodes = []
+        inNodes = {}
         closestNode = None
         closestDistance = Global.MaxNumber
         map = Global.Map
@@ -185,16 +184,12 @@ class EnergyLayer:
             if distance < closestDistance:
                 closestNode = node
                 closestDistance = distance
-            if node.x-per < x < node.x+per and node.y-per < y < node.y+per:
-                inNodes.append(node)
+            if distance < per:
+                inNodes[node] = distance
         if len(inNodes) > 0:
-            nls = {}
-            for node in inNodes:
-                nls[node] = map.DistanceObj(x,y,node)
-            inNodes.sort(lambda a,b: cmp(nls[a],nls[b]))
             return inNodes
         else:
-            return [closestNode]
+            return {closestNode : closestDistance}
     
     def StepUpdate(self):
         
@@ -209,10 +204,11 @@ class EnergyLayer:
             self.energyPoints.remove(ep)
         self.energyPointsToDelete = []
 
-        diceRoll = Global.DiceRoll()
         self.forgetEnergy = self.forgetEnergy + Global.ELForgetNodeRate
         cost = self.GetNodeDeleteCost()
         chanceForget = 100 * float(self.forgetEnergy - cost) / cost
+        
+        diceRoll = Global.DiceRoll()
         if diceRoll < chanceForget:
             self.forgetEnergy = self.forgetEnergy - cost
             self.DeleteNode(Global.Choice(self.nodes))

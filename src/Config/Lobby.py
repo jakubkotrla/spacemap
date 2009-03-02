@@ -46,7 +46,7 @@ class Lobby(BaseConfig):
        
     def prepareMap(self, map):
         map.points = [ Point(0,0), Point(100,0), Point(100,30), Point(60,30), Point(60,70), Point(100,70), Point(100,100), Point(0,100) ]
-        map.wayPoints = [ Waypoint(59,29), Waypoint(59,31), Waypoint(10,10), Waypoint(10,90), Waypoint(80,15), Waypoint(80,85) ]
+        map.wayPoints = [ Waypoint(59,29), Waypoint(59,71), Waypoint(10,10), Waypoint(10,90), Waypoint(80,15), Waypoint(80,85) ]
         map.width = 100
         map.height = 100
         map.SetAgentStart(20, 50)
@@ -73,7 +73,7 @@ class Lobby(BaseConfig):
         map.AddObject(Armchair, 55, 42)
         
         map.AddObject(Flower, 5, 80)
-        map.AddObject(Armchair, 10, 90)
+        map.AddObject(Armchair, 8, 90)
         map.AddObject(Painting, 5, 100)
         
         map.AddObject(Sandwich, 54, 59)

@@ -22,7 +22,7 @@ class RealObject:
         return (self.amount < 1)
     
     def ToString(self):
-        return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "]"
+        return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "] trained: " + str(self.trainHistory)
 
 class Point:
     def __init__(self, x, y):
@@ -121,7 +121,7 @@ class Map:
             Global.Log("Programmer.Error: Map.MoveAgent out of map")
             return 0
         else:
-            duration = self.Distance(agent.x, agent.y, newX, newY)
+            duration = self.DistanceObj(newX, newY, agent)
             self.agentMoves.append( Point(agent.x, agent.y) )
             if len(self.agentMoves) > Global.AgentMoveHistoryLength:
                 self.agentMoves.pop(0)
@@ -148,8 +148,9 @@ class Map:
         hitPoint = None
         hitDist = Global.MaxNumber
         
+        newPos = Point(newX,newY)
         for edge in self.edges:
-            hitResult = self.AreIntersecting(edge.start, edge.end, start, Point(newX,newY) )
+            hitResult = self.AreIntersecting(edge.start, edge.end, start, newPos)
             if hitResult.hit:
                 if hitPoint == None:
                     hitPoint = hitResult

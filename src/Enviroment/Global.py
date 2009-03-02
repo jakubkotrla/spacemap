@@ -44,12 +44,8 @@ class GlobalVariables:
         self.TrainEffectNotFound = 1.0
         self.TrainEffectUsedUp = 1.0
         
-        self.SMTRainEffectCoef = 4   #coef increasing intensity of links memObj-node
-        self.SMTRainEffectCoefTESTSET = [4,8]   
-        self.SMNodeAreaDivCoef = 10  #when MemObj's linkToNodes are intensed - alter node's gauss area
-        self.SMNodeAreaDivCoefTESTSET = [1, 2, 5, 10]
-        self.SMNodeAreaGaussCoef = 1 #as above
-        self.SMNodeAreaGaussCoefTESTSET = [1, 2, 3, 4, 5]
+        self.SMNodeAreaDivCoef = 1      #when MemObj's linkToNodes are intensed - alter node's gauss area
+        self.SMNodeAreaGaussCoef = 10   #as above
         
         self.MemObjIntenseToNewNode = 1.0       #intensity of new link to new ELNode
         self.MemObjIntensityFadeOut = 0.01      #amount to decrease intensity of memObjs every step
@@ -62,16 +58,14 @@ class GlobalVariables:
         self.ELGravityRange = 20
         self.ELGravityRangeTESTSET = [10, 15, 20, 25, 30]
         self.ELGravityCoef = 2.0
-        self.ELAntigravityCoef = 4.0
-        self.ELAntigravityCoefTESTSET = [1.0, 1.5, 2.0, 2.5, 3.0]
+        self.ELAntigravityCoef = 2.0
+        self.ELAntigravityCoefTESTSET = [1.5, 2.0, 2.5, 3.0]
         self.ELAntigravityRange = 20
-        self.ELAntigravityRangeTESTSET = [10, 15, 20]
         
         self.ELEnergyPointCreateEnergy = 100
-        self.ELEnergyPointCreateEnergyTESTSET = [75, 100, 125, 150, 175, 200]
+        self.ELEnergyPointCreateEnergyTESTSET = [100, 150, 200]
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5
-        self.ELEnergyFadeCoefTESTSET = [0.1, 0.3,  0.5, 0.7, 0.8]
         self.ELEnergyFadeLimit = 10
         
         self.ELForgetNodeRate = 0    #how much EL.forgetEnergy is added each step
@@ -79,19 +73,12 @@ class GlobalVariables:
         self.ELDeleteNodeReTrainRange = 20
   
     def Random(self):
-        r = random()
-        #self.Log("RandomRandom:" + str(r))
-        return r
+        return random()
     def Randint(self, min, max):
-        r = randint(min, max)
-        #self.Log("RandomRandint:" + str(r))
-        return r
+        return randint(min, max)
     def DiceRoll(self):
-        r = randint(0, 100)
-        #self.Log("RandomDiceRoll:" + str(r))
-        return r
+        return randint(0, 100)
     def Choice(self, list):
-        #self.Log("RandomChoice")
         return choice(list)
     
     def LogStart(self, path):
@@ -109,7 +96,7 @@ class GlobalVariables:
         self.outData.close()
         
     def Gauss(self, x, c=1):
-        return exp( - ((x)**2) / 2*(c**2) )
+        return exp( - ((x)**2) / (2*(c**2)) )
     def Sign(self, int):
         if(int < 0): return -1;
         elif(int > 0): return 1;
