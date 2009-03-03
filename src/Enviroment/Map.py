@@ -33,6 +33,7 @@ class Hit(Point):
     def __init__(self, x, y, hit):
         Point.__init__(self, x, y)
         self.hit = hit
+        self.edge = None
 
 class Edge:
     def __init__(self, start, end):
@@ -154,11 +155,13 @@ class Map:
             if hitResult.hit:
                 if hitPoint == None:
                     hitPoint = hitResult
+                    hitPoint.edge = edge
                     hitDist = self.DistanceObjs(hitResult, start)
                 else:
                     dist = self.DistanceObjs(hitResult, start)
                     if dist < hitDist:
                         hitPoint = hitResult
+                        hitPoint.edge = edge
                         hitDist = dist
         if hitPoint == None:
             return Hit(0, 0, False)
@@ -378,13 +381,18 @@ class Map:
             obj.visibility += visibility
             if obj.visibility > self.visibilityMaxEver:
                 self.visibilityMaxEver = obj.visibility
-            
       
     def Distance(self, x1,y1,x2,y2):
-        return sqrt((x2-x1)**2+(y2-y1)**2)
+        ldx = x2-x1
+        ldy = y2-y1
+        return sqrt(ldx*ldx+ldy*ldy)
     def DistanceObj(self, x,y,object):
-        return sqrt((x-object.x)**2+(y-object.y)**2)
+        ldx = x-object.x
+        ldy = y-object.y
+        return sqrt(ldx*ldx+ldy*ldy)
     def DistanceObjs(self, o1,o2):
-        return sqrt((o1.x-o2.x)**2+(o1.y-o2.y)**2)
+        ldx = o1.x-o2.x
+        ldy = o1.y-o2.y
+        return sqrt(ldx*ldx+ldy*ldy)
         
     
