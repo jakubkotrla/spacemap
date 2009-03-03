@@ -247,7 +247,7 @@ class MapRenderer:
                 intensity = 255 - int(255 * obj.trainHistory*1.0 / spaceMap.maxTrained)
                 color = (intensity, intensity, intensity)
                 draw.text([x+5,y+10], str(obj.trainHistory), font=self.font, fill=(0, 0, 0))
-                draw.rectangle([x,y, x+10,y+10], fill=color, outline=None)        
+                draw.rectangle([x,y, x+10,y+10], fill=color, outline=(0, 0, 0))        
         elif "ov" in layers:
             for obj in self.map.objects:
                 x = obj.x*self.zoom - 5 + 10
@@ -271,7 +271,7 @@ class MapRenderer:
             draw.text([1080,5], "Step:  " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
             draw.text([1080,20], "Time:  " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
             txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
-            nc = len(world.agent.intelligence.spaceMap.Layer.nodes)
+            nc = len(elayer.nodes)
             draw.text([1300,5], "Agent:  " + str(self.agent.x) + "," + str(self.agent.y), font=self.font, fill=(0, 0, 0))
             draw.text([1300,20], "EnergyLayer.nodeCount: " + str(nc), font=self.font, fill=(0, 0, 0))
             txt = self.agent.paText
@@ -298,8 +298,10 @@ class MapRenderer:
                 ypos = ypos + 15
                 draw.text([1050,ypos], "  " + line, font=self.font, fill=(0, 0, 0))
         else:
-            draw.text([10,1020], "Step:  " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
-            draw.text([500,1020], "Time:  " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
+            draw.text([10,1020], "Step: " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
+            draw.text([400,1020], "Time: " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
+            nc = len(elayer.nodes)
+            draw.text([800,1020], "SM-NC: " + str(), font=self.font, fill=(0, 0, 0))
                 
          
         im.save(filename, "PNG")
