@@ -33,7 +33,9 @@ class Hit(Point):
     def __init__(self, x, y, hit):
         Point.__init__(self, x, y)
         self.hit = hit
-        self.edge = None
+        self.edge = None  #first edge hit
+        self.dist = 0      #distance to first hit, only for Map
+        
 
 class Edge:
     def __init__(self, start, end):
@@ -146,6 +148,26 @@ class Map:
                     return False
         return True
     def CanMoveEx(self, start, newX, newY):
+        hitPoint = None
+        hitDist = Global.MaxNumber
+        
+        newPos = Point(newX,newY)
+        for edge in self.edges:
+            hitResult = self.AreIntersecting(edge.start, edge.end, start, newPos)
+            if hitResult.hit:
+                if hitPoint == None:
+                    hitPoint = hitResult
+                    hitDist = self.DistanceObjs(hitResult, start)
+                else:
+                    dist = self.DistanceObjs(hitResult, start)
+                    if dist < hitDist:
+                        hitPoint = hitResult
+                        hitDist = dist
+        if hitPoint == None:
+            return Hit(0, 0, False)
+        else:
+            return hitPoint
+    def CanMoveExEx(self, start, newX, newY):
         hitPoint = None
         hitDist = Global.MaxNumber
         
