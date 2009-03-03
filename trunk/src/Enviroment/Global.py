@@ -15,7 +15,7 @@ class GlobalVariables:
         self.World = None
         self.Map = None
         self.MaxNumber = 9999999
-        self.MinPositiveNumber = 0.00000001
+        self.MinPositiveNumber = 0.0000001
         self.logLines = []
         self.LogLinesCount = 30
       
@@ -95,7 +95,7 @@ class GlobalVariables:
         self.outData.close()
         
     def Gauss(self, x, c=1):
-        return exp( - ((x)**2) / (2*(c**2)) )
+        return exp( - (x*x) / (2*(c*c)) )
     def Sign(self, int):
         if(int < 0): return -1;
         elif(int > 0): return 1;

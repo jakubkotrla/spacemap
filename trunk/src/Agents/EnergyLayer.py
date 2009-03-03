@@ -1,6 +1,6 @@
 
 from Enviroment.Global import Global
-from math import sqrt
+from math import sqrt, fabs
 from Enviroment.Map import Point
 
 
@@ -85,7 +85,7 @@ class EnergyLayerNode:
         for node in nodesAround:
             ldx = (self.x - node.x) 
             ldy = (self.y - node.y)
-            dist2 = ldx**2+ldy**2
+            dist2 = ldx*ldx+ldy*ldy
 
             gDiffCoef = dist2 * max(0.5, self.GetUsage())*max(0.5,node.GetUsage())
             gDiffCoef = Global.ELAntigravityCoef*1.0 / max(Global.MinPositiveNumber, gDiffCoef)
@@ -105,18 +105,42 @@ class EnergyLayerNode:
         
         hit = self.area.CanMoveEx(self, newX, newY)
         if hit.hit:
+            if fabs(hit.x-self.x)<Global.MinPositiveNumber and fabs(hit.y - self.y)<Global.MinPositiveNumber:
+                hit = self.moveAlongEdge(newX, newY, hit)
             newX = hit.x
             newY = hit.y
         self.x = newX
         self.y = newY
         self.stepDiffX = self.stepDiffY = 0
-            
+    
+    def moveAlongEdge(self, newX, newY, hit):
+        edge = hit.edge
+        edx = edge.end.x - edge.start.x
+        edy = edge.end.y - edge.start.y
+       
+        if edx == 0:
+            xx = self.x
+            yy = newY
+            return Point(xx, yy)
+        elif edy == 0:
+            yy = self.y
+            xx = newX
+            return Point(xx, yy)
+        else:
+            y1 = 200
+            x1 = (edx*newX - edy*(y1-newY)) / edx
+            y2 = -200
+            x2 = (edx*newX - edy*(y2-newY)) / edx   
+        
+            return self.area.AreIntersecting(edge.start, edge.end, Point(x2,y2), Point(x1, y1))
+       
+           
     def Train(self, point, effect):
         diffX = point.x - self.x
         diffY = point.y - self.y
         if diffX == diffY == 0: return
         
-        gCoef = 1.0 / (diffX**2+diffY**2)
+        gCoef = 1.0 / (diffX*diffX+diffY*diffY)
         gCoef = gCoef * (1.0/max(0.1, self.GetUsage()))
         gCoef = gCoef * effect
         
@@ -269,10 +293,12 @@ class EnergyLayer:
         
     def getNodesAround(self, node, range):
         nodesAround = []
-        range = range ** 2
+        range = range * range
         for n in self.nodes:
             if n == node: continue
-            dist = (n.x-node.x)**2+(n.y-node.y)**2
+            ldx = n.x-node.x
+            ldy = n.y-node.y
+            dist = ldx*ldx + ldy*ldy
             if dist < range:
                 nodesAround.append(n)
         return nodesAround
