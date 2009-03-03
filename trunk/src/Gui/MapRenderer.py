@@ -166,10 +166,10 @@ class MapRenderer:
         timePassed.AddSeconds(secs)
         txt = txt + timePassed.TimeToHumanFormat(True) + "\n\n"
         txt = txt + " Percentage done: "
-        per = (100.0*progressObject.currentTestIndex / progressObject.testToRunCount)
+        per = (100.0*(progressObject.currentTestIndex-1) / progressObject.testToRunCount)
         txt = txt +  '%.3f'%(per) + "%\n\n"
         txt = txt + " Time left: "
-        secs = 100.0*secs / per
+        secs = 100.0*secs / max(Global.MinPositiveNumber, per)
         timeLeft = Time()
         timeLeft.AddSeconds(secs)
         txt = txt + timeLeft.TimeToHumanFormat(True) + "\n\n"

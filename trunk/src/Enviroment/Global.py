@@ -23,8 +23,8 @@ class GlobalVariables:
         self.VisibilityHistoryArea = 2          #visibility object is square AxA
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
-        self.RandomSeeds = [100, 1024, 123456789, 718597]   #seeds to test
-        self.MaxTestSteps = 1200    #should be more than one day 
+        self.RandomSeeds = [718597, 100, 1024, 718597]   #seeds to test
+        self.MaxTestSteps = 1000    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -57,7 +57,7 @@ class GlobalVariables:
                 
         self.ELGravityRange = 20
         self.ELGravityCoef = 3.0
-        self.ELAntigravityCoef = 2.0
+        self.ELAntigravityCoef = 1.0
         self.ELAntigravityCoefTESTSET = [1.0, 1.5, 2.0, 2.5, 3.0]
         self.ELAntigravityRange = 20
         
