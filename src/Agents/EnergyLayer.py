@@ -103,10 +103,13 @@ class EnergyLayerNode:
         newX = self.x + self.stepDiffX * massCoef
         newY = self.y + self.stepDiffY * massCoef
         
-        hit = self.area.CanMoveEx(self, newX, newY)
+        hit = self.area.CanMoveExEx(self, newX, newY)
         if hit.hit:
             if fabs(hit.x-self.x)<Global.MinPositiveNumber and fabs(hit.y - self.y)<Global.MinPositiveNumber:
                 hit = self.moveAlongEdge(newX, newY, hit)
+                hit2 = self.area.CanMoveExEx(self, hit.x, hit.y)
+                if hit2.hit:
+                    hit = hit2
             newX = hit.x
             newY = hit.y
         self.x = newX
@@ -131,7 +134,6 @@ class EnergyLayerNode:
             x1 = (edx*newX - edy*(y1-newY)) / edx
             y2 = -200
             x2 = (edx*newX - edy*(y2-newY)) / edx   
-        
             return self.area.AreIntersecting(edge.start, edge.end, Point(x2,y2), Point(x1, y1))
        
            
