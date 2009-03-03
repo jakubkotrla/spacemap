@@ -53,7 +53,9 @@ class LinkMemoryObjectToNode:
     #called from MemoryObject.StepUpdate
     def StepUpdate(self):
         self.intensity = self.intensity - Global.LinkMemObjToNodeFadeOut
-        if self.intensity < 0: self.intensity = 0 
+        if self.intensity < 0:
+            self.object.linkToNodes.remove(self)
+            self.node.linkToObjects.remove(self)
             
     def NodeDeleted(self):
         self.object.linkToNodes.remove(self)
@@ -105,7 +107,7 @@ class SpaceMap:
         
         self.Layer.Train(memObj, effect)
         
-        inNodes = self.Layer.PositionToNodes(memObj.x, memObj.y, Global.ELGravityRange)
+        inNodes = self.Layer.PositionToNodes(memObj, Global.ELGravityRange)
         nodesToIntensity = {}
         sumIntensity = 0
         

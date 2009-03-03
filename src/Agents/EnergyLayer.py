@@ -174,13 +174,13 @@ class EnergyLayer:
                         self.nodeIndex = self.nodeIndex + 1
                         self.nodes.append(node)
         
-    def PositionToNodes(self, x, y, per):
+    def PositionToNodes(self, center, per):
         inNodes = {}
         closestNode = None
         closestDistance = Global.MaxNumber
         map = Global.Map
         for node in self.nodes:
-            distance = map.DistanceObj(x, y, node)
+            distance = map.DistanceObjs(center, node)
             if distance < closestDistance:
                 closestNode = node
                 closestDistance = distance

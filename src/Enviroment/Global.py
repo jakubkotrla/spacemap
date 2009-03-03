@@ -24,7 +24,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [100, 1024, 123456789, 718597]   #seeds to test
-        self.MaxTestSteps = 400    #should be more than one day 
+        self.MaxTestSteps = 10    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -38,7 +38,7 @@ class GlobalVariables:
         self.ObjDefaultAttractivity = 10   #default object attractivity    
                 
         self.TrainEffectNoticed = 1.0
-        self.TrainEffectNoticedAgain = 0.1
+        self.TrainEffectNoticedAgain = 0.3
         self.TrainEffectUsed = 3.0
         self.TrainEffectFound = 2.0
         self.TrainEffectNotFound = 1.0
@@ -57,7 +57,7 @@ class GlobalVariables:
                 
         self.ELGravityRange = 20
         self.ELGravityRangeTESTSET = [10, 15, 20, 25, 30]
-        self.ELGravityCoef = 2.0
+        self.ELGravityCoef = 3.0
         self.ELAntigravityCoef = 2.0
         self.ELAntigravityCoefTESTSET = [1.5, 2.0, 2.5, 3.0]
         self.ELAntigravityRange = 20
@@ -68,7 +68,7 @@ class GlobalVariables:
         self.ELEnergyFadeCoef = 0.5
         self.ELEnergyFadeLimit = 10
         
-        self.ELForgetNodeRate = 0    #how much EL.forgetEnergy is added each step
+        self.ELForgetNodeRate = 5    #how much EL.forgetEnergy is added each step
         self.ELDeleteNodeReTrainCount = 50
         self.ELDeleteNodeReTrainRange = 20
   
