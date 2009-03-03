@@ -205,6 +205,8 @@ class ProcessArea:
     
     #links given phantom instead of MemoryPhantom to current process - when Agents notice objects via LookForObject
     def PhantomAddedForMemoryPhantom(self, phantom, memoryPhantom):
+        if memoryPhantom not in self.actualBasicProcess.resources:
+            Global.Log("haha") 
         phantom.affordance = memoryPhantom.affordance
         realProcess = self.actualBasicProcess
         if realProcess != memoryPhantom.ownerProcess:

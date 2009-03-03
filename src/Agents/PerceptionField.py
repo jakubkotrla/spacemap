@@ -54,22 +54,6 @@ class PerceptionField:
         self.memoryArea = memoryArea
         self.perceptionFilter = PerceptionFilter()
 
-    def getPhantoms(self):
-        phantoms = self.environmentPhantoms
-        phantoms.sort(lambda b,a: cmp(a.habituation,b.habituation))
-        return phantoms[:Global.PFSize]
-
-    def Update(self, action):
-        habituatedPhantoms = []
-        for phantom in self.environmentPhantoms:
-            if self.processArea.IsPhantomUsedNow(phantom): continue
-            if phantom.Habituate(action.duration):
-                habituatedPhantoms.append(phantom)
-        for habituatedPhantom in habituatedPhantoms:
-            self.environmentPhantoms.remove(habituatedPhantom)
-            habituatedPhantom.ResetOwnerProcess()
-            Global.Log("PF: removing(habituated) phantom for object " + habituatedPhantom.object.ToString())
-                
     def NoticeObjects(self, visibleObjects, actProcess):
         self.perceptionFilter.ProcessObjects(visibleObjects, actProcess)
         phantomsToSpaceMap = {}
@@ -93,16 +77,36 @@ class PerceptionField:
                     self.processArea.PhantomAdded(phantom)
                     phantomsToSpaceMap[phantom] = "ObjectNoticed"
                     Global.Log("PF: Adding phantom for object " + rObj.ToString())
-        #phantoms updated, send to SpaceMap only those that fits in PF.Size
-        realPhantoms = self.getPhantoms()
-        for phantom in realPhantoms:
-            if phantom not in phantomsToSpaceMap: continue
+        #phantoms updated, truncate to PF.Size
+        phantoms = self.environmentPhantoms
+        phantoms.sort(lambda b,a: cmp(a.habituation,b.habituation))
+        phantomsToDelete = phantoms[Global.PFSize:]
+        for phantomToDelete in phantomsToDelete:
+            self.environmentPhantoms.remove(phantomToDelete)
+            phantomToDelete.ResetOwnerProcess()
+            Global.Log("PF: removing(over PF.size) phantom for object " + phantomToDelete.object.ToString())
+        
+        for phantom in self.environmentPhantoms:
+            if phantom not in phantomsToSpaceMap:
+                #happens when agent changes viewCones and object is not in normal VCs (was added by explore VCs)
+                continue
             if phantomsToSpaceMap[phantom] == "ObjectNoticedAgain":
                 self.spaceMap.ObjectNoticedAgain(phantom.object)
             elif phantomsToSpaceMap[phantom] == "ObjectFound":
                 self.spaceMap.ObjectFound(phantom.object)
             elif phantomsToSpaceMap[phantom] == "ObjectNoticed":
                 self.spaceMap.ObjectNoticed(phantom.object)
+
+    def Update(self, action):
+        habituatedPhantoms = []
+        for phantom in self.environmentPhantoms:
+            if self.processArea.IsPhantomUsedNow(phantom): continue
+            if phantom.Habituate(action.duration):
+                habituatedPhantoms.append(phantom)
+        for habituatedPhantom in habituatedPhantoms:
+            self.environmentPhantoms.remove(habituatedPhantom)
+            habituatedPhantom.ResetOwnerProcess()
+            Global.Log("PF: removing(habituated) phantom for object " + habituatedPhantom.object.ToString())
 
     def GetPhantomForObj(self, rObj):
         for phantom in self.environmentPhantoms:
@@ -111,10 +115,9 @@ class PerceptionField:
         return None 
     
     def TryToLinkPhantomsFor(self, excProcess, missingSources):
-        realPhantoms = self.getPhantoms()
         for wantedAff in missingSources:
             phantomForAff = None
-            for phantom in realPhantoms:
+            for phantom in self.environmentPhantoms:
                 if wantedAff in phantom.object.type.affordances:
                     phantomForAff = phantom
             if phantomForAff != None:
