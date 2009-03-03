@@ -24,7 +24,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [100, 1024, 123456789, 718597]   #seeds to test
-        self.MaxTestSteps = 10    #should be more than one day 
+        self.MaxTestSteps = 1200    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -56,14 +56,13 @@ class GlobalVariables:
         self.ELCreateNoise = 3    #noise when creating nodes, >ELDensity or ==-1 leads to completely random xy
                 
         self.ELGravityRange = 20
-        self.ELGravityRangeTESTSET = [10, 15, 20, 25, 30]
         self.ELGravityCoef = 3.0
         self.ELAntigravityCoef = 2.0
-        self.ELAntigravityCoefTESTSET = [1.5, 2.0, 2.5, 3.0]
+        self.ELAntigravityCoefTESTSET = [1.0, 1.5, 2.0, 2.5, 3.0]
         self.ELAntigravityRange = 20
         
         self.ELEnergyPointCreateEnergy = 100
-        self.ELEnergyPointCreateEnergyTESTSET = [100, 150, 200]
+        #self.ELEnergyPointCreateEnergyTESTSET = [100, 150, 200]
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5
         self.ELEnergyFadeLimit = 10

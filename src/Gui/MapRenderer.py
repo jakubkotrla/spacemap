@@ -300,8 +300,7 @@ class MapRenderer:
         else:
             draw.text([10,1020], "Step: " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
             draw.text([400,1020], "Time: " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
-            nc = len(elayer.nodes)
-            draw.text([800,1020], "SM-NC: " + str(), font=self.font, fill=(0, 0, 0))
+            draw.text([800,1020], "SM-NC: " + str(len(elayer.nodes)), font=self.font, fill=(0, 0, 0))
                 
          
         im.save(filename, "PNG")
