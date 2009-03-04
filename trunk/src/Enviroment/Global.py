@@ -23,7 +23,7 @@ class GlobalVariables:
         self.VisibilityHistoryArea = 2          #visibility object is square AxA
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
-        self.RandomSeeds = [718597, 100, 1024, 718597]   #seeds to test
+        self.RandomSeeds = [145, 718597, 100, 1024, 718597]   #seeds to test
         self.MaxTestSteps = 1000    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
