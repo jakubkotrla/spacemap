@@ -68,13 +68,13 @@ class PerceptionField:
                 if memPhantom != None and self.processArea.LookingForPhantom(memPhantom):
                     phantom = Phantom(rObj, memPhantom)
                     self.environmentPhantoms.append(phantom)
-                    self.processArea.PhantomAddedForMemoryPhantom(phantom, memPhantom)
+                    #self.processArea.PhantomAddedForMemoryPhantom(phantom, memPhantom) later
                     phantomsToSpaceMap[phantom] = "ObjectFound"
                     Global.Log("PF: Adding phantom for object " + rObj.ToString() + " instead of " + memPhantom.ToString())
                 else:
                     phantom = Phantom(rObj)
                     self.environmentPhantoms.append(phantom)
-                    self.processArea.PhantomAdded(phantom)
+                    #self.processArea.PhantomAdded(phantom) later
                     phantomsToSpaceMap[phantom] = "ObjectNoticed"
                     Global.Log("PF: Adding phantom for object " + rObj.ToString())
         #phantoms updated, truncate to PF.Size
@@ -93,8 +93,10 @@ class PerceptionField:
             if phantomsToSpaceMap[phantom] == "ObjectNoticedAgain":
                 self.spaceMap.ObjectNoticedAgain(phantom.object)
             elif phantomsToSpaceMap[phantom] == "ObjectFound":
+                self.processArea.PhantomAddedForMemoryPhantom(phantom, phantom.memoryPhantom)
                 self.spaceMap.ObjectFound(phantom.object)
             elif phantomsToSpaceMap[phantom] == "ObjectNoticed":
+                self.processArea.PhantomAdded(phantom)
                 self.spaceMap.ObjectNoticed(phantom.object)
 
     def Update(self, action):
