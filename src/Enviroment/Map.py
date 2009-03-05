@@ -28,6 +28,8 @@ class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+    def Eq(self, point):
+        return (self.x == point.x and self.y == point.y)
         
 class Hit(Point):
     def __init__(self, x, y, hit):
@@ -137,13 +139,17 @@ class Map:
     #start has old position in .x and .y 
     def CanMove(self, start, newX, newY):
         hitPoint = None
+        newPos = Point(newX,newY)
         for edge in self.edges:
-            hitResult = self.AreIntersecting(edge.start, edge.end, start, Point(newX,newY) )
+            hitResult = self.AreIntersecting(edge.start, edge.end, start, newPos)
             if hitResult.hit:
                 if hitResult.x == newX and hitResult.y == newY:
                     pass
                 elif hitResult.x == start.x and hitResult.y == start.y:
-                    pass
+                    if self.IsInside(newPos):
+                        pass
+                    else:
+                        return False    #hit at start - start on edge and move out
                 else:
                     return False
         return True
@@ -155,19 +161,52 @@ class Map:
         for edge in self.edges:
             hitResult = self.AreIntersecting(edge.start, edge.end, start, newPos)
             if hitResult.hit:
-                if hitPoint == None:
-                    hitPoint = hitResult
-                    hitDist = self.DistanceObjs(hitResult, start)
-                else:
-                    dist = self.DistanceObjs(hitResult, start)
-                    if dist < hitDist:
+                if hitResult.Eq(newPos):
+                    pass
+                elif hitResult.Eq(start) and self.IsInside(newPos):
+                    pass
+                else: #real hit
+                    if hitPoint == None:
                         hitPoint = hitResult
-                        hitDist = dist
+                        hitDist = self.DistanceObjs(hitResult, start)
+                    else:
+                        dist = self.DistanceObjs(hitResult, start)
+                        if dist < hitDist:
+                            hitPoint = hitResult
+                            hitDist = dist
+        #end for edge
         if hitPoint == None:
             return Hit(0, 0, False)
         else:
+            if fabs(hitPoint.x-start.x)<Global.MinPositiveNumber and fabs(hitPoint.y - start.y)<Global.MinPositiveNumber:
+                newPos = self.moveAlongEdge(edge, start, newPos)
+                hitPoint.x = newPos.x
+                hitPoint.y = newPos.y
+            
             return hitPoint
-    def CanMoveExEx(self, start, newX, newY):
+    
+    def moveAlongEdge(self, edge, start, newPos):
+        edx = edge.end.x - edge.start.x
+        edy = edge.end.y - edge.start.y
+       
+        if edx == 0:
+            xx = start.x
+            yy = newPos.y
+            return Point(xx, yy)
+        elif edy == 0:
+            yy = start.y
+            xx = newPos.x
+            return Point(xx, yy)
+        else:
+            y1 = 200
+            x1 = (edx*newPos.x - edy*(y1-newPos.y)) / edx
+            y2 = -200
+            x2 = (edx*newPos.x - edy*(y2-newPos.y)) / edx   
+            return self.AreIntersecting(edge.start, edge.end, Point(x2,y2), Point(x1, y1))    
+    
+        
+        
+    def CanMoveExExNo(self, start, newX, newY):
         hitPoint = None
         hitDist = Global.MaxNumber
         

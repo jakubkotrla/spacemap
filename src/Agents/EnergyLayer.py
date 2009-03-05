@@ -87,7 +87,7 @@ class EnergyLayerNode:
             ldy = (self.y - node.y)
             dist2 = ldx*ldx+ldy*ldy
 
-            gDiffCoef = dist2 * max(0.5, self.GetUsage())*max(0.5,node.GetUsage())
+            gDiffCoef = dist2 * max(1, self.GetUsage())*max(1,node.GetUsage())
             gDiffCoef = Global.ELAntigravityCoef*1.0 / max(Global.MinPositiveNumber, gDiffCoef)
             
             diffX = ldx * gDiffCoef
@@ -103,39 +103,16 @@ class EnergyLayerNode:
         newX = self.x + self.stepDiffX * massCoef
         newY = self.y + self.stepDiffY * massCoef
         
-        hit = self.area.CanMoveExEx(self, newX, newY)
+        if self.index == 41:
+            Global.Log("haha 20") 
+        
+        hit = self.area.CanMoveEx(self, newX, newY)
         if hit.hit:
-            if fabs(hit.x-self.x)<Global.MinPositiveNumber and fabs(hit.y - self.y)<Global.MinPositiveNumber:
-                hit = self.moveAlongEdge(newX, newY, hit)
-                hit2 = self.area.CanMoveExEx(self, hit.x, hit.y)
-                if hit2.hit:
-                    hit = hit2
             newX = hit.x
             newY = hit.y
         self.x = newX
         self.y = newY
         self.stepDiffX = self.stepDiffY = 0
-    
-    def moveAlongEdge(self, newX, newY, hit):
-        edge = hit.edge
-        edx = edge.end.x - edge.start.x
-        edy = edge.end.y - edge.start.y
-       
-        if edx == 0:
-            xx = self.x
-            yy = newY
-            return Point(xx, yy)
-        elif edy == 0:
-            yy = self.y
-            xx = newX
-            return Point(xx, yy)
-        else:
-            y1 = 200
-            x1 = (edx*newX - edy*(y1-newY)) / edx
-            y2 = -200
-            x2 = (edx*newX - edy*(y2-newY)) / edx   
-            return self.area.AreIntersecting(edge.start, edge.end, Point(x2,y2), Point(x1, y1))
-       
            
     def Train(self, point, effect):
         diffX = point.x - self.x
