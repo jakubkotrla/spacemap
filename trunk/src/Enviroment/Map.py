@@ -29,14 +29,14 @@ class Point:
         self.x = x
         self.y = y
     def Eq(self, point):
-        return (self.x == point.x and self.y == point.y)
+        return fabs(self.x-point.x)<Global.MinPositiveNumber and fabs(self.y - point.y)<Global.MinPositiveNumber
         
 class Hit(Point):
     def __init__(self, x, y, hit):
         Point.__init__(self, x, y)
         self.hit = hit
         self.edge = None  #first edge hit
-        self.dist = 0      #distance to first hit, only for Map
+        self.dist = 0     #distance to first hit, only for Map
         
 
 class Edge:
@@ -154,35 +154,47 @@ class Map:
                     return False
         return True
     def CanMoveEx(self, start, newX, newY):
-        hitPoint = None
-        hitDist = Global.MaxNumber
+        newPos = Point(newX, newY)
+        hitPoint = self.canMoveExInner(start, newPos)
         
-        newPos = Point(newX,newY)
+        if (hitPoint.hit):
+            if fabs(hitPoint.x-start.x)<Global.MinPositiveNumber and fabs(hitPoint.y - start.y)<Global.MinPositiveNumber:
+                newPos = self.moveAlongEdge(hitPoint.edge, start, newPos)
+                newHit = self.canMoveExInner(start, newPos)
+                if newHit.hit:
+                    hitPoint = newHit
+                else:
+                    hitPoint.x = newPos.x
+                    hitPoint.y = newPos.y
+            else:
+                return hitPoint
+        return hitPoint
+        
+    def canMoveExInner(self, start, end):
+        hitPoint = None
+        
         for edge in self.edges:
-            hitResult = self.AreIntersecting(edge.start, edge.end, start, newPos)
+            hitResult = self.AreIntersecting(edge.start, edge.end, start, end)
             if hitResult.hit:
-                if hitResult.Eq(newPos):
+                if hitResult.Eq(end):
                     pass
-                elif hitResult.Eq(start) and self.IsInside(newPos):
+                elif hitResult.Eq(start) and self.IsInside(end):
                     pass
                 else: #real hit
                     if hitPoint == None:
                         hitPoint = hitResult
+                        hitPoint.edge = edge
                         hitDist = self.DistanceObjs(hitResult, start)
                     else:
                         dist = self.DistanceObjs(hitResult, start)
                         if dist < hitDist:
                             hitPoint = hitResult
+                            hitPoint.edge = edge
                             hitDist = dist
         #end for edge
         if hitPoint == None:
             return Hit(0, 0, False)
         else:
-            if fabs(hitPoint.x-start.x)<Global.MinPositiveNumber and fabs(hitPoint.y - start.y)<Global.MinPositiveNumber:
-                newPos = self.moveAlongEdge(edge, start, newPos)
-                hitPoint.x = newPos.x
-                hitPoint.y = newPos.y
-            
             return hitPoint
     
     def moveAlongEdge(self, edge, start, newPos):
@@ -203,31 +215,6 @@ class Map:
             y2 = -200
             x2 = (edx*newPos.x - edy*(y2-newPos.y)) / edx   
             return self.AreIntersecting(edge.start, edge.end, Point(x2,y2), Point(x1, y1))    
-    
-        
-        
-    def CanMoveExExNo(self, start, newX, newY):
-        hitPoint = None
-        hitDist = Global.MaxNumber
-        
-        newPos = Point(newX,newY)
-        for edge in self.edges:
-            hitResult = self.AreIntersecting(edge.start, edge.end, start, newPos)
-            if hitResult.hit:
-                if hitPoint == None:
-                    hitPoint = hitResult
-                    hitPoint.edge = edge
-                    hitDist = self.DistanceObjs(hitResult, start)
-                else:
-                    dist = self.DistanceObjs(hitResult, start)
-                    if dist < hitDist:
-                        hitPoint = hitResult
-                        hitPoint.edge = edge
-                        hitDist = dist
-        if hitPoint == None:
-            return Hit(0, 0, False)
-        else:
-            return hitPoint
     
     def GetPath(self, start, newX, newY):
         if self.CanMove(start, newX, newY):
@@ -337,23 +324,23 @@ class Map:
         x =(b1*c2 - b2*c1)/denom;
         y =(a2*c1 - a1*c2)/denom;
         
-        lx1 = min(edge1point1.x, edge1point2.x) - 0.1
-        rx1 = max(edge1point1.x, edge1point2.x) + 0.1
+        lx1 = min(edge1point1.x, edge1point2.x) - Global.MinPositiveNumber
+        rx1 = max(edge1point1.x, edge1point2.x) + Global.MinPositiveNumber
         if not lx1 <= x <= rx1: return Hit(x,y, False)
-        ly1 = min(edge1point1.y, edge1point2.y) - 0.1
-        ry1 = max(edge1point1.y, edge1point2.y) + 0.1
+        ly1 = min(edge1point1.y, edge1point2.y) - Global.MinPositiveNumber
+        ry1 = max(edge1point1.y, edge1point2.y) + Global.MinPositiveNumber
         if not ly1 <= y <= ry1: return Hit(x,y, False)
         
-        lx2 = min(edge2point1.x, edge2point2.x) - 0.1
-        rx2 = max(edge2point1.x, edge2point2.x) + 0.1
+        lx2 = min(edge2point1.x, edge2point2.x) - Global.MinPositiveNumber
+        rx2 = max(edge2point1.x, edge2point2.x) + Global.MinPositiveNumber
         if not lx2 <= x <= rx2: return Hit(x,y, False)
-        ly2 = min(edge2point1.y, edge2point2.y) - 0.1
-        ry2 = max(edge2point1.y, edge2point2.y) + 0.1
+        ly2 = min(edge2point1.y, edge2point2.y) - Global.MinPositiveNumber
+        ry2 = max(edge2point1.y, edge2point2.y) + Global.MinPositiveNumber
         if not ly2 <= y <= ry2: return Hit(x,y, False)
         
         return Hit(x,y, True)       
    
-    
+    #from http://alienryderflex.com/polygon/
     def IsInside(self, point):
         count = 0
         endPoint = Point(self.width+1, point.y)
@@ -361,7 +348,12 @@ class Map:
         for edge in self.edges:
             hitResult = self.AreIntersecting(edge.start, edge.end, point, endPoint)
             if hitResult.hit:
-                count = count + 1
+                if hitResult.Eq(edge.start) and edge.end.y <= point.y:
+                    pass
+                elif hitResult.Eq(edge.end) and edge.start.y <= point.y:
+                    pass
+                else:
+                    count = count + 1
         return ((count % 2) == 1)
         
     #from http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
