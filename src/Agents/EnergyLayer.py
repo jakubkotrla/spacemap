@@ -103,9 +103,6 @@ class EnergyLayerNode:
         newX = self.x + self.stepDiffX * massCoef
         newY = self.y + self.stepDiffY * massCoef
         
-        if self.index == 41:
-            Global.Log("haha 20") 
-        
         hit = self.area.CanMoveEx(self, newX, newY)
         if hit.hit:
             newX = hit.x
