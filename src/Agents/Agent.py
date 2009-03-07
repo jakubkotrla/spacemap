@@ -22,13 +22,14 @@ class Agent:
         self.paText = ' '
         
         self.viewConesNormal = []
-        self.viewConesNormal.append( ViewCone(0.1, pi*0.9, 7 ) )
-        self.viewConesNormal.append( ViewCone(0.3, pi/2, 15) )
-        self.viewConesNormal.append( ViewCone(0.3, pi/4, 25) )
-        self.viewConesNormal.append( ViewCone(0.3, pi/8, 40) )
+        self.viewConesNormal.append( ViewCone(0.1, pi*0.9, 10 ) )
+        self.viewConesNormal.append( ViewCone(0.3, pi/2, 20) )
+        self.viewConesNormal.append( ViewCone(0.3, pi/4, 30) )
+        self.viewConesNormal.append( ViewCone(0.3, pi/8, 50) )
         self.viewConesForExplore = []
-        self.viewConesForExplore.append( ViewCone(0.5, pi, 10 ) )
-        self.viewConesForExplore.append( ViewCone(0.5, pi, 20 ) )
+        self.viewConesForExplore.append( ViewCone(0.4, pi, 10 ) )
+        self.viewConesForExplore.append( ViewCone(0.4, pi, 20 ) )
+        self.viewConesForExplore.append( ViewCone(0.4, pi, 30 ) )
         self.viewCones = self.viewConesNormal
         self.viewConeNormalMaxDist = 0
         for vc in self.viewConesNormal:

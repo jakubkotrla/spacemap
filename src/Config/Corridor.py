@@ -20,8 +20,8 @@ class Corridor(BaseConfig):
         self.intentions.AddHighLevelIntention("Repair")
        
     def prepareMap(self, map):
-        map.points = [ Point(0,0), Point(20,0), Point(20,80), Point(100,80), Point(100, 100), Point(0, 100) ]
-        map.wayPoints = [ Waypoint(10,20), Waypoint(10,90), Waypoint(80,90) ]
+        map.points = [ Point(0,0), Point(30,0), Point(30,80), Point(100,80), Point(100, 100), Point(0, 100) ]
+        map.wayPoints = [ Waypoint(15,20), Waypoint(10,90), Waypoint(80,90) ]
         map.width = 100
         map.height = 100
         map.SetAgentStart(10, 90)
@@ -36,7 +36,7 @@ class Corridor(BaseConfig):
         map.AddObject(Glasses, 42, 82)
         map.AddObject(Pipe, 40, 81)
         
-        map.AddObject(Sofa, 70, 82)
+        map.AddObject(Sofa, 70, 90)
         
         map.AddObject(Door, 100, 90)
         map.AddObject(Painting, 100, 95)

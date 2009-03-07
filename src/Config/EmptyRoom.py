@@ -16,7 +16,7 @@ class EmptyRoom(BaseConfig):
         self.intentions.AddHighLevelIntention("Smoke")
         self.intentions.AddHighLevelIntention("Watch")
         self.intentions.AddHighLevelIntention("Play")
-        self.intentions.AddHighLevelIntention("Sit")
+        
 
     def prepareMap(self, map):
         map.points = [ Point(0,0), Point(100,0), Point(100,100), Point(0, 100) ]
@@ -25,9 +25,5 @@ class EmptyRoom(BaseConfig):
         map.height = 100
         map.SetAgentStart(50, 50)
         
-        #map.AddObject(Nail, 20, 25, amount=10)
-        #map.AddObject(Hammer, 20, 30)
-        map.AddObject(Flower, 20, 25)
         map.AddObject(Chess, 20, 30)
-        map.AddObject(Pipe, 94, 40)
-        map.AddObject(Box, 40, 60)
+        

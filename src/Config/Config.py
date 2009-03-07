@@ -12,6 +12,7 @@ from FullRoom import FullRoom
 from Corridor import Corridor
 from Lobby import Lobby
 from CrazyRoom import CrazyRoom
+from SmallRoom import SmallRoom
 
 
 class ConfigSingleton:
@@ -22,6 +23,7 @@ class ConfigSingleton:
         self.configs["Corridor"] = Corridor()
         self.configs["Lobby"] = Lobby()
         self.configs["CrazyRoom"] = CrazyRoom()
+        self.configs["SmallRoom"] = SmallRoom()
         
          
     

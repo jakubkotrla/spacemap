@@ -138,11 +138,14 @@ class EnergyLayer:
         self.area = area
         self.nodes = []
         self.energyPoints = []
-        self.energyPointsCountHistory = []
+        self.energyNodesCountHistory = []
         self.energyPointsToDelete = []
         self.forgetEnergy = 0
         self.nodeIndex = 1
         self.desiredNodeCount = 0
+        
+        self.stepEPCreated = 0
+        self.stepELNodesCreated = 0
         
     def CreateMap(self):
         areaArea = self.area.GetArea()
@@ -212,7 +215,7 @@ class EnergyLayer:
         if diceRoll < chanceForget:
             self.forgetEnergy = self.forgetEnergy - cost
             self.DeleteNode(Global.Choice(self.nodes))
-        self.energyPointsCountHistory.append(len(self.energyPoints))
+        self.energyNodesCountHistory.append(len(self.nodes))
      
     def DeleteNode(self, node):
         node.Delete()
@@ -241,6 +244,7 @@ class EnergyLayer:
         
         memObject.AddLinkToNode(newNode)
         memObject.IntenseToNode(newNode, Global.MemObjIntenseToNewNode)
+        self.stepELNodesCreated = self.stepELNodesCreated + 1
         return newNode
     
     def Train(self, memObject, effect):
@@ -254,9 +258,16 @@ class EnergyLayer:
         else:                
             ep = EnergyPoint(self, memObject, memObject.x, memObject.y, effect * Global.ELEnergyPointCreateEnergy)
             self.energyPoints.append(ep)
+        self.stepEPCreated += effect * Global.ELEnergyPointCreateEnergy
         
     def DeleteEnergyPoint(self, energyPoint):
         self.energyPointsToDelete.append(energyPoint)
+    
+    def Status(self):
+        s = str(len(self.nodes)) + ";" + str(self.stepEPCreated) + ";" + str(self.stepELNodesCreated)
+        self.stepEPCreated = 0
+        self.stepELNodesCreated = 0
+        return s
         
     def GetNodeCreateCost(self):
         x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
@@ -266,7 +277,7 @@ class EnergyLayer:
         x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(-x)/50))
         return cost
-        
+
     def getNodesAround(self, node, range):
         nodesAround = []
         range = range * range
