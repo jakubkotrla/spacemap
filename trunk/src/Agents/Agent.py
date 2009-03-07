@@ -22,7 +22,7 @@ class Agent:
         self.paText = ' '
         
         self.viewConesNormal = []
-        self.viewConesNormal.append( ViewCone(0.1, pi*0.9, 10 ) )
+        self.viewConesNormal.append( ViewCone(0.1, pi*0.9, 5 ) )
         self.viewConesNormal.append( ViewCone(0.3, pi/2, 20) )
         self.viewConesNormal.append( ViewCone(0.3, pi/4, 30) )
         self.viewConesNormal.append( ViewCone(0.3, pi/8, 50) )

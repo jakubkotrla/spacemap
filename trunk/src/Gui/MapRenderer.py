@@ -28,11 +28,9 @@ class MapRenderer:
             self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
             self.agentMHlines = []
         
-            self.map.guiObjectAppeared = self.objectAppeared
-            self.map.guiObjectDisAppeared = self.objectDisAppeared
             self.objectsRects = []
             for obj in self.map.objects:
-                self.objectAppeared(obj)
+                objId = self.Pixel(obj, obj.x, obj.y, "blue", tags="info object")
       
     def Clear(self):
         self.canvas.addtag_all("2del")
@@ -306,35 +304,18 @@ class MapRenderer:
         im.save(filename, "PNG")
     
     def RenderELNC(self, data, filename):
-        w = len(data)
-        h = 600
-        im = Image.new("RGB", (w+20, h+20), (255, 2555, 255))
+        ww = len(data)
+        hh = 600
+        im = Image.new("RGB", (ww+20, hh+20), (255, 2555, 255))
         draw = ImageDraw.Draw(im)
         maxnc = 0
         for d in data:
             if d > maxnc: maxnc = d
-        coef = float(h) / maxnc 
+        coef = float(hh) / maxnc 
         i = 0
         for d in data:
             ch = d * coef
-            draw.line( [i+10, h+10, i+10, h-ch+10], fill=(0,0,0))
+            draw.line( [i+10, hh+10, i+10, hh-ch+10], fill=(0,0,0))
             i = i + 1
         im.save(filename, "PNG")
-    
-    def objectAppeared(self, object):
-        if (object in self.objectsRects):
-            Global.Log("Programmer.Error: MapRenderer.objectAppeared")
-        else:
-            objId = self.Pixel(object, object.x, object.y, "blue", tags="info object")
-            self.objectsRects.append(object)
-            object.guiId = objId
-        
-    def objectDisAppeared(self, object):
-        pass
-        #if (object in self.objectsRects.keys()):
-        #    objId = self.objectsRects[object]
-        #    self.canvas.delete(objId)
-        #else:
-        #    Global.Log("Programmer.Error: MapRenderer.objectDisAppeared")
-    
            

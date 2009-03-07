@@ -1,6 +1,7 @@
 
 from Enviroment.Global import Global
 from EnergyLayer import EnergyLayer
+from Enviroment.Map import Point
 
 class MemoryObject:
     def __init__(self, rObject, intensity=1):
@@ -95,6 +96,30 @@ class SpaceMap:
             if (memObjs[0].intensity > 0):
                 return memObjs[0]
         return None
+    
+    def GetMemoryObjectLocation(self, memObject):
+        links = memObject.linkToNodes
+        x = 0
+        y = 0
+        count = len(links)
+        maxIntensity = 0
+        for link in links:
+            x += link.node.x
+            y += link.node.y
+            if link.intensity > maxIntensity: maxIntensity = link.intensity 
+        x = x / count
+        y = y / count
+        p = Point(x,y)
+        x = 0
+        y = 0
+        for link in links:
+            li = float(link.intensity) / maxIntensity 
+            x += li * (link.node.x - p.x)
+            y += li * (link.node.y - p.y)
+        p.x += x
+        p.y += y
+        Global.Log("SM: looking for " + memObject.ToString() + " at " + p.ToString())
+        return p
         
     
     def objectTrain(self, rObject, effect):

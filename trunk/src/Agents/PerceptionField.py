@@ -158,6 +158,13 @@ class PerceptionField:
     def LookForObject(self, memoryPhantom):
         memObject = memoryPhantom.object
         map = Global.Map
+        
+        #ToDo: rewrite:
+        # getAll visible objects
+        # check if memObject is there
+        # No - not found and fail as it is already here
+        # Yes - check if new / noticeAgain as already here
+        
         rObj = map.GetRealObjectIfThere(memObject)
 
         if rObj != None:

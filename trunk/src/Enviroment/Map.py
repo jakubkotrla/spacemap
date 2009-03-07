@@ -14,7 +14,6 @@ class RealObject:
         self.attractivity = attractivity
         self.curAttractivity = attractivity #0.0 - 1.0
         self.visibility = 0 #0.0 - 1.0
-        self.guiId = None
         self.trainHistory = 0
         
     def Use(self):
@@ -30,6 +29,8 @@ class Point:
         self.y = y
     def Eq(self, point):
         return fabs(self.x-point.x)<Global.MinPositiveNumber and fabs(self.y - point.y)<Global.MinPositiveNumber
+    def ToString(self):
+        return str(self.x) + "," + str(self.y)
         
 class Hit(Point):
     def __init__(self, x, y, hit):
@@ -74,7 +75,6 @@ class Map:
         self.objects = []
         self.agentMoves = []
         self.mapRenderer = None
-        self.guiObjectAppeared = None
         self.visibilityHistory = []
         self.visibilityMaxEver = 0
         
@@ -110,8 +110,6 @@ class Map:
     def AddObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
         rObj = RealObject(type, x, y, attractivity, amount)    
         self.objects.append(rObj)
-        if self.guiObjectAppeared != None:
-            self.guiObjectAppeared(rObj)
     
     def SetAgentStart(self, x, y):
         self.agentMoves.append( Point(x, y) )
@@ -184,13 +182,13 @@ class Map:
                     if hitPoint == None:
                         hitPoint = hitResult
                         hitPoint.edge = edge
-                        hitDist = self.DistanceObjs(hitResult, start)
+                        hitPoint.dist = self.DistanceObjs(hitResult, start)
                     else:
                         dist = self.DistanceObjs(hitResult, start)
-                        if dist < hitDist:
+                        if dist < hitPoint.dist:
                             hitPoint = hitResult
                             hitPoint.edge = edge
-                            hitDist = dist
+                            hitPoint.dist = dist
         #end for edge
         if hitPoint == None:
             return Hit(0, 0, False)
