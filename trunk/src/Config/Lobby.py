@@ -13,40 +13,16 @@ class Lobby(BaseConfig):
         BaseConfig.__init__(self)
     
     def prepareProcessIntentions(self):
-        P_Eat = Process("Eating", [], [Eatability], [Eatability], [], 1800)
-        self.processes.AddProcess(P_Eat)
-        I_Eat = Intention("Eat", [P_Eat])
-        self.intentions.AddIntention(I_Eat)
-        self.intentions.AddHighLevelIntention(I_Eat)
-        
-        P_Drink = Process("Drinking", [], [Drinkability], [Drinkability], [], 60)
-        self.processes.AddProcess(P_Drink)
-        I_Drink = Intention("Drink", [P_Drink])
-        self.intentions.AddIntention(I_Drink)
-        self.intentions.AddHighLevelIntention(I_Drink)
-    
-        P_Read = Process("Reading", [], [Zoomability, Readability], [], [], 4000)
-        self.processes.AddProcess(P_Read)
-        I_Read = Intention("Read", [P_Read])
-        self.intentions.AddIntention(I_Read)
-        self.intentions.AddHighLevelIntention(I_Read)
-        
-        P_Watch = Process("Watching", [], [Watchability], [], [], 4000)
-        self.processes.AddProcess(P_Watch)
-        I_Watch = Intention("Watch", [P_Watch])
-        self.intentions.AddIntention(I_Watch)
-        self.intentions.AddHighLevelIntention(I_Watch)
-        
-        P_Sit = Process("Sitting", [], [Sitability], [], [], 1200)
-        self.processes.AddProcess(P_Sit)
-        I_Sit = Intention("Sit", [P_Sit])
-        self.intentions.AddIntention(I_Sit)
-        self.intentions.AddHighLevelIntention(I_Sit)
+        self.intentions.AddHighLevelIntention("Eat")
+        self.intentions.AddHighLevelIntention("Drink")
+        self.intentions.AddHighLevelIntention("Read")
+        self.intentions.AddHighLevelIntention("Watch")
+        self.intentions.AddHighLevelIntention("Sit")
         
        
     def prepareMap(self, map):
         map.points = [ Point(0,0), Point(100,0), Point(100,30), Point(60,30), Point(60,70), Point(100,70), Point(100,100), Point(0,100) ]
-        map.wayPoints = [ Waypoint(59,29), Waypoint(59,71), Waypoint(10,10), Waypoint(10,90), Waypoint(80,15), Waypoint(80,85) ]
+        map.wayPoints = [ Waypoint(55,25), Waypoint(55,75), Waypoint(15,15), Waypoint(15,85), Waypoint(15,50),  Waypoint(80,15), Waypoint(80,85) ]
         map.width = 100
         map.height = 100
         map.SetAgentStart(20, 50)
