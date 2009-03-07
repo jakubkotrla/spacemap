@@ -160,8 +160,12 @@ class ActionSelector:
                 excProcess.data["step"] = "LookForObject"
                 atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
-                atomicProcess.data["newx"] = excProcess.data["phantom"].object.x
-                atomicProcess.data["newy"] = excProcess.data["phantom"].object.y
+                
+                memObj = excProcess.data["phantom"].object
+                point = self.spaceMap.GetMemoryObjectLocation(memObj)
+                
+                atomicProcess.data["newx"] = point.x
+                atomicProcess.data["newy"] = point.y
                 return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)
             
             elif (excProcess.data["step"] == "LookForObject"):
