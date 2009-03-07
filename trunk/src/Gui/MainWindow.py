@@ -216,10 +216,11 @@ class MainWindow(Frame):
             world.Step()
             self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
             self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
-            Global.LogData(str( len(elayer.nodes) ))
+            Global.LogData( elayer.Status() )
         
         self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
         self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
+        self.mapRenderer.RenderELNC(elayer.energyNodesCountHistory, savePath + "spelncount.png")
         
         Global.Log("Stoping simulation...")
         Global.LogEnd()
@@ -301,8 +302,7 @@ class MainWindow(Frame):
             txt = txt + line + "\n  "
         self.txtLog = self.wxCanvas.create_text(1050, 600, text=txt, width=450, anchor=NW, tags="infotxt")
         
-        line = str(nc)
-        Global.LogData(line)
+        Global.LogData(world.agent.intelligence.spaceMap.Layer.Status())
   
     
     def pauseSimulation(self):

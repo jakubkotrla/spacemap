@@ -305,6 +305,22 @@ class MapRenderer:
          
         im.save(filename, "PNG")
     
+    def RenderELNC(self, data, filename):
+        w = len(data)
+        h = 600
+        im = Image.new("RGB", (w+20, h+20), (255, 2555, 255))
+        draw = ImageDraw.Draw(im)
+        maxnc = 0
+        for d in data:
+            if d > maxnc: maxnc = d
+        coef = float(h) / maxnc 
+        i = 0
+        for d in data:
+            ch = d * coef
+            draw.line( [i+10, h+10, i+10, h-ch+10], fill=(0,0,0))
+            i = i + 1
+        im.save(filename, "PNG")
+    
     def objectAppeared(self, object):
         if (object in self.objectsRects):
             Global.Log("Programmer.Error: MapRenderer.objectAppeared")
