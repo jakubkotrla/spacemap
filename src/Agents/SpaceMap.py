@@ -75,11 +75,16 @@ class SpaceMap:
         self.Layer = EnergyLayer(self.map)
         self.Layer.CreateMap()
         
-    def StepUpdate(self):
-        self.Layer.StepUpdate()
-        memObjs = self.objectsToMemObjs.values()
-        for memObj in memObjs:
-            memObj.StepUpdate()
+    def StepUpdate(self, action):
+        if action.duration > Global.SMUpdateMaxDuration:
+            count = int(action.duration / Global.SMUpdateMaxDuration)
+        else:
+            count = 1
+        for i in range(count):
+            self.Layer.StepUpdate()
+            memObjs = self.objectsToMemObjs.values()
+            for memObj in memObjs:
+                memObj.StepUpdate()
        
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:

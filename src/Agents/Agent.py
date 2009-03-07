@@ -106,7 +106,7 @@ class Agent:
         Global.Time.AddSeconds(action.duration)
         self.intelligence.ActionDone()
         
-        self.intelligence.spaceMap.StepUpdate()
+        self.intelligence.spaceMap.StepUpdate(action)
 
 
     def ToString(self):

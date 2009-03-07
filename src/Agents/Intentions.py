@@ -9,14 +9,14 @@ class Intention:
 
 class Intentions:
     def __init__(self):
-        self.intentions = []
+        self.intentions = {}
         self.highLevelIntentions = []
 
     def AddIntention(self, intention):
-        self.intentions.append(intention)
+        self.intentions[intention.name] = intention
 
-    def AddHighLevelIntention(self, intention):
-        self.highLevelIntentions.append(intention)
+    def AddHighLevelIntention(self, intentionName):
+        self.highLevelIntentions.append(self.intentions[intentionName])
         
     def GetRandomHighLevelIntention(self):
         return Global.Choice(self.highLevelIntentions)

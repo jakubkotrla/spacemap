@@ -35,7 +35,7 @@ class Processes:
                         "LookForObject"  : Process("LookForObject",[],[],[],[]),
                         "SearchRandom"  : Process("SearchRandom",[],[],[],[])
                         }        
-        self.processes = []
+        self.processes = {}
     
     def AddProcess(self, process):
-        self.processes.append(process)
+        self.processes[process.name] = process

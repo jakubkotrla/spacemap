@@ -44,6 +44,7 @@ class GlobalVariables:
         self.TrainEffectNotFound = 1.0
         self.TrainEffectUsedUp = 1.0
         
+        self.SMUpdateMaxDuration = 100  #if action takes more seconds, SP.StepUpdate call Layer.StepUpdate multiple times 
         self.SMNodeAreaDivCoef = 1      #when MemObj's linkToNodes are intensed - alter node's gauss area
         self.SMNodeAreaGaussCoef = 10   #as above
         
