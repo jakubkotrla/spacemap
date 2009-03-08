@@ -21,7 +21,7 @@ class RealObject:
         return (self.amount < 1)
     
     def ToString(self):
-        return self.type.name + " at [" + str(self.x) + "," + str(self.y) + "] trained: " + str(self.trainHistory)
+        return self.type.name + " at [" + str(self.x) + ";" + str(self.y) + "].trained = " + str(self.trainHistory)
 
 class Point:
     def __init__(self, x, y):
@@ -56,6 +56,8 @@ class Waypoint(Point):
     def __init__(self, x, y):
         Point.__init__(self, x, y)
         self.lastVisited = 0
+    def ToString(self):
+        return "Waypoint[" + str(self.x) + ", " + str(self.y) + "].lastVisited = " + str(self.lastVisited)
 
 class VisibilityObject(Point):
     def __init__(self, x, y):
@@ -63,7 +65,7 @@ class VisibilityObject(Point):
         self.visibility = 0
         self.guiId = None
     def ToString(self):
-        return "VO(" + str(self.x) + ", " + str(self.y) + ").visibility = " + str(self.visibility)
+        return "VO[" + str(self.x) + ", " + str(self.y) + "].visibility = " + str(self.visibility)
              
 class Map:
     def __init__(self):

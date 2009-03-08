@@ -85,6 +85,7 @@ class GlobalVariables:
         self.outLog = open(path+"log.txt",'a')
         self.outData = open(path+"data.txt",'a')
     def Log(self, msg):
+        print msg
         self.outLog.write(msg + "\n")
         self.logLines.append(msg)
         if len(self.logLines) > self.LogLinesCount:

@@ -38,7 +38,8 @@ class MemoryObject:
             link.StepUpdate()
             
     def ToString(self):
-        return self.type.name + "(Memory) at [" + str(self.x) + "," + str(self.y) + "]"
+        strXY = '%.2f'%(self.x) + ";" + '%.2f'%(self.y)
+        return self.type.name + "(M) at [" + strXY + "]"
     
 
 class LinkMemoryObjectToNode:
@@ -102,18 +103,18 @@ class SpaceMap:
         x = 0
         y = 0
         count = len(links)
-        maxIntensity = 0
+        sumIntensity = 0
         for link in links:
             x += link.node.x
             y += link.node.y
-            if link.intensity > maxIntensity: maxIntensity = link.intensity 
+            sumIntensity += link.intensity 
         x = x / count
         y = y / count
         p = Point(x,y)
         x = 0
         y = 0
         for link in links:
-            li = float(link.intensity) / maxIntensity 
+            li = float(link.intensity) / sumIntensity 
             x += li * (link.node.x - p.x)
             y += li * (link.node.y - p.y)
         p.x += x

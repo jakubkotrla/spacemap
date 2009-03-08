@@ -27,12 +27,22 @@ class Phantom:
         self.ownerProcess = process
         process.resources.append(self)
         
-    def ResetOwnerProcess(self):
+    def DeletedOrLost(self):
         if self.ownerProcess != None:
-            self.ownerProcess.resources.remove(self)
+            if self in self.ownerProcess.resources:
+                self.ownerProcess.resources.remove(self)
+                #if EnvPhantom deleted but there is memoryPhantom of it, relink process.resources back to memoryPhantom
+                if self.memoryPhantom != None and self.memoryPhantom.ownerProcess == self.ownerProcess:
+                    self.ownerProcess.resources.append(self.memoryPhantom)
+        self.ownerProcess = None
+        self.memoryPhantom = None
+        #self will be deleted
+    
+    def OwnerProcessTerminated(self):
+        #self.ownerProcess.resources.remove(self) - meaningless, process will never be used again, is only stored in episodic memory
         self.ownerProcess = None
         if self.memoryPhantom != None:
-            self.memoryPhantom.UnlinkFromOwnerProcess()
+            self.memoryPhantom.ownerProcess = None
             self.memoryPhantom = None
     
     def GetType(self):
@@ -40,14 +50,15 @@ class Phantom:
      
     def ToString(self):
         if (self.ownerProcess != None):
-            s = "Phantom(E," + str(self.habituation) + ") of " + self.object.ToString() + " linked to " + self.ownerProcess.process.name
+            s = "Phantom(E, " + str(self.habituation) + ") of " + self.object.ToString() + " linked to " + self.ownerProcess.process.name
         else:
-            s = "Phantom(E," + str(self.habituation) + ") of " + self.object.ToString()
+            s = "Phantom(E, " + str(self.habituation) + ") of " + self.object.ToString()
         return s
 
 
 class PerceptionField:
-    def __init__(self, processArea, spaceMap, memoryArea):
+    def __init__(self, agent, processArea, spaceMap, memoryArea):
+        self.agent = agent
         self.environmentPhantoms = []
         self.processArea = processArea
         self.spaceMap = spaceMap
@@ -68,13 +79,13 @@ class PerceptionField:
                 if memPhantom != None and self.processArea.LookingForPhantom(memPhantom):
                     phantom = Phantom(rObj, memPhantom)
                     self.environmentPhantoms.append(phantom)
-                    #self.processArea.PhantomAddedForMemoryPhantom(phantom, memPhantom) later
+                    #self.processArea.PhantomAddedForMemoryPhantom(phantom, memPhantom) - later
                     phantomsToSpaceMap[phantom] = "ObjectFound"
                     Global.Log("PF: Adding phantom for object " + rObj.ToString() + " instead of " + memPhantom.ToString())
                 else:
                     phantom = Phantom(rObj)
                     self.environmentPhantoms.append(phantom)
-                    #self.processArea.PhantomAdded(phantom) later
+                    #self.processArea.PhantomAdded(phantom) - later
                     phantomsToSpaceMap[phantom] = "ObjectNoticed"
                     Global.Log("PF: Adding phantom for object " + rObj.ToString())
         #phantoms updated, truncate to PF.Size
@@ -83,12 +94,12 @@ class PerceptionField:
         phantomsToDelete = phantoms[Global.PFSize:]
         for phantomToDelete in phantomsToDelete:
             self.environmentPhantoms.remove(phantomToDelete)
-            phantomToDelete.ResetOwnerProcess()
+            phantomToDelete.DeletedOrLost()
             Global.Log("PF: removing(over PF.size) phantom for object " + phantomToDelete.object.ToString())
         
         for phantom in self.environmentPhantoms:
             if phantom not in phantomsToSpaceMap:
-                #happens when agent changes viewCones and object is not in normal VCs (was added by explore VCs)
+                #happens when agent changes viewCones and object is not in normal VCs (was added by explore VCs) - ignore
                 continue
             if phantomsToSpaceMap[phantom] == "ObjectNoticedAgain":
                 self.spaceMap.ObjectNoticedAgain(phantom.object)
@@ -107,7 +118,7 @@ class PerceptionField:
                 habituatedPhantoms.append(phantom)
         for habituatedPhantom in habituatedPhantoms:
             self.environmentPhantoms.remove(habituatedPhantom)
-            habituatedPhantom.ResetOwnerProcess()
+            habituatedPhantom.DeletedOrLost()
             Global.Log("PF: removing(habituated) phantom for object " + habituatedPhantom.object.ToString())
 
     def GetPhantomForObj(self, rObj):
@@ -140,9 +151,7 @@ class PerceptionField:
                         self.environmentPhantoms.remove(phantom)
                         Global.Log("PF: removing(used) phantom for object " + phantom.object.ToString())
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
-        phantoms = copy.copy(excProcess.resources)
-        for phantom in phantoms:
-            phantom.ResetOwnerProcess()
+        #is done more generally in ExcitedProcess.TerminateProcess
         
     def UpdatePhantomsBecauseOfMove(self, agent):
         map = Global.Map
@@ -152,40 +161,37 @@ class PerceptionField:
                 lostPhantoms.append(phantom)
         for phantom in lostPhantoms:
             self.environmentPhantoms.remove(phantom)
-            phantom.ResetOwnerProcess()
+            phantom.DeletedOrLost()
             Global.Log("PF: removing(lost) phantom for object " + phantom.object.ToString())
     
     def LookForObject(self, memoryPhantom):
         memObject = memoryPhantom.object
         map = Global.Map
         
-        #ToDo: rewrite:
-        # getAll visible objects
-        # check if memObject is there
-        # No - not found and fail as it is already here
-        # Yes - check if new / noticeAgain as already here
-        
-        rObj = map.GetRealObjectIfThere(memObject)
-
-        if rObj != None:
-            phantom = self.GetPhantomForObj(rObj)
-            if phantom != None:
-                phantom.Update(rObj)
-                phantom.memoryPhantom = memoryPhantom
-                self.spaceMap.ObjectNoticedAgain(rObj)
-                Global.Log("PF: RE-adding phantom(lookFor) for object " + rObj.ToString())
-            else:
-                phantom = Phantom(rObj, memoryPhantom)
-                self.environmentPhantoms.append(phantom)
-                self.processArea.PhantomAddedForMemoryPhantom(phantom, memoryPhantom)
-                self.spaceMap.ObjectFound(rObj)
-                Global.Log("PF: Adding phantom(lookFor) for object " + rObj.ToString())
-        else:
+        visibleObjects = map.GetVisibleObjects(self.agent)
+        foundObj = None
+        for obj in visibleObjects:
+            if obj == memObject.object:
+                foundObj = obj
+                
+        if foundObj == None:
             self.spaceMap.ObjectNotFound(memoryPhantom.object)
             self.memoryArea.RemovePhantom(memoryPhantom)
-            memoryPhantom.ResetOwnerProcess()
-        return rObj
-    
-          
+            memoryPhantom.MemoryObjectNotFound()
+            return None
+        #else: found:        
+        phantom = self.GetPhantomForObj(foundObj)
+        if phantom != None:
+            phantom.Update(foundObj)
+            phantom.memoryPhantom = memoryPhantom
+            self.spaceMap.ObjectNoticedAgain(foundObj)
+            Global.Log("PF: RE-adding phantom(lookFor) for object " + foundObj.ToString())
+        else:
+            phantom = Phantom(foundObj, memoryPhantom)
+            self.environmentPhantoms.append(phantom)
+            self.processArea.PhantomAddedForMemoryPhantom(phantom, memoryPhantom)
+            self.spaceMap.ObjectFound(foundObj)
+            Global.Log("PF: Adding phantom(lookFor) for object " + foundObj.ToString())
+        return foundObj
         
 
