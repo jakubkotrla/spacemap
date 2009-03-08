@@ -244,7 +244,7 @@ class ActionSelector:
                 self.processArea.TerminateIntentionWant(emotion)
             else:
                 # whole LookUpInMemory failed - terminate LookForObject and LookUpInMemory
-                # ToDo - now try different location
+                # ToDo: dynamicWorld: now try different location
                 self.processArea.TerminateAtomicProcess(emotion, False)
                 self.processArea.TerminateProcess(emotion, False)
             
