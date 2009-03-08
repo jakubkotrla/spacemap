@@ -11,6 +11,7 @@ class MemoryObject:
         self.y = rObject.y
         self.linkToNodes = []
         self.intensity = intensity
+        self.effectivity = intensity    #only for SpaceMap to find best MemObj (intensity and distance) 
         
     def AddLinkToNode(self, node, intensity=1):
         l = LinkMemoryObjectToNode(self, node, intensity)
@@ -92,12 +93,20 @@ class SpaceMap:
         if affordance not in self.affsToMemObjs:
             return None
         memObjs = self.affsToMemObjs[affordance]
-        if len(memObjs) > 0:
-            memObjs.sort(lambda a,b: cmp(a.intensity,b.intensity)) #ToDo: include distance as cmp param
-            if (memObjs[0].intensity > 0):
-                return memObjs[0]
-        return None
-    
+        if len(memObjs) < 1: return None
+        
+        if len(memObjs) > 1:
+            sumIntensity = sum( map(lambda o: o.intensity, memObjs) )
+            for mo in memObjs:
+                dist = self.map.DistanceObjs(self.agent, mo) 
+                mo.effectivity = dist * (float(mo.intensity) / sumIntensity) 
+            memObjs.sort(lambda b,a: cmp(a.effectivity,b.effectivity))
+        
+        if (memObjs[0].effectivity > 0):
+            return memObjs[0]
+        else:
+            return None
+        
     def GetMemoryObjectLocation(self, memObject):
         links = memObject.linkToNodes
         x = 0
@@ -169,7 +178,7 @@ class SpaceMap:
         
     def ObjectNotFound(self, rObject):
         Global.Log("SM.ObjectNotFound: object not found: " + rObject.ToString())
-        #ToDo: objectTrain TrainEffectNotFound
+        #ToDo: dynamicWorld: objectTrain TrainEffectNotFound
         
     def ObjectUsed(self, rObject):
         self.objectTrain(rObject, Global.TrainEffectUsed)

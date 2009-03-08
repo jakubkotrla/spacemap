@@ -31,9 +31,9 @@ class GlobalVariables:
         self.WayPointNoise = 5      #how much can agent miss waypoint (when going to it)
         
         self.PFSize = 7                    #number of active/real phatoms in PF
-        self.PFPhantomHabCreate = 100      #habituation of new phantom(e)
+        self.PFPhantomHabCreate = 100      #habituation of new phantom(E)
         self.PFPhantomHabUpdate = 50       #habituation added when objNoticed again in PF
-        self.MAPhantomHabituation = 100    #habituation of new phantom(m)
+        self.MAPhantomHabituation = 100    #habituation of new phantom(M)
                 
         self.ObjDefaultAttractivity = 10   #default object attractivity    
                 

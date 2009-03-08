@@ -142,7 +142,7 @@ class PerceptionField:
             self.spaceMap.ObjectUsed(phantom.object)
         
         map = Global.Map
-        usedSources = [] #excProcess.process.usedSources ToDo: object.amount/dynamic world
+        usedSources = [] #excProcess.process.usedSources ToDo: object.amount
         for usedSource in usedSources:
             for phantom in excProcess.resources:
                 if usedSource == phantom.affordance:
