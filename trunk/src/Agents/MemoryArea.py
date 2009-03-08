@@ -23,14 +23,11 @@ class MemoryPhantom:
         self.ownerProcess = process
         process.resources.append(self)
         
-    def ResetOwnerProcess(self):
+    def MemoryObjectNotFound(self):
         if self.ownerProcess != None:
             self.ownerProcess.resources.remove(self)
         self.ownerProcess = None
-        
-    def UnlinkFromOwnerProcess(self):
-        self.ownerProcess = None
-        
+                
     def ToString(self):
         if (self.ownerProcess != None):
             str = "Phantom(M) of " + self.object.ToString() + " linked to " + self.ownerProcess.process.name

@@ -11,12 +11,11 @@ class EnergyPoint:
         self.x = x
         self.y = y
         self.energy = energy
-       
         
     def ToString(self):
         strInfo = []
-        strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
-        strInfo.append("EnergyLayerPoint[" + strXY + "] energy:" + str(self.energy))
+        strXY = '%.2f'%(self.x) + ";" + '%.2f'%(self.y)
+        strInfo.append("EnergyPoint[" + strXY + "].energy = " + str(self.energy))
         
     def StepUpdate(self, nodesAround):
         cost = self.layer.GetNodeCreateCost()
@@ -50,8 +49,9 @@ class EnergyLayerNode:
 
     def ToString(self):
         strInfo = []
-        strXY = '%.4f'%(self.x) + "," + '%.4f'%(self.y)
-        strInfo.append("EnergyLayerNode" + str(self.index) + "[" + strXY + "]")
+        strXY = '%.2f'%(self.x) + ";" + '%.2f'%(self.y)
+        usageStr = '%.4f'%( self.GetUsage() )
+        strInfo.append("EnergyLayerNode" + str(self.index) + "[" + strXY + "].intensity = " + usageStr)
         for link in self.linkToObjects:
             strInfo.append(link.ToString())        
         return strInfo

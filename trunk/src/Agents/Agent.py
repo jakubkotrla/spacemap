@@ -45,7 +45,7 @@ class Agent:
         
         self.x = self.newX
         self.y = self.newY
-        self.viewCones = self.viewConesNormal   #fake else-than-Explore-action branch
+        self.viewCones = self.viewConesNormal   #fake else-than-Explore/LookForObject-action branch
         self.viewConeMaxDist = self.viewConeNormalMaxDist
                 
         #execute action - world/agent-impacting part of atomic process
@@ -69,6 +69,8 @@ class Agent:
                 Global.Log("AGENT is remembering for " + action.data["affordance"].name + "( nothing in SM/MA )  for " + str(action.duration) + " seconds")
             
         elif action.process.name == "LookForObject":
+            self.viewCones = self.viewConesForExplore
+            self.viewConeMaxDist = self.viewConeForExploreMaxDist
             action.duration = Global.Randint(1,5)
             action.data["object"] = self.intelligence.LookForObject(action.data["phantom"])
             if action.data["object"] != None:

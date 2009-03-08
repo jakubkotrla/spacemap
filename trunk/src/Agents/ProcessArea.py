@@ -46,7 +46,7 @@ class ExcitedProcess:
             else:
                 self.parent.failedProcesses.append(self.process)
         for phantom in self.resources:
-            phantom.ResetOwnerProcess()
+            phantom.OwnerProcessTerminated()
             
     def IsProcess(self): return True            
     def IsSmartProcess(self):
@@ -71,14 +71,6 @@ class ExcitedProcess:
                 if affordance in affordances:
                     affordances.remove(affordance)
         return affordances
-        
-    def isExpired(self):
-        if Global.Time - self.startTime > self.timeLimit:
-            return True
-        elif self.parent != None:
-            return self.parent.isExpired()
-        else:
-            return False
     
     def ToString(self):
         return "P_" + self.process.name
