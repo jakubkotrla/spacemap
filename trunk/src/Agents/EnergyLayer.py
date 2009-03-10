@@ -89,8 +89,8 @@ class EnergyLayerNode:
             gDiffCoef = dist2 * max(1, self.usage) * max(1,node.usage)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)
             
-            self.stepDiffX += ldx * gDiffCoef
-            self.stepDiffY += ldy * gDiffCoef
+            self.stepDiffX +=  Global.Sign(ldx) * gDiffCoef
+            self.stepDiffY += Global.Sign(ldy) * gDiffCoef
        
         
     def StepUpdateMove(self):
@@ -111,6 +111,9 @@ class EnergyLayerNode:
         u = 0
         for link in self.linkToObjects: u = u + link.intensity
         self.usage = u
+        
+        self.AGamount -= Global.ELAGFadeOut
+        
     
     #called when Created after first Link is intensed
     def RecalculateUsage(self):
@@ -231,6 +234,12 @@ class EnergyLayer:
         for n in self.nodes[:5]:
             strData += str(n.AGamount) + ";"
         Global.LogData("ags", strData )
+        for node in self.nodes:
+            node.AGamount -= Global.ELAGFadeOut
+            if node.AGamount > Global.HLAGNeeded:
+                #create high-level EL node
+                Global.Log("HL EL node!!")
+                
      
     def DeleteNode(self, node):
         node.Delete()

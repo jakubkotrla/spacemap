@@ -89,11 +89,18 @@ class SpaceMap:
             memObjs = self.objectsToMemObjs.values()
             for memObj in memObjs:
                 memObj.StepUpdate()
-        if self.updateStep > 49:
+            
+        if self.updateStep > Global.SMBigUpdateFreq:
             self.updateStep = 0
+            self.StepUpdateBig()
             self.Layer.StepUpdateBig()
         else:
             self.updateStep += 1
+            
+    def StepUpdateBig(self):
+        memObjs = self.objectsToMemObjs.values()
+        for memObj in memObjs:
+            self.updateMemoryObjectLocation(memObj)
        
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:

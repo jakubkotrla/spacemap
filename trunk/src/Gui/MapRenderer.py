@@ -152,12 +152,12 @@ class MapRenderer:
         for node in elnodes:
             self.PixelC(node, node.x, node.y, "#00c800", 2, "energylayernode info")
     
-    def RenderProgress(self, progressObject):
+    def RenderProgress(self, progressObject, configName):
         txt = "Progress:\n\n\n"
         txt = txt + " Total test to run: "
         txt = txt + str(progressObject.testToRunCount) + "\n\n"
         txt = txt + " Current test running: "
-        txt = txt + str(progressObject.currentTestIndex) + "\n\n"
+        txt = txt + str(progressObject.currentTestIndex) + "  (" + configName + ")" + "\n\n"
         txt = txt + " Time passed: "
         secs = time.time() - progressObject.testRunStarted
         timePassed = Time()
