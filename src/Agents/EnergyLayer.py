@@ -43,6 +43,7 @@ class EnergyLayerNode:
         self.y = y
         self.linkToObjects = []
         self.index = index
+        self.AGamount = 0
                 
         self.stepDiffX = 0
         self.stepDiffY = 0
@@ -51,7 +52,8 @@ class EnergyLayerNode:
         strInfo = []
         strXY = '%.2f'%(self.x) + ";" + '%.2f'%(self.y)
         usageStr = '%.4f'%( self.GetUsage() )
-        strInfo.append("EnergyLayerNode" + str(self.index) + "[" + strXY + "].intensity = " + usageStr)
+        AGstr = '%.4f'%( self.AGamount )
+        strInfo.append("EnergyLayerNode" + str(self.index) + "[" + strXY + "].intensity = " + usageStr + "; AG = " + AGstr)
         for link in self.linkToObjects:
             strInfo.append(link.ToString())        
         return strInfo
@@ -87,14 +89,13 @@ class EnergyLayerNode:
             ldy = (self.y - node.y)
             dist2 = ldx*ldx+ldy*ldy
 
-            gDiffCoef = dist2 * max(1, self.GetUsage())*max(1,node.GetUsage())
-            gDiffCoef = Global.ELAntigravityCoef*1.0 / max(Global.MinPositiveNumber, gDiffCoef)
+            self.AGamount += (1.0/dist2)
+
+            gDiffCoef = dist2 * max(1, self.GetUsage()) * max(1,node.GetUsage())
+            gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)
             
-            diffX = ldx * gDiffCoef
-            diffY = ldy * gDiffCoef
-            
-            self.stepDiffX += diffX
-            self.stepDiffY += diffY
+            self.stepDiffX += ldx * gDiffCoef
+            self.stepDiffY += ldy * gDiffCoef
        
         
     def StepUpdateMove(self):
@@ -183,6 +184,8 @@ class EnergyLayer:
         closestDistance = Global.MaxNumber
         map = Global.Map
         for node in self.nodes:
+            if not self.area.CanMove(center, node.x, node.y): continue
+            
             distance = map.DistanceObjs(center, node)
             if distance < closestDistance:
                 closestNode = node
@@ -195,7 +198,6 @@ class EnergyLayer:
             return {closestNode : closestDistance}
     
     def StepUpdate(self):
-        
         for ep in self.energyPoints:
             ep.StepUpdate(self.getNodesAround(ep, Global.ELGravityRange))
         for node in self.nodes:
@@ -216,6 +218,13 @@ class EnergyLayer:
             self.forgetEnergy = self.forgetEnergy - cost
             self.DeleteNode(Global.Choice(self.nodes))
         self.energyNodesCountHistory.append(len(self.nodes))
+        
+    def StepUpdateBig(self):
+        self.nodes.sort(lambda b,a: cmp(a.AGamount,b.AGamount))
+        strData = str(Global.GetStep()) + ";" 
+        for n in self.nodes[:5]:
+            strData += str(n.AGamount) + ";"
+        Global.LogData("ags", strData )
      
     def DeleteNode(self, node):
         node.Delete()
@@ -287,6 +296,7 @@ class EnergyLayer:
             ldy = n.y-node.y
             dist = ldx*ldx + ldy*ldy
             if dist < range:
+                #if self.area.CanMove(node, n.x, n.y):
                 nodesAround.append(n)
         return nodesAround
 

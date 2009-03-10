@@ -220,9 +220,12 @@ class Map:
         if self.CanMove(start, newX, newY):
             return self.dividePath([start, Point(newX, newY)])
         else:
-            path = self.findPath(start, Point(newX, newY))
-            path = self.dividePath(path)
-            return path
+            if self.IsInside( Point(newX, newY) ):
+                path = self.findPath(start, Point(newX, newY))
+                path = self.dividePath(path)
+                return path
+            else:
+                return None
     
     def dividePath(self, path):
         last = path[0]
@@ -355,7 +358,7 @@ class Map:
                 else:
                     count = count + 1
         return ((count % 2) == 1)
-        
+    
     #from http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
     def GetArea(self):
         sum = 0
@@ -416,7 +419,8 @@ class Map:
     
     def Step(self, agent):
         self.calculateWayPointsVisited(agent)
-        self.calculateVisibilityHistory(agent)
+        if Global.CalculateVisibilityHistory:
+            self.calculateVisibilityHistory(agent)
     
     def calculateWayPointsVisited(self, agent):
         for wayPoint in self.wayPoints:

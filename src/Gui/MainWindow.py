@@ -106,7 +106,8 @@ class MainWindow(Frame):
         for obj in map.objects:
             txt.insert("end", obj.ToString())
     def visibilityHistoryCheck(self):
-        Global.RenderVisibilityHistory = not Global.RenderVisibilityHistory    
+        if Global.CalculateVisibilityHistory:
+            Global.RenderVisibilityHistory = not Global.RenderVisibilityHistory    
     
     def canvasClick(self, event):
         x = int(self.wxCanvas.canvasx(event.x))
@@ -142,8 +143,8 @@ class MainWindow(Frame):
         th = Thread(None, self.simulationTestAllThread, name="simulationTestAllThread")
         th.start()
     def simulationTestAllThread(self):
-        #import psyco
-        #psyco.full()
+        import psyco
+        psyco.full()
         
         settingsToRun = {}
         settings = dir(Global)
@@ -216,9 +217,10 @@ class MainWindow(Frame):
             world.Step()
             self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
             self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
-            Global.LogData( elayer.Status() )
+            Global.LogData("nc", elayer.Status() )
         
-        self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
+        if Global.CalculateVisibilityHistory:
+            self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
         self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
         self.mapRenderer.RenderELNC(elayer.energyNodesCountHistory, savePath + "spelncount.png")
         
@@ -302,7 +304,7 @@ class MainWindow(Frame):
             txt = txt + line + "\n  "
         self.txtLog = self.wxCanvas.create_text(1050, 600, text=txt, width=450, anchor=NW, tags="infotxt")
         
-        Global.LogData(world.agent.intelligence.spaceMap.Layer.Status())
+        Global.LogData("nc", world.agent.intelligence.spaceMap.Layer.Status())
   
     
     def pauseSimulation(self):
