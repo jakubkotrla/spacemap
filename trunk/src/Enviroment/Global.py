@@ -24,7 +24,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [1024, 718597]   #seeds to test
-        self.MaxTestSteps = 1000    #should be more than one day 
+        self.MaxTestSteps = 2    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea

@@ -143,6 +143,8 @@ class MainWindow(Frame):
         th = Thread(None, self.simulationTestAllThread, name="simulationTestAllThread")
         th.start()
     def simulationTestAllThread(self):
+        self.lock = Lock()
+        
         import psyco
         psyco.full()
         
@@ -189,47 +191,57 @@ class MainWindow(Frame):
                 
         for randomSeed in randomSeeds:
             for configName in configsToTest:
-                self.runOneSimulation(savePath, configName, randomSeed)
-        return
+                try:
+                    self.runOneSimulation(savePath, configName, randomSeed)
+                except:
+                    e = sys.exc_info()[1]
+                    if type(e) == TclError: raise 
+                    print e
+                    time.sleep(1)
 
     def runOneSimulation(self, savePath, configName, randomSeed):
         savePath = savePath + str(randomSeed) + "-" + configName + "/"
         os.makedirs(savePath)
         Global.LogStart(savePath)   
         Global.Log("Starting new simulation and world for Config: " + configName)
-        
-        seed(randomSeed)
-        config = Config.Get(configName)
-        world = World(config)
-        Global.World = world
-
-        self.agent = Agent(config)
-        world.SetAgent(self.agent)
-        self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self, False)
-        
-        self.currentTestIndex = self.currentTestIndex + 1
-        self.mapRenderer.RenderProgress(self)
-        self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
-        time.sleep(0.1)
-        
-        elayer = world.agent.intelligence.spaceMap.Layer
-        while world.step < Global.MaxTestSteps:
-            world.Step()
-            self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
+        try:
+            seed(randomSeed)
+            config = Config.Get(configName)
+            world = World(config)
+            Global.World = world
+    
+            self.agent = Agent(config)
+            world.SetAgent(self.agent)
+            self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self, False)
+            
+            self.currentTestIndex = self.currentTestIndex + 1
+            self.mapRenderer.RenderProgress(self)
             self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
-            Global.LogData("nc", elayer.Status() )
-        
-        if Global.CalculateVisibilityHistory:
-            self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
-        self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
-        self.mapRenderer.RenderELNC(elayer.energyNodesCountHistory, savePath + "spelncount.png")
-        
-        Global.Log("Stoping simulation...")
-        Global.LogEnd()
-        Global.Reset()
-        self.agent = None
-        self.mapRenderer.Clear()
-        self.mapRenderer = None
+            time.sleep(0.1)
+            
+            elayer = world.agent.intelligence.spaceMap.Layer
+            while world.step < Global.MaxTestSteps:
+                world.Step()
+                self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
+                self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
+                Global.LogData("nc", elayer.Status() )
+            
+            if Global.CalculateVisibilityHistory:
+                self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
+            self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
+            self.mapRenderer.RenderELNC(elayer.energyNodesCountHistory, savePath + "spelncount.png")
+        except:
+            Global.Log("FATAL ERROR occured: ")
+            Global.Log(sys.exc_info()[1])
+            time.sleep(1)
+            raise
+        finally:        
+            Global.Log("Stoping simulation...")
+            Global.LogEnd()
+            Global.Reset()
+            self.agent = None
+            self.mapRenderer.Clear()
+            self.mapRenderer = None
 
     def startSimulation(self, configName):
         dirList = os.listdir("../../exs/")
@@ -334,6 +346,7 @@ class MainWindow(Frame):
     def quitSimulation(self):
         if self.lock != None:
             self.exitLocks()
+            self.lock = None
         self.quit()
                  
                      
