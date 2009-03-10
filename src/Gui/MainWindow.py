@@ -188,16 +188,22 @@ class MainWindow(Frame):
         f.write("\n#real settings of Global.py\n")
         f.write(settingsText)
         f.close()
-                
-        for randomSeed in randomSeeds:
-            for configName in configsToTest:
-                try:
+        
+        if Global.SafeMode:
+            for randomSeed in randomSeeds:
+                for configName in configsToTest:
+                    try:
+                        self.runOneSimulation(savePath, configName, randomSeed)
+                    except:
+                        e = sys.exc_info()[1]
+                        if type(e) == TclError: raise SystemExit
+                        print e
+                        time.sleep(1)
+        else:
+            for randomSeed in randomSeeds:
+                for configName in configsToTest:
                     self.runOneSimulation(savePath, configName, randomSeed)
-                except:
-                    e = sys.exc_info()[1]
-                    if type(e) == TclError: raise 
-                    print e
-                    time.sleep(1)
+            
 
     def runOneSimulation(self, savePath, configName, randomSeed):
         savePath = savePath + str(randomSeed) + "-" + configName + "/"
@@ -215,7 +221,7 @@ class MainWindow(Frame):
             self.mapRenderer = MapRenderer(self.wxCanvas, Global.Map, self.agent, self, False)
             
             self.currentTestIndex = self.currentTestIndex + 1
-            self.mapRenderer.RenderProgress(self)
+            self.mapRenderer.RenderProgress(self, configName)
             self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
             time.sleep(0.1)
             
@@ -232,7 +238,7 @@ class MainWindow(Frame):
             self.mapRenderer.RenderELNC(elayer.energyNodesCountHistory, savePath + "spelncount.png")
         except:
             Global.Log("FATAL ERROR occured: ")
-            Global.Log(sys.exc_info()[1])
+            Global.Log(str(sys.exc_info()[1]))
             time.sleep(1)
             raise
         finally:        
@@ -296,7 +302,7 @@ class MainWindow(Frame):
         self.txtTime = self.wxCanvas.create_text(1080, 5, text=txt, width=200, anchor=NW, tags="infotxt")
         txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
         nc = len(world.agent.intelligence.spaceMap.Layer.nodes)
-        txt = txt + "\n EnergyLayer.nodeCount: " + str(nc)
+        txt = txt + "\nEnergyLayer.nodeCount: " + str(nc)
         self.txtAgentInfo = self.wxCanvas.create_text(1300, 5, text=txt, width=200, anchor=NW, tags="infotxt")
         pa = self.agent.intelligence.processArea
         txt = "ProcessArea:\n" + "\n".join(self.agent.paText)
