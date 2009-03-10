@@ -43,6 +43,7 @@ class EnergyLayerNode:
         self.y = y
         self.linkToObjects = []
         self.index = index
+        self.usage = 0
         self.AGamount = 0
                 
         self.stepDiffX = 0
@@ -51,7 +52,7 @@ class EnergyLayerNode:
     def ToString(self):
         strInfo = []
         strXY = '%.2f'%(self.x) + ";" + '%.2f'%(self.y)
-        usageStr = '%.4f'%( self.GetUsage() )
+        usageStr = '%.4f'%( self.usage )
         AGstr = '%.4f'%( self.AGamount )
         strInfo.append("EnergyLayerNode" + str(self.index) + "[" + strXY + "].intensity = " + usageStr + "; AG = " + AGstr)
         for link in self.linkToObjects:
@@ -61,12 +62,6 @@ class EnergyLayerNode:
     def Delete(self):
         for link in self.linkToObjects:
             link.NodeDeleted()
-
-    def GetUsage(self):
-        usage = 0
-        for link in self.linkToObjects:
-            usage = usage + link.intensity
-        return usage
                 
     def isMaxObject(self, objectName):
         maxUsage = 0
@@ -91,7 +86,7 @@ class EnergyLayerNode:
 
             self.AGamount += (1.0/dist2)
 
-            gDiffCoef = dist2 * max(1, self.GetUsage()) * max(1,node.GetUsage())
+            gDiffCoef = dist2 * max(1, self.usage) * max(1,node.usage)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)
             
             self.stepDiffX += ldx * gDiffCoef
@@ -99,7 +94,7 @@ class EnergyLayerNode:
        
         
     def StepUpdateMove(self):
-        massCoef = 1.0/max(1, self.GetUsage())
+        massCoef = 1.0/max(1, self.usage)
         
         newX = self.x + self.stepDiffX * massCoef
         newY = self.y + self.stepDiffY * massCoef
@@ -111,6 +106,17 @@ class EnergyLayerNode:
         self.x = newX
         self.y = newY
         self.stepDiffX = self.stepDiffY = 0
+        
+        #calculate usage - once every step is enough
+        u = 0
+        for link in self.linkToObjects: u = u + link.intensity
+        self.usage = u
+    
+    #called when Created after first Link is intensed
+    def RecalculateUsage(self):
+        u = 0
+        for link in self.linkToObjects: u = u + link.intensity
+        self.usage = u
            
     def Train(self, point, effect):
         diffX = point.x - self.x
@@ -118,7 +124,7 @@ class EnergyLayerNode:
         if diffX == diffY == 0: return
         
         gCoef = 1.0 / (diffX*diffX+diffY*diffY)
-        gCoef = gCoef * (1.0/max(0.1, self.GetUsage()))
+        gCoef = gCoef * (1.0/max(0.1, self.usage))
         gCoef = gCoef * effect
         
         gCoef = Global.ELGravityCoef * min(1, gCoef)
@@ -254,6 +260,7 @@ class EnergyLayer:
         memObject.AddLinkToNode(newNode)
         memObject.IntenseToNode(newNode, Global.MemObjIntenseToNewNode)
         self.stepELNodesCreated = self.stepELNodesCreated + 1
+        newNode.RecalculateUsage()
         return newNode
     
     def Train(self, memObject, effect):

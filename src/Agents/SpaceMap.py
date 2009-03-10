@@ -139,7 +139,7 @@ class SpaceMap:
         p.x += x
         p.y += y
         if not self.map.IsInside(p):  #this should not happen, quick hack - go closer to memObj
-            hit = self.map.CanMoveEx(memObj, p.x, p.y)
+            hit = self.map.CanMoveEx(memObject, p.x, p.y)
             p = hit
         memObject.x = p.x
         memObject.y = p.y
