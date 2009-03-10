@@ -162,10 +162,8 @@ class ActionSelector:
                 atomicProcess.data["process"] = excProcess.process
                 
                 memObj = excProcess.data["phantom"].object
-                point = self.spaceMap.GetMemoryObjectLocation(memObj)
-                
-                atomicProcess.data["newx"] = point.x
-                atomicProcess.data["newy"] = point.y
+                atomicProcess.data["newx"] = memObj.x
+                atomicProcess.data["newy"] = memObj.y
                 return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)
             
             elif (excProcess.data["step"] == "LookForObject"):
@@ -180,6 +178,9 @@ class ActionSelector:
             if excProcess.data["path"] == None:
                 map = Global.Map
                 path = map.GetPath(self.agent, excProcess.data["newx"], excProcess.data["newy"])
+                if path == None:
+                    self.processArea.TerminateProcess(emotion, False)
+                    return self.GetAction(emotion)
                 excProcess.data["path"] = path[1:]
             #we have path (without start)
             nextPoint = excProcess.data["path"].pop(0)

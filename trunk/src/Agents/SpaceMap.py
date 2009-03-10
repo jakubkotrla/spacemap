@@ -74,6 +74,7 @@ class SpaceMap:
         self.affsToMemObjs = {}
         self.objectsToMemObjs = {}
         self.maxTrained = 0
+        self.updateStep = 0
         
         self.Layer = EnergyLayer(self.map)
         self.Layer.CreateMap()
@@ -88,6 +89,11 @@ class SpaceMap:
             memObjs = self.objectsToMemObjs.values()
             for memObj in memObjs:
                 memObj.StepUpdate()
+        if self.updateStep > 50:
+            self.updateStep = 0
+            self.Layer.StepUpdateBig()
+        else:
+            self.updateStep += 1
        
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:
@@ -97,21 +103,25 @@ class SpaceMap:
         
         if len(memObjs) > 1:
             sumIntensity = sum( map(lambda o: o.intensity, memObjs) )
+            if sumIntensity <= 0: return None
             for mo in memObjs:
                 dist = self.map.DistanceObjs(self.agent, mo) 
                 mo.effectivity = dist * (float(mo.intensity) / sumIntensity) 
             memObjs.sort(lambda b,a: cmp(a.effectivity,b.effectivity))
         
         if (memObjs[0].effectivity > 0):
-            return memObjs[0]
+            return self.updateMemoryObjectLocation(memObjs[0])
         else:
             return None
         
-    def GetMemoryObjectLocation(self, memObject):
+    def updateMemoryObjectLocation(self, memObject):
         links = memObject.linkToNodes
         x = 0
         y = 0
         count = len(links)
+        if count == 0:
+            Global.Log("Programmer.Error: GetMemoryObjectLocation - len links == 0")
+            return memObject
         sumIntensity = 0
         for link in links:
             x += link.node.x
@@ -128,8 +138,13 @@ class SpaceMap:
             y += li * (link.node.y - p.y)
         p.x += x
         p.y += y
+        if not self.map.IsInside(p):  #this should not happen, quick hack - go closer to memObj
+            hit = self.map.CanMoveEx(memObj, p.x, p.y)
+            p = hit
+        memObject.x = p.x
+        memObject.y = p.y
         Global.Log("SM: looking for " + memObject.ToString() + " at " + p.ToString())
-        return p
+        return memObject
         
     
     def objectTrain(self, rObject, effect):
@@ -145,6 +160,8 @@ class SpaceMap:
             memObj = MemoryObject(rObject)
             self.objectsToMemObjs[rObject] = memObj
         
+        memObj.x = rObject.x    #little nasty hack
+        memObj.y = rObject.y
         self.Layer.Train(memObj, effect)
         
         inNodes = self.Layer.PositionToNodes(memObj, Global.ELGravityRange)
