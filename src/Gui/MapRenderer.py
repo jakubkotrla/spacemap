@@ -175,7 +175,7 @@ class MapRenderer:
     def RenderProgressInTest(self, step, stepCount):
         self.canvas.delete("progresstest")
         txt = "Test: " + str(step) + "/" + str(stepCount)
-        self.canvas.create_text(10, 100, text=txt, width=500, anchor=NW, tags="progresstest")
+        self.canvas.create_text(10, 200, text=txt, width=500, anchor=NW, tags="progresstest")
         
     
     #layers full: [agent, eps(energyPoints), ov(object.visibility), vh(visibilityHistory), objvh(objectVisibilityHistory), info(text info, log, etc.), wp(waypoint)]
