@@ -89,7 +89,7 @@ class SpaceMap:
             memObjs = self.objectsToMemObjs.values()
             for memObj in memObjs:
                 memObj.StepUpdate()
-        if self.updateStep > 50:
+        if self.updateStep > 49:
             self.updateStep = 0
             self.Layer.StepUpdateBig()
         else:
@@ -144,6 +144,13 @@ class SpaceMap:
         memObject.x = p.x
         memObject.y = p.y
         Global.Log("SM: looking for " + memObject.ToString() + " at " + p.ToString())
+        
+        step = Global.GetStep()
+        error = '%.2f'%self.map.DistanceObjs(p, memObject.object)
+        trained = memObject.object.trainHistory
+        line = str(step) + ";" + str(trained) + ";" + error + ";" + str(memObject.object.index)  
+        Global.LogData("rememberinfo", line)
+        
         return memObject
         
     

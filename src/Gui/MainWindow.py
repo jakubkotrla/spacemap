@@ -143,8 +143,8 @@ class MainWindow(Frame):
         th = Thread(None, self.simulationTestAllThread, name="simulationTestAllThread")
         th.start()
     def simulationTestAllThread(self):
-        #import psyco
-        #psyco.full()
+        import psyco
+        psyco.full()
         
         settingsToRun = {}
         settings = dir(Global)
