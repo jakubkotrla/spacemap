@@ -244,7 +244,6 @@ class MapRenderer:
                 y = obj.y*self.zoom - 5 + 10
                 intensity = 255 - int(255 * obj.trainHistory*1.0 / spaceMap.maxTrained)
                 color = (intensity, intensity, intensity)
-                draw.text([x+5,y+10], str(obj.trainHistory), font=self.font, fill=(0, 0, 0))
                 draw.rectangle([x,y, x+10,y+10], fill=color, outline=(0, 0, 0))        
         elif "ov" in layers:
             for obj in self.map.objects:
@@ -265,6 +264,12 @@ class MapRenderer:
             y = node.y*self.zoom - 2 + 10
             draw.rectangle([x,y, x+4,y+4], fill=(0, 200, 0), outline=None)
         
+        if "ovh" in layers:    
+            for obj in self.map.objects:
+                x = obj.x*self.zoom - 5 + 10
+                y = obj.y*self.zoom - 5 + 10
+                draw.text([x+5,y+10], str(obj.trainHistory), font=self.font, fill=(0, 0, 0))
+                
         if "info" in layers:
             draw.text([1080,5], "Step:  " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
             draw.text([1080,20], "Time:  " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
@@ -313,7 +318,7 @@ class MapRenderer:
         i = 0
         for d in data:
             ch = d * coef
-            draw.line( [i+10, hh+10, i+10, hh-ch+10], fill=(0,0,0))
+            draw.line( [i+10, hh-ch+9, i+10, hh-ch+10], fill=(0,0,0))
             i = i + 1
         im.save(filename, "PNG")
            
