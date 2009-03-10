@@ -171,11 +171,11 @@ class MapRenderer:
         timeLeft = Time()
         timeLeft.AddSeconds(secs)
         txt = txt + timeLeft.TimeToHumanFormat(True) + "\n\n"
-        self.canvas.create_text(200, 100, text=txt, width=1000, anchor=NW, tags="progress")
+        self.canvas.create_text(10, 10, text=txt, width=500, anchor=NW, tags="progress")
     def RenderProgressInTest(self, step, stepCount):
         self.canvas.delete("progresstest")
         txt = "Test: " + str(step) + "/" + str(stepCount)
-        self.canvas.create_text(200, 400, text=txt, width=1000, anchor=NW, tags="progresstest")
+        self.canvas.create_text(10, 100, text=txt, width=500, anchor=NW, tags="progresstest")
         
     
     #layers full: [agent, eps(energyPoints), ov(object.visibility), vh(visibilityHistory), objvh(objectVisibilityHistory), info(text info, log, etc.), wp(waypoint)]

@@ -6,7 +6,8 @@ from Global import Global
 from Agents.ProcessArea import *
 
 class RealObject:
-    def __init__(self, type, x, y, attractivity, amount):
+    def __init__(self, index, type, x, y, attractivity, amount):
+        self.index = index
         self.type = type
         self.x = x
         self.y = y
@@ -15,7 +16,7 @@ class RealObject:
         self.curAttractivity = attractivity #0.0 - 1.0
         self.visibility = 0 #0.0 - 1.0
         self.trainHistory = 0
-        
+                
     def Use(self):
         self.amount =- 1
         return (self.amount < 1)
@@ -79,6 +80,7 @@ class Map:
         self.mapRenderer = None
         self.visibilityHistory = []
         self.visibilityMaxEver = 0
+        self.objIndex = 0
         
     def CalculateEdges(self):
         lastPoint = self.points[-1]
@@ -110,8 +112,9 @@ class Map:
         return firstLine
     
     def AddObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
-        rObj = RealObject(type, x, y, attractivity, amount)    
+        rObj = RealObject(self.objIndex, type, x, y, attractivity, amount)    
         self.objects.append(rObj)
+        self.objIndex += 1
     
     def SetAgentStart(self, x, y):
         self.agentMoves.append( Point(x, y) )
