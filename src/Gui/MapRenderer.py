@@ -167,7 +167,7 @@ class MapRenderer:
         per = (100.0*(progressObject.currentTestIndex-1) / progressObject.testToRunCount)
         txt = txt +  '%.3f'%(per) + "%\n\n"
         txt = txt + " Time left: "
-        secs = 100.0*secs / max(Global.MinPositiveNumber, per)
+        secs = float(100-per)*secs / max(Global.MinPositiveNumber, per)
         timeLeft = Time()
         timeLeft.AddSeconds(secs)
         txt = txt + timeLeft.TimeToHumanFormat(True) + "\n\n"
@@ -242,7 +242,7 @@ class MapRenderer:
             for obj in self.map.objects:
                 x = obj.x*self.zoom - 5 + 10
                 y = obj.y*self.zoom - 5 + 10
-                intensity = 255 - int(255 * obj.trainHistory*1.0 / spaceMap.maxTrained)
+                intensity = 255 - int(255 * obj.trainHistory*1.0 / max(Global.MinPositiveNumber, spaceMap.maxTrained))
                 color = (intensity, intensity, intensity)
                 draw.rectangle([x,y, x+10,y+10], fill=color, outline=(0, 0, 0))        
         elif "ov" in layers:

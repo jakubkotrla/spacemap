@@ -10,7 +10,7 @@ class GlobalVariables:
         self.path = None
     
     def Reset(self):
-        self.SafeMode = False
+        self.SafeMode = True
         self.Time = Time()
         self.World = None
         self.Map = None
@@ -25,7 +25,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [718597]   #seeds to test
-        self.MaxTestSteps = 1000    #should be more than one day 
+        self.MaxTestSteps = 1200    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -67,10 +67,11 @@ class GlobalVariables:
         self.ELEnergyPointCreateEnergyTESTSET = [100, 150, 200]
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5
+        self.ELEnergyFadeCoefTESTSET = [0.3, 0.5, 0.7, 0.9]
         self.ELEnergyFadeLimit = 10
         
         self.ELForgetNodeRate = 5    #how much EL.forgetEnergy is added each step
-        self.ELDeleteNodeReTrainCount = 50
+        self.ELDeleteNodeReTrainCount = 20
         self.ELDeleteNodeReTrainRange = 20
         
         self.SMBigUpdateFreq = 49
