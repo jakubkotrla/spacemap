@@ -54,7 +54,7 @@ class EnergyLayerNode:
         strXY = '%.2f'%(self.x) + ";" + '%.2f'%(self.y)
         usageStr = '%.4f'%( self.usage )
         AGstr = '%.4f'%( self.AGamount )
-        strInfo.append("EnergyLayerNode" + str(self.index) + "[" + strXY + "].intensity = " + usageStr + "; AG = " + AGstr)
+        strInfo.append("EnergyLayerNode" + str(self.index) + "[" + strXY + "].usage = " + usageStr + "; AG = " + AGstr)
         for link in self.linkToObjects:
             strInfo.append(link.ToString())        
         return strInfo
@@ -94,7 +94,7 @@ class EnergyLayerNode:
        
         
     def StepUpdateMove(self):
-        massCoef = 1.0/max(1, self.usage)
+        massCoef = 1.0/max(1, self.usage * self.usage)
         
         newX = self.x + self.stepDiffX * massCoef
         newY = self.y + self.stepDiffY * massCoef
@@ -248,7 +248,8 @@ class EnergyLayer:
         for i in range(Global.ELDeleteNodeReTrainCount):
             for n in nodesToRun:
                 n.StepUpdate(self.getNodesAround(n, Global.ELAntigravityRange))
-                n.StepUpdateMove() 
+                n.StepUpdateMove()
+        Global.LogData("deletenodes", str(Global.GetStep()) + ";1")
         
     def CreateNode(self, point, memObject):
         xNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)

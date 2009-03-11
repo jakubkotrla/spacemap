@@ -125,32 +125,21 @@ class SpaceMap:
         links = memObject.linkToNodes
         x = 0
         y = 0
-        count = len(links)
-        if count == 0:
-            Global.Log("Programmer.Error: GetMemoryObjectLocation - len links == 0")
+        if 0 == len(links):
             return memObject
         sumIntensity = 0
         for link in links:
-            x += link.node.x
-            y += link.node.y
+            x += (link.node.x * link.intensity)
+            y += (link.node.y * link.intensity)
             sumIntensity += link.intensity 
-        x = x / count
-        y = y / count
+        x = x / sumIntensity
+        y = y / sumIntensity
         p = Point(x,y)
-        x = 0
-        y = 0
-        for link in links:
-            li = float(link.intensity) / sumIntensity 
-            x += li * (link.node.x - p.x)
-            y += li * (link.node.y - p.y)
-        p.x += x
-        p.y += y
         if not self.map.IsInside(p):  #this should not happen, quick hack - go closer to memObj
             hit = self.map.CanMoveEx(memObject, p.x, p.y)
             p = hit
         memObject.x = p.x
         memObject.y = p.y
-        Global.Log("SM: looking for " + memObject.ToString() + " at " + p.ToString())
         
         step = Global.GetStep()
         error = '%.2f'%self.map.DistanceObjs(p, memObject.object)
@@ -183,7 +172,9 @@ class SpaceMap:
         sumIntensity = 0
         
         for (node,dist) in inNodes.iteritems():
-            intensity = Global.Gauss( dist / Global.SMNodeAreaDivCoef, Global.SMNodeAreaGaussCoef)
+            #intensity = Global.Gauss( dist / Global.SMNodeAreaDivCoef, Global.SMNodeAreaGaussCoef)
+            intensity = 1.0 / dist
+            #inv = Global.SMNodeAreaDivCoef * Global.GaussInverse(intensity, Global.SMNodeAreaGaussCoef)
             intensity = max(Global.MinPositiveNumber, intensity)
             nodesToIntensity[node] = intensity
             sumIntensity = sumIntensity + intensity

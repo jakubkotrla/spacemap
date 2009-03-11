@@ -235,7 +235,6 @@ class MainWindow(Frame):
             if Global.CalculateVisibilityHistory:
                 self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
             self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
-            self.mapRenderer.RenderELNC(elayer.energyNodesCountHistory, savePath + "spelncount.png")
         except:
             Global.Log("FATAL ERROR occured: ")
             Global.Log(str(sys.exc_info()[1]))
