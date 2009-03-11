@@ -2,7 +2,7 @@
 from Intentions import Intentions, Intention
 from Enviroment.Affordances import *
 from Processes import Processes, Process
-from Scenarios import Scenarios, Scenario
+from Scenarios import Scenario
 from Enviroment.Global import Global
 from Enviroment.Map import Hit, Point
 from copy import copy
@@ -13,7 +13,7 @@ class ActionSelector:
         self.agent           = agent
         self.intentions      = Intentions()
         self.processes       = Processes()
-        self.scenarios       = Scenarios()
+        self.scenario       = Scenario()
         self.processArea   = processArea
         self.perceptionField = perceptionField
         self.episodicMemory  = episodicMemory
@@ -194,7 +194,7 @@ class ActionSelector:
 
     
     def ChooseIntention(self):
-        mostActiveIntention = self.scenarios.GetMostActiveIntention()
+        mostActiveIntention = self.scenario.GetActiveIntention()
         if mostActiveIntention == None:
             mostActiveIntention = self.intentions.GetRandomHighLevelIntention()
         self.processArea.ActivateIntention(mostActiveIntention, None) 

@@ -3,13 +3,13 @@ from Enviroment.Affordances import *
 from Enviroment.Objects import *
 from Agents.Intentions import Intentions, Intention
 from Agents.Processes import Processes, Process
-from Agents.Scenarios import Scenarios, Scenario
+from Agents.Scenarios import Scenario
 
 class BaseConfig:
     def __init__(self):
         self.intentions = Intentions()
         self.processes = Processes()
-        self.scenarios = Scenarios()
+        self.scenario = Scenario()
         
     def prepareProcessIntentionsItems(self):
         P_Eat = Process("Eating", [], [Eatability], [Eatability], [], 1800)
@@ -85,22 +85,22 @@ class BaseConfig:
         self.intentions.AddHighLevelIntention("Nail")
                      
     
-    def prepareScenarios(self):             
-        S_1 = Scenario()
-        self.scenarios.AddScenario([0,1,2,3,4,5,6], S_1)
+    def prepareScenario(self):             
+        self.scenario = Scenario()
+        self.scenario.Generate(self.intentions)
         
     def GetAgentIntentions(self, actionSelector):
         self.intentions = Intentions()
         self.processes = Processes()
-        self.scenarios = Scenarios()
+        self.scenario = Scenario()
         
         self.prepareProcessIntentionsItems()
         self.prepareProcessIntentions()
-        self.prepareScenarios()
+        self.prepareScenario()
         
         actionSelector.processes = self.processes
         actionSelector.intentions = self.intentions
-        actionSelector.scenarios = self.scenarios
+        actionSelector.scenario = self.scenario
        
     def prepareMap(self, map):
         pass

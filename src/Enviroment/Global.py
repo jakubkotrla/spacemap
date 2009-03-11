@@ -1,7 +1,7 @@
 
 from Time import Time
 from math import exp
-from random import seed, randint, choice, random
+from random import randint, choice, random
 
 class GlobalVariables:
     def __init__(self):
@@ -59,7 +59,7 @@ class GlobalVariables:
                 
         self.ELGravityRange = 20
         self.ELGravityCoef = 3.0
-        self.ELAntigravityCoef = 8.0
+        self.ELAntigravityCoef = 10.0
         #self.ELAntigravityCoefTESTSET = [4.0, 6.0, 10.0]
         self.ELAntigravityRange = 20
         
