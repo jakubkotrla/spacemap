@@ -3,7 +3,6 @@ from Agents.Intentions import Intentions, Intention
 from Enviroment.Affordances import *
 from Enviroment.Objects import *
 from Agents.Processes import Processes, Process
-from Agents.Scenarios import Scenarios, Scenario
 from Enviroment.Global import Global
 from Enviroment.Map import Map, Point, Waypoint
 from BaseConfig import BaseConfig
