@@ -12,13 +12,7 @@ def plotNC(fileName):
     savefig(fileName+".png", format="PNG")
     #show()
 
-def plotRemember(fileName):
-    portfolio = csv.reader(open(fileName, "rb"), delimiter=";")
-    rows = []
-    rows.extend(portfolio)
-    a = filter(lambda x: x[3]=="12", rows)
-    
-    step = map(lambda x: x[0], rows)
+def plotRememberOne(fileName, rows):
     trained = map(lambda x: x[1], rows)
     error = map(lambda x: x[2], rows)
     
@@ -28,20 +22,49 @@ def plotRemember(fileName):
     ylabel('Error')
     xlabel('Amount trained')
     title('Error / trained')
-    #savefig(fileName+".err-train.png", format="PNG")
-    show()
-
-    
-def plotRememberTime(fileName):
-    plotfile(fileName, (0,1,2), delimiter=";", marker=".", color='red', drawstyle="steps", linestyle="None")
-    title('Error and trained in time')
-    ylabel('Error')
-    xlabel('time (steps)')
     savefig(fileName+".png", format="PNG")
-    #show()
+    clf()
 
-plotRemember("data-rememberinfo.txt")
-exit()
+def plotRememberTimeOne(fileName, rows):
+    step = map(lambda x: x[0], rows)
+    trained = map(lambda x: x[1], rows)
+    error = map(lambda x: x[2], rows)
+    
+    stepND = array( step )
+    errorND = array( error )
+    trainedND = array( trained )
+    
+    subplots_adjust(hspace=1)
+    subplot(211)
+    plot(stepND, trainedND, marker=".", color='red', drawstyle="steps", linestyle="None")
+    xlabel("Time (steps)")
+    ylabel('Amount trained')
+    title('Trained in time')
+    
+    subplot(212)
+    plot(stepND, errorND, marker=".", color='red', drawstyle="steps", linestyle="None")
+    ylabel('Error')
+    xlabel("Time (steps)")
+    title('Error in time')
+    savefig(fileName+".png", format="PNG")
+    clf()
+        
+
+def plotRemember(fileName):
+    rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
+    rows = []
+    rows.extend(rowsRAW)
+        
+    plotRememberOne(fileName, rows)
+    plotRememberTimeOne(fileName + ".time", rows)
+        
+    objects = map(lambda x: x[3], rows)
+    objects = list(set(objects))
+    for obj in objects:
+        rowsObj = filter(lambda x: x[3]==obj, rows)
+        plotRememberOne(fileName + obj, rowsObj)    
+        plotRememberTimeOne(fileName + obj + ".time", rowsObj)
+
 for root, dirs, files in os.walk('.'):
     print root
     for fname in files:
@@ -57,8 +80,5 @@ for root, dirs, files in os.walk('.'):
                 plotRemember(root + "\\" + fname)
             except:
                 pass
-            try:
-                plotRememberTime(root + "\\" + fname)
-            except:
-                pass
+            
             
