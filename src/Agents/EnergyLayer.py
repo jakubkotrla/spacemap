@@ -84,7 +84,7 @@ class EnergyLayerNode:
             ldy = (self.y - node.y)
             dist2 = ldx*ldx+ldy*ldy
 
-            self.AGamount += (1.0/dist2)
+            self.AGamount += (1.0/ max(Global.MinPositiveNumber, dist2))
 
             gDiffCoef = dist2 * max(1, self.usage) * max(1,node.usage)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)

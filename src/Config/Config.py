@@ -19,7 +19,7 @@ class ConfigSingleton:
     def __init__(self):
         self.configs = {}
         self.configs["EmptyRoom"] = EmptyRoom()
-        self.configs["FullRoom"] = FullRoom()
+        #self.configs["FullRoom"] = FullRoom()
         self.configs["Corridor"] = Corridor()
         self.configs["Lobby"] = Lobby()
         self.configs["CrazyRoom"] = CrazyRoom()

@@ -91,9 +91,8 @@ class SpaceMap:
                 memObj.StepUpdate()
             
         if self.updateStep > Global.SMBigUpdateFreq:
-            self.updateStep = 0
+            self.updateStep = 1
             self.StepUpdateBig()
-            self.Layer.StepUpdateBig()
         else:
             self.updateStep += 1
             
@@ -101,6 +100,7 @@ class SpaceMap:
         memObjs = self.objectsToMemObjs.values()
         for memObj in memObjs:
             self.updateMemoryObjectLocation(memObj)
+        self.Layer.StepUpdateBig()
        
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:
@@ -157,6 +157,7 @@ class SpaceMap:
         trained = memObject.object.trainHistory
         line = str(step) + ";" + str(trained) + ";" + error + ";" + str(memObject.object.index)  
         Global.LogData("rememberinfo", line)
+        Global.LogData("rememberinfo-"+str(memObject.object.index), line)
         
         return memObject
         
