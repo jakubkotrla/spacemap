@@ -24,7 +24,7 @@ class MemoryPhantom:
         process.resources.append(self)
         
     def MemoryObjectNotFound(self):
-        if self.ownerProcess != None:
+        if self.ownerProcess != None and self in self.ownerProcess.resources:
             self.ownerProcess.resources.remove(self)
         self.ownerProcess = None
                 
