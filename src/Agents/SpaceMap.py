@@ -155,9 +155,8 @@ class SpaceMap:
         step = Global.GetStep()
         error = '%.2f'%self.map.DistanceObjs(p, memObject.object)
         trained = memObject.object.trainHistory
-        line = str(step) + ";" + str(trained) + ";" + error + ";" + str(memObject.object.index)  
+        line = str(step) + ";" + str(trained) + ";" + error + ";" + memObject.object.IdStr()  
         Global.LogData("rememberinfo", line)
-        Global.LogData("rememberinfo-"+str(memObject.object.index), line)
         
         return memObject
         

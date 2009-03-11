@@ -2,6 +2,7 @@
 # simple script to plot outputted data
 from pylab import *
 import os
+import csv
 
 def plotNC(fileName):
     plotfile(fileName, (0,), delimiter=";", color='green')
@@ -12,12 +13,23 @@ def plotNC(fileName):
     #show()
 
 def plotRemember(fileName):
-    plotfile(fileName, (1,2), delimiter=";", marker=".", color='red', drawstyle="steps", linestyle="None")
+    portfolio = csv.reader(open(fileName, "rb"), delimiter=";")
+    rows = []
+    rows.extend(portfolio)
+    a = filter(lambda x: x[3]=="12", rows)
+    
+    step = map(lambda x: x[0], rows)
+    trained = map(lambda x: x[1], rows)
+    error = map(lambda x: x[2], rows)
+    
+    errorND = array( error )
+    trainedND = array( trained )
+    plot(trainedND, errorND, marker=".", color='red', drawstyle="steps", linestyle="None")
     ylabel('Error')
     xlabel('Amount trained')
     title('Error / trained')
-    savefig(fileName+".err-train.png", format="PNG")
-    #show()
+    #savefig(fileName+".err-train.png", format="PNG")
+    show()
 
     
 def plotRememberTime(fileName):
@@ -28,6 +40,8 @@ def plotRememberTime(fileName):
     savefig(fileName+".png", format="PNG")
     #show()
 
+plotRemember("data-rememberinfo.txt")
+exit()
 for root, dirs, files in os.walk('.'):
     print root
     for fname in files:
