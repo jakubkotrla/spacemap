@@ -10,7 +10,7 @@ def plotNC(fileName):
     xlabel('time (steps)')
     title('EL-nodes count in time')
     savefig(fileName+".png", format="PNG")
-    #show()
+    clf()
 
 def plotRememberOne(fileName, rows):
     trained = map(lambda x: x[1], rows)

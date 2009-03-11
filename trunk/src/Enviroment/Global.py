@@ -1,6 +1,6 @@
 
 from Time import Time
-from math import exp
+from math import exp, sqrt, log
 from random import randint, choice, random
 
 class GlobalVariables:
@@ -59,15 +59,15 @@ class GlobalVariables:
                 
         self.ELGravityRange = 20
         self.ELGravityCoef = 3.0
-        self.ELAntigravityCoef = 10.0
+        self.ELAntigravityCoef = 8.0
         #self.ELAntigravityCoefTESTSET = [4.0, 6.0, 10.0]
         self.ELAntigravityRange = 20
         
         self.ELEnergyPointCreateEnergy = 100
-        self.ELEnergyPointCreateEnergyTESTSET = [100, 150, 200]
+        #self.ELEnergyPointCreateEnergyTESTSET = [100, 150, 200]
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5
-        self.ELEnergyFadeCoefTESTSET = [0.3, 0.5, 0.7, 0.9]
+        #self.ELEnergyFadeCoefTESTSET = [0.3, 0.5, 0.7, 0.9]
         self.ELEnergyFadeLimit = 10
         
         self.ELForgetNodeRate = 5    #how much EL.forgetEnergy is added each step
@@ -106,6 +106,9 @@ class GlobalVariables:
                 
     def Gauss(self, x, c=1):
         return exp( - (x*x) / (2*(c*c)) )
+    def GaussInverse(self, y, c=1):
+        #ToDo: solve y>1
+        return sqrt( - 2*c*c * log(y) )
     def Sign(self, int):
         if(int < 0): return -1;
         elif(int > 0): return 1;
