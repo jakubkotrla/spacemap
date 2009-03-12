@@ -29,7 +29,7 @@ class GlobalVariables:
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
-        self.WayPointNoise = 5      #how much can agent miss waypoint (when going to it)
+        self.WayPointNoise = 10     #how much can agent miss waypoint (when going to it)
         
         self.PFSize = 7                    #number of active/real phatoms in PF
         self.PFPhantomHabCreate = 100      #habituation of new phantom(E)
@@ -49,6 +49,7 @@ class GlobalVariables:
         self.SMNodeAreaDivCoef = 1      #when MemObj's linkToNodes are intensed - alter node's gauss area
         self.SMNodeAreaGaussCoef = 10   #as above
         
+        self.SMTrainRange = 10              #how far will SpaceMap intense objects to nodes
         self.MemObjIntenseToNewNode = 1.0       #intensity of new link to new ELNode
         self.MemObjIntensityFadeOut = 0.01      #amount to decrease intensity of memObjs every step
         self.LinkMemObjToNodeFadeOut = 0.001    #amount to decrease intensity of links memObj-node every step
@@ -70,7 +71,7 @@ class GlobalVariables:
         #self.ELEnergyFadeCoefTESTSET = [0.3, 0.5, 0.7, 0.9]
         self.ELEnergyFadeLimit = 10
         
-        self.ELForgetNodeRate = 5    #how much EL.forgetEnergy is added each step
+        self.ELForgetNodeRate = 20    #how much EL.forgetEnergy is added each step
         self.ELDeleteNodeReTrainCount = 20
         self.ELDeleteNodeReTrainRange = 20
         
