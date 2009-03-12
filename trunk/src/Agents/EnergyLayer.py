@@ -91,7 +91,6 @@ class EnergyLayerNode:
             
             self.stepDiffX +=  Global.Sign(ldx) * gDiffCoef
             self.stepDiffY += Global.Sign(ldy) * gDiffCoef
-       
         
     def StepUpdateMove(self):
         massCoef = 1.0/max(1, self.usage * self.usage)

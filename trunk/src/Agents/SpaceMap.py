@@ -167,7 +167,7 @@ class SpaceMap:
         memObj.y = rObject.y
         self.Layer.Train(memObj, effect)
         
-        inNodes = self.Layer.PositionToNodes(memObj, Global.ELGravityRange)
+        inNodes = self.Layer.PositionToNodes(memObj, Global.SMTrainRange)
         nodesToIntensity = {}
         sumIntensity = 0
         
