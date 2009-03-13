@@ -20,6 +20,7 @@ class ActionSelector:
         self.spaceMap        = spaceMap
         
         config.GetAgentIntentions(self)
+        self.scenario.SaveScenario()
         self.intentions.wantInt = Intention("Want", [self.processes.atomic["Explore"],
                                                      self.processes.atomic["LookUpInMemory"],
                                                      self.processes.atomic["SearchRandom"]])
@@ -99,11 +100,13 @@ class ActionSelector:
                 atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["Execute"], excProcess.excParentIntention, excProcess)
                 atomicProcess.data["process"] = excProcess.process
                 atomicProcess.duration = excProcess.process.durationTime
+                return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)   
         else:
             #we have everything
             atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["Execute"], excProcess.excParentIntention, excProcess)
             atomicProcess.data["process"] = excProcess.process
             atomicProcess.duration = excProcess.process.durationTime
+            return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)
         return atomicProcess
 
 
@@ -189,6 +192,26 @@ class ActionSelector:
             atomicProcess.data["newx"] = nextPoint.x
             atomicProcess.data["newy"] = nextPoint.y
             return atomicProcess
+        elif (excProcess.process.name == "Execute"):
+            if len(excProcess.parent.resources)> 1:
+                Global.Log("Programmer.Error: more than one phantom in excProcess.resources")
+            phantom = excProcess.parent.resources[0]    #hack, there should be only one now
+            if phantom.GetType() != "e":
+                Global.Log("Programmer.Error: using non-E phantom in execute")
+            object = phantom.object
+            map = Global.Map
+            
+            dist = map.DistanceObj(self.agent.newX, self.agent.newY, object)
+            if dist < Global.MapPickUpDistance:
+                 atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["ExecuteReal"], excProcess.excParentIntention, excProcess)
+                 atomicProcess.data["process"] = excProcess.data["process"]
+                 atomicProcess.duration = excProcess.duration
+                 return atomicProcess
+            else:
+                atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)
+                atomicProcess.data["newx"] = object.x
+                atomicProcess.data["newy"] = object.y
+                return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)
         else:
             return excProcess
 
@@ -196,6 +219,7 @@ class ActionSelector:
     def ChooseIntention(self):
         mostActiveIntention = self.scenario.GetActiveIntention()
         if mostActiveIntention == None:
+            Global.Log("Programmer.Error: no HL intention form pre-generated fixed scenario")
             mostActiveIntention = self.intentions.GetRandomHighLevelIntention()
         self.processArea.ActivateIntention(mostActiveIntention, None) 
         
@@ -203,10 +227,13 @@ class ActionSelector:
     def ActionDone(self, emotion):
         actExcProcess = self.processArea.GetActProcess()
         actProcess = actExcProcess.process
-        if actProcess.name == "Execute":
+        if actProcess.name == "ExecuteReal":
+            self.processArea.TerminateAtomicProcess(emotion)   #terminates ExecuteReal
             self.processArea.TerminateAtomicProcess(emotion)   #terminates Execute
             self.processArea.TerminateProcess(emotion)         #terminates the executed process
                                             #chooses another intention or no intention will be actual
+        elif actProcess.name == "Execute":
+            pass #never gets called - done in ExecuteReal
         elif actProcess.name == "MoveTo":
             # check we're at the end - is done in child MoveToPartial process!
             # this actually gets never called - its MoveToPartial child process!

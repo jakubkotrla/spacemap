@@ -145,9 +145,9 @@ class Map:
         for edge in self.edges:
             hitResult = self.AreIntersecting(edge.start, edge.end, start, newPos)
             if hitResult.hit:
-                if hitResult.x == newX and hitResult.y == newY:
+                if fabs(hitResult.x-newX)<Global.MinPositiveNumber and fabs(hitResult.y - newY)<Global.MinPositiveNumber:
                     pass
-                elif hitResult.x == start.x and hitResult.y == start.y:
+                elif hitResult.Eq(start):
                     if self.IsInside(newPos):
                         pass
                     else:
@@ -346,20 +346,34 @@ class Map:
         return Hit(x,y, True)       
    
     #from http://alienryderflex.com/polygon/
+    #more at http://tog.acm.org/editors/erich/ptinpoly/
     def IsInside(self, point):
-        count = 0
-        endPoint = Point(self.width+1, point.y)
+        for p in self.points:
+            if point.Eq(p): return True
+        countX = 0
+        countY = 0
+        endPointX = Point(self.width+1, point.y)
+        endPointY = Point(point.x, self.height+1)
         
         for edge in self.edges:
-            hitResult = self.AreIntersecting(edge.start, edge.end, point, endPoint)
+            hitResult = self.AreIntersecting(edge.start, edge.end, point, endPointX)
             if hitResult.hit:
-                if hitResult.Eq(edge.start) and edge.end.y <= point.y:
-                    pass
-                elif hitResult.Eq(edge.end) and edge.start.y <= point.y:
-                    pass
-                else:
-                    count = count + 1
-        return ((count % 2) == 1)
+                if hitResult.Eq(point): return True
+                if hitResult.Eq(edge.start) and edge.end.y <= point.y:   pass
+                elif hitResult.Eq(edge.end) and edge.start.y <= point.y: pass
+                else: countX = countX + 1
+            
+            hitResult = self.AreIntersecting(edge.start, edge.end, point, endPointY)
+            if hitResult.hit:
+                if hitResult.Eq(point): return True
+                if hitResult.Eq(edge.start) and edge.end.y <= point.y:   pass
+                elif hitResult.Eq(edge.end) and edge.start.y <= point.y: pass
+                else: countY = countY + 1
+        countX = ((countX % 2) == 1)
+        countY = ((countY % 2) == 1)
+        if countX != countY:
+            Global.Log("Programmer.Error: IsInside countX!=countY")
+        return (countX or countY)
     
     #from http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
     def GetArea(self):

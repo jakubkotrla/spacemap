@@ -49,11 +49,13 @@ class Agent:
         self.viewConeMaxDist = self.viewConeNormalMaxDist
                 
         #execute action - world/agent-impacting part of atomic process
-        if action.process.name == "Execute":
-            action.sources = action.parent.process.sources
+        if action.process.name == "ExecuteReal":
+            action.sources = action.parent.parent.process.sources
             Global.Log("AGENT is doing " + action.data['process'].name + " for " + str(action.duration) + " seconds")
-            self.intelligence.UseObjects(action.parent)
+            self.intelligence.UseObjects(action.parent.parent)
             #map.UseObjects(self, action.parent) done in PF.UseObjects
+        elif action.process.name == "Execute":
+            pass #never happen - done as ExecuteReal or MoveTo(Partial)
 
         elif action.process.name == "SearchRandom":
             pass #never happens - done as MoveTo or Explore child process
@@ -66,7 +68,7 @@ class Agent:
             if action.data["phantom"] != None:
                 Global.Log("AGENT is remembering for " + action.data["affordance"].name + "(there should be " + action.data["phantom"].object.type.name + " at " + str(action.data["phantom"].object.x) + "," + str(action.data["phantom"].object.y) + ")  for " + str(action.duration) + " seconds")
             else:
-                Global.Log("AGENT is remembering for " + action.data["affordance"].name + "( nothing in SM/MA )  for " + str(action.duration) + " seconds")
+                Global.Log("AGENT is remembering for " + action.data["affordance"].name + "(nothing in SM/MA) for " + str(action.duration) + " seconds")
             
         elif action.process.name == "LookForObject":
             self.viewCones = self.viewConesForExplore

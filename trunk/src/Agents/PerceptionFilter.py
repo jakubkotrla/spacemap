@@ -16,10 +16,10 @@ class PerceptionFilter:
             self.SetAllTo(rObjs, 1)
         elif name == "Explore":
             self.SetAllToRegardingAffs(rObjs, action, 1)
-        elif name == "Execute":
+        elif name == "ExecuteReal":
             self.SetAllToRegardingAffs(rObjs, action, 0.5)
         else:
-            Global.Log("Programmer.Error: PerceptionFilter process name unknown: " + actProcess.name)
+            Global.Log("Programmer.Error: PerceptionFilter process name unknown: " + name)
          
     def SetAllTo(self, rObjs, attractivity):
         for rObj in rObjs:

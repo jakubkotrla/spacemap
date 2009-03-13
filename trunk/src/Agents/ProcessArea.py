@@ -56,6 +56,8 @@ class ExcitedProcess:
             return True
         if (self.process.name == "MoveTo"):
             return True
+        if (self.process.name == "Execute"):
+            return True
         return False    
     
     def IsInProgress(self):
@@ -220,7 +222,7 @@ class ProcessArea:
             
     def IsPhantomUsedNow(self, phantom):
         realProcess = self.actualBasicProcess
-        if self.actualProcess.process.name == "Execute":
+        if self.actualProcess.process.name == "ExecuteReal":
             return phantom.ownerProcess == realProcess
         return False
    
