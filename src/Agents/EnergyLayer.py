@@ -12,6 +12,9 @@ class EnergyPoint:
         self.y = y
         self.energy = energy
         
+        effect = self.energy / Global.ELEnergyPointCreateEnergy
+        self.intenseMemObjToNodes(effect)
+        
     def ToString(self):
         strInfo = []
         strXY = '%.2f'%(self.x) + ";" + '%.2f'%(self.y)
@@ -26,13 +29,34 @@ class EnergyPoint:
             self.energy = self.energy - cost
         
         effect = self.energy / Global.ELEnergyPointCreateEnergy
-            
+        
+        self.intenseMemObjToNodes(effect)
+        
         for node in nodesAround:
             node.Train(self, effect)
 
         self.energy = self.energy * Global.ELEnergyFadeCoef
         if self.energy < Global.ELEnergyFadeLimit:
             self.layer.DeleteEnergyPoint(self)
+    
+    def intenseMemObjToNodes(self, effect):
+        inNodes = self.layer.PositionToNodes(self.memObject, Global.SMTrainRange)
+        nodesToIntensity = {}
+        sumIntensity = 0
+        inc = len(inNodes)
+        
+        for (node,dist) in inNodes.iteritems():
+            #intensity = Global.Gauss( dist / Global.SMNodeAreaDivCoef, Global.SMNodeAreaGaussCoef)
+            dist = max(1, dist)
+            intensity = 1.0 / dist
+            #inv = Global.SMNodeAreaDivCoef * Global.GaussInverse(intensity, Global.SMNodeAreaGaussCoef)
+            intensity = max(Global.MinPositiveNumber, intensity)
+            nodesToIntensity[node] = intensity
+            sumIntensity = sumIntensity + intensity
+        for node in inNodes:
+            intensity = effect * nodesToIntensity[node] / sumIntensity
+            self.memObject.IntenseToNode(node, intensity)
+        
     
 
 class EnergyLayerNode:
