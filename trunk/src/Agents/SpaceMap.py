@@ -172,24 +172,8 @@ class SpaceMap:
         
         memObj.x = rObject.x    #little nasty hack
         memObj.y = rObject.y
-        self.Layer.Train(memObj, effect)
-        
-        inNodes = self.Layer.PositionToNodes(memObj, Global.SMTrainRange)
-        nodesToIntensity = {}
-        sumIntensity = 0
-        inc = len(inNodes)
-        
-        for (node,dist) in inNodes.iteritems():
-            #intensity = Global.Gauss( dist / Global.SMNodeAreaDivCoef, Global.SMNodeAreaGaussCoef)
-            intensity = 1.0 / dist
-            #inv = Global.SMNodeAreaDivCoef * Global.GaussInverse(intensity, Global.SMNodeAreaGaussCoef)
-            intensity = max(Global.MinPositiveNumber, intensity)
-            nodesToIntensity[node] = intensity
-            sumIntensity = sumIntensity + intensity
-        for node in inNodes:
-            intensity = effect * nodesToIntensity[node] / sumIntensity
-            memObj.IntenseToNode(node, intensity)
-            
+        self.Layer.Train(memObj, effect)    #that will train memObj-to-nodes now and then continually in EP.StepUpdate
+                    
         # put memObject to all its affordances
         for aff in rObject.type.affordances:
             if aff not in self.affsToMemObjs:
