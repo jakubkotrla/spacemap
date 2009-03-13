@@ -62,7 +62,7 @@ class GlobalVariables:
         self.ELGravityRange = 20
         self.ELGravityCoef = 3.0
         self.ELAntigravityCoef = 8.0
-        self.ELAntigravityCoefTESTSET = [4.0, 6.0, 8.0]
+        #self.ELAntigravityCoefTESTSET = [4.0, 6.0, 8.0]
         self.ELAntigravityRange = 12
         
         self.ELEnergyPointCreateEnergy = 100
