@@ -16,6 +16,8 @@ class World:
 
     def Step(self):
         Global.Log("------------------------------ Step " + str(self.step).zfill(5) + " --- " + str(Global.TimeToHumanFormat()) + " ----------")
+        if self.step > 51:
+            Global.Log("haha")
         self.agent.Step()
         map = Global.Map
         map.Step(self.agent)

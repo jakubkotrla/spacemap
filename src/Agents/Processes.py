@@ -30,6 +30,8 @@ class Processes:
                         "MoveToPartial"   : Process("MoveToPartial",[],[],[],[]),
                         "Explore"  : Process("Explore",[],[],[],[]),
                         "Execute"  : Process("Execute",[],[],[],[]),
+                        "ExecuteGet"  : Process("ExecuteGet",[],[],[],[]),
+                        "ExecuteReal"  : Process("ExecuteReal",[],[],[],[]),
                         "LookUpInMemory"  : Process("LookUpInMemory",[],[],[],[]),
                         "Remember"  : Process("Remember",[],[],[],[]),
                         "LookForObject"  : Process("LookForObject",[],[],[],[]),

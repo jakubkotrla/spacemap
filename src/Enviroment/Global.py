@@ -25,7 +25,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [718597]   #seeds to test
-        self.MaxTestSteps = 5000    #should be more than one day 
+        self.MaxTestSteps = 1200    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -35,7 +35,8 @@ class GlobalVariables:
         self.PFPhantomHabCreate = 100      #habituation of new phantom(E)
         self.PFPhantomHabUpdate = 50       #habituation added when objNoticed again in PF
         self.MAPhantomHabituation = 100    #habituation of new phantom(M)
-                
+        
+        self.MapPickUpDistance = 2         #agent can use objects closer than this distance        
         self.ObjDefaultAttractivity = 10   #default object attractivity    
                 
         self.TrainEffectNoticed = 1.0
@@ -61,8 +62,8 @@ class GlobalVariables:
         self.ELGravityRange = 20
         self.ELGravityCoef = 3.0
         self.ELAntigravityCoef = 8.0
-        #self.ELAntigravityCoefTESTSET = [4.0, 6.0, 10.0]
-        self.ELAntigravityRange = 20
+        self.ELAntigravityCoefTESTSET = [4.0, 6.0, 8.0]
+        self.ELAntigravityRange = 12
         
         self.ELEnergyPointCreateEnergy = 100
         #self.ELEnergyPointCreateEnergyTESTSET = [100, 150, 200]

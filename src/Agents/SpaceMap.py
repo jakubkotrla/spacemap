@@ -2,6 +2,7 @@
 from Enviroment.Global import Global
 from EnergyLayer import EnergyLayer
 from Enviroment.Map import Point
+from math import log
 
 class MemoryObject:
     def __init__(self, rObject, intensity=1):
@@ -56,7 +57,7 @@ class LinkMemoryObjectToNode:
     #called from MemoryObject.StepUpdate
     def StepUpdate(self):
         self.intensity = self.intensity - Global.LinkMemObjToNodeFadeOut
-        if self.intensity < 0:
+        if self.intensity <= 0:
             self.object.linkToNodes.remove(self)
             self.node.linkToObjects.remove(self)
             
@@ -81,7 +82,7 @@ class SpaceMap:
         
     def StepUpdate(self, action):
         if action.duration > Global.SMUpdateMaxDuration:
-            count = int(action.duration / Global.SMUpdateMaxDuration)
+            count = int( log(3 + action.duration - Global.SMUpdateMaxDuration) )
         else:
             count = 1
         for i in range(count):
@@ -137,15 +138,21 @@ class SpaceMap:
         p = Point(x,y)
         if not self.map.IsInside(p):  #this should not happen, quick hack - go closer to memObj
             hit = self.map.CanMoveEx(memObject, p.x, p.y)
-            p = hit
+            if hit.hit:
+                p = hit
+            else:
+                Global.Log("Programmer.Error: not inside but canMove not hit")
         memObject.x = p.x
         memObject.y = p.y
         
         step = Global.GetStep()
-        error = '%.2f'%self.map.DistanceObjs(p, memObject.object)
+        error = self.map.DistanceObjs(p, memObject.object)
+        errorStr = '%.2f'%error
         trained = memObject.object.trainHistory
-        line = str(step) + ";" + str(trained) + ";" + error + ";" + memObject.object.IdStr()  
+        line = str(step) + ";" + str(trained) + ";" + errorStr + ";" + memObject.object.IdStr()  
         Global.LogData("rememberinfo", line)
+        if error > 20:
+            Global.Log("haha")        
         
         return memObject
         
@@ -170,6 +177,7 @@ class SpaceMap:
         inNodes = self.Layer.PositionToNodes(memObj, Global.SMTrainRange)
         nodesToIntensity = {}
         sumIntensity = 0
+        inc = len(inNodes)
         
         for (node,dist) in inNodes.iteritems():
             #intensity = Global.Gauss( dist / Global.SMNodeAreaDivCoef, Global.SMNodeAreaGaussCoef)

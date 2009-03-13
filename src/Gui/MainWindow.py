@@ -237,7 +237,9 @@ class MainWindow(Frame):
             self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
         except:
             Global.Log("FATAL ERROR occured: ")
-            Global.Log(str(sys.exc_info()[1]))
+            sis = sys.exc_info()
+            for si in sis:
+                Global.Log(str(si))
             time.sleep(1)
             raise
         finally:        

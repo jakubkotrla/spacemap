@@ -17,3 +17,7 @@ class Scenario:
         if self.index >= len(self.intentions):
             self.index = 0
         return self.intentions[self.index]
+    
+    def SaveScenario(self):
+        for i in self.intentions:
+            Global.LogData("scenario", i.name)
