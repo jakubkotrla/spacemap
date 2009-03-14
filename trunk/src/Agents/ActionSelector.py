@@ -218,6 +218,7 @@ class ActionSelector:
                  atomicProcess.data["process"] = excProcess.data["process"]
                  atomicProcess.data["phantom"] = excProcess.data["phantom"]
                  atomicProcess.duration = excProcess.duration
+                 excProcess.parent.resources = [excProcess.data["phantom"]]
                  return atomicProcess
             else:
                 atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["MoveTo"], excProcess.excParentIntention, excProcess)

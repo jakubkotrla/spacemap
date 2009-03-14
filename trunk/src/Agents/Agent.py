@@ -52,7 +52,7 @@ class Agent:
         if action.process.name == "ExecuteReal":
             action.sources = action.parent.parent.process.sources
             Global.Log("AGENT is doing " + action.data['process'].name + " for " + str(action.duration) + " seconds")
-            self.intelligence.UseObjects([action.data['phantom']])   #Future: handle more phantoms
+            self.intelligence.UseObjects(action.parent.parent)
             #map.UseObjects(self, action.parent) done in PF.UseObjects
         elif action.process.name == "Execute":
             pass #never happen - done as ExecuteReal or MoveTo(Partial)

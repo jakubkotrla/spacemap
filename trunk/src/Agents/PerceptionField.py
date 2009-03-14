@@ -137,8 +137,8 @@ class PerceptionField:
                 phantomForAff.SetOwnerProcess(excProcess)
                 phantomForAff.affordance = wantedAff
                         
-    def UseObjectPhantoms(self, phantoms):
-        for phantom in phantoms:
+    def UseObjectPhantoms(self, excProcess):
+        for phantom in excProcess.resources:
             self.spaceMap.ObjectUsed(phantom.object)
         
         map = Global.Map
