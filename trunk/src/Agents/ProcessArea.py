@@ -62,7 +62,10 @@ class ExcitedProcess:
     
     def IsInProgress(self):
         return self.endTime == None
-        #future: won't work for intention-competing
+        #Future: won't work for intention-competing
+    
+    def GetAllSources(self):
+        return self.process.sources
         
     def GetMissingSources(self):
         affordances = copy(self.process.sources)
@@ -184,7 +187,7 @@ class ProcessArea:
     def PhantomAdded(self, phantom):
         realProcess = self.actualBasicProcess
         affs = phantom.object.type.affordances
-        wantedAffs = realProcess.GetMissingSources()
+        wantedAffs = realProcess.GetAllSources()
         for aff in affs:
             if aff in wantedAffs:
                 phantom.SetOwnerProcess(realProcess)

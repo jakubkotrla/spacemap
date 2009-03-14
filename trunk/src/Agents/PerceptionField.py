@@ -137,12 +137,12 @@ class PerceptionField:
                 phantomForAff.SetOwnerProcess(excProcess)
                 phantomForAff.affordance = wantedAff
                         
-    def UseObjectPhantoms(self, excProcess):
-        for phantom in excProcess.resources:
+    def UseObjectPhantoms(self, phantoms):
+        for phantom in phantoms:
             self.spaceMap.ObjectUsed(phantom.object)
         
         map = Global.Map
-        usedSources = [] #excProcess.process.usedSources ToDo: object.amount
+        usedSources = [] #excProcess.process.usedSources Future: object.amount
         for usedSource in usedSources:
             for phantom in excProcess.resources:
                 if usedSource == phantom.affordance:
@@ -151,7 +151,7 @@ class PerceptionField:
                         self.environmentPhantoms.remove(phantom)
                         Global.Log("PF: removing(used) phantom for object " + phantom.object.ToString())
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
-        #is done more generally in ExcitedProcess.TerminateProcess
+        #above is done more generally in ExcitedProcess.TerminateProcess
         
     def UpdatePhantomsBecauseOfMove(self, agent):
         map = Global.Map

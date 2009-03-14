@@ -193,18 +193,30 @@ class ActionSelector:
             atomicProcess.data["newy"] = nextPoint.y
             return atomicProcess
         elif (excProcess.process.name == "Execute"):
-            if len(excProcess.parent.resources)> 1:
-                Global.Log("Programmer.Error: more than one phantom in excProcess.resources")
-            phantom = excProcess.parent.resources[0]    #hack, there should be only one now
-            if phantom.GetType() != "e":
-                Global.Log("Programmer.Error: using non-E phantom in execute")
-            object = phantom.object
-            map = Global.Map
             
+            if 'phantom' not in excProcess.data: 
+                #expecting enough E-phantoms, we choose one and let go the rest
+                #Future: for |process.sources|>1 add selection of phantoms regarding theirs affs
+                if len(excProcess.parent.resources)> 1:
+                    phantoms = filter(lambda x:x.GetType()=="e", excProcess.parent.resources)
+                    phToDist = {}
+                    map = Global.Map
+                    for p in phantoms:
+                        phToDist[p] = map.DistanceObj(self.agent.newX, self.agent.newY, p.object) #Future: use object.attractivity, .visibility in sort/cmp etc.
+                    phantoms.sort(lambda a,b: cmp(phToDist[a], phToDist[b]))
+                    phantom = excProcess.parent.resources[0]
+                else:
+                    phantom = excProcess.parent.resources[0]
+                excProcess.data['phantom'] = phantom            #Future: list instead of one phantom
+
+            #following test of in range is paranoid - could be done only in first iteration
+            object = excProcess.data['phantom'].object
+            map = Global.Map
             dist = map.DistanceObj(self.agent.newX, self.agent.newY, object)
             if dist < Global.MapPickUpDistance:
                  atomicProcess = self.processArea.ActivateProcess(emotion, self.processes.atomic["ExecuteReal"], excProcess.excParentIntention, excProcess)
                  atomicProcess.data["process"] = excProcess.data["process"]
+                 atomicProcess.data["phantom"] = excProcess.data["phantom"]
                  atomicProcess.duration = excProcess.duration
                  return atomicProcess
             else:

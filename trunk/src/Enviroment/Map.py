@@ -372,7 +372,7 @@ class Map:
         countX = ((countX % 2) == 1)
         countY = ((countY % 2) == 1)
         if countX != countY:
-            Global.Log("Programmer.Error: IsInside countX!=countY")
+            Global.Log("Programmer.Error: IsInside countX!=countY for: " + point.ToString())
         return (countX or countY)
     
     #from http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
