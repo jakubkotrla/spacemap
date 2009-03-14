@@ -43,8 +43,8 @@ class Intelligence:
     def LookForObject(self, memoryPhantom):
         return self.perceptionField.LookForObject(memoryPhantom)
                 
-    def UseObjects(self, phantoms):
-        self.perceptionField.UseObjectPhantoms(phantoms)
+    def UseObjects(self, excProcess):
+        self.perceptionField.UseObjectPhantoms(excProcess)
         
     def UpdatePhantomsBecauseOfMove(self):
         self.perceptionField.UpdatePhantomsBecauseOfMove(self.agent)
