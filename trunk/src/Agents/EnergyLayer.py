@@ -116,7 +116,7 @@ class EnergyLayerNode:
             self.stepDiffX +=  Global.Sign(ldx) * gDiffCoef
             self.stepDiffY += Global.Sign(ldy) * gDiffCoef
         
-    def StepUpdateMove(self):
+    def StepUpdateMove(self, saveStatus=True):
         massCoef = 1.0/max(1, self.usage * self.usage)
         
         newX = self.x + self.stepDiffX * massCoef
@@ -127,7 +127,7 @@ class EnergyLayerNode:
             newX = hit.x
             newY = hit.y
         
-        if Global.SaveELNodesStatus:
+        if saveStatus and Global.SaveELNodesStatus:
             ldx = newX - self.x
             ldy = newY - self.y
             distToMove = sqrt(ldx*ldx + ldy*ldy)
@@ -143,7 +143,7 @@ class EnergyLayerNode:
         
         self.AGamount -= Global.ELAGFadeOut
         
-        if Global.SaveELNodesStatus:
+        if saveStatus and Global.SaveELNodesStatus:
             status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f"%(distToMove,u,self.AGamount)
             Global.LogData("elnode-status", status)
         
@@ -282,7 +282,7 @@ class EnergyLayer:
         for i in range(Global.ELDeleteNodeReTrainCount):
             for n in nodesToRun:
                 n.StepUpdate(self.getNodesAround(n, Global.ELAntigravityRange))
-                n.StepUpdateMove()
+                n.StepUpdateMove(False)
         
     def CreateNode(self, point, memObject):
         xNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)

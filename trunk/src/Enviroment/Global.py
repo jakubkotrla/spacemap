@@ -8,6 +8,7 @@ class GlobalVariables:
         self.Reset()
         self.outLog = None
         self.path = None
+        self.outFiles = {}
     
     def Reset(self):
         self.SafeMode = True
@@ -19,7 +20,7 @@ class GlobalVariables:
         self.logLines = []
         self.LogLinesCount = 30
       
-        self.SaveELNodesStatus = False
+        self.SaveELNodesStatus = True
         self.RenderVisibilityHistory = False    #show visibility objects
         self.CalculateVisibilityHistory = False #calculate visibility of visibility objects
         self.VisibilityHistoryArea = 2          #visibility object is square AxA
@@ -40,10 +41,10 @@ class GlobalVariables:
         self.MapPickUpDistance = 2         #agent can use objects closer than this distance        
         self.ObjDefaultAttractivity = 10   #default object attractivity    
                 
-        self.TrainEffectNoticed = 2.0
-        self.TrainEffectNoticedAgain = 0.4
-        self.TrainEffectUsed = 6.0
-        self.TrainEffectFound = 3.0
+        self.TrainEffectNoticed = 1.0
+        self.TrainEffectNoticedAgain = 0.3
+        self.TrainEffectUsed = 3.0
+        self.TrainEffectFound = 2.0
         self.TrainEffectNotFound = 1.0
         self.TrainEffectUsedUp = 1.0
         
@@ -100,12 +101,15 @@ class GlobalVariables:
         if len(self.logLines) > self.LogLinesCount:
             self.logLines.pop(0)
     def LogData(self, tag, data):
-        outData = open(self.path+"data-" + tag + ".txt",'a')
+        if tag not in self.outFiles:
+            self.outFiles[tag] = open(self.path+"data-" + tag + ".txt",'a')
+        outData = self.outFiles[tag]
         outData.write(data + "\n")
-        outData.close()
-        
+                
     def LogEnd(self):
         self.outLog.close()
+        for f in self.outFiles.values():
+            f.close()
                 
     def Gauss(self, x, c=1):
         return exp( - (x*x) / (2*(c*c)) )

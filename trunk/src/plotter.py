@@ -52,20 +52,21 @@ def plotRememberTimeOne(fileName, rows):
     clf()
         
 
-def plotRemember(fileName):
+def plotRemember(fileName, full=False):
     rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
     rows = []
     rows.extend(rowsRAW)
         
     plotRememberOne(fileName, rows)
     plotRememberTimeOne(fileName + ".time", rows)
-        
-    objects = map(lambda x: x[3], rows)
-    objects = list(set(objects))
-    for obj in objects:
-        rowsObj = filter(lambda x: x[3]==obj, rows)
-        plotRememberOne(fileName + obj, rowsObj)    
-        plotRememberTimeOne(fileName + obj + ".time", rowsObj)
+    
+    if full:  
+        objects = map(lambda x: x[3], rows)
+        objects = list(set(objects))
+        for obj in objects:
+            rowsObj = filter(lambda x: x[3]==obj, rows)
+            plotRememberOne(fileName + obj, rowsObj)    
+            plotRememberTimeOne(fileName + obj + ".time", rowsObj)
         
 def plotMeanErrorInTime(fileName):
     rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
@@ -92,19 +93,83 @@ def plotMeanErrorInTime(fileName):
     savefig(fileName+".meanerror.png", format="PNG")
     clf()
     
-def plotELNode(fileName):
+def plotELNodeStats(fileName):
     rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
     rows = []
     rows.extend(rowsRAW)
-    
+    outFile = open(fileName + ".stats.txt", "w")
+        
     step = map(lambda x: x[0], rows)
-    index = map(lambda x: x[1], rows)
+    stepND = array( step )
+    stepCount = max(stepND.astype(int))
+    dataStep = []
+    dataMeanDist = []
+    dataMeanUsage = []
+    dataMeanAg = []
+    dataMaxAg = []
+    for step in range(0, stepCount+1):
+        rowsSel = filter(lambda x: int(x[0])==step, rows)
+        
+        dist = map(lambda x: x[2], rowsSel)
+        usage = map(lambda x: x[3], rowsSel)
+        ag = map(lambda x: x[4], rowsSel)
+        distND = array( dist )
+        usageND = array( usage )
+        agND = array( ag )
+        
+        dataStep.append(step)
+        meanDist = average(distND.astype(float))
+        dataMeanDist.append(meanDist)
+        meanUsage = average(usageND.astype(float))
+        dataMeanUsage.append(meanUsage)
+        meanAG = average(agND.astype(float))
+        dataMeanAg.append(meanAG)
+        maxAG = max(agND.astype(float))
+        dataMaxAg.append(maxAG)
+        
+        data = str(step) + ";" + str(meanDist) + ";" + str(meanUsage) + ";" + str(meanAG) + ";" + str(maxAG)  
+        outFile.write(data + "\n")
+        
+    outFile.close()
+    subplots_adjust(hspace=1)
+    subplot(211)
+    plot(dataStep, dataMeanDist, color='blue')
+    xlabel("Time (steps)")
+    ylabel('Mean distance moved')
+    title('Mean distance moved in time')
+    
+    subplot(212)
+    plot(dataStep, dataMeanUsage, color='blue')
+    xlabel("Time (steps)")
+    ylabel('Mean usage')
+    title('Mean usage in time')
+    
+    savefig(fileName+".stats.png", format="PNG")
+    clf()
+    
+    subplot(211)
+    plot(dataStep, dataMeanAg, color='blue')
+    xlabel("Time (steps)")
+    ylabel('Mean AG amount')
+    title('Mean AG amount in time')
+    
+    subplot(212)
+    plot(dataStep, dataMaxAg, color='blue')
+    xlabel("Time (steps)")
+    ylabel('Max AG amount')
+    title('Max AG amount in time')
+    
+    savefig(fileName+".ag.png", format="PNG")
+    clf()
+    
+
+def plotELNodeOne(fileName, rows):
+    step = map(lambda x: x[0], rows)
     dist = map(lambda x: x[2], rows)
     usage = map(lambda x: x[3], rows)
     ag = map(lambda x: x[4], rows)
     
     stepND = array( step )
-    indexND = array( index )
     distND = array( dist )
     usageND = array( usage )
     agND = array( ag )
@@ -131,11 +196,19 @@ def plotELNode(fileName):
     savefig(fileName+".png", format="PNG")
     clf()
     
-      
-      
-      
-      
-      
+def plotELNode(fileName):
+    rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
+    rows = []
+    rows.extend(rowsRAW)
+        
+    index = map(lambda x: x[1], rows)
+    index = list(set(index))
+    for i in index:
+        rowsObj = filter(lambda x: x[1]==i, rows)
+        plotELNodeOne(fileName + i, rowsObj)    
+
+     
+full = False      
 
 for root, dirs, files in os.walk('.'):
     print root
@@ -146,10 +219,13 @@ for root, dirs, files in os.walk('.'):
         elif fname.startswith("data-rememberinfo") and fname.endswith(".txt"):
             print ("plotRem " + root + "\\" + fname)
             plotMeanErrorInTime(root + "\\" + fname)
-            plotRemember(root + "\\" + fname)
-        elif fname.startswith("data-elnode") and fname.endswith(".txt"):
-            print ("plotELNode " + root + "\\" + fname)    
-            plotELNode(root + "\\" + fname)
+            plotRemember(root + "\\" + fname, full)
+        elif fname == "data-elnode-status.txt":
+            print ("plotELNodeStats " + root + "\\" + fname)
+            plotELNodeStats(root + "\\" + fname)
+            if full:
+                print ("plotELNode " + root + "\\" + fname)    
+                plotELNode(root + "\\" + fname)
 
 print "*** END ***"          
             
