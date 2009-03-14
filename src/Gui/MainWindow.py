@@ -5,6 +5,7 @@ from shutil import copyfile
 import os
 import time
 import copy
+import traceback
 from random import seed
 from PIL import ImageGrab, ImageDraw
 from Enviroment.Global import Global
@@ -158,7 +159,10 @@ class MainWindow(Frame):
                 settingsToRun[settingName] = a
                 settingsToRunLen.append(len(a))
         #settingsToRun contains all set data to run
-        settingsCount = reduce(lambda x,y: x*y, settingsToRunLen)
+        if len(settingsToRunLen) < 1:
+            settingsCount = 1
+        else:
+            settingsCount = reduce(lambda x,y: x*y, settingsToRunLen)
         self.testToRunCount = settingsCount * len(Config.configs) * len(Global.RandomSeeds)
         self.currentTestIndex = 0
         self.testRunStarted = time.time()
@@ -237,9 +241,8 @@ class MainWindow(Frame):
             self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
         except:
             Global.Log("FATAL ERROR occured: ")
-            sis = sys.exc_info()
-            for si in sis:
-                Global.Log(str(si))
+            ss = traceback.format_exc()
+            Global.Log(ss)
             time.sleep(1)
             raise
         finally:        

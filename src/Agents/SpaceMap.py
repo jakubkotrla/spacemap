@@ -1,7 +1,7 @@
 
 from Enviroment.Global import Global
 from EnergyLayer import EnergyLayer
-from Enviroment.Map import Point
+from Enviroment.Map import Point, RealObject
 from math import log
 
 class MemoryObject:
@@ -151,9 +151,7 @@ class SpaceMap:
         trained = memObject.object.trainHistory
         line = str(step) + ";" + str(trained) + ";" + errorStr + ";" + memObject.object.IdStr()  
         Global.LogData("rememberinfo", line)
-        if error > 20:
-            Global.Log("haha")        
-        
+
         return memObject
         
     
@@ -195,6 +193,8 @@ class SpaceMap:
         #ToDo: dynamicWorld: objectTrain TrainEffectNotFound
         
     def ObjectUsed(self, rObject):
+        #if not isinstance(rObject, RealObject):
+        #    Global.Log("haha")
         self.objectTrain(rObject, Global.TrainEffectUsed)
         
     def ObjectUsedUp(self, rObject):

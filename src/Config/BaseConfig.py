@@ -27,7 +27,8 @@ class BaseConfig:
         I_Smoke = Intention("Smoke", [P_Smoke])
         self.intentions.AddIntention(I_Smoke)
                 
-        P_Read = Process("Reading", [], [Zoomability, Readability], [], [], 4000)
+        #P_Read = Process("Reading", [], [Zoomability, Readability], [], [], 4000)
+        P_Read = Process("Reading", [], [Readability], [], [], 4000)
         self.processes.AddProcess(P_Read)
         I_Read = Intention("Read", [P_Read])
         self.intentions.AddIntention(I_Read)

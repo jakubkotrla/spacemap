@@ -108,7 +108,7 @@ class EnergyLayerNode:
             ldy = (self.y - node.y)
             dist2 = ldx*ldx+ldy*ldy
 
-            self.AGamount += (1.0/ max(Global.MinPositiveNumber, dist2))
+            self.AGamount += (1.0/ max(1, dist2))
 
             gDiffCoef = dist2 * max(1, self.usage) * max(1,node.usage)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)
@@ -126,6 +126,12 @@ class EnergyLayerNode:
         if hit.hit:
             newX = hit.x
             newY = hit.y
+        
+        if Global.SaveELNodesStatus:
+            ldx = newX - self.x
+            ldy = newY - self.y
+            distToMove = sqrt(ldx*ldx + ldy*ldy)
+                     
         self.x = newX
         self.y = newY
         self.stepDiffX = self.stepDiffY = 0
@@ -136,6 +142,10 @@ class EnergyLayerNode:
         self.usage = u
         
         self.AGamount -= Global.ELAGFadeOut
+        
+        if Global.SaveELNodesStatus:
+            status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f"%(distToMove,u,self.AGamount)
+            Global.LogData("elnode-status", status)
         
     
     #called when Created after first Link is intensed
@@ -261,7 +271,8 @@ class EnergyLayer:
             node.AGamount -= Global.ELAGFadeOut
             if node.AGamount > Global.HLAGNeeded:
                 #create high-level EL node
-                Global.Log("HL EL node!!")
+                #Global.Log("HL EL node!!")
+                pass
                 
      
     def DeleteNode(self, node):
@@ -272,7 +283,6 @@ class EnergyLayer:
             for n in nodesToRun:
                 n.StepUpdate(self.getNodesAround(n, Global.ELAntigravityRange))
                 n.StepUpdateMove()
-        Global.LogData("deletenodes", str(Global.GetStep()) + ";1")
         
     def CreateNode(self, point, memObject):
         xNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)

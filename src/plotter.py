@@ -84,7 +84,6 @@ def plotMeanErrorInTime(fileName):
         meanError = average(errorND.astype(float))
         dataStep.append(step)
         dataME.append(meanError)
-        print "ME.step: " + str(step)
     
     plot(dataStep, dataME, marker=".", color='red')
     ylabel('Mean error')
@@ -93,38 +92,64 @@ def plotMeanErrorInTime(fileName):
     savefig(fileName+".meanerror.png", format="PNG")
     clf()
     
-def plotNodeDelete(fileName):
+def plotELNode(fileName):
     rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
     rows = []
     rows.extend(rowsRAW)
     
     step = map(lambda x: x[0], rows)
-    nd = map(lambda x: x[1], rows)
+    index = map(lambda x: x[1], rows)
+    dist = map(lambda x: x[2], rows)
+    usage = map(lambda x: x[3], rows)
+    ag = map(lambda x: x[4], rows)
     
-    ndeleted = len(nd)
     stepND = array( step )
-    ndND = array( nd )
-    plot(stepND, ndND, marker=".", color='blue', drawstyle="steps", linestyle="None")
-    ylabel('1 if nodeDelete that step')
-    xlabel('Time (steps)')
-    title('Node delete in time (total: %d)'%ndeleted)
+    indexND = array( index )
+    distND = array( dist )
+    usageND = array( usage )
+    agND = array( ag )
+        
+    subplots_adjust(hspace=1)
+    subplot(311)
+    plot(stepND, distND, color='blue')
+    xlabel("Time (steps)")
+    ylabel('Distance moved')
+    title('Distance moved in time')
+    
+    subplot(312)
+    plot(stepND, usageND, color='blue')
+    xlabel("Time (steps)")
+    ylabel('Usage')
+    title('Usage in time')
+    
+    subplot(313)
+    plot(stepND, agND, color='blue')
+    xlabel("Time (steps)")
+    ylabel('AG amount')
+    title('AG amount in time')
+    
     savefig(fileName+".png", format="PNG")
     clf()
     
+      
+      
+      
+      
+      
 
 for root, dirs, files in os.walk('.'):
     print root
     for fname in files:
-        if fname == "data-deletenodes.txt":
-            print ("plotNodeDelete" + root + "\\" + fname)
-            plotNodeDelete(root + "\\" + fname)
         if fname == "data-nc.txt":
-            print ("plotNC" + root + "\\" + fname)
+            print ("plotNC " + root + "\\" + fname)
             plotNC(root + "\\" + fname)
-        if fname.startswith("data-rememberinfo") and fname.endswith(".txt"):
-            print ("plotRem" + root + "\\" + fname)
+        elif fname.startswith("data-rememberinfo") and fname.endswith(".txt"):
+            print ("plotRem " + root + "\\" + fname)
             plotMeanErrorInTime(root + "\\" + fname)
             plotRemember(root + "\\" + fname)
+        elif fname.startswith("data-elnode") and fname.endswith(".txt"):
+            print ("plotELNode " + root + "\\" + fname)    
+            plotELNode(root + "\\" + fname)
 
 print "*** END ***"          
             
