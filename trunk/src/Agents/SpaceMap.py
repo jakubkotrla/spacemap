@@ -49,10 +49,11 @@ class LinkMemoryObjectToNode:
         self.object = object
         self.node = node
         self.intensity = intensity
+        self.node.Intense(intensity)
         
     def Intense(self, intensity):
         self.intensity = self.intensity + intensity
-        if self.intensity > Global.LinkMemObjToNodeMaxIntensity: self.intensity = Global.LinkMemObjToNodeMaxIntensity
+        self.node.Intense(intensity)
     
     #called from MemoryObject.StepUpdate
     def StepUpdate(self):

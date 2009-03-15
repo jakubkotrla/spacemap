@@ -86,18 +86,9 @@ class EnergyLayerNode:
     def Delete(self):
         for link in self.linkToObjects:
             link.NodeDeleted()
-                
-    def isMaxObject(self, objectName):
-        maxUsage = 0
-        maxObject = None
-        for link in self.linkToObjects:
-            if link.intensity > maxUsage:
-                maxUsage = link.intensity
-                maxObject = link.object
-        if maxObject != None:
-            if maxObject.type.name == objectName:
-                return True
-        return False
+    
+    def Intense(self, intensity):
+        self.usage += intensity
                 
     def StepUpdate(self, nodesAround):
         diffX = 0
@@ -135,24 +126,13 @@ class EnergyLayerNode:
         self.x = newX
         self.y = newY
         self.stepDiffX = self.stepDiffY = 0
-        
-        #calculate usage - once every step is enough
-        u = 0
-        for link in self.linkToObjects: u = u + link.intensity
-        self.usage = u
-        
+
+        self.usage -= Global.ELNodeUsageFadeOut
         self.AGamount -= Global.ELAGFadeOut
         
         if saveStatus and Global.SaveELNodesStatus:
-            status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f"%(distToMove,u,self.AGamount)
+            status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f"%(distToMove,self.usage,self.AGamount)
             Global.LogData("elnode-status", status)
-        
-    
-    #called when Created after first Link is intensed
-    def RecalculateUsage(self):
-        u = 0
-        for link in self.linkToObjects: u = u + link.intensity
-        self.usage = u
            
     def Train(self, point, effect):
         diffX = point.x - self.x
@@ -303,7 +283,6 @@ class EnergyLayer:
         memObject.AddLinkToNode(newNode)
         memObject.IntenseToNode(newNode, Global.MemObjIntenseToNewNode)
         self.stepELNodesCreated = self.stepELNodesCreated + 1
-        newNode.RecalculateUsage()
         return newNode
     
     def Train(self, memObject, effect):
