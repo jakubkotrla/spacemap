@@ -55,11 +55,12 @@ class GlobalVariables:
         self.SMTrainRange = 10              #how far will SpaceMap intense objects to nodes
         self.MemObjIntenseToNewNode = 1.0       #intensity of new link to new ELNode
         self.MemObjIntensityFadeOut = 0.01      #amount to decrease intensity of memObjs every step
-        self.LinkMemObjToNodeFadeOut = 0.005     #amount to decrease intensity of links memObj-node every step
-        self.LinkMemObjToNodeMaxIntensity = 10  #max intensity of links memObj-node
-                
+        self.LinkMemObjToNodeFadeOut = 0.005    #amount to decrease intensity of links memObj-node every step
+                                
         self.ELDensity = 10       #one node will be created for area of appr. ELDensity x ELDensity
         self.ELCreateNoise = 3    #noise when creating nodes, >ELDensity or ==-1 leads to completely random xy
+                
+        self.ELNodeUsageFadeOut = 0.005     #amount to decrease intensity of el-node every step
                 
         self.ELGravityRange = 20
         self.ELGravityCoef = 3.0
