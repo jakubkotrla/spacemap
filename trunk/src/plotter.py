@@ -38,8 +38,8 @@ def plotHeatMap(fileName, titleStr, defValue=None):
             map[i][j] = 0.0
     
     for row in rows:
-        x = int(row[0])
-        y = int(row[1])
+        y = int(row[0])
+        x = int(row[1])
         value = float(row[2])
         if defValue != None:
             fill(map, x, y, defValue)
@@ -160,6 +160,7 @@ def plotELNodeStats(fileName):
     dataMeanAg = []
     dataMaxAg = []
     for step in range(0, stepCount+1):
+        print "plotELNodeStats step " + str(i)
         rowsSel = filter(lambda x: int(x[0])==step, rows)
         
         dist = map(lambda x: x[2], rowsSel)
