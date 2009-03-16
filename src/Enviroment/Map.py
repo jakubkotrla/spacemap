@@ -114,6 +114,12 @@ class Map:
     def AddObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
         rObj = RealObject(type, x, y, attractivity, amount)    
         self.objects.append(rObj)
+    def CreateObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
+        return RealObject(type, x, y, attractivity, amount)    
+    def AddExistingObject(self, rObject):
+        self.objects.append(rObj)
+    def RemoveExistingObject(self, rObject):
+        self.objects.remove(rObjects)
     
     def SetAgentStart(self, x, y):
         self.agentMoves.append( Point(x, y) )
@@ -385,11 +391,15 @@ class Map:
             sum = sum + vertices[i].x * vertices[i+1].y - vertices[i].y * vertices[i+1].x
         return fabs( sum * 0.5)
     
-    def GetRealObjectIfThere(self, memObject):
-        for rObj in self.objects:
-            if rObj.x == memObject.x and rObj.y == memObject.y and rObj.type == memObject.type:
-                return rObj
-        return None
+    def GetRandomLocation(self):
+        x = Global.Randint(self.width) 
+        y = Global.Randint(self.height)
+        p = Point(x,y)
+        while not self.IsInside( p ):                
+            x = Global.Randint(self.width) 
+            y = Global.Randint(self.height)
+            p = Point(x,y)    
+        return p
     
     def UseObject(self, excProcess, realObject):
         if realObject.Use():

@@ -41,6 +41,7 @@ class EnergyPoint:
     
     def intenseMemObjToNodes(self, effect):
         inNodes = self.layer.PositionToNodes(self.memObject, Global.SMTrainRange)
+        if inNodes == None: return  #there are no ELNodes - error paranoid, should not happen anyway
         nodesToIntensity = {}
         sumIntensity = 0
         inc = len(inNodes)
@@ -101,7 +102,7 @@ class EnergyLayerNode:
 
             self.AGamount += (1.0/ max(1, dist2))
 
-            gDiffCoef = dist2 * max(1, self.usage) * max(1,node.usage)
+            gDiffCoef = dist2 * max(1.0, self.usage) * max(1.0,node.usage)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)
             
             self.stepDiffX +=  Global.Sign(ldx) * gDiffCoef
@@ -128,6 +129,7 @@ class EnergyLayerNode:
         self.stepDiffX = self.stepDiffY = 0
 
         self.usage -= Global.ELNodeUsageFadeOut
+        if self.usage < 0: self.usage = 0
         self.AGamount -= Global.ELAGFadeOut
         
         if saveStatus and Global.SaveELNodesStatus:
@@ -217,7 +219,10 @@ class EnergyLayer:
         if len(inNodes) > 0:
             return inNodes
         else:
-            return {closestNode : closestDistance}
+            if closestNode != None:
+                return {closestNode : closestDistance}
+            else:
+                return None
     
     def StepUpdate(self):
         for ep in self.energyPoints:
@@ -313,12 +318,12 @@ class EnergyLayer:
             Global.LogData("elnodeheatmap", nStr)
         
     def GetNodeCreateCost(self):
-        x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
-        cost = 100 * (3 ** (float(x)/50))
+        x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        cost = 50 * (3 ** (float(x)/50))
         return cost
     def GetNodeDeleteCost(self):
-        x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
-        cost = 100 * (3 ** (float(-x)/50))
+        x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        cost = 50 * (3 ** (float(-x)/50))
         return cost
 
     def getNodesAround(self, node, range):
