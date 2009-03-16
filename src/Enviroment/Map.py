@@ -455,6 +455,11 @@ class Map:
             if obj.visibility > self.visibilityMaxEver:
                 self.visibilityMaxEver = obj.visibility
       
+    def SaveHeatMap(self):
+        for obj in self.objects:
+            objStr = str(obj.x) + ";" + str(obj.y) + ";%.4f"%(obj.trainHistory)
+            Global.LogData("objheatmap", objStr)
+      
     def Distance(self, x1,y1,x2,y2):
         ldx = x2-x1
         ldy = y2-y1

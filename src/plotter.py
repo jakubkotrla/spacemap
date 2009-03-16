@@ -5,6 +5,58 @@ import os
 import csv
 from numpy import *
 
+
+def addToQueue(visited, queue, point, value):
+    hash = str(point[0]) + ";" + str(point[1])
+    if hash not in visited and value > 0.1:
+        visited[hash] = hash
+        queue.append( (point[0], point[1], (value/2)) )
+def fill(map, x, y, value):
+    visited = {}
+    queue = []
+    queue.append((x,y, value))
+    while len(queue) > 0:
+        point = queue.pop(0)
+        if point[0] < 0 or point[0] > 100 or point[1] < 0 or point[1] > 100:continue
+        map[point[0]][point[1]] += point[2]
+        addToQueue(visited, queue, (point[0]-1,point[1]), point[2])
+        addToQueue(visited, queue, (point[0]+1,point[1]), point[2])
+        addToQueue(visited, queue, (point[0],point[1]-1), point[2])
+        addToQueue(visited, queue, (point[0],point[1]+1), point[2])
+
+
+def plotHeatMap(fileName, titleStr, defValue=None):
+    rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
+    rows = []
+    rows.extend(rowsRAW)
+        
+    map = [None]*101
+    for i in range(101):
+         map[i] = [None] * 101
+    for i in range(101):
+        for j in range(101):
+            map[i][j] = 0.0
+    
+    for row in rows:
+        x = int(row[0])
+        y = int(row[1])
+        value = float(row[2])
+        if defValue != None:
+            fill(map, x, y, defValue)
+        else:
+            fill(map, x, y, value)
+    
+    ndA = array(map)
+    contourf(ndA, cmap=cm.gray, origin='upper',extent=(0,100,0,100))
+    title(titleStr)
+    if defValue != None:
+        savefig(fileName+str(defValue)+".png", format="PNG")
+    else:
+        savefig(fileName+".png", format="PNG")
+    clf()
+
+
+
 def plotNC(fileName):
     plotfile(fileName, (0,), delimiter=";", color='green')
     ylabel('EL-nodes count')
@@ -213,7 +265,14 @@ full = False
 for root, dirs, files in os.walk('.'):
     print root
     for fname in files:
-        if fname == "data-nc.txt":
+        if fname == "data-objheatmap.txt":
+            print ("plotHeatMapObj " + root + "\\" + fname)
+            plotHeatMap(root + "\\" + fname, "Object HeatMap")
+        elif fname == "data-elnodeheatmap.txt":
+            print ("plotHeatMapELNode " + root + "\\" + fname)
+            plotHeatMap(root + "\\" + fname, "ELNodes HeatMap")
+            plotHeatMap(root + "\\" + fname, "ELNodes HeatMap", 100)
+        elif fname == "data-nc.txt":
             print ("plotNC " + root + "\\" + fname)
             plotNC(root + "\\" + fname)
         elif fname.startswith("data-rememberinfo") and fname.endswith(".txt"):
