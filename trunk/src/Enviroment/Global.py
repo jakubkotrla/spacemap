@@ -75,7 +75,7 @@ class GlobalVariables:
         #self.ELEnergyFadeCoefTESTSET = [0.3, 0.5, 0.7, 0.9]
         self.ELEnergyFadeLimit = 10
         
-        self.ELForgetNodeRate = 2           #how much EL.forgetEnergy is added each step
+        self.ELForgetNodeRate = 5           #how much EL.forgetEnergy is added each step
         self.ELDeleteNodeReTrainCount = 20
         self.ELDeleteNodeReTrainRange = 20
         

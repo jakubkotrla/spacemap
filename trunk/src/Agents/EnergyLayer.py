@@ -102,7 +102,7 @@ class EnergyLayerNode:
 
             self.AGamount += (1.0/ max(1, dist2))
 
-            gDiffCoef = dist2 * max(1.0, self.usage) * max(1.0,node.usage)
+            gDiffCoef = dist2 * max(0.8, self.usage) * max(0.8,node.usage)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)
             
             self.stepDiffX +=  Global.Sign(ldx) * gDiffCoef
@@ -319,11 +319,11 @@ class EnergyLayer:
         
     def GetNodeCreateCost(self):
         x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
-        cost = 50 * (3 ** (float(x)/50))
+        cost = 100 * (3 ** (float(x)/50))
         return cost
     def GetNodeDeleteCost(self):
         x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
-        cost = 50 * (3 ** (float(-x)/50))
+        cost = 100 * (3 ** (float(-x)/50))
         return cost
 
     def getNodesAround(self, node, range):

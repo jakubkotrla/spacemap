@@ -29,30 +29,39 @@ def plotHeatMap(fileName, titleStr, defValue=None):
     rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
     rows = []
     rows.extend(rowsRAW)
-        
-    map = [None]*101
+
+    mapa = [None]*101
     for i in range(101):
-         map[i] = [None] * 101
+         mapa[i] = [None] * 101
     for i in range(101):
         for j in range(101):
-            map[i][j] = 0.0
-    
+            mapa[i][j] = 0.0
+
     for row in rows:
         y = int(row[0])
         x = int(row[1])
         value = float(row[2])
         if defValue != None:
-            fill(map, x, y, defValue)
+            fill(mapa, x, y, defValue)
         else:
-            fill(map, x, y, value)
-    
-    ndA = array(map)
-    contourf(ndA, cmap=cm.gray, origin='upper',extent=(0,100,0,100))
+            fill(mapa, x, y, value)
+
+    ndA = array(mapa)    
+    im = imshow(ndA, cmap=cm.gray, interpolation=None, origin='upper',extent=(0,100,0,100))
+    colorbar()
     title(titleStr)
-    if defValue != None:
-        savefig(fileName+str(defValue)+".png", format="PNG")
-    else:
-        savefig(fileName+".png", format="PNG")
+    savefig(fileName+".png", format="PNG")
+    clf()
+
+    for i in range(101):
+        for j in range(101):
+            mapa[i][j] = sqrt(mapa[i][j])
+
+    ndA = array(mapa)    
+    im = imshow(ndA, cmap=cm.gray, interpolation='bilinear', origin='upper',extent=(0,100,0,100))
+    colorbar()
+    title(titleStr + " sqrt")
+    savefig(fileName+"sqrt.png", format="PNG")
     clf()
 
 
@@ -261,7 +270,8 @@ def plotELNode(fileName):
         plotELNodeOne(fileName + i, rowsObj)    
 
      
-full = False      
+full = False   
+elnodeStats = False   
 
 for root, dirs, files in os.walk('.'):
     print root
@@ -272,7 +282,6 @@ for root, dirs, files in os.walk('.'):
         elif fname == "data-elnodeheatmap.txt":
             print ("plotHeatMapELNode " + root + "\\" + fname)
             plotHeatMap(root + "\\" + fname, "ELNodes HeatMap")
-            plotHeatMap(root + "\\" + fname, "ELNodes HeatMap", 100)
         elif fname == "data-nc.txt":
             print ("plotNC " + root + "\\" + fname)
             plotNC(root + "\\" + fname)
@@ -282,7 +291,7 @@ for root, dirs, files in os.walk('.'):
             plotRemember(root + "\\" + fname, full)
         elif fname == "data-elnode-status.txt":
             print ("plotELNodeStats " + root + "\\" + fname)
-            plotELNodeStats(root + "\\" + fname)
+            if elnodeStats: plotELNodeStats(root + "\\" + fname)
             if full:
                 print ("plotELNode " + root + "\\" + fname)    
                 plotELNode(root + "\\" + fname)
