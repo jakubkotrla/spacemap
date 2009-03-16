@@ -306,6 +306,11 @@ class EnergyLayer:
         self.stepEPCreated = 0
         self.stepELNodesCreated = 0
         return s
+    
+    def SaveHeatMap(self):
+        for n in self.nodes:
+            nStr = "%d;%d;%.4f" % (int(n.x), int(n.y), n.usage)
+            Global.LogData("elnodeheatmap", nStr)
         
     def GetNodeCreateCost(self):
         x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount

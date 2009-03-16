@@ -27,7 +27,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [718597]   #seeds to test
-        self.MaxTestSteps = 1200    #should be more than one day 
+        self.MaxTestSteps = 120    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -111,6 +111,7 @@ class GlobalVariables:
         self.outLog.close()
         for f in self.outFiles.values():
             f.close()
+        self.outFiles = {}
                 
     def Gauss(self, x, c=1):
         return exp( - (x*x) / (2*(c*c)) )

@@ -239,6 +239,9 @@ class MainWindow(Frame):
             if Global.CalculateVisibilityHistory:
                 self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
             self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
+            map = Global.Map
+            map.SaveHeatMap()
+            self.agent.intelligence.spaceMap.Layer.SaveHeatMap()
         except:
             Global.Log("FATAL ERROR occured: ")
             ss = traceback.format_exc()
