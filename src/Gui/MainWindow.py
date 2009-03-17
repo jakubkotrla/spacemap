@@ -234,7 +234,6 @@ class MainWindow(Frame):
                 world.Step()
                 self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
                 self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
-                Global.LogData("nc", elayer.Status() )
             
             if Global.CalculateVisibilityHistory:
                 self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])

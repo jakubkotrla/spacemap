@@ -18,7 +18,7 @@ class World:
         self.step = 0
         self.agent = None
         Global.Map = config.SetUpMap()
-        #self.events = self.generateWorldEvents()
+        self.events = self.generateWorldEvents()
 
     def generateWorldEvents(self):
         map = Global.Map
@@ -62,7 +62,7 @@ class World:
     def Step(self):
         Global.Log("------------------------------ Step " + str(self.step).zfill(5) + " --- " + str(Global.TimeToHumanFormat()) + " ----------")
         self.agent.Step()
-        #self.runEvents()
+        self.runEvents()
         map = Global.Map
         map.Step(self.agent)
         self.step = self.step + 1            

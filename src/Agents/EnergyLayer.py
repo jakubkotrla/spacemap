@@ -109,7 +109,7 @@ class EnergyLayerNode:
             self.stepDiffY += Global.Sign(ldy) * gDiffCoef
         
     def StepUpdateMove(self, saveStatus=True):
-        massCoef = 1.0/max(1, self.usage * self.usage)
+        massCoef = 1.0/max(1, self.usage)# * self.usage)
         
         newX = self.x + self.stepDiffX * massCoef
         newY = self.y + self.stepDiffY * massCoef
@@ -168,6 +168,8 @@ class EnergyLayer:
         self.forgetEnergy = 0
         self.nodeIndex = 1
         self.desiredNodeCount = 0
+        self.minimalDesiredNodeCount = 0
+        self.maximalDesiredNodeCount = 0
         
         self.stepEPCreated = 0
         self.stepELNodesCreated = 0
@@ -176,6 +178,8 @@ class EnergyLayer:
         areaArea = self.area.GetArea()
         nodeCount = areaArea / Global.ELDensity ** 2
         self.desiredNodeCount = nodeCount * 2
+        self.minimalDesiredNodeCount = self.desiredNodeCount / 5
+        self.maximalDesiredNodeCount = self.desiredNodeCount
         
         if Global.ELCreateNoise > Global.ELDensity or Global.ELCreateNoise == -1:
             while len(self.nodes) < nodeCount:
@@ -244,7 +248,16 @@ class EnergyLayer:
         if diceRoll < chanceForget:
             self.forgetEnergy = self.forgetEnergy - cost
             self.DeleteNode(Global.Choice(self.nodes))
+        
         self.energyNodesCountHistory.append(len(self.nodes))
+        if self.stepEPCreated < 1 and self.desiredNodeCount > self.minimalDesiredNodeCount:
+            self.desiredNodeCount -= 0.5
+        else:
+            if self.desiredNodeCount < self.maximalDesiredNodeCount:
+                self.desiredNodeCount += 1
+        Global.LogData("nc", self.Status())
+            
+        
         
     def StepUpdateBig(self):
         self.nodes.sort(lambda b,a: cmp(a.AGamount,b.AGamount))
@@ -307,7 +320,7 @@ class EnergyLayer:
         self.energyPointsToDelete.append(energyPoint)
     
     def Status(self):
-        s = str(len(self.nodes)) + ";" + str(self.stepEPCreated) + ";" + str(self.stepELNodesCreated)
+        s = str(len(self.nodes)) + ";" + str(self.stepEPCreated) + ";" + str(self.stepELNodesCreated) + ";" + str(self.desiredNodeCount)
         self.stepEPCreated = 0
         self.stepELNodesCreated = 0
         return s
@@ -318,11 +331,11 @@ class EnergyLayer:
             Global.LogData("elnodeheatmap", nStr)
         
     def GetNodeCreateCost(self):
-        x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(x)/50))
         return cost
     def GetNodeDeleteCost(self):
-        x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(-x)/50))
         return cost
 

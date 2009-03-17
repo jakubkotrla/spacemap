@@ -67,7 +67,18 @@ def plotHeatMap(fileName, titleStr, defValue=None):
 
 
 def plotNC(fileName):
-    plotfile(fileName, (0,), delimiter=";", color='green')
+    rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
+    rows = []
+    rows.extend(rowsRAW)
+    
+    stepsND = arange(0, len(rows), 1)
+    ncCount = map(lambda x: x[0], rows)
+    desiredCount = map(lambda x: x[3], rows)
+    
+    ncCountND = array( ncCount )
+    desiredCountND = array( desiredCount )
+    plot(stepsND, ncCountND, 'g-', stepsND, desiredCountND, 'b:')
+    
     ylabel('EL-nodes count')
     xlabel('time (steps)')
     title('EL-nodes count in time')

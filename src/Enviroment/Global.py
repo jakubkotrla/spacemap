@@ -20,7 +20,7 @@ class GlobalVariables:
         self.logLines = []
         self.LogLinesCount = 30
       
-        self.SaveELNodesStatus = True
+        self.SaveELNodesStatus = False
         self.RenderVisibilityHistory = False    #show visibility objects
         self.CalculateVisibilityHistory = False #calculate visibility of visibility objects
         self.VisibilityHistoryArea = 2          #visibility object is square AxA
