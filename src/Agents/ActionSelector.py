@@ -204,7 +204,7 @@ class ActionSelector:
                     for p in phantoms:
                         phToDist[p] = map.DistanceObj(self.agent.newX, self.agent.newY, p.object) #Future: use object.attractivity, .visibility in sort/cmp etc.
                     phantoms.sort(lambda a,b: cmp(phToDist[a], phToDist[b]))
-                    phantom = excProcess.parent.resources[0]
+                    phantom = phantoms[0]
                 else:
                     phantom = excProcess.parent.resources[0]
                 excProcess.data['phantom'] = phantom            #Future: list instead of one phantom

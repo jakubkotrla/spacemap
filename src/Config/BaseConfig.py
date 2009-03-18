@@ -105,6 +105,9 @@ class BaseConfig:
        
     def prepareMap(self, map):
         pass
+    
+    def GetWorldsEvents(self):
+        return []
 
     def SetUpMap(self, map):
         self.prepareMap(map)

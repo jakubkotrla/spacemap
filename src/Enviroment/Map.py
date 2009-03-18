@@ -10,6 +10,7 @@ class RealObject:
         self.type = type
         self.x = x
         self.y = y
+        self.onMap = True
         self.amount = amount
         self.attractivity = attractivity
         self.curAttractivity = attractivity #0.0 - 1.0
@@ -112,14 +113,19 @@ class Map:
         return firstLine
     
     def AddObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
-        rObj = RealObject(type, x, y, attractivity, amount)    
-        self.objects.append(rObj)
+        rObject = RealObject(type, x, y, attractivity, amount)    
+        self.objects.append(rObject)
+        return rObject
     def CreateObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
-        return RealObject(type, x, y, attractivity, amount)    
+        rObject = RealObject(type, x, y, attractivity, amount)
+        rObject.onMap = False
+        return rObject    
     def AddExistingObject(self, rObject):
-        self.objects.append(rObj)
+        self.objects.append(rObject)
+        rObject.onMap = True
     def RemoveExistingObject(self, rObject):
-        self.objects.remove(rObjects)
+        self.objects.remove(rObject)
+        rObject.onMap = False
     
     def SetAgentStart(self, x, y):
         self.agentMoves.append( Point(x, y) )
@@ -392,12 +398,12 @@ class Map:
         return fabs( sum * 0.5)
     
     def GetRandomLocation(self):
-        x = Global.Randint(self.width) 
-        y = Global.Randint(self.height)
+        x = Global.Randint(0, self.width) 
+        y = Global.Randint(0, self.height)
         p = Point(x,y)
         while not self.IsInside( p ):                
-            x = Global.Randint(self.width) 
-            y = Global.Randint(self.height)
+            x = Global.Randint(0, self.width) 
+            y = Global.Randint(0, self.height)
             p = Point(x,y)    
         return p
     

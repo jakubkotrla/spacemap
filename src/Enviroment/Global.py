@@ -20,6 +20,8 @@ class GlobalVariables:
         self.logLines = []
         self.LogLinesCount = 30
       
+        self.WorldDynamic = 0    #chance to add/remove objects every 100 world step
+      
         self.SaveELNodesStatus = False
         self.RenderVisibilityHistory = False    #show visibility objects
         self.CalculateVisibilityHistory = False #calculate visibility of visibility objects
@@ -27,7 +29,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [718597]   #seeds to test
-        self.MaxTestSteps = 4000    #should be more than one day 
+        self.MaxTestSteps = 1200    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -107,11 +109,14 @@ class GlobalVariables:
         outData = self.outFiles[tag]
         outData.write(data + "\n")
                 
-    def LogEnd(self):
-        self.outLog.close()
-        for f in self.outFiles.values():
-            f.close()
-        self.outFiles = {}
+    def LogEnd(self, tag=None):
+        if tag != None:
+            self.outFiles[tag].close()
+        else:
+            self.outLog.close()
+            for f in self.outFiles.values():
+                f.close()
+            self.outFiles = {}
                 
     def Gauss(self, x, c=1):
         return exp( - (x*x) / (2*(c*c)) )

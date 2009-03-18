@@ -12,6 +12,7 @@ from Corridor import Corridor
 from Lobby import Lobby
 from CrazyRoom import CrazyRoom
 from SmallRoom import SmallRoom
+from SwitchRoom import SwitchRoom
 
 
 class ConfigSingleton:
@@ -23,6 +24,7 @@ class ConfigSingleton:
         self.configs["Lobby"] = Lobby()
         self.configs["CrazyRoom"] = CrazyRoom()
         self.configs["SmallRoom"] = SmallRoom()
+        self.configs["SwitchRoom"] = SwitchRoom()
         
          
     
@@ -37,7 +39,10 @@ class ConfigSingleton:
         map = Map()
         self.config.SetUpMap(map)
         map.CalculateEdges()
-        return map 
+        return map
+    
+    def GetWorldEvents(self):
+        return self.config.GetWorldsEvents()
         
 Config = ConfigSingleton()
         
