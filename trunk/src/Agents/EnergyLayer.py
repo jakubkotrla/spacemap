@@ -250,11 +250,11 @@ class EnergyLayer:
             self.DeleteNode(Global.Choice(self.nodes))
         
         self.energyNodesCountHistory.append(len(self.nodes))
-        if self.stepEPCreated < 1 and self.desiredNodeCount > self.minimalDesiredNodeCount:
-            self.desiredNodeCount -= 0.5
-        else:
-            if self.desiredNodeCount < self.maximalDesiredNodeCount:
-                self.desiredNodeCount += 1
+#        if self.stepEPCreated < 1 and self.desiredNodeCount > self.minimalDesiredNodeCount:
+#            self.desiredNodeCount -= 0.5
+#        else:
+#            if self.desiredNodeCount < self.maximalDesiredNodeCount:
+#                self.desiredNodeCount += 1
         Global.LogData("nc", self.Status())
             
         
@@ -320,7 +320,8 @@ class EnergyLayer:
         self.energyPointsToDelete.append(energyPoint)
     
     def Status(self):
-        s = str(len(self.nodes)) + ";" + str(self.stepEPCreated) + ";" + str(self.stepELNodesCreated) + ";" + str(self.desiredNodeCount)
+        strObjs = str(len(self.area.objects))
+        s = str(len(self.nodes)) + ";" + str(self.stepEPCreated) + ";" + str(self.stepELNodesCreated) + ";" + str(self.desiredNodeCount) + ";" + strObjs
         self.stepEPCreated = 0
         self.stepELNodesCreated = 0
         return s

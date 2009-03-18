@@ -113,9 +113,10 @@ class PerceptionField:
     def Update(self, action):
         habituatedPhantoms = []
         for phantom in self.environmentPhantoms:
-            if self.processArea.IsPhantomUsedNow(phantom): continue
-            if phantom.Habituate(action.duration):
-                habituatedPhantoms.append(phantom)
+            #if self.processArea.IsPhantomUsedNow(phantom): continue  - not enough
+            if phantom.ownerProcess == None or (not phantom.ownerProcess.IsInProgress()):
+                if phantom.Habituate(action.duration):
+                    habituatedPhantoms.append(phantom)
         for habituatedPhantom in habituatedPhantoms:
             self.environmentPhantoms.remove(habituatedPhantom)
             habituatedPhantom.DeletedOrLost()
@@ -139,6 +140,9 @@ class PerceptionField:
                         
     def UseObjectPhantoms(self, excProcess):
         for phantom in excProcess.resources:
+            if phantom.GetType() != "e":
+                Global.Log("Programmer.Error: using memory phantom and memory object: " + phantom.ToString())
+                continue
             self.spaceMap.ObjectUsed(phantom.object)
         
         map = Global.Map

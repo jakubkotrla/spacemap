@@ -74,10 +74,16 @@ def plotNC(fileName):
     stepsND = arange(0, len(rows), 1)
     ncCount = map(lambda x: x[0], rows)
     desiredCount = map(lambda x: x[3], rows)
+    objsCount = map(lambda x: x[4], rows)
     
     ncCountND = array( ncCount )
     desiredCountND = array( desiredCount )
-    plot(stepsND, ncCountND, 'g-', stepsND, desiredCountND, 'b:')
+    objsCountND = array( objsCount )
+    figure()
+    plot(stepsND, ncCountND, 'g-', label='El-node count')
+    plot(stepsND, desiredCountND, 'k:', label='desired EL-node count')
+    plot(stepsND, objsCountND, 'b:', label='Object count')
+    legend(loc='lower right')
     
     ylabel('EL-nodes count')
     xlabel('time (steps)')
