@@ -194,8 +194,6 @@ class SpaceMap:
         #ToDo: dynamicWorld: objectTrain TrainEffectNotFound
         
     def ObjectUsed(self, rObject):
-        #if not isinstance(rObject, RealObject):
-        #    Global.Log("haha")
         self.objectTrain(rObject, Global.TrainEffectUsed)
         
     def ObjectUsedUp(self, rObject):

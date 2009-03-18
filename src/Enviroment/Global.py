@@ -66,15 +66,12 @@ class GlobalVariables:
                 
         self.ELGravityRange = 20
         self.ELGravityCoef = 3.0
-        self.ELAntigravityCoef = 8.0
-        #self.ELAntigravityCoefTESTSET = [4.0, 6.0, 8.0]
+        self.ELAntigravityCoef = 2.0
         self.ELAntigravityRange = 20
         
-        self.ELEnergyPointCreateEnergy = 100
-        #self.ELEnergyPointCreateEnergyTESTSET = [100, 150, 200]
+        self.ELEnergyPointCreateEnergy = 150
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5
-        #self.ELEnergyFadeCoefTESTSET = [0.3, 0.5, 0.7, 0.9]
         self.ELEnergyFadeLimit = 10
         
         self.ELForgetNodeRate = 5           #how much EL.forgetEnergy is added each step
