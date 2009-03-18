@@ -163,7 +163,6 @@ class EnergyLayer:
         self.area = area
         self.nodes = []
         self.energyPoints = []
-        self.energyNodesCountHistory = []
         self.energyPointsToDelete = []
         self.forgetEnergy = 0
         self.nodeIndex = 1
@@ -248,8 +247,7 @@ class EnergyLayer:
         if diceRoll < chanceForget:
             self.forgetEnergy = self.forgetEnergy - cost
             self.DeleteNode(Global.Choice(self.nodes))
-        
-        self.energyNodesCountHistory.append(len(self.nodes))
+
 #        if self.stepEPCreated < 1 and self.desiredNodeCount > self.minimalDesiredNodeCount:
 #            self.desiredNodeCount -= 0.5
 #        else:
