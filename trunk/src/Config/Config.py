@@ -24,7 +24,7 @@ class ConfigSingleton:
         self.configs["Lobby"] = Lobby()
         self.configs["CrazyRoom"] = CrazyRoom()
         self.configs["SmallRoom"] = SmallRoom()
-        self.configs["SwitchRoom"] = SwitchRoom()
+        #self.configs["SwitchRoom"] = SwitchRoom()
         
          
     
