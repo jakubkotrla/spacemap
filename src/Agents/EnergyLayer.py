@@ -2,8 +2,23 @@
 from Enviroment.Global import Global
 from math import sqrt, fabs
 from Enviroment.Map import Point
+import copy
 
 
+class ELHighNode:
+    def __init__(self, x, y):
+        self.nodes = []
+        self.x = x
+        self.y = y
+        self.intensity = 0
+        
+    def AddNode(self, node):
+        self.nodes.append(node)
+        node.hlNode = self
+        
+    def ToString(self):
+        return "HLEnergyLayerNode.len(nodes) = " + str(len(self.nodes))
+        
 class EnergyPoint:
     def __init__(self, layer, memObject, x, y, energy):
         self.layer = layer
@@ -70,6 +85,7 @@ class EnergyLayerNode:
         self.index = index
         self.usage = 0
         self.AGamount = 0
+        self.hlNode = None
                 
         self.stepDiffX = 0
         self.stepDiffY = 0
@@ -100,7 +116,7 @@ class EnergyLayerNode:
             ldy = (self.y - node.y)
             dist2 = ldx*ldx+ldy*ldy
 
-            self.AGamount += (1.0/ max(1, dist2))
+            self.AGamount += (1.0/ max(1, dist2)) * Global.ELAGAddCoef
 
             gDiffCoef = dist2 * max(0.8, self.usage) * max(0.8,node.usage)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)
@@ -162,6 +178,7 @@ class EnergyLayer:
     def __init__(self, area):
         self.area = area
         self.nodes = []
+        self.hlNodes = []
         self.energyPoints = []
         self.energyPointsToDelete = []
         self.forgetEnergy = 0
@@ -265,11 +282,25 @@ class EnergyLayer:
         Global.LogData("ags", strData )
         for node in self.nodes:
             node.AGamount -= Global.ELAGFadeOut
-            if node.AGamount > Global.HLAGNeeded:
-                #create high-level EL node
-                #Global.Log("HL EL node!!")
-                pass
-                
+            if node.AGamount > Global.HLAGNeeded and node.hlNode == None:
+                self.createHLNode(node)
+                Global.Log("EL: HighLevel node at " + str(node.x) + ";" + str(node.y))
+     
+    def createHLNode(self, startNode):
+        nodeDists = self.getAllNodesDist(startNode)
+        nodes = self.nodes[:]
+        nodes.remove(startNode)
+        nodes.sort(lambda a,b: cmp(nodeDists[a],nodeDists[b]))
+        AGEnergy = startNode.AGamount
+        range = sqrt(AGEnergy / 1000) + 2
+        hlNode = ELHighNode(startNode.x, startNode.y)
+        for node in nodes:
+            if nodeDists[node] > range: break
+            hlNode.AddNode(node)
+            AGEnergy += node.usage
+            range = sqrt(AGEnergy / 1000) + 2
+        #ToDo: only if big enough
+        self.hlNodes.append(hlNode)
      
     def DeleteNode(self, node):
         node.Delete()
@@ -349,6 +380,16 @@ class EnergyLayer:
             if dist < range:
                 #if self.area.CanMove(node, n.x, n.y):
                 nodesAround.append(n)
+        return nodesAround
+    
+    def getAllNodesDist(self, node):
+        nodesAround = {}
+        for n in self.nodes:
+            if n == node: continue
+            ldx = n.x-node.x
+            ldy = n.y-node.y
+            dist = ldx*ldx + ldy*ldy
+            nodesAround[n] = sqrt(dist)
         return nodesAround
 
  

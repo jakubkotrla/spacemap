@@ -147,10 +147,20 @@ class MapRenderer:
         for ep in energyPoints:
             self.PointC(ep, ep.x, ep.y, "#00c800", 0.5, "energylayerpoint info")
         
+        hlNodes = self.agent.intelligence.spaceMap.Layer.hlNodes
+        self.canvas.delete("energylayerHLnode")
+        for hlNode in hlNodes:
+            self.PixelC(hlNode, hlNode.x, hlNode.y, None, 1, "energylayerHLnode info", outline="#00a800")
+            for node in hlNode.nodes:
+                self.Line(hlNode.x, hlNode.y, node.x, node.y, "#00a800", "energylayerHLnode")
+        
         elnodes = self.agent.intelligence.spaceMap.Layer.nodes
         self.canvas.delete("energylayernode")
         for node in elnodes:
             self.PixelC(node, node.x, node.y, "#00c800", 2, "energylayernode info")
+            
+        
+        
     
     def RenderProgress(self, progressObject, configName):
         txt = "Progress:\n\n\n"
@@ -258,7 +268,15 @@ class MapRenderer:
                 x = obj.x*self.zoom - 5 + 10
                 y = obj.y*self.zoom - 5 + 10
                 draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 255), outline=None)
-            
+        
+        
+        for hlNode in elayer.hlNodes:
+            x = obj.x*self.zoom - 5 + 10
+            y = obj.y*self.zoom - 5 + 10
+            draw.rectangle([x,y, x+10,y+10], fill=None, outline=(0, 128, 0))
+            for node in hlNode.nodes:
+                draw.line( [self.zoom*hlNode.x+10, self.zoom*hlNode.y+10, self.zoom*node.x+10, self.zoom*node.y+10], fill=(0, 128, 0))
+        
         for node in elayer.nodes:    
             x = node.x*self.zoom - 2 + 10
             y = node.y*self.zoom - 2 + 10
