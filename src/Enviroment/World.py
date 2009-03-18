@@ -21,9 +21,10 @@ class World:
         self.events = config.GetWorldEvents()
         if Global.WorldDynamic > 0:
             self.events.extend(self.generateWorldEvents())
-        for event in self.events:
-            Global.LogData("worldevents", event.ToString())
-        Global.LogEnd("worldevents")
+        if len (self.events) > 0:
+            for event in self.events:
+                Global.LogData("worldevents", event.ToString())
+            Global.LogEnd("worldevents")
 
     def generateWorldEvents(self):
         map = Global.Map

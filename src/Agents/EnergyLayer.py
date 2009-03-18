@@ -330,11 +330,11 @@ class EnergyLayer:
             Global.LogData("elnodeheatmap", nStr)
         
     def GetNodeCreateCost(self):
-        x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(x)/50))
         return cost
     def GetNodeDeleteCost(self):
-        x = 200 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(-x)/50))
         return cost
 
