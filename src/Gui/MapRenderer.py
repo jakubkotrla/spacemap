@@ -271,8 +271,8 @@ class MapRenderer:
         
         
         for hlNode in elayer.hlNodes:
-            x = obj.x*self.zoom - 5 + 10
-            y = obj.y*self.zoom - 5 + 10
+            x = hlNode.x*self.zoom - 5 + 10
+            y = hlNode.y*self.zoom - 5 + 10
             draw.rectangle([x,y, x+10,y+10], fill=None, outline=(0, 128, 0))
             for node in hlNode.nodes:
                 draw.line( [self.zoom*hlNode.x+10, self.zoom*hlNode.y+10, self.zoom*node.x+10, self.zoom*node.y+10], fill=(0, 128, 0))

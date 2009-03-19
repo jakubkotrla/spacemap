@@ -104,7 +104,7 @@ def plotRememberOne(fileName, rows):
     savefig(fileName+".png", format="PNG")
     clf()
 
-def plotRememberTimeOne(fileName, rows):
+def plotRememberTimeOne(fileName, rows, plotTrained=True):
     step = map(lambda x: x[0], rows)
     trained = map(lambda x: x[1], rows)
     error = map(lambda x: x[2], rows)
@@ -114,14 +114,15 @@ def plotRememberTimeOne(fileName, rows):
     trainedND = array( trained )
     meanError = average(errorND.astype(float))
     
-    subplots_adjust(hspace=1)
-    subplot(211)
-    plot(stepND, trainedND, marker=".", color='red', drawstyle="steps", linestyle="None")
-    xlabel("Time (steps)")
-    ylabel('Amount trained')
-    title('Trained in time')
+    if plotTrained:
+        subplots_adjust(hspace=1)
+        subplot(211)
+        plot(stepND, trainedND, marker=".", color='red', drawstyle="steps", linestyle="None")
+        xlabel("Time (steps)")
+        ylabel('Amount trained')
+        title('Trained in time')
     
-    subplot(212)
+        subplot(212)
     plot(stepND, errorND, marker=".", color='red', drawstyle="steps", linestyle="None")
     ylabel('Error')
     xlabel("Time (steps)")
@@ -136,7 +137,7 @@ def plotRemember(fileName, full=False):
     rows.extend(rowsRAW)
         
     plotRememberOne(fileName, rows)
-    plotRememberTimeOne(fileName + ".time", rows)
+    plotRememberTimeOne(fileName + ".time", rows, False)
     
     if full:  
         objects = map(lambda x: x[3], rows)
@@ -176,100 +177,59 @@ def plotELNodeStats(fileName):
     rows = []
     rows.extend(rowsRAW)
     
-    step = map(lambda x: x[0], rows)
-    stepND = array( step )
+    stepND = arange(0, len(rows), 1)
     distMean = map(lambda x: x[1], rows)
-    distMax = map(lambda x: x[2], rows)
-    usageMean = map(lambda x: x[3], rows)
-    usageMax = map(lambda x: x[4], rows)
-    agMean = map(lambda x: x[5], rows)
-    agMax = map(lambda x: x[6], rows)
+    distMin = map(lambda x: x[2], rows)
+    distMax = map(lambda x: x[3], rows)
+    usageMean = map(lambda x: x[4], rows)
+    usageMin = map(lambda x: x[5], rows)
+    usageMax = map(lambda x: x[6], rows)
+    agMean = map(lambda x: x[7], rows)
+    agMin = map(lambda x: x[8], rows)
+    agMax = map(lambda x: x[9], rows)
     distMeanND = array( distMean )
+    distMinND = array( distMin )
     distMaxND = array( distMax )
     usageMeanND = array( usageMean )
+    usageMinND = array( usageMin )
     usageMaxND = array( usageMax )
     agMeanND = array( agMean )
+    agMinND = array( agMin )
     agMaxND = array( agMax )
-    
-    subplots_adjust(hspace=1)
-    subplot(211)
-    plot(dataStep, dataMeanDist, color='blue')
-    xlabel("Time (steps)")
-    ylabel('Mean distance moved')
-    title('Mean distance moved in time')
-    
-    subplot(212)
-    plot(dataStep, dataMeanUsage, color='blue')
-    xlabel("Time (steps)")
-    ylabel('Mean usage')
-    title('Mean usage in time')
-    
-    savefig(fileName+".stats.png", format="PNG")
-    clf()
-    
-    subplot(211)
-    plot(dataStep, dataMeanAg, color='blue')
-    xlabel("Time (steps)")
-    ylabel('Mean AG amount')
-    title('Mean AG amount in time')
-    
-    subplot(212)
-    plot(dataStep, dataMaxAg, color='blue')
-    xlabel("Time (steps)")
-    ylabel('Max AG amount')
-    title('Max AG amount in time')
-    
-    savefig(fileName+".ag.png", format="PNG")
-    clf()
-    
-
-def plotELNodeOne(fileName, rows):
-    step = map(lambda x: x[0], rows)
-    dist = map(lambda x: x[2], rows)
-    usage = map(lambda x: x[3], rows)
-    ag = map(lambda x: x[4], rows)
-    
-    stepND = array( step )
-    distND = array( dist )
-    usageND = array( usage )
-    agND = array( ag )
-        
-    subplots_adjust(hspace=1)
-    subplot(311)
-    plot(stepND, distND, color='blue')
+     
+    plot(stepND, distMeanND, 'b-', label='mean')
+    plot(stepND, distMinND, 'k-', label='min')
+    plot(stepND, distMaxND, 'k-', label='max')
     xlabel("Time (steps)")
     ylabel('Distance moved')
     title('Distance moved in time')
+    legend(loc='lower right')
+    savefig(fileName+".dist.png", format="PNG")
+    clf()
     
-    subplot(312)
-    plot(stepND, usageND, color='blue')
+    plot(stepND, usageMeanND, color='blue', label='mean')
+    plot(stepND, usageMinND, color='black', label='min')
+    plot(stepND, usageMaxND, color='black', label='max')
     xlabel("Time (steps)")
-    ylabel('Usage')
-    title('Usage in time')
+    ylabel('Node usage')
+    title('Node usage in time')
+    legend(loc='lower right')
+    savefig(fileName+".usage.png", format="PNG")
+    clf()
     
-    subplot(313)
-    plot(stepND, agND, color='blue')
+    plot(stepND, agMeanND, color='blue', label='mean')
+    plot(stepND, agMinND, color='black', label='min')
+    plot(stepND, agMaxND, color='black', label='max')
     xlabel("Time (steps)")
     ylabel('AG amount')
     title('AG amount in time')
-    
-    savefig(fileName+".png", format="PNG")
+    legend(loc='lower right')
+    savefig(fileName+".ag.png", format="PNG")
     clf()
     
-def plotELNode(fileName):
-    rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
-    rows = []
-    rows.extend(rowsRAW)
-        
-    index = map(lambda x: x[1], rows)
-    index = list(set(index))
-    for i in index:
-        rowsObj = filter(lambda x: x[1]==i, rows)
-        plotELNodeOne(fileName + i, rowsObj)    
-
+    
      
 full = False   
-elnodeStats = False   
 
 for root, dirs, files in os.walk('.'):
     print root
@@ -287,12 +247,10 @@ for root, dirs, files in os.walk('.'):
             print ("plotRem " + root + "\\" + fname)
             plotMeanErrorInTime(root + "\\" + fname)
             plotRemember(root + "\\" + fname, full)
-        elif fname == "data-elnode-status.txt.stats":
+        elif fname == "data-elnode-status.stats.txt":
             print ("plotELNodeStats " + root + "\\" + fname)
-            if elnodeStats: plotELNodeStats(root + "\\" + fname)
-            if full:
-                print ("plotELNode " + root + "\\" + fname)    
-                plotELNode(root + "\\" + fname)
+            plotELNodeStats(root + "\\" + fname)
+            
 
 print "*** END ***"          
             
