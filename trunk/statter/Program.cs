@@ -34,10 +34,13 @@ namespace statter
             int step = 0;
             int nodeCount = 0;
             double distSum = 0;
+            double distMin = 0;
             double distMax = 0;
             double usageSum = 0;
+            double usageMin = 0;
             double usageMax = 0;
             double agSum = 0;
+            double agMin = 0;
             double agMax = 0;
             StringBuilder sb = new StringBuilder();
             Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
@@ -63,13 +66,19 @@ namespace statter
                     sb.Append(";");
                     sb.Append(distMean);
                     sb.Append(";");
+                    sb.Append(distMin);
+                    sb.Append(";");
                     sb.Append(distMax);
                     sb.Append(";");
                     sb.Append(usageMean);
                     sb.Append(";");
+                    sb.Append(usageMin);
+                    sb.Append(";");
                     sb.Append(usageMax);
                     sb.Append(";");
                     sb.Append(agMean);
+                    sb.Append(";");
+                    sb.Append(agMin);
                     sb.Append(";");
                     sb.Append(agMax);
 
@@ -78,11 +87,14 @@ namespace statter
                     step = stepRead;
                     nodeCount = 0;
                     distSum = 0;
+                    distMin = 0;
                     distMax = 0;
                     usageSum = 0;
+                    usageMin = 0;
                     usageMax = 0;
                     agSum = 0;
                     agMax = double.MinValue;
+                    agMin = double.MaxValue;
                 }
                 
                 nodeCount++;
@@ -91,10 +103,13 @@ namespace statter
                 double agRead = double.Parse(csv[4]);
 
                 distSum += distRead;
+                distMin = Math.Min(distMin, distRead);
                 distMax = Math.Max(distMax, distRead);
                 usageSum += usageRead;
+                usageMin = Math.Min(usageMin, usageRead);
                 usageMax = Math.Max(usageMax, usageRead);
                 agSum += agRead;
+                agMin = Math.Min(agMin, agRead);
                 agMax = Math.Max(agMax, agRead);
             }
             distMean = distSum / nodeCount;
@@ -106,13 +121,19 @@ namespace statter
             sb.Append(";");
             sb.Append(distMean);
             sb.Append(";");
+            sb.Append(distMin);
+            sb.Append(";");
             sb.Append(distMax);
             sb.Append(";");
             sb.Append(usageMean);
             sb.Append(";");
+            sb.Append(usageMin);
+            sb.Append(";");
             sb.Append(usageMax);
             sb.Append(";");
             sb.Append(agMean);
+            sb.Append(";");
+            sb.Append(agMin);
             sb.Append(";");
             sb.Append(agMax);
 

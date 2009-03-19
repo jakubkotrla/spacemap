@@ -175,41 +175,22 @@ def plotELNodeStats(fileName):
     rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
     rows = []
     rows.extend(rowsRAW)
-    outFile = open(fileName + ".stats.txt", "w")
-        
+    
     step = map(lambda x: x[0], rows)
     stepND = array( step )
-    stepCount = max(stepND.astype(int))
-    dataStep = []
-    dataMeanDist = []
-    dataMeanUsage = []
-    dataMeanAg = []
-    dataMaxAg = []
-    for step in range(0, stepCount+1):
-        print "plotELNodeStats step " + str(step)
-        rowsSel = filter(lambda x: int(x[0])==step, rows)
-        
-        dist = map(lambda x: x[2], rowsSel)
-        usage = map(lambda x: x[3], rowsSel)
-        ag = map(lambda x: x[4], rowsSel)
-        distND = array( dist )
-        usageND = array( usage )
-        agND = array( ag )
-        
-        dataStep.append(step)
-        meanDist = average(distND.astype(float))
-        dataMeanDist.append(meanDist)
-        meanUsage = average(usageND.astype(float))
-        dataMeanUsage.append(meanUsage)
-        meanAG = average(agND.astype(float))
-        dataMeanAg.append(meanAG)
-        maxAG = max(agND.astype(float))
-        dataMaxAg.append(maxAG)
-        
-        data = str(step) + ";" + str(meanDist) + ";" + str(meanUsage) + ";" + str(meanAG) + ";" + str(maxAG)  
-        outFile.write(data + "\n")
-        
-    outFile.close()
+    distMean = map(lambda x: x[1], rows)
+    distMax = map(lambda x: x[2], rows)
+    usageMean = map(lambda x: x[3], rows)
+    usageMax = map(lambda x: x[4], rows)
+    agMean = map(lambda x: x[5], rows)
+    agMax = map(lambda x: x[6], rows)
+    distMeanND = array( distMean )
+    distMaxND = array( distMax )
+    usageMeanND = array( usageMean )
+    usageMaxND = array( usageMax )
+    agMeanND = array( agMean )
+    agMaxND = array( agMax )
+    
     subplots_adjust(hspace=1)
     subplot(211)
     plot(dataStep, dataMeanDist, color='blue')
@@ -306,7 +287,7 @@ for root, dirs, files in os.walk('.'):
             print ("plotRem " + root + "\\" + fname)
             plotMeanErrorInTime(root + "\\" + fname)
             plotRemember(root + "\\" + fname, full)
-        elif fname == "data-elnode-status.txt":
+        elif fname == "data-elnode-status.txt.stats":
             print ("plotELNodeStats " + root + "\\" + fname)
             if elnodeStats: plotELNodeStats(root + "\\" + fname)
             if full:
