@@ -378,8 +378,8 @@ class Map:
             hitResult = self.AreIntersecting(edge.start, edge.end, point, endPointY)
             if hitResult.hit:
                 if hitResult.Eq(point): return True
-                if hitResult.Eq(edge.start) and edge.end.y <= point.y:   pass
-                elif hitResult.Eq(edge.end) and edge.start.y <= point.y: pass
+                if hitResult.Eq(edge.start) and edge.end.x <= point.x:   pass
+                elif hitResult.Eq(edge.end) and edge.start.x <= point.x: pass
                 else: countY = countY + 1
         countX = ((countX % 2) == 1)
         countY = ((countY % 2) == 1)

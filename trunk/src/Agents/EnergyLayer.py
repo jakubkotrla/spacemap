@@ -115,14 +115,17 @@ class EnergyLayerNode:
             ldx = (self.x - node.x) 
             ldy = (self.y - node.y)
             dist2 = ldx*ldx+ldy*ldy
+            dist = sqrt(dist2)
 
-            self.AGamount += (1.0/ max(1, dist2)) * Global.ELAGAddCoef
-            dist2 = max(0.5, dist2)
+            self.AGamount += (1.0/ max(1, dist)) * Global.ELAGAddCoef
+            
             gDiffCoef = dist2 * max(0.8, self.usage) * max(0.8,node.usage)
+            gDiffCoef = max(0.64, gDiffCoef)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)
             
-            self.stepDiffX += gDiffCoef * ldx #Global.Sign(ldx)
-            self.stepDiffY += gDiffCoef * ldy #Global.Sign(ldy)
+            dist = max(Global.MinPositiveNumber, dist)
+            self.stepDiffX += ldx * (gDiffCoef / dist) #Global.Sign(ldx)
+            self.stepDiffY += ldy * (gDiffCoef / dist) #Global.Sign(ldy)
         
     def StepUpdateMove(self, saveStatus=True):
         massCoef = 1.0/max(1, self.usage)# * self.usage)

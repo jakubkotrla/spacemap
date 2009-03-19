@@ -22,7 +22,7 @@ class GlobalVariables:
       
         self.WorldDynamic = 0    #chance to add/remove objects every 100 world step
       
-        self.SaveELNodesStatus = False
+        self.SaveELNodesStatus = True
         self.RenderVisibilityHistory = False    #show visibility objects
         self.CalculateVisibilityHistory = False #calculate visibility of visibility objects
         self.VisibilityHistoryArea = 2          #visibility object is square AxA
@@ -65,11 +65,11 @@ class GlobalVariables:
         self.ELNodeUsageFadeOut = 0.005     #amount to decrease intensity of el-node every step
                 
         self.ELGravityRange = 20
-        self.ELGravityCoef = 3.0
-        self.ELAntigravityCoef = 2.0
+        self.ELGravityCoef = 1.0
+        self.ELAntigravityCoef = 8.0
         self.ELAntigravityRange = 20
         
-        self.ELEnergyPointCreateEnergy = 150
+        self.ELEnergyPointCreateEnergy = 140
         self.ELNodeAddNoise = 2
         self.ELEnergyFadeCoef = 0.5
         self.ELEnergyFadeLimit = 10

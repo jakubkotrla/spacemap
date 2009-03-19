@@ -66,8 +66,7 @@ class World:
     def Step(self):
         Global.Log("------------------------------ Step " + str(self.step).zfill(5) + " --- " + str(Global.TimeToHumanFormat()) + " ----------")
         self.agent.Step()
-        if len(self.events) > 0:
-            self.runEvents()
+        if len(self.events) > 0: self.runEvents()
         map = Global.Map
         map.Step(self.agent)
         self.step = self.step + 1
