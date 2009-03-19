@@ -186,7 +186,7 @@ def plotELNodeStats(fileName):
     dataMeanAg = []
     dataMaxAg = []
     for step in range(0, stepCount+1):
-        print "plotELNodeStats step " + str(i)
+        print "plotELNodeStats step " + str(step)
         rowsSel = filter(lambda x: int(x[0])==step, rows)
         
         dist = map(lambda x: x[2], rowsSel)
