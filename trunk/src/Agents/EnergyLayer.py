@@ -279,15 +279,11 @@ class EnergyLayer:
         
     def StepUpdateBig(self):
         self.nodes.sort(lambda b,a: cmp(a.AGamount,b.AGamount))
-        strData = str(Global.GetStep()) + ";" 
-        for n in self.nodes[:5]:
-            strData += str(n.AGamount) + ";"
-        Global.LogData("ags", strData )
         for node in self.nodes:
             node.AGamount -= Global.ELAGFadeOut
             if node.AGamount > Global.HLAGNeeded and node.hlNode == None:
-                self.createHLNode(node)
-                Global.Log("EL: HighLevel node at " + str(node.x) + ";" + str(node.y))
+                if self.createHLNode(node):
+                    Global.Log("EL: HighLevel node at " + str(node.x) + ";" + str(node.y))
      
     def createHLNode(self, startNode):
         nodeDists = self.getAllNodesDist(startNode)
@@ -305,6 +301,7 @@ class EnergyLayer:
             range = sqrt(AGEnergy / 1000) + 2
         #ToDo: only if big enough
         self.hlNodes.append(hlNode)
+        return True
      
     def DeleteNode(self, node):
         node.Delete()

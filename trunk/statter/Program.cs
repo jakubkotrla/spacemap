@@ -18,14 +18,40 @@ namespace statter
             string fileName = String.Empty;
             if (args.Length < 1)
             {
-                fileName = "data-elnode-status.txt";
+                Program.recursiveProcess(Directory.GetCurrentDirectory());
             }
             else
             {
                 fileName = args[0];
+                Program.ProcessFile(fileName);
             }
+        }
+
+        static void recursiveProcess(string dir)
+        {
+            string fileName = "data-elnode-status.txt";
+            string[] files = Directory.GetFiles(dir);
+            foreach (string f in files)
+            {
+                if (Path.GetFileName(f) == fileName)
+                {
+                    Console.WriteLine(f);
+                    Program.ProcessFile(f);
+                }
+            }
+            string[] dirs = Directory.GetDirectories(dir);
+            foreach (string d in dirs)
+            {
+                Program.recursiveProcess(d);
+            }
+
+        }
+
+        static void ProcessFile(string fileName)
+        {
             TextReader tr = new StreamReader(fileName);
-            StreamWriter sw = new StreamWriter("data-elnode-status.stats.txt", false);
+            string outFile = Path.GetDirectoryName(fileName);
+            StreamWriter sw = new StreamWriter(Path.Combine(outFile, "data-elnode-status.stats.txt"), false);
 
 
             CsvReader csv = new CsvReader(tr, false, ';');
@@ -43,7 +69,7 @@ namespace statter
             double agMin = 0;
             double agMax = 0;
             StringBuilder sb = new StringBuilder();
-            Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", false);
 
             double distMean;
             double usageMean;
@@ -52,7 +78,7 @@ namespace statter
             while (csv.ReadNextRecord())
             {
                 //line: step ; node-index ; distMoved ; usage ; AGamount
-                
+
                 int stepRead = int.Parse(csv[0]);
 
                 if ((step != stepRead) || csv.EndOfStream)
@@ -96,7 +122,7 @@ namespace statter
                     agMax = double.MinValue;
                     agMin = double.MaxValue;
                 }
-                
+
                 nodeCount++;
                 double distRead = double.Parse(csv[2]);
                 double usageRead = double.Parse(csv[3]);
@@ -143,5 +169,6 @@ namespace statter
             tr.Close();
             sw.Close();
         }
+        
     }
 }
