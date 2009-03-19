@@ -33,18 +33,18 @@ namespace statter
 
             int step = 0;
             int nodeCount = 0;
-            float distSum = 0;
-            float distMax = 0;
-            float usageSum = 0;
-            float usageMax = 0;
-            float agSum = 0;
-            float agMax = 0;
+            double distSum = 0;
+            double distMax = 0;
+            double usageSum = 0;
+            double usageMax = 0;
+            double agSum = 0;
+            double agMax = 0;
             StringBuilder sb = new StringBuilder();
             Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
 
-            float distMean;
-            float usageMean;
-            float agMean;
+            double distMean;
+            double usageMean;
+            double agMean;
 
             while (csv.ReadNextRecord())
             {
@@ -82,22 +82,20 @@ namespace statter
                     usageSum = 0;
                     usageMax = 0;
                     agSum = 0;
-                    agMax = 0;
+                    agMax = double.MinValue;
                 }
-                else
-                {
-                    nodeCount++;
-                    float distRead = float.Parse(csv[2]);
-                    float usageRead = float.Parse(csv[3]);
-                    float agRead = float.Parse(csv[4]);
+                
+                nodeCount++;
+                double distRead = double.Parse(csv[2]);
+                double usageRead = double.Parse(csv[3]);
+                double agRead = double.Parse(csv[4]);
 
-                    distSum += distRead;
-                    distMax = Math.Max(distMax, distRead);
-                    usageSum += usageRead;
-                    usageMax = Math.Max(usageMax, usageRead);
-                    agSum += agRead;
-                    agMax = Math.Max(agMax, agRead);
-                }
+                distSum += distRead;
+                distMax = Math.Max(distMax, distRead);
+                usageSum += usageRead;
+                usageMax = Math.Max(usageMax, usageRead);
+                agSum += agRead;
+                agMax = Math.Max(agMax, agRead);
             }
             distMean = distSum / nodeCount;
             usageMean = usageSum / nodeCount;
