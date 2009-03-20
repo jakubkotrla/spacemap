@@ -158,9 +158,7 @@ class MapRenderer:
         self.canvas.delete("energylayernode")
         for node in elnodes:
             self.PixelC(node, node.x, node.y, "#00c800", 2, "energylayernode info")
-            
-        
-        
+         
     
     def RenderProgress(self, progressObject, configName):
         txt = "Progress:\n\n\n"

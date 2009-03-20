@@ -130,10 +130,12 @@ class EnergyLayerNode:
         dy = self.stepDiffY * massCoef
         maxDif = Global.MaxELNodeMove
         if fabs(dx) > maxDif:
+            Global.Log("ELNode.StepUpdateMove: MaxELNodeMove reached: " + str(fabs(dx)))
             coef = maxDif / fabs(dx)
             dx = dx * coef
             dy = dy * coef
         if fabs(dy) > maxDif:
+            Global.Log("ELNode.StepUpdateMove: MaxELNodeMove reached: " + str(fabs(dy)))
             coef = maxDif / fabs(dy)
             dx = dx * coef
             dy = dy * coef
