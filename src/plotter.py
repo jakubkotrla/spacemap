@@ -198,35 +198,46 @@ def plotELNodeStats(fileName):
     agMaxND = array( agMax )
      
     plot(stepND, distMeanND, 'b-', label='mean')
-    plot(stepND, distMinND, 'k-', label='min')
-    plot(stepND, distMaxND, 'k-', label='max')
+    plot(stepND, distMinND, 'k:', label='min')
+    plot(stepND, distMaxND, 'k,', label='max')
+    #plot(stepND, distMaxND, marker=",", color='red', drawstyle="steps", linestyle="None", label="max")
+    yscale('log')
     xlabel("Time (steps)")
     ylabel('Distance moved')
     title('Distance moved in time')
-    legend(loc='lower right')
+    legend(loc='upper left')
     savefig(fileName+".dist.png", format="PNG")
     clf()
     
-    plot(stepND, usageMeanND, color='blue', label='mean')
-    plot(stepND, usageMinND, color='black', label='min')
-    plot(stepND, usageMaxND, color='black', label='max')
+    plot(stepND, usageMeanND, 'b-', label='mean')
+    plot(stepND, usageMinND, 'k:', label='min')
+    plot(stepND, usageMaxND, 'k:', label='max')
     xlabel("Time (steps)")
     ylabel('Node usage')
     title('Node usage in time')
-    legend(loc='lower right')
+    legend(loc='upper left')
     savefig(fileName+".usage.png", format="PNG")
     clf()
     
-    plot(stepND, agMeanND, color='blue', label='mean')
-    plot(stepND, agMinND, color='black', label='min')
-    plot(stepND, agMaxND, color='black', label='max')
+    plot(stepND, agMeanND, 'b-', label='mean')
+    plot(stepND, agMinND, 'k:', label='min')
+    plot(stepND, agMaxND, 'k:', label='max')
     xlabel("Time (steps)")
     ylabel('AG amount')
     title('AG amount in time')
-    legend(loc='lower right')
+    legend(loc='upper left')
     savefig(fileName+".ag.png", format="PNG")
     clf()
     
+def plotHist():
+    rowsRAW = csv.reader(open("p.txt", "rb"), delimiter=";")
+    rows = []
+    rows.extend(rowsRAW)
+    rows = map(lambda x: x[2], rows)
+    rowsND = array(rows)
+    hist(rowsND.astype(float), bins=20)
+    savefig("p.png", format="PNG")
+
     
      
 full = False   
