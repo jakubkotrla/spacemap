@@ -108,9 +108,6 @@ class EnergyLayerNode:
         self.usage += intensity
                 
     def StepUpdate(self, nodesAround):
-        diffX = 0
-        diffY = 0
-                    
         for node in nodesAround:
             ldx = (self.x - node.x) 
             ldy = (self.y - node.y)
@@ -120,8 +117,7 @@ class EnergyLayerNode:
             self.AGamount += (1.0/ max(1, dist)) * Global.ELAGAddCoef
             
             gDiffCoef = dist2 * max(0.8, self.usage) * max(0.8,node.usage)
-            gDiffCoef = max(0.64, gDiffCoef)
-            gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.MinPositiveNumber, gDiffCoef)
+            gDiffCoef = float(Global.ELAntigravityCoef) / max(0.64, gDiffCoef)
             
             dist = max(Global.MinPositiveNumber, dist)
             self.stepDiffX += ldx * (gDiffCoef / dist) #Global.Sign(ldx)
@@ -129,9 +125,21 @@ class EnergyLayerNode:
         
     def StepUpdateMove(self, saveStatus=True):
         massCoef = 1.0/max(1, self.usage)# * self.usage)
-        
-        newX = self.x + self.stepDiffX * massCoef
-        newY = self.y + self.stepDiffY * massCoef
+
+        dx = self.stepDiffX * massCoef
+        dy = self.stepDiffY * massCoef
+        maxDif = Global.MaxELNodeMove
+        if fabs(dx) > maxDif:
+            coef = maxDif / fabs(dx)
+            dx = dx * coef
+            dy = dy * coef
+        if fabs(dy) > maxDif:
+            coef = maxDif / fabs(dy)
+            dx = dx * coef
+            dy = dy * coef
+            
+        newX = self.x + dx
+        newY = self.y + dy
         
         hit = self.area.CanMoveEx(self, newX, newY)
         if hit.hit:

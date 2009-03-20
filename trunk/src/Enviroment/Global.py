@@ -68,6 +68,7 @@ class GlobalVariables:
         self.ELGravityCoef = 1.0
         self.ELAntigravityCoef = 8.0
         self.ELAntigravityRange = 20
+        self.MaxELNodeMove = 4.0
         
         self.ELEnergyPointCreateEnergy = 140
         self.ELNodeAddNoise = 2
