@@ -146,8 +146,8 @@ class Map:
                 self.agentMoves.pop(0)
             #agent.x = agent.newX - done in Agent.step
             #agent.y = agent.newY - done in Agent.step
-            agent.newX = int(newX)
-            agent.newY = int(newY)
+            agent.newX = newX
+            agent.newY = newY
         return round(duration)
       
     #start has old position in .x and .y 
