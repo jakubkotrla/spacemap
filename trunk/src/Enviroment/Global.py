@@ -81,9 +81,9 @@ class GlobalVariables:
         
         self.SMBigUpdateFreq = 9
         self.ELAGAddCoef = 2
-        self.ELAGFadeOut = 0.5
-        self.HLAGNeeded = 5000
-        self.HLAGNeededSum = 20000
+        self.ELAGFadeOut = 1
+        self.HLAGNeeded = 4000
+        self.HLAGNeededSum = 50000
   
     def Random(self):
         return random()

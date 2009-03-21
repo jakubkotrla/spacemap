@@ -338,7 +338,7 @@ class EnergyLayer:
         nodes.remove(startNode)
         nodes.sort(lambda a,b: cmp(nodeDists[a],nodeDists[b]))
         AGEnergy = startNode.AGamount
-        range = sqrt(AGEnergy / 1000) + 2
+        range = sqrt(AGEnergy / 1000)/2 + 2
         hlNode = ELHighNode(self.hlNodeIndex, startNode.x, startNode.y)
         hlNode.AddNode(startNode)
         for node in nodes:
@@ -346,7 +346,7 @@ class EnergyLayer:
             if node.hlNode != None: continue
             hlNode.AddNode(node)
             AGEnergy += node.AGamount
-            range = sqrt(AGEnergy / 1000) + 2
+            range = sqrt(AGEnergy / 1000)/2 + 2
         
         if AGEnergy > Global.HLAGNeededSum:
             hlNode.range = range
