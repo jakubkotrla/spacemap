@@ -83,6 +83,7 @@ class GlobalVariables:
         self.ELAGAddCoef = 2
         self.ELAGFadeOut = 0.5
         self.HLAGNeeded = 5000
+        self.HLAGNeededSum = 20000
   
     def Random(self):
         return random()
