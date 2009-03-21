@@ -22,6 +22,29 @@ class ELHighNode:
             self.nodes.remove(node)
         else:
             Global.Log("Programmer.Error: ELHighNode.RemoveNode - removing not present node")
+        
+    def UpdateLocation(self):
+        x = 0
+        y = 0
+        sumAGamount = 0
+        for node in self.nodes:
+            x += (node.x * node.AGamount)
+            y += (node.y * node.AGamount)
+            sumAGamount += node.AGamount 
+        x = x / sumAGamount
+        y = y / sumAGamount
+        p = Point(x,y)
+        map = Global.Map
+        if not map.IsInside(p):  #this should not happen, quick hack - go closer old location
+            hit = map.CanMoveEx(self, p.x, p.y)
+            if hit.hit:
+                p = hit
+            else:
+                Global.Log("Programmer.Error: ELHLNode: not inside but canMove-not-hit")
+        self.x = p.x
+        self.y = p.y
+        
+        
 
     def StepUpdate(self, nodesAround):
         map = Global.Map
@@ -33,6 +56,7 @@ class ELHighNode:
                 s = str(Global.GetStep()) + ";" + strXY + ";removenode;" + str(node.index) + ";" + strNodeXY
                 Global.LogData("hlchanges", s)
                 self.nodes.remove(node)
+                node.hlNode = None
         for node in nodesAround:
             if node.hlNode != None: continue
             strXY = "%.4f,%4f" % (self.x, self.y)
@@ -40,7 +64,7 @@ class ELHighNode:
             s = str(Global.GetStep()) + ";" + strXY + ";addnode;" + str(node.index) + ";" + strNodeXY
             Global.LogData("hlchanges", s)
             self.AddNode(node)
-        strXY = "%.4f,%4f" % (self.x, self.y)
+        strXY = "%.4f,%.4f" % (self.x, self.y)
         s = str(Global.GetStep()) + ";" + str(self.index) + ";" + strXY + ";" + str(self.range) + ";" + str(self.intensity) + ";" + str(len(self.nodes))   
         Global.LogData("hlnodes", s)
         
@@ -117,7 +141,7 @@ class EnergyLayerNode:
         self.index = index
         self.usage = 0
         self.AGamount = 0
-        self.hlNode = None
+        self.hlNodes = []
                 
         self.stepDiffX = 0
         self.stepDiffY = 0
@@ -137,6 +161,7 @@ class EnergyLayerNode:
             link.NodeDeleted()
         if self.hlNode != None:
             self.hlNode.RemoveNode(self)
+            self.hlNode = None
     
     def Intense(self, intensity):
         self.usage += intensity
@@ -299,6 +324,8 @@ class EnergyLayer:
             node.StepUpdate(self.getNodesAround(node, Global.ELAntigravityRange))
         for node in self.nodes:
             node.StepUpdateMove()
+        for hlNode in self.hlNodes:
+            hlNode.StepUpdate(self.getNodesAround(hlNode, hlNode.range))
         
         for ep in self.energyPointsToDelete:
             self.energyPoints.remove(ep)
@@ -319,8 +346,6 @@ class EnergyLayer:
 #            if self.desiredNodeCount < self.maximalDesiredNodeCount:
 #                self.desiredNodeCount += 1
         Global.LogData("nc", self.Status())
-            
-        
         
     def StepUpdateBig(self):
         self.nodes.sort(lambda b,a: cmp(a.AGamount,b.AGamount))
@@ -329,9 +354,7 @@ class EnergyLayer:
             if node.AGamount > Global.HLAGNeeded and node.hlNode == None:
                 if self.createHLNode(node):
                     Global.Log("EL: HighLevel node created at " + str(node.x) + ";" + str(node.y))
-        for hlNode in self.hlNodes:
-            hlNode.StepUpdate(self.getNodesAround(hlNode, hlNode.range))
-     
+
     def createHLNode(self, startNode):
         nodeDists = self.getAllNodesDist(startNode)
         nodes = self.nodes[:]
@@ -351,6 +374,7 @@ class EnergyLayer:
         if AGEnergy > Global.HLAGNeededSum:
             hlNode.range = range
             hlNode.intensity = AGEnergy
+            hlNode.UpdateLocation()
             self.hlNodes.append(hlNode)
             self.hlNodeIndex += 1
             return True

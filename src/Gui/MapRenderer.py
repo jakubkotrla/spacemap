@@ -151,6 +151,7 @@ class MapRenderer:
         self.canvas.delete("energylayerHLnode")
         for hlNode in hlNodes:
             self.PixelC(hlNode, hlNode.x, hlNode.y, None, 1, "energylayerHLnode info", outline="#00a800")
+            self.CircleC(hlNode, hlNode.x, hlNode.y, hlNode.range, "#00a800", "energylayerHLnode info")
             for node in hlNode.nodes:
                 self.Line(hlNode.x, hlNode.y, node.x, node.y, "#00c900", "energylayerHLnode")
         
@@ -269,11 +270,16 @@ class MapRenderer:
         
         
         for hlNode in elayer.hlNodes:
+            x = (hlNode.x-hlNode.range)*self.zoom + 10
+            y = (hlNode.y-hlNode.range)*self.zoom + 10
+            x2 = (hlNode.x+hlNode.range)*self.zoom + 10
+            y2 = (hlNode.y+hlNode.range)*self.zoom + 10
+            draw.ellipse([x,y, x2,y2], fill=None, outline=(0, 128, 0))
             x = hlNode.x*self.zoom - 5 + 10
             y = hlNode.y*self.zoom - 5 + 10
             draw.rectangle([x,y, x+10,y+10], fill=None, outline=(0, 128, 0))
             for node in hlNode.nodes:
-                draw.line( [self.zoom*hlNode.x+10, self.zoom*hlNode.y+10, self.zoom*node.x+10, self.zoom*node.y+10], fill=(0, 222, 0))
+                draw.line( [x+5, y+5, self.zoom*node.x+10, self.zoom*node.y+10], fill=(0, 222, 0))
         
         for node in elayer.nodes:    
             x = node.x*self.zoom - 2 + 10

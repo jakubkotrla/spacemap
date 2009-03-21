@@ -142,7 +142,7 @@ class SpaceMap:
             if hit.hit:
                 p = hit
             else:
-                Global.Log("Programmer.Error: not inside but canMove not hit")
+                Global.Log("Programmer.Error: SpaceMap: not inside but canMove-not-hit")
         memObject.x = p.x
         memObject.y = p.y
         
