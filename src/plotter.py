@@ -97,7 +97,7 @@ def plotRememberOne(fileName, rows):
     
     errorND = array( error )
     trainedND = array( trained )
-    plot(trainedND, errorND, marker=".", color='red', drawstyle="steps", linestyle="None")
+    plot(trainedND, errorND, marker=",", color='red', drawstyle="steps", linestyle="None")
     ylabel('Error')
     xlabel('Amount trained')
     title('Error / trained')
@@ -117,13 +117,13 @@ def plotRememberTimeOne(fileName, rows, plotTrained=True):
     if plotTrained:
         subplots_adjust(hspace=1)
         subplot(211)
-        plot(stepND, trainedND, marker=".", color='red', drawstyle="steps", linestyle="None")
+        plot(stepND, trainedND, marker=",", color='red', drawstyle="steps", linestyle="None")
         xlabel("Time (steps)")
         ylabel('Amount trained')
         title('Trained in time')
     
         subplot(212)
-    plot(stepND, errorND, marker=".", color='red', drawstyle="steps", linestyle="None")
+    plot(stepND, errorND, marker=",", color='red', drawstyle="steps", linestyle="None")
     ylabel('Error')
     xlabel("Time (steps)")
     title('Error in time - mean: %.2f'%meanError)
