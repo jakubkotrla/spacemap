@@ -306,7 +306,8 @@ class MainWindow(Frame):
         self.wxCanvas.delete("infotxt")
         txt =  "Step:  " + str(world.step).zfill(6) + "\nTime:  " + Global.TimeToHumanFormat(True)
         self.txtTime = self.wxCanvas.create_text(1080, 5, text=txt, width=200, anchor=NW, tags="infotxt")
-        txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
+        strXY = "%.4f,%.4f" % (self.agent.x, self.agent.y)
+        txt =  "Agent:  " + strXY
         nc = len(world.agent.intelligence.spaceMap.Layer.nodes)
         txt = txt + "\nEnergyLayer.nodeCount: " + str(nc)
         self.txtAgentInfo = self.wxCanvas.create_text(1300, 5, text=txt, width=200, anchor=NW, tags="infotxt")

@@ -152,12 +152,12 @@ class MapRenderer:
         for hlNode in hlNodes:
             self.PixelC(hlNode, hlNode.x, hlNode.y, None, 1, "energylayerHLnode info", outline="#00a800")
             for node in hlNode.nodes:
-                self.Line(hlNode.x, hlNode.y, node.x, node.y, "#00a800", "energylayerHLnode")
+                self.Line(hlNode.x, hlNode.y, node.x, node.y, "#00c900", "energylayerHLnode")
         
         elnodes = self.agent.intelligence.spaceMap.Layer.nodes
         self.canvas.delete("energylayernode")
         for node in elnodes:
-            self.PixelC(node, node.x, node.y, "#00c800", 2, "energylayernode info")
+            self.PixelC(node, node.x, node.y, "#00b500", 2, "energylayernode info")
          
     
     def RenderProgress(self, progressObject, configName):
@@ -273,12 +273,12 @@ class MapRenderer:
             y = hlNode.y*self.zoom - 5 + 10
             draw.rectangle([x,y, x+10,y+10], fill=None, outline=(0, 128, 0))
             for node in hlNode.nodes:
-                draw.line( [self.zoom*hlNode.x+10, self.zoom*hlNode.y+10, self.zoom*node.x+10, self.zoom*node.y+10], fill=(0, 128, 0))
+                draw.line( [self.zoom*hlNode.x+10, self.zoom*hlNode.y+10, self.zoom*node.x+10, self.zoom*node.y+10], fill=(0, 222, 0))
         
         for node in elayer.nodes:    
             x = node.x*self.zoom - 2 + 10
             y = node.y*self.zoom - 2 + 10
-            draw.rectangle([x,y, x+4,y+4], fill=(0, 200, 0), outline=None)
+            draw.rectangle([x,y, x+4,y+4], fill=(0, 180, 0), outline=None)
         
         if "ovh" in layers:    
             for obj in self.map.objects:
@@ -289,10 +289,9 @@ class MapRenderer:
         if "info" in layers:
             draw.text([1080,5], "Step:  " + str(world.step).zfill(6), font=self.font, fill=(0, 0, 0))
             draw.text([1080,20], "Time:  " + Global.TimeToHumanFormat(True), font=self.font, fill=(0, 0, 0))
-            txt =  "Agent:  " + str(self.agent.x) + "," + str(self.agent.y)
-            nc = len(elayer.nodes)
-            draw.text([1300,5], "Agent:  " + str(self.agent.x) + "," + str(self.agent.y), font=self.font, fill=(0, 0, 0))
-            draw.text([1300,20], "EnergyLayer.nodeCount: " + str(nc), font=self.font, fill=(0, 0, 0))
+            strXY = "%.4f,%.4f" % (self.agent.x, self.agent.y)
+            draw.text([1300,5], "Agent:  " + strXY, font=self.font, fill=(0, 0, 0))
+            draw.text([1300,20], "EnergyLayer.nodeCount: " + str(len(elayer.nodes)), font=self.font, fill=(0, 0, 0))
             txt = self.agent.paText
             draw.text([1050,50], "ProcessArea:", font=self.font, fill=(0, 0, 0))
             ypos = 50
