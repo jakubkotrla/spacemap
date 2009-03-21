@@ -188,6 +188,9 @@ class MainWindow(Frame):
         savePath = "../../tests/" + nowTime + "/"
         os.makedirs(savePath)
         copyfile("Enviroment/Global.py", savePath + "Global.py")
+        copyfile("plotter.py", "../../tests/plotter.py")
+        copyfile("../statter.exe", "../../tests/statter.exe")
+        copyfile("../LumenWorks.Framework.IO.dll", "../../tests/LumenWorks.Framework.IO.dll")
         f = open(savePath + "Global.py", "a")
         f.write("\n#real settings of Global.py\n")
         f.write(settingsText)

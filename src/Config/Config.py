@@ -13,6 +13,7 @@ from Lobby import Lobby
 from CrazyRoom import CrazyRoom
 from SmallRoom import SmallRoom
 from SwitchRoom import SwitchRoom
+from HeapRoom import HeapRoom
 
 
 class ConfigSingleton:
@@ -24,7 +25,8 @@ class ConfigSingleton:
         self.configs["Lobby"] = Lobby()
         self.configs["CrazyRoom"] = CrazyRoom()
         self.configs["SmallRoom"] = SmallRoom()
-        #self.configs["SwitchRoom"] = SwitchRoom()
+        self.configs["SwitchRoom"] = SwitchRoom()
+        self.configs["HeapRoom"] = HeapRoom()
         
          
     
