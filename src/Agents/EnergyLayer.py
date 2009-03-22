@@ -1,12 +1,13 @@
 
 from Enviroment.Global import Global
-from math import sqrt, fabs
+from math import sqrt, fabs, log
 from Enviroment.Map import Point
 import copy
 
 
 class ELHighNode:
-    def __init__(self, index,  x, y):
+    def __init__(self, layer, index, x, y):
+        self.layer = layer
         self.index = index
         self.nodes = []
         self.x = x
@@ -44,8 +45,15 @@ class ELHighNode:
         self.x = p.x
         self.y = p.y
    
-    def StepUpdate(self, nodesAround):
+    def StepUpdate(self):
         self.UpdateLocation()
+        sumAGamount = 0
+        for node in self.nodes:
+            sumAGamount += node.AGamount
+        self.range = self.layer.GetRangeByAG(sumAGamount)
+        self.intensity = sumAGamount
+        nodesAround = self.layer.getNodesAround(self, self.range)
+        
         map = Global.Map
         for node in self.nodes:
             dist = map.DistanceObjs(self, node)
@@ -319,7 +327,7 @@ class EnergyLayer:
         for node in self.nodes:
             node.StepUpdateMove()
         for hlNode in self.hlNodes:
-            hlNode.StepUpdate(self.getNodesAround(hlNode, hlNode.range))
+            hlNode.StepUpdate()
         
         for ep in self.energyPointsToDelete:
             self.energyPoints.remove(ep)
@@ -354,8 +362,8 @@ class EnergyLayer:
         nodes.remove(startNode)
         nodes.sort(lambda a,b: cmp(nodeDists[a],nodeDists[b]))
         AGEnergy = startNode.AGamount
-        range = sqrt(AGEnergy / 1000)/2 + 2
-        hlNode = ELHighNode(self.hlNodeIndex, startNode.x, startNode.y)
+        range = self.GetRangeByAG(AGEnergy)
+        hlNode = ELHighNode(self, self.hlNodeIndex, startNode.x, startNode.y)
         hlNode.AddNode(startNode)
         for node in nodes:
             if nodeDists[node] > range: break
@@ -363,7 +371,7 @@ class EnergyLayer:
             hlNode.AddNode(node)
             hlNode.UpdateLocation()
             AGEnergy += node.AGamount
-            range = sqrt(AGEnergy / 1000)/2 + 2
+            range = self.GetRangeByAG(AGEnergy)
         
         if AGEnergy > Global.HLAGNeededSum:
             hlNode.range = range
@@ -375,7 +383,9 @@ class EnergyLayer:
         else:
             hlNode.Delete()
             return False
-        
+    def GetRangeByAG(self, AGEnergy):
+        #return sqrt(AGEnergy / 1000)/2 + 2
+        return 2*log(AGEnergy / 1000) #+ 2
      
     def DeleteNode(self, node):
         node.Delete()
