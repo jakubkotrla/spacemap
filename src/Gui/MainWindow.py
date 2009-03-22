@@ -330,7 +330,7 @@ class MainWindow(Frame):
         txt = "Log:\n  "
         for line in Global.logLines:
             txt = txt + line + "\n  "
-        self.txtLog = self.wxCanvas.create_text(1050, 600, text=txt, width=450, anchor=NW, tags="infotxt")
+        self.txtLog = self.wxCanvas.create_text(1050, 550, text=txt, width=450, anchor=NW, tags="infotxt")
         
         Global.LogData("nc", world.agent.intelligence.spaceMap.Layer.Status())
   
