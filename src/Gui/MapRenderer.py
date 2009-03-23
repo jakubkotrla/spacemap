@@ -316,7 +316,7 @@ class MapRenderer:
             for phantom in pf.environmentPhantoms:
                 ypos = ypos + 15
                 draw.text([1050,ypos], " " + phantom.ToString(), font=self.font, fill=(0, 0, 0))
-            draw.text([1050,550], "Log:", font=self.font, fill=(0, 0, 0))
+            draw.text([1050,500], "Log:", font=self.font, fill=(0, 0, 0))
             ypos = 500
             for line in Global.logLines:
                 ypos = ypos + 15
