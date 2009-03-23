@@ -23,8 +23,6 @@ class ELHighNode:
             x += (node.x * self.nodes[node])
             y += (node.y * self.nodes[node])
             sumAGamount += self.nodes[node]
-        if (sumAGamount - self.AGamount) > Global.MinPositiveNumber:
-            Global.Log("Diff: sumAGamount: " + str(sumAGamount) + ", self.AGamount" + str(self.AGamount))
         x = x / sumAGamount
         y = y / sumAGamount
         p = Point(x,y)
@@ -42,10 +40,6 @@ class ELHighNode:
         self.y += dy
    
     def StepUpdate(self):
-        #sumAGamount = 0
-        #for node in self.nodes:
-        #    sumAGamount += node.AGamount
-        #self.AGamount = sumAGamount
         self.AGamount -=  Global.ELAGFadeOut * max(1, log(len(self.nodes))) 
         
         if self.AGamount < Global.HLAGNeededSum or len(self.nodes) < 1:
