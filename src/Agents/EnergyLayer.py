@@ -42,11 +42,15 @@ class ELHighNode:
     def StepUpdate(self):
         self.AGamount -=  Global.ELAGFadeOut * max(1, log(len(self.nodes))) 
         
-        if self.AGamount < Global.HLAGNeededSum or len(self.nodes) < 1:
+        if self.AGamount < Global.HLAGNeededSum / 2:
             self.Delete()
             return True
         
         self.range = self.layer.GetRangeByAG(self.AGamount)
+        
+        if len(self.nodes) < 1:
+            return False
+        
         self.UpdateLocation()
         
         nodesAround = self.layer.getNodesAround(self, self.range)
