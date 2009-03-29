@@ -1,54 +1,116 @@
-\section{KM Layer}
-
+\section{Kohonen Map Layer}
 
 Vìtšina modelù pamìti, zmínìnıch v tøetí kapitole, vyuívá samoorganizující Kohonenovy mapy [literatura]. 
+\\
 
-Jak funguje KM ???
+?? Jak funguje KM ??
+\\
 
-Kohonenova mapa by mìla splòovat naše poadavky. Umí rozmístit uzly do hustoty odpovídající rozmístìní pøedmìtù v prostoru. Umí se uèit online, kadı vjem agenta je moné chápat jako prvek trénovací mnoiny dat. Jeví se tedy jako ideální. Navrhli jsme tedy model Node Layer zaloenı na Kohonenovì mapì - KM Layer.
+Kohonenova mapa by mìla splòovat naše poadavky. Umí rozmístit uzly do hustoty odpovídající rozmístìní pøedmìtù v prostoru.
+Umí se uèit online, kadı vjem agenta je moné chápat jako prvek trénovací mnoiny dat. Jeví se tedy jako ideální.
+Navrhli jsme tedy model Node Layer zaloenı na Kohonenovì mapì - Kohonen Map Layer.
+\\
 
-Na zaèátku je prostor pokryt Kohonenovou mapou -  ètvercovou sítí. - OBR
-Pokadé, kdy je vjem, pøedán KM Layer, provede se trénování Kohonenovy mapy.
+?? OBR ctercove site ??
 
-1. Urèení vyhrávajícího uzlu (tedy nejblišího k poloze vjemu)
-2. Vloení uzlu do fronty
-3. While neprázdná fronta:
-	a. Natrénování uzlu dle vzorce KM
-	b. Pøidání jeho sousedù do fronty (pokud nebyly ješte v tomto kroku trénováni)
+Na zaèátku je prostor pokryt Kohonenovou mapou - ètvercovou sítí.
+Pokadé, kdy je vjem, pøedán ke zpracování do Kohonen Map Layer, provede se trénování Kohonenovy mapy dle algoritmu \ref{alg:km-uceni}.
+\\
 
-Tímto algoritmem se uzly KM Layer v prùbìhu uèení/vnímání pøibliují k objektùm. 
 
-Problém, které by mohl nastat je, e se sí pro naše potøeby "pøeuèí" -  uzly se èasem všechny pøesunou k pøedmìtùm a prostor bez pøedmìtù zùstane prázdnı, bez uzlù. Navrhli jsem dvì moná øešení:
-• Base objects - pøidání umìlıch objektù, které se budou snait dret pùvodní rozloení  uzlù KM
-• Odpudivost uzlù - uzly mapy se budou vzájemnì odpuzovat, aby se nenahromadily všechny na jedno místo
+\begin{algorithm}[h!]
+\caption{Zpracování vjemu v KM Layer}
+\label{alg:km-uceni}
+\begin{algorithmic}[1]
+\State $node \gets$ vyhrávající uzel (tedy nejbliší k poloze vjemu)
+\State $queue \gets 0$
+\State $queue \gets node$
+\While{$queue\not=0$}
+	\State Natrénování uzlu dle vzorce \ref{formula:km-uceni} \label{alg:km-uceni-vzorec}
+	\State $queue \gets$ sousedi $n$ (pokud nebyli ješte trénováni)
+\EndWhile
+\State vjem je pøedán vrstvì uzlù k dalšímu zpracování
+\end{algorithmic}
+\end{algorithm}
 
-Vıše zmínìná øešení jsme vyzkoušeli v jednoduché ètvercové místnosti.  OBR
+Pøi trénování je v algoritmu na øádce \ref{alg:km-uceni-vzorec} pouit vzorec
 
-Base objects
-Toto øešení pøidává do svìta umìlé pøedmìty, tzv. base objects. Tyto umìlé pøedmìty musí mít niší atraktivitu ne reálné pøedmìty, aby je nepøebily a mapa se mohla nìco nauèit.
+\begin{equation} 
+\Delta xy(n_i, vjem) = coef_{neighbour}(n_i, t) \times coef_{learn} \times distance(n_i, vjem)
+\label{formula:km-uceni}
+\end{equation}
+\\
 
-Base objects jsou do svìta pøidány na zaèátku, pøi vytváøení ètvercové sítì. V kadém místì, kde je uzel sítì, je vytvoøen jeden base object. Agent je bude vnímat stejnì jako ostatní pøedmìty, v prùbìhu simulace budou k sobì pøitahovat uzly sítì stejnì jako reálné pøedmìty. Tím by mìly udret kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty nejsou.
+kde \(coef_{neighbour}\) je vzdálenost mezi vyhrávajícím uzlem a právì trénovanım uzlem v Kohonenovì mapì a \(coef_{learn}\) je parametr modelu.
 
-Vısledek testu OBR.
+Tímto algoritmem se uzly KM Layer v prùbìhu uèení/vnímání pøibliují k objektùm.
+\\
 
-V pøípadì base objects se ukázalo, e øešení nevyhovuje. Mapa se stahuje do støedu místnosti bez ohledu na vliv base objects. 
+Problém, které by mohl nastat je, e se sí pro naše potøeby "pøeuèí" - uzly se èasem všechny pøesunou k pøedmìtùm a prostor bez pøedmìtù zùstane prázdnı, bez uzlù.
+Navrhli jsem dvì moná øešení:
+\begin{CompactItemize}
+\item Base objects - pøidání umìlıch objektù, které se budou snait dret pùvodní rozloení uzlù KM
+\item Odpudivost uzlù - uzly mapy se budou vzájemnì odpuzovat, aby se nenahromadily všechny na jedno místo
+\end{CompactItemize}
 
-Odpudivost
+Vıše zmínìná øešení jsme vyzkoušeli v jednoduché ètvercové místnosti.
+\\
+
+?? OBR testovaci mistnosti ci odkaz na prilohu ??
+\\
+
+\subsection{Base objects}
+Toto øešení pøidává do svìta umìlé pøedmìty, tzv. base objects.
+Tyto umìlé pøedmìty musí mít niší atraktivitu ne reálné pøedmìty, aby je nepøebily a mapa se mohla nìco nauèit.
+\\
+
+Base objects jsou do svìta pøidány na zaèátku, pøi vytváøení ètvercové sítì. V kadém místì, kde je uzel sítì, je vytvoøen jeden base object.
+Agent je bude vnímat stejnì jako ostatní pøedmìty, v prùbìhu simulace budou k sobì pøitahovat uzly sítì stejnì jako reálné pøedmìty.
+Tím by mìly udret Kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty nejsou.
+
+?? Vısledek testu OBR. ??
+\\
+
+V pøípadì base objects se ukázalo, e øešení nevyhovuje. Mapa se stahuje do støedu místnosti bez ohledu na vliv base objects.
+\\
+
+\subsection{Odpudivost uzlù}
 Do modelu jsme pøidali odpudivost uzlù sítì. V kadém kroku simulace se uzly, které jsou pøíliš blízko u sebe, odpuzují.
 V kadém kroku simulace je proveden proces ref. Vzájemná odpudivost dvou uzlù závisí na jejich vzdálenosti a jejich naplnìnosti.
+\\
 
-Naplnìnost uzlu je souèet intenzit všech jeho vazeb na pamìové stopy. Pøedstavuje míru dùleitosti uzlu pro pamì na pøedmìty. Èím více pamìovıch stop vyuívá uzel a èím intenzivnìjší jsou, tím ménì by se mìla mìnit jeho poloha. Uzel s vysokou naplnìností bude v místì, kde je hodnì pøedmìtù. V takovıch místech by hustota uzlù mìla bıt vìtší a proto je nutné, aby v takovıch místech byla vzájemná odpudivost uzlù menší.
+Naplnìnost uzlu je souèet intenzit všech jeho vazeb na pamìové stopy. Pøedstavuje míru dùleitosti uzlu pro pamì na pøedmìty.
+Èím více pamìovıch stop vyuívá uzel a èím intenzivnìjší jsou, tím ménì by se mìla mìnit jeho poloha.
+Uzel s vysokou naplnìností bude v místì, kde je hodnì pøedmìtù.
+V takovıch místech by hustota uzlù mìla bıt vìtší a proto je nutné, aby v takovıch místech byla vzájemná odpudivost uzlù menší.
+\\
 
-vvvzorec
+\begin{equation} 
+odpudivost(n_i, n_j) = \frac{ coef }{ distance^2 \times naplnenost(n_i) \times naplnenost(n_j) } 
+\label{formula:km-odpudivost}
+\end{equation}
+\\
 
-Naplnìnost uzlu lze pøi urèování vzájemné odpudivosti chápat jako analogii k hmotnosti tìles, s tím rozdílem, e odpudivost dvou uzlù je nepøímo úmìrná souèinu jejich naplnìností. Odpudivost je dána vzorcem vvvzorec. V kadém kroku simulace je spoètena vzájemná odpudivost uzlù. Tím jsou urèeny všechny odpudivé síly, které na uzly pùsobí. Poloha uzlù je pak upravena dle tìchto sil.
+Naplnìnost uzlu lze pøi urèování vzájemné odpudivosti chápat jako analogii k hmotnosti tìles, s tím rozdílem,
+e odpudivost dvou uzlù je nepøímo úmìrná souèinu jejich naplnìností. Odpudivost je dána vzorcem \ref{formula:km-odpudivost},
+kde \emph{coef} je parametr modelu.
+V kadém kroku simulace je spoètena vzájemná odpudivost uzlù. Tím jsou urèeny všechny odpudivé síly, které na uzly pùsobí.
+Poloha uzlù je pak upravena dle tìchto sil.
+\\
 
-Vzdálenost uzlù je moné mìøit dvìma zpùsoby: jejich vzdáleností ve virtuálním svìtì èi jejich vzdáleností v kohonenovì mapì. Smìr odpuzujících sil je v obou pøípadech  urèen z jejich vzájemné polohy.
+Vzdálenost uzlù je moné mìøit dvìma zpùsoby: jejich vzdáleností ve virtuálním svìtì èi jejich vzdáleností v kohonenovì mapì.
+Smìr odpuzujících sil je v obou pøípadech  urèen z jejich vzájemné polohy.
+\\
 
-Vısledke testù - OBR
+?? Vısledky testù - OBR ??
+\\
 
-V obou pøípadech dojde k deformaci mapy do stavu, kdy její následující uèení nedává smysl. Sí se pøekroutí tak, e uzly, které jsou ve virtuálním svìtì vedle sebe, jsou v síti daleko a obrácenì.
+V obou pøípadech dojde k deformaci mapy do stavu, kdy její následující uèení nedává smysl.
+Sí se pøekroutí tak, e uzly, které jsou ve virtuálním svìtì vedle sebe, jsou v síti daleko a obrácenì.
+\\
 
 ??? Podrobnìji vysvìlit ??? , vıøez z obrázku vısledku
+\\
 
 Døíve zmínìnı problém pøeuèení skuteènì nastal a dvì velmi rozdílná øešení jej nedokázala uspokojivì vyøešit. Model zaloenı na Kohonenovì mapì jsme tedy zamítli.
+\\

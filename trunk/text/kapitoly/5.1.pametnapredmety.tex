@@ -44,7 +44,23 @@ V kroku 4 je urèena intenzita o kterou bude zvıšena vazba mezi pamìovou stopou 
 \\
 
 
-Èást tohoto procesu mùe bıt provádìna v rámci vrstvy uzlù, nap5. v modelu Energy Layer.
+\begin{algorithm}[h!]
+\caption{Zpracování vjemu}
+\label{alg:zpracovani-vjemu}
+\begin{algorithmic}[1]
+\State urèení pamìové stopy pøedmìtu
+\State zvıšení intenzity pamìové stopy o intenzitu vjemu
+\State $nodes\gets$ všechny uzly, do jejich okolí vjem padl
+\ForAll{$n \in nodes$}
+	\State intenzita($n$) $\gets$ dle vzorce vvv
+	\State zvıšení intenzity vazby mezi pamìovou stopou a uzlem n
+\EndFor
+\State vjem je pøedán vrstvì uzlù k dalšímu zpracování
+\end{algorithmic}
+\end{algorithm}
+
+
+Èást tohoto procesu mùe bıt provádìna v rámci vrstvy uzlù, napø. v modelu Energy Layer.
 \\
 
 Prostorová mapa je schopna øíci, kde se nacházejí pøedmìty, které agent pøed tím vidìl. Tato informace je uloena v døíve zmínìné asociativní síti.
@@ -57,15 +73,13 @@ Poloha pøedmìtu je váenı centroid všech uzlù, které mají vazbu na pamìovou sto
 \caption{Vzpomenutí si na pøedmìt}
 \label{alg:vzpomenuti}
 \begin{algorithmic}[1]
-\STATE Je vybrána pamìová stopa s nejvyšší intenzitou, která má poadovanou affordanci
-\STATE Je aktualizována informace o poloze pøedmìtu v pamìové stopì
-\STATE Pamìová stopa je pøedána pamìové èásti krátkodobé pamìti, která z ní vytvoøí pamìového fantoma
+\State Vybrání pamìové stopy s nejvyšší intenzitou, která má poadovanou affordanci
+\State Aktualizace informace o poloze pøedmìtu v pamìové stopì
+\State Pamìová stopa je pøedána pamìové èásti krátkodobé pamìti, která z ní vytvoøí pamìového fantoma
 \end{algorithmic}
 \end{algorithm}
 
 
 \begin{enumerate}
-\item Je vybrána pamìová stopa s nejvyšší intenzitou, která má poadovanou affordanci
-\item Je aktualizována informace o poloze pøedmìtu v pamìové stopì
-\item Pamìová stopa je pøedána pamìové èásti krátkodobé pamìti, která z ní vytvoøí pamìového fantoma
+\item item
 \end{enumerate}

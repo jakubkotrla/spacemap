@@ -54,8 +54,13 @@ Zámìr Want(affordance) agent mùže splnit úspìšným provedením jedné z nìkolika èi
 vzpomenutím si, kde se takový pøedmìt nachází, pøesunutí k nìmu a jeho nalezení; náhodné hledání.
 \\
 
-?? OBR stromu smart-actions
-\\
+\begin{figure}[h]
+  \centering
+  \scalebox{0.8}{\includegraphics{kapitoly/img/and-or.ps}}
+  \caption{Strom chytrých akcí a jejich pod akcí}
+  \label{fig:smart-actions}
+\end{figure}
+    
 
 Každá tato èinnost se skládá z nìkolika akcí, které mohou obsahovat další subakce, a není možné ji provést v jednom kroku simulace.
 Pro jejich dìlení lze použít AND-OR strom popsaný v [literatura-peskova]. Pro naše úèely je však zbyteènì obecný a komplikovaný.
@@ -109,12 +114,23 @@ V každém kroku simulace agent dostane množinu pøedmìtù, které vidí.
 Ta je urèena z agentovy pozice a smìru, kterým se dívá a závisí i na právì provádìné atomické akci.
 Protože zpùsob vnímání okolí je pro model podstatné, rozhodli jsme se implementovat pokroèilý model z poèítaèové hry Thief [literatura-thief], s lehkou úpravou.
 Výsledný model bere v potaz vzdálenost pøedmìtù od agenta i jak moc by se agent musel otoèit, aby se díval pøímo na nì.
-Agent má definované tzv. visibility cones, defakto kruhové výseèe, urèené polomìrem a úhlem, jsou orientovány smìrem, kam se agent dívá.
-Výseèe mají definovano, jak moc je agent vnímavý na pøedmìty v nich - váha výseèe.
+Agent má definované tzv. visibility cones, kruhové výseèe, urèené polomìrem a úhlem. Jsou orientovány smìrem, kterým se agent dívá.
+Dále mají výseèe definováno, jak moc je agent vnímavý na pøedmìty v nich - váha výseèe.
 \\
 
-Viditelnost pøedmìtu je urèená vzorcem:
-viditelnost(pøedmìt) = suma pøes výseè, že pøedmìt ve výseèi, váha výseèe
+Viditelnost pøedmìtu je urèená vzorcem \ref{formula:viditelnost}, kde \emph{p} je pøedmìt, \emph{V} je množina výseèí, které agent právì má a
+\(p \in v\) znamená, že pøedmìt leží ve výseèi.
+\\
+
+\begin{equation} 
+viditelnost(p) = 
+\sum_{\substack{
+   v \in V\\
+   p \in v
+  }}
+  vaha(v)
+\label{formula:viditelnost}
+\end{equation}
 \\
 
 Pøedmìty, které mají kladnou viditelnost, agent vidí a jsou pøedány k dalšímu zpracování.
@@ -129,7 +145,7 @@ Pøedmìty, které mají kladnou viditelnost, agent vidí a jsou pøedány k dalšímu zp
 \end{figure}
 
 Množina výseèí urèuje agentùv zpùsob vnímání. Toho jsme využili a definovali dvì rùzné množiny kruhových výseèí.
-Jednu pro chvíle kdy se agent rozhlíží (atomická akce Explore \ref{fig:vcones-explore}) a jednu pro zbylé pøípady \ref{fig:vcones-ostatni}.
+Jednu pro chvíle kdy se agent rozhlíží (atomická akce Explore), obrázek \ref{fig:vcones-explore}, a jednu pro zbylé pøípady, obrázek \ref{fig:vcones-ostatni}.
 Úhel 360° v prvním pøípadì simuluje to, že pøi rozhlížení se agent postupnì podívá do všech stran.
 \\
 
