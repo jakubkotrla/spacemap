@@ -1,0 +1,20 @@
+\chapter{Model prostorové mapy}
+
+Agent popsanı v pøedchozí kapitole má dlouhodobou pamì, která obsahuje pouze prostorovou mapu.
+Tu je moné rozdìlit do dvou logickıch èástí: \emph{pamìti na pøedmìty} a \emph{vrstvy uzlù}.
+\\
+
+Vrstva uzlù øeší rozloení uzlù v prostoru, tedy pokrytí svìta uzly, které imitují place cells.
+Má za úkol mìnit hustotu uzlù dle zmìn svìta a vytváøet jejich hiearchii.
+Pamì na pøedmìty vyuívá tìchto uzlù k ukládání informací o poloze pøedmìtù.
+\footnote{Vrstvu uzlù lze tak chápat jako podøízenou pamìti na pøedmìty}
+\\
+
+Zatímco pamì na pøedmìty je nezávislá na velikosti svìta, vrstva uzlù je navrena pro jeden uzavøenı prostor, typicky místnost
+Zároveò je pamì na pøedmìty nezávislá na  konkrétních mechanismech vrstvy uzlù a obrácenì.
+Vısledkem je, e architekturu jedné èásti lze zmìnit bez zásahu do druhé.
+Druhım pøijemnım vısledkem je, e model lze snadno rozšíøit pro svìty vìtší ne jeden uzavøenı prostor, pokud agent bude znát topologii svìta.
+Toto rozšíøení je podrobnìji popsáno v sedmé kapitole.
+\\
+
+Následující podkapitola podrobnìji popisuje pamì na pøedmìty. Další podkapitoly pøedstavují nìkolik modelù vrstvy uzlù, které jsme postupnì navrhli.

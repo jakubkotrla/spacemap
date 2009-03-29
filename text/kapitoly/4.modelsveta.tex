@@ -1,0 +1,147 @@
+\chapter{Model svìta a agenta}
+
+Model prostorové mapy by mìl bıt nezávislı na konkrétní abstrakci svìta a architektuøe agenta.
+Pouze potøebuje nìjaké prostøedí pro vıvoj a testování.
+Rozhodli jsme se vytvoøit vlastní virtuální svìt a agenta, kterı v nìm ije - pohybuje se v nìm, provádí èinnosti a vnímá své okolí.
+Ve svìtì mùe zatím bıt právì jeden agent.
+\\
+
+
+\section{Model svìta}
+
+Èas svìta je diskrétní, probíhá v krocích. Kadı krok má urèenou dobu trvání, která záleí na tom, co agent v daném kroku dìlal.
+Napø. popojít o pár metrù trvá sekundy, zatímco pøeèíst si kapitolu v kníce mùe trvat i hodiny. Dobu trvání kroku mùe vzít model prostorové mapy v potaz.
+\\
+
+Virtuální svìt je 2D \footnote{z dùvodu jednodušší implementace geometrie a menších nárokù na vıkon}, obsahuje jednu místnost.
+Ta je reprezentována jednoduchım polygonem, urèenım mnoinou vrcholù.
+Prostor je tedy spojitı (note: disktrétní kvùli reprezentaci). Místnost má dané waypointy - místa, která jsou zajímavá z hlediska geometrie, tvaru místnosti, 
+napø. kouty, místa dobrého rozhledu apod.
+Waypointy má agent pøímo k dispozici. Vyuívá je pøi hledání cesty v nekonvexní místnosti èi pøi náhodném hledání pøedmìtù.
+\\
+
+??? OBR typického svìta - Lobby.
+\\
+
+V prostoru jsou umístìny pøedmìty. Poloha pøedmìtù je urèena souøadnicemi, velikost pøedmìtù je zanedbána.
+Pøedmìty mohou mít urèenou svoji statickou atraktivitu, jak moc jsou pro agenta zajímavé bez ohledu na èinnost, kterou agent právì provádí.
+Napø. kvìtina s velkım èervenım kvìtem bude mít vìtší atraktivitu ne zelená øasa. 
+\\
+
+
+\section{Architektura agenta}
+
+Architektura agenta je pøevzata z [literatura-peskova] a lehce upravena. Øízení chování agenta je zjednodušeno, protoe pro vıvoj modelu není tak podstatné.
+Na druhou stranu jeho vnímání okolí je mnohem propracovanìjší.
+\\
+
+Stejnì jako v [literatura-peskova] je vnímání svìta agentem postaveno na Gibsonovì teorii afordancí [literatura].
+Tato percepèní teorie øíká, e iví tvorové vnímají okolní svìt a pøedmìty spíše dle toho, k èemu se dají pouít, ne dle jejich fyzickıch vlastností
+(tvar, velikost, barva). To, k èemu se dá pøedmìt pouít, je vyjádøeno prostøednictvím tzv. afordancí, napø. "lze mì nabrousit", "lze se mnou krájet".
+Nù tedy není vnímána jako "kus kovu zasazenı do døeva, asi 15 centimetrù dlouhı", ale jako pøedmìt, kterı lze nabrousit a kterım lze krájet.
+\\
+
+Kadı pøedmìt má urèeno, jaké afordance agentovi nabízí. Èinnosti, které agent provádí, potøebují ke svému provedení urèité zdroje, pøedmìty s afordancemi.
+Èinnosti mají urèeno, jaké afordance potøebují, aby mohli bıt úspìšnì splnìny. Afordance lze chápat i jako jednoduché propojení mezi pøedmìty a èinnostmi,
+bez nutnosti pøesnì specifikovat, jaké všechny pøedmìty jsou k èinnosti tøeba a k èemu všemu lze pøedmìt pouít.
+Vıhodou tohoto modelu je rozšiøitelnost, do svìta je moné snadno pøidat nové objekty a èinnosti.
+\\
+
+V prùbìhu simulace agent ve svìtì provádí èinnosti, kterımi splòuje své zámìry. Zámìr je nìjakı cíl agenta, napø. odpoèinout si.
+Má urèeno, jakımi èinnostmi je moné jej splnit, napø. lehnout si, posadit se. Kdy agent plní zámìr, náhodnì vybere jednu z èinností.
+Pak se snaí získat zdroje (pøedmìty) nutné k provedení èinnosti - vytvoøí podzámìr Want(affordance). Ten znamená, e agent chce najít pøedmìt s danou afordancí.
+Zámìr Want(affordance) agent mùe splnit úspìšnım provedením jedné z nìkolika èinností: nalezením pøedmìtu v okolí;
+vzpomenutím si, kde se takovı pøedmìt nachází, pøesunutí k nìmu a jeho nalezení; náhodné hledání.
+\\
+
+?? OBR stromu smart-actions
+\\
+
+Kadá tato èinnost se skládá z nìkolika akcí, které mohou obsahovat další subakce, a není moné ji provést v jednom kroku simulace.
+Pro jejich dìlení lze pouít AND-OR strom popsanı v [literatura-peskova]. Pro naše úèely je však zbyteènì obecnı a komplikovanı.
+Vıše zmínìné èinnosti jsou tedy implementovány jako tzv. chytré akce, které si pamatují aktuální stav a dle nìj dokáí urèit, jakou akci má agent vykonat.
+Napø. pro náhodné hledání pøedmìtu je pouita chytrá akce "SearchRandom". Ta je schopná urèit, kam se agent má pøesunout pomocí další chytré akce "MoveTo".
+Teprve akce "MoveToPartial" je atomická a lze ji provést v jednom kroku simulace.
+\\
+
+Chytré akce jsou:
+\begin{CompactItemize}
+\item MoveTo(x,y) - pøesun agenta na pozici x,y. Nejdøíve je nalezena cesta, pokud je svìt konvexní místnost, jedná se o úseèku; pokud svìt není konvexní, jsou pouity waypointy a cesta je lomená èára. Kadá úseèka je pak rovnomìrnì rozdìlena na kratší èásti tak, aby délka její nejdelší èásti byla menší ne PARAM. Díky tomu se agent kadé kolo simulace posune jen o malı kus.
+\item SearchRandom(afordance) - náhodné hledání pøedmìtu s danou afordancí. Agent má u kadého waypointu uloen èas, kdy jej naposledy vidìl. Tato akce zajistí, e agent postupnì navštíví všechny waypointy. Zaène tím, kterı má nejstarší èas  a k tomu waypointu, kterı navštívil jako poslední. Toto poøadí je urèeno na zaèátku akce. K pøesunu mezi waypointy agent provádí chytrou akci MoveTo.
+\item LookUpInMemory(afordance) - získání pøedmìtu s danou afordancí s vyuitím prostorové mapy. Agent si nejdøíve vybaví pøedmìt s danou afordancí, kterı si pamatuje nejlépe (urèí prostorová mapa). K tomutu pøedmìtu se pøesune pomocí chytré akce MoveTo. Pak spustí atomickou akci LookForObject, která je jen speciálním pøípadem akce Explore.
+\item Execute - provedení èinnosti. Tato akce je spuštìna pouze pokud èinnost, kterou chce agent vykonat, má ji všechny zdroje, tedy èinnost má pro kadou poadovanou afordanci pøipojenı fantom pøedmìtu. Pak agent oveøí, zda všechny zdroje èinnosti jsou dostupné, tedy e je v jejich bezprostøední blízkosti (PARAM). Pokud ne, pøesune se k nim pomocí chytré akce MoveTo.  - note o jediné aff na èinnost
+\end{CompactItemize}
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|l|p{6cm}|}\hline
+MoveToPartial(x,y) & pøesun na pozici x,y\\
+\hline
+ExecuteReal(èinnost) & provedení èinnosti\\
+\hline
+Explore & rozhlédnutí se po okolí\\
+\hline
+Remember(afordance) & vybavení si pøedmìtu z prostorové mapy, kterı ma danou afordanci\\
+\hline
+LookForObject(pamìovı fantom) & vyhledání pøedmìtu odpovídajícího pamìovému fantomu\\
+\hline
+\end{tabular}\\
+\end{center}
+\centering
+\caption{Atomické akce}
+\label{tab:atomic-actions}
+\end{table}
+
+
+Souèástí svìta je i mnoina zámìrù a èinností, které agent mùe vykonávat. Závisí toti na pøedmìtech resp. jejich afordancích, které jsou ve svìtì dostupné. 
+Na zaèátku simulace je vygenerován agentùv scénáø, posloupnost zámìrù, kterou agent stále dokola provádí.
+Scénáø záleí pouze na zámìrech definovanıch v rámci svìta, aby bylo moné provádìt testy modelu se stejnım scénáøem.
+\\
+
+Pamì agenta je rozdìlena na krátkodobou a dlouhodobou. Dlouhodobá pamì v našem pøípadì obsahuje pouze prostorovou mapu - vyvíjenı model.
+Krátkodobá pamìt se skládá ze tøí èástí: procesní èásti, percepèního pole a pamìové èásti.
+Procesní èást obsahuje právì splòovanı zámìr, provádìné èinnosti, chytré akce a subakce, vše uspoøádané do stromu.
+Percepèní pole obsahuje odrazy zpozorovanıch pøedmìtù z vnìjšího svìta, tzv. fantomy.
+Pamìová èást obsahuje pamìové fantomy, odrazy pøedmìtù vybavené z dlouhodobé pamìti.
+\\
+
+V kadém kroku simulace agent dostane mnoinu pøedmìtù, které vidí.
+Ta je urèena z agentovy pozice a smìru, kterım se dívá a závisí i na právì provádìné atomické akci.
+Protoe zpùsob vnímání okolí je pro model podstatné, rozhodli jsme se implementovat pokroèilı model z poèítaèové hry Thief [literatura-thief], s lehkou úpravou.
+Vıslednı model bere v potaz vzdálenost pøedmìtù od agenta i jak moc by se agent musel otoèit, aby se díval pøímo na nì.
+Agent má definované tzv. visibility cones, defakto kruhové vıseèe, urèené polomìrem a úhlem, jsou orientovány smìrem, kam se agent dívá.
+Vıseèe mají definovano, jak moc je agent vnímavı na pøedmìty v nich - váha vıseèe.
+\\
+
+Viditelnost pøedmìtu je urèená vzorcem:
+viditelnost(pøedmìt) = suma pøes vıseè, e pøedmìt ve vıseèi, váha vıseèe
+\\
+
+Pøedmìty, které mají kladnou viditelnost, agent vidí a jsou pøedány k dalšímu zpracování.
+\\
+
+\begin{figure}
+  \centering
+  \subfloat[Pøi atomické akci Explore]{\label{fig:vcones-explore}\includegraphics{kapitoly/img/vcones-explore.ps}}                
+  \subfloat[Pøi ostatních akcích]{\label{fig:vcones-ostatni}\includegraphics{kapitoly/img/vcones-normal.ps}}
+  \caption{Kruhové vıseèe urèující agentovo vnímání}
+  \label{fig:vcones}
+\end{figure}
+
+Mnoina vıseèí urèuje agentùv zpùsob vnímání. Toho jsme vyuili a definovali dvì rùzné mnoiny kruhovıch vıseèí.
+Jednu pro chvíle kdy se agent rozhlíí (atomická akce Explore \ref{fig:vcones-explore}) a jednu pro zbylé pøípady \ref{fig:vcones-ostatni}.
+Úhel 360° v prvním pøípadì simuluje to, e pøi rozhlíení se agent postupnì podívá do všech stran.
+\\
+
+Viditelné pøedmìty projdou filtrem pozornosti, kde je upravena jejich aktuální atraktivita. Atraktivita pøedmìtu má dvì sloky, statickou a dynamickou.
+Dynamická atraktivita záleí na atomické akcí a èinnosti, kterou agent právì provádí, nabıvá hodnot 0..1, viz tabulka.
+Aktuální atraktivita pøedmìtu je souèin statické a dynamické atraktivity a jejich viditelnosti.
+\\
+
+Pokud je fantom pøedmìtu ji v percepèním poli, intenzita fantomu stoupne o aktuální atraktivitu pøedmìtu.
+Pokud není, je vytvoøen novı fantom a pøidán do percepèního pole s intenzitou odpovídající aktuální atraktiviì pøedmìtu.
+Pøidání fantomu však není propagováno hned dále (napø. do prostorové mapy).
+Kdy jsou zpracovány všechny pøedmìty, které agent tento krok vidìl, jsou fantomy v percepèním poli seøazeny dle intenzity.
+Pokud je fantomù více ne velikost percepèního pole (PARAM), jsou fantomy s nejniší intenzitou z pole odstranìny.
+Teprve nyní jsou novì pøidané fantomy pøedány prostorové mapì a procesní èásti (pouze ty, které se vešly do percepèního pole).
+\\
