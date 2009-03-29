@@ -1,0 +1,161 @@
+\documentclass[a4paper,12pt,oneside]{book}
+\usepackage[cp1250]{inputenc}
+\usepackage{czech}
+\usepackage{graphics}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{algorithmic}
+%\usepackage{algorithmicx}
+\usepackage{subfig}
+\usepackage[Algoritmus]{algorithm}
+%\usepackage{algpseudocode}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{color}
+
+\newenvironment{CompactItemize}
+{
+  \begin{itemize}
+  \setlength{\itemsep}{-3pt}
+  \setlength{\parsep}{0pt}
+  \setlength{\topsep}{0pt}
+  \setlength{\partopsep}{0pt}
+} 
+{\end{itemize}}
+
+\newenvironment{CompactList}
+{\begin{list}{}{
+  \setlength{\leftmargin}{0.5cm}
+  \setlength{\itemsep}{0pt}
+  \setlength{\parsep}{0pt}
+  \setlength{\topsep}{0pt}
+  \renewcommand{\makelabel}{}}}
+{\end{list}}
+
+\newenvironment{BulletList}
+{\begin{itemize}
+   \setlength{\itemsep}{0pt}
+}
+{\end{itemize}}
+
+\newcommand{\code}[1] {\noindent \texttt{#1}\\}
+
+\newcommand{\codeskip}[1] {\hskip 1cm \texttt{#1}\\}
+
+\newcommand{\protocol}[1] {\noindent {\small \texttt{#1}}}
+
+\newcommand{\abstrakt}[1] {\noindent {\textit{#1}}}
+
+\newcommand{\keywords}[1] {\small {#1} \normalsize}
+
+\newcommand{\putpicscale}[4]{
+		\begin{figure}[H]
+		\centering
+		\scalebox{#1}{\includegraphics{#2}}
+		\caption{#3 \label{#4}}
+		\end{figure}
+}
+
+\newcommand{\pputpicscale}[4]{
+		\begin{figure}[th]
+		\centering
+		\scalebox{#1}{\includegraphics{#2}}
+		\caption{#3}
+		\label{#4}
+		\end{figure}
+}
+
+\newcommand{\putpicscalesingle}[4]{
+		\begin{figure}[pb]
+		\centering
+		\scalebox{#1}{\includegraphics{#2}}
+		\caption{#3 \label{#4}}
+		\end{figure}
+}
+
+\newcommand{\putpicscalenocaption}[2]{
+		\begin{figure}[th]
+		\centering
+		\scalebox{#1}{\includegraphics{#2}}
+		\end{figure}
+}
+
+\newcommand{\putpic}[3]{
+		\begin{figure}[th]
+		\centering		
+		\includegraphics{#1}
+		\caption{#2}
+		\label{#3}
+		\end{figure}
+}
+
+
+%\newcommand{\koment}[1]{
+%		\marginpar{#1}
+%}
+
+\newcommand{\koment}[1]{
+}
+
+\let\oldmarginpar\marginpar
+\renewcommand\marginpar[1]{\-\oldmarginpar[\raggedleft\footnotesize #1]%
+{\raggedright\footnotesize \textcolor{red}{#1}}}
+
+\newcommand{\comment}[1]{}
+
+\newcommand{\FuncReturn}[1] {\State \textbf{return} {#1}}
+
+\newtheorem{theorem}{Vìta}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Tvrzení}
+\newtheorem{corollary}[theorem]{Dùsledek}
+
+\newenvironment{proof}[1][Dùkaz]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newenvironment{definition}[1][Definice]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newenvironment{example}[1][Pøíklad]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newenvironment{remark}[1][Pozorování]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+
+\begin{document}
+\lstset{language=C++}
+\input epsf
+
+\pagestyle{plain}
+%\include{kapitoly/0..hlavicka}
+
+\tableofcontents
+
+%\include{kapitoly/0.abstrakt}
+\include{kapitoly/1.uvod}
+\include{kapitoly/2.rozborproblemu}
+\include{kapitoly/3.pribuzneprace}
+\include{kapitoly/4.modelsveta}
+
+\include{kapitoly/5.0.modelmapy}
+\include{kapitoly/5.1.pametnapredmety}
+\include{kapitoly/5.2.kmlayer}
+\include{kapitoly/5.3.gravitylayer}
+\include{kapitoly/5.4.energylayer}
+
+
+\include{kapitoly/6.testy}
+\include{kapitoly/7.diskuze}
+\include{kapitoly/8.zaver}
+
+\appendix
+\include{prilohy/1.mistnosti}
+\include{prilohy/2.params}
+
+
+\bibliographystyle{siam}
+\bibliography{literatura}
+
+\end{document}

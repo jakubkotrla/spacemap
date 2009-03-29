@@ -1,0 +1,71 @@
+\section{Pamìt na pøedmìty}
+
+Pamì na pøedmìty øeší ukládání objektù (a potencionálnì dalších informací) k uzlùm.
+Tedy ukládá informace typu "objekt XY je v uzlu n42 s intenzitou 5,2". Pamì na pøedmìty vychází z práce Tomáše Korenka [literatura-korenko].
+\\
+
+Pamì nepracuje pøímo s reálnımi pøedmìty, ale vytváøí si jejich kopie, pamìové stopy pøedmìtù.
+Pro kadı reálnı pøedmìt má pamì nejvıše jednu pamìovou stopu.
+Ta má odkaz na reálnı pøedmìt, kterı uchovává a intenzitu urèující, jak moc si agent danı pøedmìt pamatuje.
+\\
+
+Mezi pamìovımi stopami pøedmìtù a uzly mapy je asociativní sí, která se vytváøí v prùbìhu simulace, dle toho, jak agent vnímá pøedmìty kolem sebe.
+Pamìti je v kadém kroku pøedloena mnoina vjemù (mùe bıt prázdná).
+Vjem je trojice (pøedmìt, poloha, intenzita).
+Vjem má svùj typ, danı událostí, kterou byl vyvolán, jejich pøehled je v tabulce \ref{tab:typy-vjemu}.
+Kadı typ má urèenı koeficient, kterım je vynásobena intenzita vjemu pøed jeho zpracováním prostorovou mapou, tyto koeficienty jsou parametry modelu.
+\\
+
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|l|p{6cm}|}\hline
+ObjectNoticed & agent vidí pøedmìt, kterı minulı krok simulace nevidìl \\
+\hline
+ObjectNoticedAgain & agent vidí pøedmìt, kterı vidìl ji pøedchozí krok simulace \\
+\hline
+ObjectFound & agent nalezl pøedmìt jako vısledek chytré akce LookUpInMemory \\
+\hline
+ObjectNotFound & agent nenalezl pøedmìt tam, kde ho hledal pøi chytré akce LookUpInMemory \\
+\hline
+ObjectUsed & agent pouil pøedmìt k provedení èinnosti \\
+\hline
+\end{tabular}\\
+\end{center}
+\centering
+\caption{Atomické akce}
+\label{tab:typy-vjemu}
+\end{table}
+
+
+Proces zpracování vjemu prostorovou mapou je shrnut v \ref{alg:zpracovani-vjemu} zpracování vjemu.
+V prvním kroku je urèena pamìová stopa uchovávající informaci o pøedmìtu. Pokud není nalezena, je vytvoøena.
+V kroku 4 je urèena intenzita o kterou bude zvıšena vazba mezi pamìovou stopou a uzlem dle vzorce vvv.
+\\
+
+
+Èást tohoto procesu mùe bıt provádìna v rámci vrstvy uzlù, nap5. v modelu Energy Layer.
+\\
+
+Prostorová mapa je schopna øíci, kde se nacházejí pøedmìty, které agent pøed tím vidìl. Tato informace je uloena v døíve zmínìné asociativní síti.
+Èím blíe je pøedmìt nìjakému uzlu mapy, tím vyšší je intenzita vazby mezi nimi.
+Kdy agent hledá pøedmìt mající nìjakou affordanci, provede se proces popsanı v \ref{alg:vzpomenuti}. V kroku 2 je spoèítána poloha pøedmìtu z informací uloenıch v asociativní síti.
+Poloha pøedmìtu je váenı centroid všech uzlù, které mají vazbu na pamìovou stopu, váhou je intenzita vazeb.
+\\
+
+\begin{algorithm}[h!]
+\caption{Vzpomenutí si na pøedmìt}
+\label{alg:vzpomenuti}
+\begin{algorithmic}[1]
+\STATE Je vybrána pamìová stopa s nejvyšší intenzitou, která má poadovanou affordanci
+\STATE Je aktualizována informace o poloze pøedmìtu v pamìové stopì
+\STATE Pamìová stopa je pøedána pamìové èásti krátkodobé pamìti, která z ní vytvoøí pamìového fantoma
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{enumerate}
+\item Je vybrána pamìová stopa s nejvyšší intenzitou, která má poadovanou affordanci
+\item Je aktualizována informace o poloze pøedmìtu v pamìové stopì
+\item Pamìová stopa je pøedána pamìové èásti krátkodobé pamìti, která z ní vytvoøí pamìového fantoma
+\end{enumerate}
