@@ -8,25 +8,28 @@ Vìtšina modelù pamìti, zmínìnıch v tøetí kapitole, vyuívá samoorganizující Koho
 
 Kohonenova mapa by mìla splòovat naše poadavky. Umí rozmístit uzly do hustoty odpovídající rozmístìní pøedmìtù v prostoru.
 Umí se uèit online, kadı vjem agenta je moné chápat jako prvek trénovací mnoiny dat. Jeví se tedy jako ideální.
-Navrhli jsme tedy model Node Layer zaloenı na Kohonenovì mapì - Kohonen Map Layer.
+Navrhli jsme tedy model vrstvy uzlù zaloenı na Kohonenovì mapì - Kohonen Map Layer.
 \\
 
 ?? OBR ctercove site ??
+\\
 
-Na zaèátku je prostor pokryt Kohonenovou mapou - ètvercovou sítí.
+Na zaèátku je prostor pokryt Kohonenovou mapou - ètvercovou sítí. Hustota uzlù je parametr modelu.
 Pokadé, kdy je vjem, pøedán ke zpracování do Kohonen Map Layer, provede se trénování Kohonenovy mapy dle algoritmu \ref{alg:km-uceni}.
 \\
 
 
 \begin{algorithm}[h!]
-\caption{Zpracování vjemu v KM Layer}
+\caption{Zpracování vjemu v Kohonen Map Layer}
 \label{alg:km-uceni}
 \begin{algorithmic}[1]
 \State $node \gets$ vyhrávající uzel (tedy nejbliší k poloze vjemu)
-\State $queue \gets 0$
+\State $queue \gets \emptyset$
 \State $queue \gets node$
-\While{$queue\not=0$}
-	\State Natrénování uzlu dle vzorce \ref{formula:km-uceni} \label{alg:km-uceni-vzorec}
+\While{$queue\not= \emptyset$}
+	\State $n \gets first(queue)$
+	\State $queue \gets queue  \setminus <n>$
+	\State Trénování $n$ dle vzorce \ref{formula:km-uceni} \label{alg:km-uceni-vzorec}
 	\State $queue \gets$ sousedi $n$ (pokud nebyli ješte trénováni)
 \EndWhile
 \State vjem je pøedán vrstvì uzlù k dalšímu zpracování
@@ -36,14 +39,14 @@ Pokadé, kdy je vjem, pøedán ke zpracování do Kohonen Map Layer, provede se tré
 Pøi trénování je v algoritmu na øádce \ref{alg:km-uceni-vzorec} pouit vzorec
 
 \begin{equation} 
-\Delta xy(n_i, vjem) = coef_{neighbour}(n_i, t) \times coef_{learn} \times distance(n_i, vjem)
+\Delta xy(n, vjem) = coef_{neighbour}(n, node) \times coef_{learn} \times dist(n, vjem)
 \label{formula:km-uceni}
 \end{equation}
-\\
 
-kde \(coef_{neighbour}\) je vzdálenost mezi vyhrávajícím uzlem a právì trénovanım uzlem v Kohonenovì mapì a \(coef_{learn}\) je parametr modelu.
-
-Tímto algoritmem se uzly KM Layer v prùbìhu uèení/vnímání pøibliují k objektùm.
+kde \(coef_{neighbour}\) je vzdálenost mezi vyhrávajícím uzlem a právì trénovanım uzlem v Kohonenovì mapì,
+\emph{dist} je vzdálenost uzlu od vjemu v prostoru a \(coef_{learn}\) je parametr modelu.
+Poloha uzlu \emph{n} je zmìnìna o \(\Delta xy(n, vjem)\).
+Tímto algoritmem se uzly Kohonen Map Layer v prùbìhu uèení/vnímání pøibliují k objektùm.
 \\
 
 Problém, které by mohl nastat je, e se sí pro naše potøeby "pøeuèí" - uzly se èasem všechny pøesunou k pøedmìtùm a prostor bez pøedmìtù zùstane prázdnı, bez uzlù.
@@ -67,6 +70,7 @@ Tyto umìlé pøedmìty musí mít niší atraktivitu ne reálné pøedmìty, aby je nepøe
 Base objects jsou do svìta pøidány na zaèátku, pøi vytváøení ètvercové sítì. V kadém místì, kde je uzel sítì, je vytvoøen jeden base object.
 Agent je bude vnímat stejnì jako ostatní pøedmìty, v prùbìhu simulace budou k sobì pøitahovat uzly sítì stejnì jako reálné pøedmìty.
 Tím by mìly udret Kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty nejsou.
+\\
 
 ?? Vısledek testu OBR. ??
 \\
@@ -74,19 +78,20 @@ Tím by mìly udret Kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty n
 V pøípadì base objects se ukázalo, e øešení nevyhovuje. Mapa se stahuje do støedu místnosti bez ohledu na vliv base objects.
 \\
 
-\subsection{Odpudivost uzlù}
+\subsection{Odpudivost uzlù} \label{s:km-odpudivost}
 Do modelu jsme pøidali odpudivost uzlù sítì. V kadém kroku simulace se uzly, které jsou pøíliš blízko u sebe, odpuzují.
 V kadém kroku simulace je proveden proces ref. Vzájemná odpudivost dvou uzlù závisí na jejich vzdálenosti a jejich naplnìnosti.
 \\
 
-Naplnìnost uzlu je souèet intenzit všech jeho vazeb na pamìové stopy. Pøedstavuje míru dùleitosti uzlu pro pamì na pøedmìty.
+Naplnìnost uzlu \footnote{Naplnìnost uzlu $node$ budeme dále ve vzorcích oznaèovat znakem $\mu(node)$}
+je souèet intenzit všech jeho vazeb na pamìové stopy. Pøedstavuje míru dùleitosti uzlu pro pamì na pøedmìty.
 Èím více pamìovıch stop vyuívá uzel a èím intenzivnìjší jsou, tím ménì by se mìla mìnit jeho poloha.
 Uzel s vysokou naplnìností bude v místì, kde je hodnì pøedmìtù.
 V takovıch místech by hustota uzlù mìla bıt vìtší a proto je nutné, aby v takovıch místech byla vzájemná odpudivost uzlù menší.
 \\
 
 \begin{equation} 
-odpudivost(n_i, n_j) = \frac{ coef }{ distance^2 \times naplnenost(n_i) \times naplnenost(n_j) } 
+odpudivost(n_i, n_j) = \frac{ coef }{ dist(n_i, n_j)^2 \times \mu(n_i) \times \mu(n_j) } 
 \label{formula:km-odpudivost}
 \end{equation}
 \\
@@ -98,7 +103,7 @@ V kadém kroku simulace je spoètena vzájemná odpudivost uzlù. Tím jsou urèeny vš
 Poloha uzlù je pak upravena dle tìchto sil.
 \\
 
-Vzdálenost uzlù je moné mìøit dvìma zpùsoby: jejich vzdáleností ve virtuálním svìtì èi jejich vzdáleností v kohonenovì mapì.
+Vzdálenost uzlù je moné mìøit dvìma zpùsoby: jejich vzdáleností ve virtuálním svìtì èi jejich vzdáleností v Kohonenovì mapì.
 Smìr odpuzujících sil je v obou pøípadech  urèen z jejich vzájemné polohy.
 \\
 

@@ -93,7 +93,7 @@ class EnergyPoint:
         self.y = y
         self.energy = energy
         
-        effect = self.energy / Global.ELEnergyPointCreateEnergy
+        effect = self.energy / Global.EPCreateEnergy
         self.intenseMemObjToNodes(effect)
         
     def ToString(self):
@@ -109,15 +109,15 @@ class EnergyPoint:
             self.layer.CreateNode(self, self.memObject)
             self.energy = self.energy - cost
         
-        effect = self.energy / Global.ELEnergyPointCreateEnergy
-        
-        self.intenseMemObjToNodes(effect)
+        effect = self.energy / Global.EPCreateEnergy
         
         for node in nodesAround:
             node.Train(self, effect)
+            
+        self.intenseMemObjToNodes(effect)
 
-        self.energy = self.energy * Global.ELEnergyFadeCoef
-        if self.energy < Global.ELEnergyFadeLimit:
+        self.energy = self.energy * Global.EPFadeCoef
+        if self.energy < Global.EPFadeLimit:
             self.layer.DeleteEnergyPoint(self)
     
     def intenseMemObjToNodes(self, effect):
@@ -454,11 +454,11 @@ class EnergyLayer:
                 foundEP = ep
                 break
         if foundEP != None:
-            foundEP.energy = foundEP.energy + effect * Global.ELEnergyPointCreateEnergy
+            foundEP.energy = foundEP.energy + effect * Global.EPCreateEnergy
         else:                
-            ep = EnergyPoint(self, memObject, memObject.x, memObject.y, effect * Global.ELEnergyPointCreateEnergy)
+            ep = EnergyPoint(self, memObject, memObject.x, memObject.y, effect * Global.EPCreateEnergy)
             self.energyPoints.append(ep)
-        self.stepEPCreated += effect * Global.ELEnergyPointCreateEnergy
+        self.stepEPCreated += effect * Global.EPCreateEnergy
         
     def DeleteEnergyPoint(self, energyPoint):
         self.energyPointsToDelete.append(energyPoint)
@@ -476,11 +476,11 @@ class EnergyLayer:
             Global.LogData("elnodeheatmap", nStr)
         
     def GetNodeCreateCost(self):
-        x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = Global.NodeCostCoef * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(x)/50))
         return cost
     def GetNodeDeleteCost(self):
-        x = 50 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = Global.NodeCostCoef * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(-x)/50))
         return cost
 

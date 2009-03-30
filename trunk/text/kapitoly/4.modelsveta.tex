@@ -23,9 +23,9 @@ Waypointy má agent pøímo k dispozici. Využívá je pøi hledání cesty v nekonvexní 
 ??? OBR typického svìta - Lobby.
 \\
 
-V prostoru jsou umístìny pøedmìty. Poloha pøedmìtù je urèena souøadnicemi, velikost pøedmìtù je zanedbána.
+V prostoru jsou umístìny pøedmìty. Pøedmìty jsou reprezentovány pouze jako body, jejich velikost je zanedbána, jejich poloha je urèena souøadnicemi.
 Pøedmìty mohou mít urèenou svoji statickou atraktivitu, jak moc jsou pro agenta zajímavé bez ohledu na èinnost, kterou agent právì provádí.
-Napø. kvìtina s velkým èerveným kvìtem bude mít vìtší atraktivitu než zelená øasa. 
+Napø. kvìtina s velkým èerveným kvìtem bude mít vìtší atraktivitu než zelená øasa. Pro úèely vývoje modelu je atraktivita všech pøedmìtù rovna 1.
 \\
 
 
@@ -42,17 +42,21 @@ Nùž tedy není vnímána jako "kus kovu zasazený do døeva, asi 15 centimetrù dlouhý
 \\
 
 Každý pøedmìt má urèeno, jaké afordance agentovi nabízí. Èinnosti, které agent provádí, potøebují ke svému provedení urèité zdroje, pøedmìty s afordancemi.
-Èinnosti mají urèeno, jaké afordance potøebují, aby mohli být úspìšnì splnìny. Afordance lze chápat i jako jednoduché propojení mezi pøedmìty a èinnostmi,
-bez nutnosti pøesnì specifikovat, jaké všechny pøedmìty jsou k èinnosti tøeba a k èemu všemu lze pøedmìt použít.
+Èinnosti mají urèeno, jaké afordance potøebují, aby mohli být úspìšnì splnìny. Afordance lze chápat i jako jednoduché propojení mezi pøedmìty a èinnostmi
+bez nutnosti pøesnì specifikovat jaké všechny pøedmìty jsou k èinnosti tøeba a k èemu všemu lze pøedmìt použít.
 Výhodou tohoto modelu je rozšiøitelnost, do svìta je možné snadno pøidat nové objekty a èinnosti.
 \\
 
 V prùbìhu simulace agent ve svìtì provádí èinnosti, kterými splòuje své zámìry. Zámìr je nìjaký cíl agenta, napø. odpoèinout si.
 Má urèeno, jakými èinnostmi je možné jej splnit, napø. lehnout si, posadit se. Když agent plní zámìr, náhodnì vybere jednu z èinností.
 Pak se snaží získat zdroje (pøedmìty) nutné k provedení èinnosti - vytvoøí podzámìr Want(affordance). Ten znamená, že agent chce najít pøedmìt s danou afordancí.
-Zámìr Want(affordance) agent mùže splnit úspìšným provedením jedné z nìkolika èinností: nalezením pøedmìtu v okolí;
-vzpomenutím si, kde se takový pøedmìt nachází, pøesunutí k nìmu a jeho nalezení; náhodné hledání.
-\\
+Zámìr Want(affordance) agent mùže splnit úspìšným provedením jedné z tøí èinností:
+
+\begin{CompactItemize}
+\item nalezením pøedmìtu v okolí
+\item vzpomenutím si, kde se takový pøedmìt nachází, pøesunutí k nìmu a jeho nalezení
+\item náhodné hledání
+\end{CompactItemize}
 
 \begin{figure}[h]
   \centering
@@ -63,7 +67,6 @@ vzpomenutím si, kde se takový pøedmìt nachází, pøesunutí k nìmu a jeho nalezení;
     
 
 Každá tato èinnost se skládá z nìkolika akcí, které mohou obsahovat další subakce, a není možné ji provést v jednom kroku simulace.
-Pro jejich dìlení lze použít AND-OR strom popsaný v [literatura-peskova]. Pro naše úèely je však zbyteènì obecný a komplikovaný.
 Výše zmínìné èinnosti jsou tedy implementovány jako tzv. chytré akce, které si pamatují aktuální stav a dle nìj dokáží urèit, jakou akci má agent vykonat.
 Napø. pro náhodné hledání pøedmìtu je použita chytrá akce "SearchRandom". Ta je schopná urèit, kam se agent má pøesunout pomocí další chytré akce "MoveTo".
 Teprve akce "MoveToPartial" je atomická a lze ji provést v jednom kroku simulace.
@@ -145,7 +148,7 @@ Pøedmìty, které mají kladnou viditelnost, agent vidí a jsou pøedány k dalšímu zp
 \end{figure}
 
 Množina výseèí urèuje agentùv zpùsob vnímání. Toho jsme využili a definovali dvì rùzné množiny kruhových výseèí.
-Jednu pro chvíle kdy se agent rozhlíží (atomická akce Explore), obrázek \ref{fig:vcones-explore}, a jednu pro zbylé pøípady, obrázek \ref{fig:vcones-ostatni}.
+Jednu pro chvíle, kdy se agent rozhlíží (atomická akce Explore) - obrázek \ref{fig:vcones-explore}, a jednu pro zbylé pøípady - obrázek \ref{fig:vcones-ostatni}.
 Úhel 360° v prvním pøípadì simuluje to, že pøi rozhlížení se agent postupnì podívá do všech stran.
 \\
 
