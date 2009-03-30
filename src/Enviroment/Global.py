@@ -70,10 +70,12 @@ class GlobalVariables:
         self.ELAntigravityRange = 20
         self.MaxELNodeMove = 4.0
         
-        self.ELEnergyPointCreateEnergy = 140
+        self.EPCreateEnergy = 140
         self.ELNodeAddNoise = 2
-        self.ELEnergyFadeCoef = 0.5
-        self.ELEnergyFadeLimit = 10
+        self.EPFadeCoef = 0.5
+        self.EPFadeLimit = 10
+        
+        self.NodeCostCoef = 50
         
         self.ELForgetNodeRate = 5           #how much EL.forgetEnergy is added each step
         self.ELDeleteNodeReTrainCount = 20
