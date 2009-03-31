@@ -105,7 +105,7 @@ class KohonenMapLayerNode:
         difX = memObject.x - self.x
         difY = memObject.y - self.y
         
-        lCoef = neighboursCoef * Global.KMLayerLearningCoef * effect #ToDo * memObject.attractivity*1.0/memObject.maxAttractivity
+        lCoef = neighboursCoef * Global.KMLayerLearningCoef * effect
         difX *= lCoef
         difY *= lCoef
 
