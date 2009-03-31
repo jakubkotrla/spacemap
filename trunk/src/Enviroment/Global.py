@@ -84,9 +84,13 @@ class GlobalVariables:
         self.SMBigUpdateFreq = 9
         self.ELAGAddCoef = 2
         self.ELAGFadeOut = 1
+        self.HLFadeOut = 1
         self.HLAGNeeded = 4000
         self.HLAGNeededSum = 50000
-  
+        
+        self.HLAGAddCoef = 2
+        self.HLAGFadeOut = 1
+    
     def Random(self):
         return random()
     def Randint(self, min, max):
