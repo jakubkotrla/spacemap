@@ -9,4 +9,4 @@ del *.aux
 del kapitoly\*.aux
 del prilohy\*.aux
 del diplomka.toc
-del diplomka.blg
+del diplomka.bbl
