@@ -52,7 +52,7 @@ class ELHighNode:
         self.range = self.layer.GetRangeByAG(self.intensity)
         self.UpdateLocation()
         
-        nodesAround = self.layer.getNodesAround(self, self.range)
+        nodesAround = self.layer.getHlNodesAround(self, self.range, self.level - 1)
         map = Global.Map
         nodesToRemove = []
         for node in self.nodes:
@@ -60,7 +60,7 @@ class ELHighNode:
             if dist > self.range:
                 nodesToRemove.append(node)
         for node in nodesToRemove:
-            self.intensity -= self.nodes[node]   #ToDo: is this OK?
+            #self.intensity -= self.nodes[node]   #ToDo: is this OK?
             del self.nodes[node]
             del node.hlNodes[self]
         for node in nodesAround:
@@ -526,6 +526,20 @@ class EnergyLayer:
         range = range * range
         for n in self.nodes:
             if n == node: continue
+            ldx = n.x-node.x
+            ldy = n.y-node.y
+            dist = ldx*ldx + ldy*ldy
+            if dist < range:
+                #if self.area.CanMove(node, n.x, n.y):
+                nodesAround.append(n)
+        return nodesAround
+
+    def getHlNodesAround(self, node, range, level):
+        nodesAround = []
+        range = range * range
+        for n in self.hlNodes:
+            if n == node: continue
+            if hlN.level != level: continue
             ldx = n.x-node.x
             ldy = n.y-node.y
             dist = ldx*ldx + ldy*ldy
