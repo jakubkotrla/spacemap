@@ -52,7 +52,10 @@ class ELHighNode:
         self.range = self.layer.GetRangeByAG(self.intensity)
         self.UpdateLocation()
         
-        nodesAround = self.layer.getHlNodesAround(self, self.range, self.level - 1)
+        if self.level == 1:
+            nodesAround = self.layer.getNodesAround(self, self.range)
+        else:    
+            nodesAround = self.layer.getHlNodesAround(self, self.range, self.level - 1)
         map = Global.Map
         nodesToRemove = []
         for node in self.nodes:
@@ -73,7 +76,7 @@ class ELHighNode:
         #calculate is own AGamount
         for hlN,dist in hlNodesDist.iteritems():
             r = (self.range + hlN.range) / 2
-            self.AGamount += (1.0/ max(1, dist / r)) * Global.HLAGAddCoef 
+            self.AGamount += (1.0/ max(1, dist / r)) * Global.HLAGAddCoef * (self.level + 1)
         self.AGamount -= Global.HLAGFadeOut
         
         s = str(Global.GetStep()) + ";" + str(self.index) + ";" + ("%.4f,%.4f"%(self.x, self.y)) + ";" + str(self.range) + ";" + str(self.intensity) + ";" + str(self.AGamount) + ";" + str(self.level) + ";" + str(len(self.nodes))   
@@ -539,7 +542,7 @@ class EnergyLayer:
         range = range * range
         for n in self.hlNodes:
             if n == node: continue
-            if hlN.level != level: continue
+            if n.level != level: continue
             ldx = n.x-node.x
             ldy = n.y-node.y
             dist = ldx*ldx + ldy*ldy
