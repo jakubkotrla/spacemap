@@ -159,6 +159,15 @@ class MapRenderer:
         self.canvas.delete("energylayernode")
         for node in elnodes:
             self.PixelC(node, node.x, node.y, "#00b500", 2, "energylayernode info")
+            
+        self.canvas.delete("energylayerPlace")
+        places = self.agent.intelligence.spaceMap.Layer.places
+        for place in places:
+            if place.parent == None: continue
+            self.PixelC(place, place.x, place.y, None, 1, "energylayerPlace info", outline="#0000aa")
+            self.CircleC(place, place.x, place.y, place.range, "#0000aa", "energylayerPlace info")
+            for node in place.nodes:
+                 self.Line(place.x, place.y, node.x, node.y, "#0000aa", "energylayerPlace")
          
     
     def RenderProgress(self, progressObject, configName):
@@ -280,6 +289,18 @@ class MapRenderer:
             draw.rectangle([x,y, x+10,y+10], fill=None, outline=(0, 128, 0))
             for node in hlNode.nodes:
                 draw.line( [x+5, y+5, self.zoom*node.x+10, self.zoom*node.y+10], fill=(0, 222, 0))
+        for place in elayer.places:
+            if place.parent == None: continue
+            x = (place.x-place.range)*self.zoom + 10
+            y = (place.y-place.range)*self.zoom + 10
+            x2 = (place.x+place.range)*self.zoom + 10
+            y2 = (place.y+place.range)*self.zoom + 10
+            draw.ellipse([x,y, x2,y2], fill=None, outline=(0, 0, 128))
+            x = place.x*self.zoom - 5 + 10
+            y = place.y*self.zoom - 5 + 10
+            draw.rectangle([x,y, x+10,y+10], fill=None, outline=(0, 0, 128))
+            for node in place.nodes:
+                draw.line( [x+5, y+5, self.zoom*node.x+10, self.zoom*node.y+10], fill=(0, 0, 128))
         
         for node in elayer.nodes:    
             x = node.x*self.zoom - 2 + 10

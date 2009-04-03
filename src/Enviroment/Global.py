@@ -29,7 +29,7 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [718597]   #seeds to test
-        self.MaxTestSteps = 4000    #should be more than one day 
+        self.MaxTestSteps = 5000    #should be more than one day 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -90,6 +90,8 @@ class GlobalVariables:
         
         self.HLAGAddCoef = 2
         self.HLAGFadeOut = 1
+        
+        self.PlacesAGNeeded = 4000
     
     def Random(self):
         return random()

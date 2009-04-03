@@ -94,7 +94,7 @@ def plotNC(fileName):
 
 def plotHLNodes(fileName):
     pass
-        
+
 
 def plotRememberOne(fileName, rows):
     trained = map(lambda x: x[1], rows)
@@ -205,7 +205,6 @@ def plotELNodeStats(fileName):
     plot(stepND, distMeanND, 'b-', label='mean')
     plot(stepND, distMinND, 'k:', label='min')
     plot(stepND, distMaxND, 'k,', label='max')
-    #plot(stepND, distMaxND, marker=",", color='red', drawstyle="steps", linestyle="None", label="max")
     yscale('log')
     xlabel("Time (steps)")
     ylabel('Distance moved')
@@ -234,16 +233,52 @@ def plotELNodeStats(fileName):
     savefig(fileName+".ag.png", format="PNG")
     clf()
     
-def plotHist():
-    rowsRAW = csv.reader(open("p.txt", "rb"), delimiter=";")
+def plotPlacesStats(fileName):
+    rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
     rows = []
     rows.extend(rowsRAW)
-    rows = map(lambda x: x[2], rows)
-    rowsND = array(rows)
-    hist(rowsND.astype(float), bins=20)
-    savefig("p.png", format="PNG")
-
     
+    stepND = arange(0, len(rows), 1)
+    agMean = map(lambda x: x[1], rows)
+    agMin = map(lambda x: x[2], rows)
+    agMax = map(lambda x: x[3], rows)
+    agMeanND = array( agMean )
+    agMinND = array( agMin )
+    agMaxND = array( agMax )
+     
+    plot(stepND, agMeanND, 'b-', label='mean')
+    plot(stepND, agMinND, 'k:', label='min')
+    plot(stepND, agMaxND, 'k:', label='max')
+    xlabel("Time (steps)")
+    ylabel('AG amount')
+    title('AG amount in time')
+    legend(loc='upper left')
+    savefig(fileName+".ag.png", format="PNG")
+    clf()
+
+def plotPlace(fileName):
+    rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
+    rows = []
+    rows.extend(rowsRAW)
+    
+    stepND = arange(0, len(rows), 1)
+    agC = map(lambda x: x[6], rows)
+    agT = map(lambda x: x[7], rows)
+    agS = map(lambda x: x[8], rows)
+    agCND = array( agC )
+    agTND = array( agT )
+    agSND = array( agS )
+    
+    plot(stepND, agCND, 'k.', label='AG')
+    plot(stepND, agTND, 'g-', label='AG total')
+    plot(stepND, agSND, 'b-', label='AG slow')
+    xlabel("Time (steps)")
+    ylabel('AG amount')
+    title('AG amount in time')
+    legend(loc='upper left')
+    savefig(fileName+".ags.png", format="PNG")
+    clf()
+
      
 full = False   
 
@@ -256,6 +291,9 @@ for root, dirs, files in os.walk('.'):
         elif fname == "data-elnodeheatmap.txt":
             print ("plotHeatMapELNode " + root + "\\" + fname)
             plotHeatMap(root + "\\" + fname, "ELNodes HeatMap")
+        elif fname == "data-elnodeheatmapag.txt":
+            print ("plotHeatMapELNodeAG " + root + "\\" + fname)
+            plotHeatMap(root + "\\" + fname, "ELNodes AG HeatMap")
         elif fname == "data-nc.txt":
             print ("plotNC " + root + "\\" + fname)
             plotNC(root + "\\" + fname)
@@ -270,6 +308,12 @@ for root, dirs, files in os.walk('.'):
             print ("plotELNodeStats " + root + "\\" + fname)
             plotELNodeStats(root + "\\" + fname)
             
+        elif fname == "data-places-status.stats.txt":
+            print ("plotPlacesStats " + root + "\\" + fname)
+            plotPlacesStats(root + "\\" + fname)
+        elif fname.startswith("place-") and fname.endswith(".txt"):
+            print ("plotPlaces " + root + "\\" + fname)
+            plotPlace(root + "\\" + fname)
 
 print "*** END ***"          
             
