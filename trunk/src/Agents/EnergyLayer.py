@@ -1,9 +1,91 @@
 
 from Enviroment.Global import Global
-from math import sqrt, fabs, log, e
+from math import sqrt, fabs, log, e, ceil
 from Enviroment.Map import Point
 import copy
 
+class Place:
+    def __init__(self, layer, index, x, y):
+        self.layer = layer
+        self.index = index
+        self.x = x
+        self.y = y
+        self.range = 0
+        self.startRange = 0
+        self.parent = None
+        self.level = 1
+        self.nodes = []
+        self.places = []
+        self.AGamount = 0
+        self.startTotalAGamount = 0
+        self.totalAGamount = 0
+        self.slowAGamount = 0
+        
+    def StepUpdate(self):
+        status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f"%(self.x,self.y,self.level,self.range,self.AGamount,self.totalAGamount,self.slowAGamount)
+        Global.LogData("place-status", status)
+    
+    def CalculateAG(self):
+        self.AGamount = 0
+        for node in self.nodes:
+            self.AGamount += node.AGamount
+        self.totalAGamount = self.calculateAGdeep(self)
+        
+        d = self.totalAGamount - self.slowAGamount
+        if fabs(d) > 1:
+            self.slowAGamount += d / 100
+        
+    def calculateAGdeep(self, placeToProcess):
+        sumNodeAGamount = 0
+        for node in placeToProcess.nodes:
+            sumNodeAGamount += node.AGamount
+        for place in placeToProcess.places:
+            if len(place.places) > 0:
+                Global.Log("haha")
+            sumNodeAGamount += self.calculateAGdeep(place)
+        return sumNodeAGamount
+    
+    def CalculateRange(self):
+        l = 1.0 / (self.slowAGamount / self.startTotalAGamount)
+        self.range = self.startRange * (l)
+    
+    def UpdateLocation(self):
+        (x, y, sumNodeAGamount, count) = self.updateLocDeep(self)
+        #self.totalAGamount = sumNodeAGamount 
+        if sumNodeAGamount == 0: return
+        x = x / self.totalAGamount
+        y = y / self.totalAGamount
+        p = Point(x,y)
+        map = Global.Map
+        if not map.IsInside(p):  #this should not happen, quick hack - go closer old location
+            hit = map.CanMoveEx(self, p.x, p.y)
+            if hit.hit:
+                p = hit
+            else:
+                Global.Log("Programmer.Error: Place: not inside but canMove-not-hit")
+        coef = min(1, (float(self.startTotalAGamount) / self.slowAGamount))
+        dx = (p.x - self.x) * coef
+        dy = (p.y - self.y) * coef
+        self.x += dx 
+        self.y += dy
+    def updateLocDeep(self, placeToProcess):
+        x = 0
+        y = 0
+        sumNodeAGamount = 0
+        count = 0
+        for node in placeToProcess.nodes:
+            x += node.x * node.AGamount
+            y += node.y * node.AGamount
+            sumNodeAGamount += node.AGamount
+            count += 1
+        for place in placeToProcess.places:
+            (lx, ly, lsumNodeAGamount, lcount) = self.updateLocDeep(place)
+            x += lx
+            y += ly
+            sumNodeAGamount += lsumNodeAGamount
+            count += lcount
+        return (x, y, sumNodeAGamount, count)
+        
 
 class ELHighNode:
     def __init__(self, layer, index, x, y):
@@ -26,6 +108,7 @@ class ELHighNode:
             x += (node.x * self.nodes[node])
             y += (node.y * self.nodes[node])
             sumNodeAGamount += self.nodes[node]
+        if sumNodeAGamount == 0: return
         x = x / sumNodeAGamount
         y = y / sumNodeAGamount
         p = Point(x,y)
@@ -68,16 +151,16 @@ class ELHighNode:
             del node.hlNodes[self]
         for node in nodesAround:
             if node in self.nodes: continue
-            self.nodes[node] = node.AGamount
-            self.intensity += node.AGamount
+            #self.nodes[node] = node.AGamount
+            #self.intensity += node.AGamount
             node.hlNodes[self] = 0
-            node.AGamount = 0
+            #node.AGamount = 0
         
-        #calculate is own AGamount
-        for hlN,dist in hlNodesDist.iteritems():
-            r = (self.range + hlN.range) / 2
-            self.AGamount += (1.0/ max(1, dist / r)) * Global.HLAGAddCoef * (self.level + 1)
-        self.AGamount -= Global.HLAGFadeOut
+#        #calculate its own AGamount
+#        for hlN,dist in hlNodesDist.iteritems():
+#            r = (self.range + hlN.range) / 2
+#            self.AGamount += (1.0/ max(1, dist / r)) * Global.HLAGAddCoef * (self.level + 1)
+#        self.AGamount -= Global.HLAGFadeOut
         
         s = str(Global.GetStep()) + ";" + str(self.index) + ";" + ("%.4f,%.4f"%(self.x, self.y)) + ";" + str(self.range) + ";" + str(self.intensity) + ";" + str(self.AGamount) + ";" + str(self.level) + ";" + str(len(self.nodes))   
         Global.LogData("hlnodes", s)
@@ -157,6 +240,7 @@ class EnergyLayerNode:
         self.usage = 0
         self.AGamount = 0
         self.hlNodes = {}
+        self.places = {}
                 
         self.stepDiffX = 0
         self.stepDiffY = 0
@@ -174,9 +258,10 @@ class EnergyLayerNode:
     def Delete(self):
         for link in self.linkToObjects:
             link.NodeDeleted()
-        for hlNode in self.hlNodes:
-            hlNode.intensity -= hlNode.nodes[self]
-            del hlNode.nodes[self]
+        self.place.nodes.remove(self)
+        #for hlNode in self.hlNodes:
+        #    hlNode.intensity -= hlNode.nodes[self]
+        #    del hlNode.nodes[self]
     
     def Intense(self, intensity):
         self.usage += intensity
@@ -188,14 +273,14 @@ class EnergyLayerNode:
             dist2 = ldx*ldx+ldy*ldy
             dist = sqrt(dist2)
 
-            self.AGamount += (1.0/ max(1, dist)) * Global.ELAGAddCoef
+            self.AGamount += ((1.0/ max(1, dist)) * Global.ELAGAddCoef) * (1 / max(self.AGamount, 1))
             
             gDiffCoef = dist2 * max(0.8, self.usage) * max(0.8,node.usage)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(0.64, gDiffCoef)
             
             dist = max(Global.MinPositiveNumber, dist)
-            self.stepDiffX += ldx * (gDiffCoef / dist) #Global.Sign(ldx)
-            self.stepDiffY += ldy * (gDiffCoef / dist) #Global.Sign(ldy)
+            self.stepDiffX += ldx * (gDiffCoef / dist)
+            self.stepDiffY += ldy * (gDiffCoef / dist)
         
     def StepUpdateMove(self, saveStatus=True):
         massCoef = 1.0/max(1, self.usage)# * self.usage)
@@ -234,14 +319,14 @@ class EnergyLayerNode:
         self.usage -= Global.ELNodeUsageFadeOut
         if self.usage < 0: self.usage = 0
         
-        if len(self.hlNodes) > 0 and self.AGamount > 0:
-            AGamountPart = self.AGamount / len(self.hlNodes)
-            for hlNode in self.hlNodes:
-                hlNode.intensity += AGamountPart
-                hlNode.nodes[self] += AGamountPart
-            self.AGamount = 0  
-        else: 
-            self.AGamount -= Global.ELAGFadeOut
+#        if len(self.hlNodes) > 0 and self.AGamount > 0 and False:
+#            AGamountPart = self.AGamount / len(self.hlNodes)
+#            for hlNode in self.hlNodes:
+#                hlNode.intensity += AGamountPart
+#                hlNode.nodes[self] += AGamountPart
+#            self.AGamount = 0  
+#        else: 
+#            self.AGamount -= Global.ELAGFadeOut
         
         if saveStatus and Global.SaveELNodesStatus:
             status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f"%(distToMove,self.usage,self.AGamount)
@@ -279,6 +364,8 @@ class EnergyLayer:
         self.forgetEnergy = 0
         self.nodeIndex = 1
         self.hlNodeIndex = 1
+        self.places = []
+        self.placeIndex = 0
         self.desiredNodeCount = 0
         self.minimalDesiredNodeCount = 0
         self.maximalDesiredNodeCount = 0
@@ -293,6 +380,16 @@ class EnergyLayer:
         self.minimalDesiredNodeCount = self.desiredNodeCount / 5
         self.maximalDesiredNodeCount = self.desiredNodeCount
         
+        x = self.area.points[0].x
+        y = self.area.points[0].y
+        rootPlace = Place(self, self.placeIndex, self.area.width/2 + x, self.area.height/2 + y)
+        rootPlace.range = max(x + self.area.width, y + self.area.height) * sqrt(2) / 2
+        rootPlace.range = ceil(rootPlace.range)
+        rootPlace.startRange = rootPlace.range
+        rootPlace.CalculateAG()
+        rootPlace.slowAGamount = rootPlace.AGamount
+        self.places.append(rootPlace)
+        
         if Global.ELCreateNoise > Global.ELDensity or Global.ELCreateNoise == -1:
             while len(self.nodes) < nodeCount:
                 x = Global.Randint(0, self.area.width-1)
@@ -300,6 +397,8 @@ class EnergyLayer:
                 
                 if self.area.IsInside( Point(x,y) ):                
                     node = EnergyLayerNode(self, x, y, self.nodeIndex)
+                    node.place = rootPlace
+                    rootPlace.nodes.append(node)
                     self.nodeIndex = self.nodeIndex + 1
                     self.nodes.append(node)
         else:
@@ -315,6 +414,8 @@ class EnergyLayer:
                     
                     if self.area.IsInside( Point(xx,yy) ):    
                         node = EnergyLayerNode(self, xx, yy, self.nodeIndex)
+                        node.place = rootPlace
+                        rootPlace.nodes.append(node)
                         self.nodeIndex = self.nodeIndex + 1
                         self.nodes.append(node)
         
@@ -347,12 +448,31 @@ class EnergyLayer:
             node.StepUpdate(self.getNodesAround(node, Global.ELAntigravityRange))
         for node in self.nodes:
             node.StepUpdateMove()
-        hlNodesToDelete = []
-        for hlNode in self.hlNodes:
-            if hlNode.StepUpdate(self.getAllHLNodesDist(hlNode)):
-                hlNodesToDelete.append(hlNode)
-        for hlNode in hlNodesToDelete:
-            self.hlNodes.remove(hlNode)
+        #hlNodesToDelete = []
+        #for hlNode in self.hlNodes:
+        #    if hlNode.StepUpdate(self.getAllHLNodesDist(hlNode)):
+        #        hlNodesToDelete.append(hlNode)
+        #for hlNode in hlNodesToDelete:
+        #    self.hlNodes.remove(hlNode)
+        
+        for place in self.places:
+            if place.AGamount > Global.PlacesAGNeeded:
+                self.createPlaces(place)
+            
+            place.CalculateAG()
+            if place.parent != None:
+                place.UpdateLocation()
+                place.CalculateRange()
+            
+            
+            place.StepUpdate()
+            
+        for node in self.nodes:
+            p = self.GetPlaceForNode(node)
+            if p != node.place:
+                node.place.nodes.remove(node)
+                node.place = p
+                p.nodes.append(node)
         
         for ep in self.energyPointsToDelete:
             self.energyPoints.remove(ep)
@@ -375,16 +495,55 @@ class EnergyLayer:
         Global.LogData("nc", self.Status())
         
     def StepUpdateBig(self):
-        self.nodes.sort(lambda b,a: cmp(a.AGamount,b.AGamount))
-        for node in self.nodes:
-            if node.AGamount > Global.HLAGNeeded:
-                if self.createHLNode(node):
-                    Global.Log("EL: HighLevel node created at " + str(node.x) + ";" + str(node.y))
-        for hlNode in self.hlNodes:
-            if hlNode.AGamount > Global.HLAGNeeded:
-                if self.createHLHLNode(hlNode):
-                    Global.Log("EL: HighLevel node created at " + str(hlNode.x) + ";" + str(hlNode.y))
-
+        pass
+        #self.nodes.sort(lambda b,a: cmp(a.AGamount,b.AGamount))
+        #for node in self.nodes:
+        #    if node.AGamount > Global.HLAGNeeded:
+                #if self.createHLNode(node):
+                #    Global.Log("EL: HighLevel node created at " + str(node.x) + ";" + str(node.y))
+        
+    def createPlaces(self, placeToSplit):
+        startAG = placeToSplit.AGamount
+        
+        while placeToSplit.AGamount > (startAG / 2):
+            nodesPlace = placeToSplit.nodes
+            nodesPlace.sort(lambda b,a: cmp(a.AGamount,b.AGamount))
+            self.createSubPlace(placeToSplit, nodesPlace)
+            placeToSplit.CalculateAG()
+        
+        
+    def createSubPlace(self, placeToSplit, nodesPlace):
+        startNode = nodesPlace[0]
+        nodes = nodesPlace[:]
+        nodes.remove(startNode)
+        nodeDists = self.getAllNodesDist(startNode, nodes)
+        nodes.sort(lambda a,b: cmp(nodeDists[a],nodeDists[b]))
+        
+        self.placeIndex += 1
+        newPlace = Place(self, self.placeIndex, startNode.x, startNode.y)
+        newPlace.range = placeToSplit.range / 2
+        newPlace.startRange = newPlace.range
+        newPlace.level = placeToSplit.level + 1
+        newPlace.parent = placeToSplit
+        placeToSplit.places.append(newPlace)
+        self.places.append(newPlace)
+        
+        newPlace.nodes.append(startNode)
+        startNode.place.nodes.remove(startNode)
+        startNode.place = newPlace
+        
+        for n in nodes:
+            if nodeDists[n] > newPlace.range: break
+            newPlace.nodes.append(n)
+            n.place.nodes.remove(n)
+            n.place = newPlace
+            
+        newPlace.CalculateAG()
+        newPlace.startTotalAGamount = newPlace.AGamount
+        newPlace.slowAGamount = newPlace.AGamount
+        newPlace.CalculateRange() 
+        newPlace.UpdateLocation()
+        
     def createHLNode(self, startNode):
         nodeDists = self.getAllNodesDist(startNode)
         nodes = self.nodes[:]
@@ -416,40 +575,16 @@ class EnergyLayer:
         else:
             hlNode.Delete()
             return False
-    def createHLHLNode(self, startNode):
-        hlNodeDists = self.getAllHLNodesDist(startNode, startNode.level)
-        hlNodes = hlNodeDists.keys()
-        hlNodes.sort(lambda a,b: cmp(hlNodeDists[a],hlNodeDists[b]))
-        
-        newHlNode = ELHighNode(self, self.hlNodeIndex, startNode.x, startNode.y)
-        newHlNode.level = startNode.level + 1
-        newHlNode.nodes[startNode] = startNode.AGamount
-        startNode.hlNodes[newHlNode] = 0
-        newHlNode.intensity = startNode.AGamount
-        newHlNode.range = self.GetRangeByAG(newHlNode.intensity, newHlNode.level)
-        
-        for hlNode in hlNodes:
-            if hlNodeDists[hlNode] > newHlNode.range: break
-            
-            newHlNode.nodes[hlNode] = hlNode.AGamount
-            hlNode.hlNodes[newHlNode] = 0
-            newHlNode.intensity += hlNode.AGamount            
-            
-            newHlNode.UpdateLocation()
-            newHlNode.range = self.GetRangeByAG(newHlNode.intensity, newHlNode.range)
-        
-        if newHlNode.intensity > Global.HLAGNeededSum:
-            for n in newHlNode.nodes:
-                n.AGamount = 0
-            self.hlNodes.append(newHlNode)
-            self.hlNodeIndex += 1
-            return True
-        else:
-            newHlNode.Delete()
-            return False
-    def GetRangeByAG(self, AGEnergy, level = 1):
+    def GetRangeByAG(self, AGEnergy):
         #return sqrt(AGEnergy / 1000)/2 + 2
-        return (log(AGEnergy / 1000) + 1) * level
+        return log(AGEnergy / 1000) + 1
+    
+    def GetPlaceForNode(self, node):
+        self.places.sort(lambda a,b: cmp(a.range,b.range))
+        for place in self.places:
+            dist = self.area.DistanceObjs(node, place)
+            if dist < place.range:
+                return place
      
     def DeleteNode(self, node):
         node.Delete()
@@ -476,11 +611,14 @@ class EnergyLayer:
         self.nodeIndex = self.nodeIndex + 1
         self.nodes.append(newNode)
         
-        for hlNode in self.hlNodes:
-            dist = self.area.DistanceObjs(newNode, hlNode)
-            if dist < hlNode.range:
-                hlNode.nodes[newNode] = 0
-                newNode.hlNodes[hlNode] = 0
+#        for hlNode in self.hlNodes:
+#            dist = self.area.DistanceObjs(newNode, hlNode)
+#            if dist < hlNode.range:
+#                hlNode.nodes[newNode] = 0
+#                newNode.hlNodes[hlNode] = 0
+        place = self.GetPlaceForNode(newNode)
+        place.nodes.append(newNode)
+        newNode.place = place
         
         memObject.AddLinkToNode(newNode)
         memObject.IntenseToNode(newNode, Global.MemObjIntenseToNewNode)
@@ -512,8 +650,11 @@ class EnergyLayer:
     
     def SaveHeatMap(self):
         for n in self.nodes:
-            nStr = "%d;%d;%.4f;%.4f" % (int(n.x), int(n.y), n.usage, n.AGamount)
+            nStr = "%d;%d;%.4f" % (int(n.x), int(n.y), n.usage)
             Global.LogData("elnodeheatmap", nStr)
+        for n in self.nodes:
+            nStr = "%d;%d;%.4f" % (int(n.x), int(n.y), n.AGamount)
+            Global.LogData("elnodeheatmapag", nStr)
         
     def GetNodeCreateCost(self):
         x = Global.NodeCostCoef * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
@@ -551,9 +692,10 @@ class EnergyLayer:
                 nodesAround.append(n)
         return nodesAround
     
-    def getAllNodesDist(self, node):
+    def getAllNodesDist(self, node, nodes = None):
         nodesAround = {}
-        for n in self.nodes:
+        if nodes == None: nodes = self.nodes 
+        for n in nodes:
             if n == node: continue
             ldx = n.x-node.x
             ldy = n.y-node.y

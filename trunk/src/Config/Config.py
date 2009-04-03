@@ -19,13 +19,13 @@ from HeapRoom import HeapRoom
 class ConfigSingleton:
     def __init__(self):
         self.configs = {}
-        self.configs["EmptyRoom"] = EmptyRoom()
-        self.configs["FullRoom"] = FullRoom()
-        self.configs["Corridor"] = Corridor()
-        self.configs["Lobby"] = Lobby()
-        self.configs["CrazyRoom"] = CrazyRoom()
-        self.configs["SmallRoom"] = SmallRoom()
-        self.configs["SwitchRoom"] = SwitchRoom()
+        #self.configs["EmptyRoom"] = EmptyRoom()
+        #self.configs["FullRoom"] = FullRoom()
+        #self.configs["Corridor"] = Corridor()
+        #self.configs["Lobby"] = Lobby()
+        #self.configs["CrazyRoom"] = CrazyRoom()
+        #self.configs["SmallRoom"] = SmallRoom()
+        #self.configs["SwitchRoom"] = SwitchRoom()
         self.configs["HeapRoom"] = HeapRoom()
         
          
