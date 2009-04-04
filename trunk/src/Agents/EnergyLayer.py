@@ -40,13 +40,11 @@ class Place:
         for node in placeToProcess.nodes:
             sumNodeAGamount += node.AGamount
         for place in placeToProcess.places:
-            if len(place.places) > 0:
-                Global.Log("haha")
             sumNodeAGamount += self.calculateAGdeep(place)
         return sumNodeAGamount
     
     def CalculateRange(self):
-        l = 1.0 / (self.slowAGamount / self.startTotalAGamount)
+        l = (0.5 / (self.slowAGamount / self.startTotalAGamount)) + 0.5
         self.range = self.startRange * (l)
     
     def UpdateLocation(self):
