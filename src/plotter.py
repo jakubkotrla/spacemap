@@ -261,10 +261,11 @@ def plotPlace(fileName):
     rows = []
     rows.extend(rowsRAW)
     
-    stepND = arange(0, len(rows), 1)
+    steps = map(lambda x: x[0], rows)
     agC = map(lambda x: x[6], rows)
     agT = map(lambda x: x[7], rows)
     agS = map(lambda x: x[8], rows)
+    stepND = array( steps )
     agCND = array( agC )
     agTND = array( agT )
     agSND = array( agS )

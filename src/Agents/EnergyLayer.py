@@ -25,6 +25,13 @@ class Place:
         status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f"%(self.x,self.y,self.level,self.range,self.AGamount,self.totalAGamount,self.slowAGamount)
         Global.LogData("place-status", status)
     
+    def Delete(self):
+        for place in self.places:
+            place.Delete()
+            self.layer.places.remove(self)
+            for node in self.nodes:
+                node.place = None
+    
     def CalculateAG(self):
         self.AGamount = 0
         for node in self.nodes:
@@ -44,8 +51,10 @@ class Place:
         return sumNodeAGamount
     
     def CalculateRange(self):
-        l = (0.5 / (self.slowAGamount / self.startTotalAGamount)) + 0.5
+        l = (0.4 / (self.slowAGamount / self.startTotalAGamount)) + 0.6
         self.range = self.startRange * (l)
+        if self.index == 1 and self.range < 20:
+            Global.Log("haha")
     
     def UpdateLocation(self):
         (x, y, sumNodeAGamount, count) = self.updateLocDeep(self)
@@ -453,20 +462,27 @@ class EnergyLayer:
         #for hlNode in hlNodesToDelete:
         #    self.hlNodes.remove(hlNode)
         
+        placesToDelete = []
         for place in self.places:
-            if place.AGamount > Global.PlacesAGNeeded:
+            if place.AGamount > Global.PlacesAGNeeded * place.level:
                 self.createPlaces(place)
-            
+                        
             place.CalculateAG()
+            
+            if place.slowAGamount < (Global.PlacesAGMin * place.level) and place.level > 1:
+                placesToDelete.append(place)
+            
             if place.parent != None:
                 place.UpdateLocation()
                 place.CalculateRange()
             
-            
             place.StepUpdate()
+        for place in placesToDelete:
+            place.Delete()
             
         for node in self.nodes:
             p = self.GetPlaceForNode(node)
+            if p == None: continue  #some geometric error in node position
             if p != node.place:
                 node.place.nodes.remove(node)
                 node.place = p

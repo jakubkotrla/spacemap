@@ -38,6 +38,14 @@ class Agent:
         for vc in self.viewConesForExplore:
             self.viewConeForExploreMaxDist = max(self.viewConeForExploreMaxDist, vc.distance)
         self.viewConeMaxDist = self.viewConeNormalMaxDist 
+     
+    def StepOut(self):
+        action = self.intelligence.actionSelector.GetOutAction()
+        action.duration = 10
+        self.intelligence.memoryArea.Update(action)
+        self.paText = 'out'
+        Global.Time.AddSeconds(action.duration)
+        self.intelligence.spaceMap.StepUpdate(action)
         
     def Step(self):
         action = self.intelligence.GetAction()

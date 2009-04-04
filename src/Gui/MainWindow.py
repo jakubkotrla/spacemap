@@ -237,7 +237,13 @@ class MainWindow(Frame):
                 world.Step()
                 self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
                 self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
-            
+        
+            world.SendAgentOut()
+            while world.step < Global.MaxTestSteps + Global.MaxTestStepAfter:
+                world.Step()
+                self.mapRenderer.RenderToFile(world, savePath + "PIL" + str(world.step).zfill(6) + ".png")
+                self.mapRenderer.RenderProgressInTest(world.step, Global.MaxTestSteps)
+                    
             if Global.CalculateVisibilityHistory:
                 self.mapRenderer.RenderToFile(world, savePath + "visibilityheatmap.png", ["vh"])
             self.mapRenderer.RenderToFile(world, savePath + "visibilityobjectheatmap.png", ["ovh"])
