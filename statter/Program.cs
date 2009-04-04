@@ -23,20 +23,26 @@ namespace statter
             else
             {
                 fileName = args[0];
-                Program.ProcessFile(fileName);
+                Program.ProcessFileNode(fileName);
             }
         }
 
         static void recursiveProcess(string dir)
         {
-            string fileName = "data-elnode-status.txt";
+            string fileNameNode = "data-elnode-status.txt";
+            string fileNamePlace = "data-place-status.txt";
             string[] files = Directory.GetFiles(dir);
             foreach (string f in files)
             {
-                if (Path.GetFileName(f) == fileName)
+                if (Path.GetFileName(f) == fileNameNode)
                 {
                     Console.WriteLine(f);
-                    Program.ProcessFile(f);
+                    Program.ProcessFileNode(f);
+                }
+                if (Path.GetFileName(f) == fileNamePlace)
+                {
+                    Console.WriteLine(f);
+                    Program.ProcessFilePlace(f);
                 }
             }
             string[] dirs = Directory.GetDirectories(dir);
@@ -47,12 +53,11 @@ namespace statter
 
         }
 
-        static void ProcessFile(string fileName)
+        static void ProcessFileNode(string fileName)
         {
             TextReader tr = new StreamReader(fileName);
             string outFile = Path.GetDirectoryName(fileName);
             StreamWriter sw = new StreamWriter(Path.Combine(outFile, "data-elnode-status.stats.txt"), false);
-
 
             CsvReader csv = new CsvReader(tr, false, ';');
             int fieldCount = csv.FieldCount;
@@ -78,7 +83,6 @@ namespace statter
             while (csv.ReadNextRecord())
             {
                 //line: step ; node-index ; distMoved ; usage ; AGamount
-
                 int stepRead = int.Parse(csv[0]);
 
                 if ((step != stepRead) || csv.EndOfStream)
@@ -165,9 +169,104 @@ namespace statter
 
             sw.WriteLine(sb.ToString());
 
+            tr.Close();
+            sw.Close();
+        }
+
+        static void ProcessFilePlace(string fileName)
+        {
+            StreamReader tr = new StreamReader(fileName);
+            string outFile = Path.GetDirectoryName(fileName);
+            StreamWriter sw = new StreamWriter(Path.Combine(outFile, "data-places-status.stats.txt"), false);
+            
+            CsvReader csv = new CsvReader(tr, false, ';');
+            int fieldCount = csv.FieldCount;
+
+            int step = 0;
+            int nodeCount = 0;
+            double agSum = 0;
+            double agMin = 0;
+            double agMax = 0;
+            StringBuilder sb = new StringBuilder();
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", false);
+
+            double distMean;
+            double usageMean;
+            double agMean;
+
+            while (csv.ReadNextRecord())
+            {
+                //line: step ; index ; x ; y ; level ; range ; AG ; totalAG ; slowAG
+                int stepRead = int.Parse(csv[0]);
+
+                if ((step != stepRead) || csv.EndOfStream)
+                {
+                    agMean = agSum / nodeCount;
+
+                    sb.Length = 0;
+                    sb.Append(step);
+                    sb.Append(";");
+                    sb.Append(agMean);
+                    sb.Append(";");
+                    sb.Append(agMin);
+                    sb.Append(";");
+                    sb.Append(agMax);
+
+                    sw.WriteLine(sb.ToString());
+
+                    step = stepRead;
+                    nodeCount = 0;
+                    agSum = 0;
+                    agMax = double.MinValue;
+                    agMin = double.MaxValue;
+                }
+
+                nodeCount++;
+                double agRead = double.Parse(csv[6]);
+
+                agSum += agRead;
+                agMin = Math.Min(agMin, agRead);
+                agMax = Math.Max(agMax, agRead);
+            }
+            agMean = agSum / nodeCount;
+
+            sb.Length = 0;
+            sb.Append(step);
+            sb.Append(";");
+            sb.Append(agMean);
+            sb.Append(";");
+            sb.Append(agMin);
+            sb.Append(";");
+            sb.Append(agMax);
+
+            sw.WriteLine(sb.ToString());
 
             tr.Close();
             sw.Close();
+
+            //distribute to files
+            string outDir = Path.Combine(outFile, "places\\");
+            Directory.CreateDirectory(outDir);
+            Dictionary<int, StreamWriter> outFiles = new Dictionary<int, StreamWriter>();
+
+            tr = new StreamReader(fileName);
+            while(! tr.EndOfStream)
+            {
+                string line = tr.ReadLine();
+                string[] fs = line.Split(';');
+                int index = int.Parse( fs[1] );
+
+                if (!outFiles.ContainsKey(index))
+                {
+                    outFiles[index] = new StreamWriter(Path.Combine(outDir, "place-" + index + ".txt"));
+                }
+                outFiles[index].WriteLine(line);
+            }
+            tr.Close();
+            foreach (StreamWriter of in outFiles.Values)
+            {
+                of.Close();
+            }
         }
         
     }
