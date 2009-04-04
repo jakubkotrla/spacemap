@@ -25,6 +25,9 @@ class ActionSelector:
                                                      self.processes.atomic["LookUpInMemory"],
                                                      self.processes.atomic["SearchRandom"]])
     
+    def GetOutAction(self):
+        return self.processes.atomic["ActionOut"]
+    
     def GetAction(self, emotion):
         if self.processArea.HasNoIntention():
             self.ChooseIntention()

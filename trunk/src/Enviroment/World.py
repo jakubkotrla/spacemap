@@ -17,6 +17,8 @@ class World:
     def __init__(self, config):
         self.step = 0
         self.agent = None
+        self.agentIn = False
+        
         Global.Map = config.SetUpMap()
         self.events = config.GetWorldEvents()
         if Global.WorldDynamic > 0:
@@ -62,10 +64,19 @@ class World:
         self.agent = agent
         map = Global.Map
         map.PlaceAgent(agent)
+        self.agentIn = True
+
+    def SendAgentOut(self):
+        self.agent.x = -1000
+        self.agent.y = -1000
+        self.agentIn = False
 
     def Step(self):
         Global.Log("------------------------------ Step " + str(self.step).zfill(5) + " --- " + str(Global.TimeToHumanFormat()) + " ----------")
-        self.agent.Step()
+        if self.agentIn:
+            self.agent.Step()
+        else:
+            self.agent.StepOut()
         if len(self.events) > 0: self.runEvents()
         map = Global.Map
         map.Step(self.agent)
