@@ -546,7 +546,7 @@ class EnergyLayer:
         diceRoll = Global.DiceRoll()
         if diceRoll < chanceForget and len(self.nodes) > 0:
             node = Global.Choice(self.nodes)
-            self.forgetEnergy = self.forgetEnergy - (cost * log(node.usage, 2))
+            self.forgetEnergy = self.forgetEnergy - (cost * log(max(2,node.usage), 2))
             self.DeleteNode(node)
 
 #        if self.stepEPCreated < 1 and self.desiredNodeCount > self.minimalDesiredNodeCount:
