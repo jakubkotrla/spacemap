@@ -83,7 +83,7 @@ def plotNC(fileName):
     plot(stepsND, ncCountND, 'g-', label='El-node count')
     plot(stepsND, desiredCountND, 'k:', label='desired EL-node count')
     plot(stepsND, objsCountND, 'b:', label='Object count')
-    legend(loc='lower right')
+    legend(loc='best')
     
     ylabel('EL-nodes count')
     xlabel('time (steps)')
@@ -209,7 +209,7 @@ def plotELNodeStats(fileName):
     xlabel("Time (steps)")
     ylabel('Distance moved')
     title('Distance moved in time')
-    legend(loc='upper left')
+    legend(loc='best')
     savefig(fileName+".dist.png", format="PNG")
     clf()
     
@@ -219,7 +219,7 @@ def plotELNodeStats(fileName):
     xlabel("Time (steps)")
     ylabel('Node usage')
     title('Node usage in time')
-    legend(loc='upper left')
+    legend(loc='best')
     savefig(fileName+".usage.png", format="PNG")
     clf()
     
@@ -229,7 +229,7 @@ def plotELNodeStats(fileName):
     xlabel("Time (steps)")
     ylabel('AG amount')
     title('AG amount in time')
-    legend(loc='upper left')
+    legend(loc='best')
     savefig(fileName+".ag.png", format="PNG")
     clf()
     
@@ -252,7 +252,7 @@ def plotPlacesStats(fileName):
     xlabel("Time (steps)")
     ylabel('AG amount')
     title('AG amount in time')
-    legend(loc='upper left')
+    legend(loc='best')
     savefig(fileName+".ag.png", format="PNG")
     clf()
 
@@ -276,7 +276,7 @@ def plotPlace(fileName):
     xlabel("Time (steps)")
     ylabel('AG amount')
     title('AG amount in time')
-    legend(loc='upper left')
+    legend(loc='best')
     savefig(fileName+".ags.png", format="PNG")
     clf()
 
