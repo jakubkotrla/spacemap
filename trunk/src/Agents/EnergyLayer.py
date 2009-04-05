@@ -26,11 +26,13 @@ class Place:
         Global.LogData("place-status", status)
     
     def Delete(self):
+        if self not in self.layer.places:   #probably deleted as child of another deleted place
+            return
         for place in self.places:
             place.Delete()
-            self.layer.places.remove(self)
-            for node in self.nodes:
-                node.place = None
+        self.layer.places.remove(self)
+        for node in self.nodes:
+            node.places.remove(self)
     
     def CalculateAG(self):
         self.AGamount = 0
@@ -367,12 +369,16 @@ class EnergyLayerNode:
         for p in self.places:
             maxLevel = max(maxLevel, p.level)
             
-        plCount = 0
+        plsMax = []
+        minRange = Global.MaxNumber
         for p in self.places:
-            if p.level == maxLevel: plCount += 1
-            
-        if place.level == maxLevel:
-            return self.AGamount / plCount
+            if p.level == maxLevel:
+                plsMax.append(p)
+                minRange = min(minRange, p.range)
+        
+        
+        if place.level == maxLevel and place.range == minRange:
+            return self.AGamount
         else:
             return 0
         
@@ -509,8 +515,9 @@ class EnergyLayer:
                         
             place.CalculateAG()
             
-            if place.slowAGamount < (Global.PlacesAGMin * place.level) and place.level > 1:
-                placesToDelete.append(place)
+            if place.level > 1:
+                if place.slowAGamount < (Global.PlacesAGMin * (place.level - 1)):
+                    placesToDelete.append(place)
             
             if place.parent != None:
                 place.UpdateLocation()

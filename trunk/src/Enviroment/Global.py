@@ -30,7 +30,7 @@ class GlobalVariables:
 
         self.RandomSeeds = [718597]   #seeds to test
         self.MaxTestSteps = 5000      #should be more than one day
-        self.MaxTestStepAfter = 10000 
+        self.MaxTestStepAfter = 1000 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -93,7 +93,7 @@ class GlobalVariables:
         self.HLAGFadeOut = 1
         
         self.PlacesAGNeeded = 2000
-        self.PlacesAGMin = 700
+        self.PlacesAGMin = 1000
     
     def Random(self):
         return random()
