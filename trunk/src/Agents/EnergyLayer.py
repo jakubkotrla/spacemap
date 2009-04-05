@@ -20,6 +20,7 @@ class Place:
         self.startTotalAGamount = 0
         self.totalAGamount = 0
         self.slowAGamount = 0
+        self.accAGamount = 0
         
     def StepUpdate(self):
         status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f"%(self.x,self.y,self.level,self.range,self.AGamount,self.totalAGamount,self.slowAGamount)
@@ -31,59 +32,41 @@ class Place:
         for place in self.places:
             place.Delete()
         self.layer.places.remove(self)
-        for node in self.nodes:
-            node.places.remove(self)
     
     def CalculateAG(self):
         self.AGamount = 0
         for node in self.nodes:
-            self.AGamount += node.GetAGamountPart(self)
-        #self.totalAGamount = self.calculateAGdeep(self)
+            self.AGamount += node.AGamount
+        self.totalAGamount = self.calculateAGdeep(self)
         
-        #d = self.totalAGamount - self.slowAGamount
-        d = self.AGamount - self.slowAGamount
-        if fabs(d) > 1:
-            self.slowAGamount += d / 100
+        self.slowAGamount += self.totalAGamount * (1.0 / max(self.slowAGamount / 10, 1))
+        self.slowAGamount -= 1 
         
     def calculateAGdeep(self, placeToProcess):
         sumNodeAGamount = 0
         for node in placeToProcess.nodes:
-            sumNodeAGamount += node.GetAGamountPart(placeToProcess)
+            sumNodeAGamount += node.AGamount
         for place in placeToProcess.places:
             sumNodeAGamount += self.calculateAGdeep(place)
         return sumNodeAGamount
     
     def CalculateRange(self):
-        l = (0.4 / (self.slowAGamount / self.startTotalAGamount)) + 0.6
+        ch = log( max(2, (self.slowAGamount / self.startTotalAGamount)), 2)
+        l = (0.2 / ch) + 0.8
         self.range = self.startRange * (l)
     
     def UpdateLocation(self):
-        #(x, y, sumNodeAGamount, count) = self.updateLocDeep(self)
-        #self.totalAGamount = sumNodeAGamount
-        x = 0
-        y = 0
-        sumNodeAGamount = 0
+        (x, y, sumNodeAGamount, count) = self.updateLocDeep(self)
+        self.totalAGamount = sumNodeAGamount
         
-        for node in self.nodes:
-            nodeAG = node.AGamount #GetAGamountPart(self)
-            x += node.x #* nodeAG
-            y += node.y #* nodeAG
-            sumNodeAGamount += nodeAG
-        
-        #self.totalAGamount = sumNodeAGamount
+        self.totalAGamount = sumNodeAGamount
         if sumNodeAGamount == 0: return
         nodeCount = len(self.nodes) 
-        x = x / nodeCount #sumNodeAGamount
-        y = y / nodeCount #sumNodeAGamount
+        x = x / sumNodeAGamount
+        y = y / sumNodeAGamount
         p = Point(x,y)
-        map = Global.Map
-        if not map.IsInside(p):  #this should not happen, quick hack - go closer old location
-            hit = map.CanMoveEx(self, p.x, p.y)
-            if hit.hit:
-                p = hit
-            else:
-                Global.Log("Programmer.Error: Place: not inside but canMove-not-hit")
-        coef = min(1, (float(self.startTotalAGamount) / self.slowAGamount))
+        
+        coef = min(1, (float(self.startTotalAGamount) / self.slowAGamount)) / 10
         dx = (p.x - self.x) * coef
         dy = (p.y - self.y) * coef
         self.x += dx 
@@ -94,17 +77,17 @@ class Place:
         sumNodeAGamount = 0
         count = 0
         for node in placeToProcess.nodes:
-            nodeAG = node.GetAGamountPart(placeToProcess)
+            nodeAG = node.AGamount
             x += node.x * nodeAG
             y += node.y * nodeAG
             sumNodeAGamount += nodeAG
             count += 1
-        #for place in placeToProcess.places:
-        #    (lx, ly, lsumNodeAGamount, lcount) = self.updateLocDeep(place)
-        #    x += lx
-        #    y += ly
-        #    sumNodeAGamount += lsumNodeAGamount
-        #    count += lcount
+        for place in placeToProcess.places:
+            (lx, ly, lsumNodeAGamount, lcount) = self.updateLocDeep(place)
+            x += lx
+            y += ly
+            sumNodeAGamount += lsumNodeAGamount
+            count += lcount
         return (x, y, sumNodeAGamount, count)
         
 
@@ -280,9 +263,7 @@ class EnergyLayerNode:
     def Delete(self):
         for link in self.linkToObjects:
             link.NodeDeleted()
-        #self.place.nodes.remove(self)
-        for place in self.places:
-            place.nodes.remove(self)
+        self.place.nodes.remove(self)
         #for hlNode in self.hlNodes:
         #    hlNode.intensity -= hlNode.nodes[self]
         #    del hlNode.nodes[self]
@@ -307,7 +288,7 @@ class EnergyLayerNode:
             self.stepDiffY += ldy * (gDiffCoef / dist)
         
     def StepUpdateMove(self, saveStatus=True):
-        massCoef = 1.0/max(1, self.usage)# * self.usage)
+        massCoef = 1.0/max(1, self.usage)
 
         dx = self.stepDiffX * massCoef
         dy = self.stepDiffY * massCoef
@@ -357,31 +338,6 @@ class EnergyLayerNode:
         if saveStatus and Global.SaveELNodesStatus:
             status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f"%(distToMove,self.usage,self.AGamount)
             Global.LogData("elnode-status", status)
-    
-    def GetAGamountPart(self, place):
-        #partCount = len(self.places)
-#        levelSum = 0
-#        for p in self.places:
-#            levelSum += 2 ** (p.level)
-#        pl = 2 ** (place.level)
-#        return self.AGamount * (float(pl) / levelSum)
-        maxLevel = 0
-        for p in self.places:
-            maxLevel = max(maxLevel, p.level)
-            
-        plsMax = []
-        minRange = Global.MaxNumber
-        for p in self.places:
-            if p.level == maxLevel:
-                plsMax.append(p)
-                minRange = min(minRange, p.range)
-        
-        
-        if place.level == maxLevel and place.range == minRange:
-            return self.AGamount
-        else:
-            return 0
-        
            
     def Train(self, point, effect):
         diffX = point.x - self.x
@@ -448,8 +404,7 @@ class EnergyLayer:
                 
                 if self.area.IsInside( Point(x,y) ):                
                     node = EnergyLayerNode(self, x, y, self.nodeIndex)
-                    #node.place = rootPlace
-                    node.places.append(rootPlace)
+                    node.place = rootPlace
                     rootPlace.nodes.append(node)
                     self.nodeIndex = self.nodeIndex + 1
                     self.nodes.append(node)
@@ -466,8 +421,7 @@ class EnergyLayer:
                     
                     if self.area.IsInside( Point(xx,yy) ):    
                         node = EnergyLayerNode(self, xx, yy, self.nodeIndex)
-                        #node.place = rootPlace
-                        node.places.append(rootPlace)
+                        node.place = rootPlace
                         rootPlace.nodes.append(node)
                         self.nodeIndex = self.nodeIndex + 1
                         self.nodes.append(node)
@@ -514,10 +468,8 @@ class EnergyLayer:
                 self.createPlaces(place)
                         
             place.CalculateAG()
-            
-            if place.level > 1:
-                if place.slowAGamount < (Global.PlacesAGMin * (place.level - 1)):
-                    placesToDelete.append(place)
+            if place.slowAGamount < Global.PlacesAGMin * (place.level-1):
+                placesToDelete.append(place)
             
             if place.parent != None:
                 place.UpdateLocation()
@@ -528,19 +480,11 @@ class EnergyLayer:
             place.Delete()
             
         for node in self.nodes:
-            #p = self.GetPlaceForNode(node) 
-            newPlaces = self.GetAllPlacesForNode(node)
-            if len(newPlaces) < 1: continue  #some geometric error in node position
-            for op in node.places:
-                op.nodes.remove(node)
-            for np in newPlaces:
-                np.nodes.append(node)
-            node.places = newPlaces            
-            
-            #if p != node.place:
-            #    node.place.nodes.remove(node)
-            #    node.place = p
-            #    p.nodes.append(node)
+            p = self.GetPlaceForNode(node)
+            if p != node.place:
+                node.place.nodes.remove(node)
+                node.place = p
+                p.nodes.append(node)
         
         for ep in self.energyPointsToDelete:
             self.energyPoints.remove(ep)
@@ -556,11 +500,6 @@ class EnergyLayer:
             self.forgetEnergy = self.forgetEnergy - (cost * log(max(2,node.usage), 2))
             self.DeleteNode(node)
 
-#        if self.stepEPCreated < 1 and self.desiredNodeCount > self.minimalDesiredNodeCount:
-#            self.desiredNodeCount -= 0.5
-#        else:
-#            if self.desiredNodeCount < self.maximalDesiredNodeCount:
-#                self.desiredNodeCount += 1
         Global.LogData("nc", self.Status())
         
     def StepUpdateBig(self):
@@ -576,7 +515,8 @@ class EnergyLayer:
         
         while placeToSplit.AGamount > (startAG / 2):
             nodesPlace = placeToSplit.nodes
-            nodesPlace.sort(lambda b,a: cmp(a.GetAGamountPart(placeToSplit),b.GetAGamountPart(placeToSplit)))
+            nodesPlace.sort(lambda b,a: cmp(a.AGamount,b.AGamount))
+            #nodesPlace.sort(lambda b,a: cmp(a.GetAGamountPart(placeToSplit),b.GetAGamountPart(placeToSplit)))
             self.createSubPlace(placeToSplit, nodesPlace)
             placeToSplit.CalculateAG()
         
@@ -598,16 +538,14 @@ class EnergyLayer:
         self.places.append(newPlace)
         
         newPlace.nodes.append(startNode)
-        startNode.places.append(newPlace)
-        #startNode.place.nodes.remove(startNode)
-        #startNode.place = newPlace
+        startNode.place.nodes.remove(startNode)
+        startNode.place = newPlace
         
         for n in nodes:
             if nodeDists[n] > newPlace.range: break
             newPlace.nodes.append(n)
-            n.places.append(newPlace)
-            #n.place.nodes.remove(n)
-            #n.place = newPlace
+            n.place.nodes.remove(n)
+            n.place = newPlace
             
         newPlace.CalculateAG()
         newPlace.startTotalAGamount = newPlace.AGamount
@@ -647,7 +585,6 @@ class EnergyLayer:
             hlNode.Delete()
             return False
     def GetRangeByAG(self, AGEnergy):
-        #return sqrt(AGEnergy / 1000)/2 + 2
         return log(AGEnergy / 1000) + 1
     
     def GetPlaceForNode(self, node):
@@ -694,13 +631,9 @@ class EnergyLayer:
 #            if dist < hlNode.range:
 #                hlNode.nodes[newNode] = 0
 #                newNode.hlNodes[hlNode] = 0
-        #place = self.GetPlaceForNode(newNode)
-        #place.nodes.append(newNode)
-        #newNode.place = place
-        places = self.GetAllPlacesForNode(newNode)
-        for place in places:
-            place.nodes.append(newNode)
-            newNode.places.append(place)
+        place = self.GetPlaceForNode(newNode)
+        place.nodes.append(newNode)
+        newNode.place = place
         
         memObject.AddLinkToNode(newNode)
         memObject.IntenseToNode(newNode, Global.MemObjIntenseToNewNode)
