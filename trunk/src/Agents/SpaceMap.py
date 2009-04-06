@@ -87,8 +87,6 @@ class SpaceMap:
         else:
             count = 1
             
-        if Global.GetStep() > 59:
-            count = 1 #ToDo debug
         for i in range(count):
             self.Layer.StepUpdate()
             memObjs = self.objectsToMemObjs.values()

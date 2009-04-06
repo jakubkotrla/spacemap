@@ -36,6 +36,13 @@ def plotHeatMap(fileName, titleStr, defValue=None):
     for i in range(101):
         for j in range(101):
             mapa[i][j] = 0.0
+    mapaSqrt = [None]*101
+    for i in range(101):
+         mapaSqrt[i] = [None] * 101
+    for i in range(101):
+        for j in range(101):
+            mapaSqrt[i][j] = 0.0
+        
 
     for row in rows:
         y = int(row[0])
@@ -46,6 +53,20 @@ def plotHeatMap(fileName, titleStr, defValue=None):
         else:
             fill(mapa, x, y, value)
 
+    maxValue = 0
+    maxValueSqrt = 0
+    for i in range(101):
+        for j in range(101):
+            mapaSqrt[i][j] = sqrt(mapa[i][j])
+            maxValue = max(maxValue, mapa[i][j])
+            maxValueSqrt = max(maxValue, mapaSqrt[i][j])
+    for i in range(101):
+        for j in range(101):
+            mapa[i][j] = maxValue - mapa[i][j]
+    for i in range(101):
+        for j in range(101):
+            mapaSqrt[i][j] = maxValueSqrt - mapaSqrt[i][j]
+
     ndA = array(mapa)    
     im = imshow(ndA, cmap=cm.gray, interpolation=None, origin='upper',extent=(0,100,0,100))
     colorbar()
@@ -53,11 +74,7 @@ def plotHeatMap(fileName, titleStr, defValue=None):
     savefig(fileName+".png", format="PNG")
     clf()
 
-    for i in range(101):
-        for j in range(101):
-            mapa[i][j] = sqrt(mapa[i][j])
-
-    ndA = array(mapa)    
+    ndA = array(mapaSqrt)    
     im = imshow(ndA, cmap=cm.gray, interpolation='bilinear', origin='upper',extent=(0,100,0,100))
     colorbar()
     title(titleStr + " sqrt")

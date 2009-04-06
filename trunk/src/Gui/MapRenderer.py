@@ -30,7 +30,10 @@ class MapRenderer:
         
             self.objectsRects = []
             for obj in self.map.objects:
-                objId = self.Pixel(obj, obj.x, obj.y, "blue", tags="info object")
+                if obj.type.name == "Waypoint":
+                    objId = self.Pixel(obj, obj.x, obj.y, "#0000a0", tags="info object", outline="#00aa00")
+                else:
+                    objId = self.Pixel(obj, obj.x, obj.y, "blue", tags="info object")
       
     def Clear(self):
         self.canvas.addtag_all("2del")
@@ -40,10 +43,10 @@ class MapRenderer:
     def GuiIdToObject(self, id):
         return self.guiIdsToObjects[id]  
         
-    def Pixel(self, object, cx, cy, color, tags="pixel"):
+    def Pixel(self, object, cx, cy, color, tags="pixel", outline=""):
         x = cx*self.zoom - round(self.zoom/2) 
         y = cy*self.zoom - round(self.zoom/2)
-        id = self.canvas.create_rectangle(x+10,y+10, x+self.zoom+10,y+self.zoom+10, fill=color, outline="", tags=tags)
+        id = self.canvas.create_rectangle(x+10,y+10, x+self.zoom+10,y+self.zoom+10, fill=color, outline=outline, tags=tags)
         self.guiIdsToObjects[id] = object
         return id 
     def PixelC(self, object, cx, cy, color, coef, tags="pixelc", outline=""):
@@ -268,14 +271,23 @@ class MapRenderer:
                 x = obj.x*self.zoom - 5 + 10
                 y = obj.y*self.zoom - 5 + 10
                 if obj.visibility > 0:
-                    draw.rectangle([x,y, x+10,y+10], fill=(100, 150, 255), outline=None)
+                    if obj.type.name == "Waypoint":
+                        draw.rectangle([x,y, x+10,y+10], fill=(100, 150, 170), outline=(0, 200, 0))
+                    else:
+                        draw.rectangle([x,y, x+10,y+10], fill=(100, 150, 255), outline=None)
                 else:
-                    draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 255), outline=None)
+                    if obj.type.name == "Waypoint":
+                        draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 170), outline=(0, 200, 0))
+                    else:
+                        draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 255), outline=None)
         else:
             for obj in self.map.objects:
                 x = obj.x*self.zoom - 5 + 10
                 y = obj.y*self.zoom - 5 + 10
-                draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 255), outline=None)
+                if obj.type.name == "Waypoint":
+                    draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 170), outline=(0, 200, 0))
+                else:
+                    draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 255), outline=None)
         
         
         for hlNode in elayer.hlNodes:
