@@ -40,7 +40,7 @@ class Place:
         self.totalAGamount = self.calculateAGdeep(self)
         
         self.slowAGamount += self.totalAGamount * (1.0 / max(self.slowAGamount / 10, 1))
-        self.slowAGamount -= 1 
+        self.slowAGamount -= Global.PlaceAGFadeOut 
         
     def calculateAGdeep(self, placeToProcess):
         sumNodeAGamount = 0
@@ -51,9 +51,9 @@ class Place:
         return sumNodeAGamount
     
     def CalculateRange(self):
-        ch = log( max(2, (self.slowAGamount / self.startTotalAGamount)), 2)
-        l = (0.2 / ch) + 0.8
-        self.range = self.startRange * (l)
+        coef = log( max(2, (self.slowAGamount / self.startTotalAGamount)), 2)
+        coef = (0.2 / coef) + 0.8
+        self.range = self.startRange * coef
     
     def UpdateLocation(self):
         (x, y, sumNodeAGamount, count) = self.updateLocDeep(self)
@@ -66,7 +66,7 @@ class Place:
         y = y / sumNodeAGamount
         p = Point(x,y)
         
-        coef = min(1, (float(self.startTotalAGamount) / self.slowAGamount)) / 10
+        coef = min(1, (float(self.startTotalAGamount) / self.slowAGamount)) * Global.PlaceMoveCoef
         dx = (p.x - self.x) * coef
         dy = (p.y - self.y) * coef
         self.x += dx 
@@ -311,12 +311,14 @@ class EnergyLayerNode:
         if hit.hit:
             newX = hit.x
             newY = hit.y
+            if fabs(self.x - hit.x) < 0.0001: newX = self.x
+            if fabs(self.y - hit.y) < 0.0001: newY = self.y 
         
         if saveStatus and Global.SaveELNodesStatus:
             ldx = newX - self.x
             ldy = newY - self.y
             distToMove = sqrt(ldx*ldx + ldy*ldy)
-                     
+                         
         self.x = newX
         self.y = newY
         self.stepDiffX = self.stepDiffY = 0
@@ -464,7 +466,7 @@ class EnergyLayer:
         
         placesToDelete = []
         for place in self.places:
-            if place.AGamount > Global.PlacesAGNeeded * place.level:
+            if place.AGamount > Global.PlacesAGNeeded * (2**(place.level) - 1):
                 self.createPlaces(place)
                         
             place.CalculateAG()
@@ -481,6 +483,10 @@ class EnergyLayer:
             
         for node in self.nodes:
             p = self.GetPlaceForNode(node)
+            
+            if p == None:
+                Global.Log("haha")
+            
             if p != node.place:
                 node.place.nodes.remove(node)
                 node.place = p
@@ -516,8 +522,8 @@ class EnergyLayer:
         while placeToSplit.AGamount > (startAG / 2):
             nodesPlace = placeToSplit.nodes
             nodesPlace.sort(lambda b,a: cmp(a.AGamount,b.AGamount))
-            #nodesPlace.sort(lambda b,a: cmp(a.GetAGamountPart(placeToSplit),b.GetAGamountPart(placeToSplit)))
-            self.createSubPlace(placeToSplit, nodesPlace)
+            placeCreated = self.createSubPlace(placeToSplit, nodesPlace)
+            if not placeCreated: break
             placeToSplit.CalculateAG()
         
         
@@ -527,31 +533,39 @@ class EnergyLayer:
         nodes.remove(startNode)
         nodeDists = self.getAllNodesDist(startNode, nodes)
         nodes.sort(lambda a,b: cmp(nodeDists[a],nodeDists[b]))
+                
+        nodesInNewPlace = [startNode]
+        newPlaceAGamount = 0
+        newPlaceRange = placeToSplit.range / 2
+        newPlaceLevel = placeToSplit.level + 1
+        for n in nodes:
+            if nodeDists[n] > newPlaceRange: break
+            nodesInNewPlace.append(n)
+        for node in nodesInNewPlace:
+            newPlaceAGamount += node.AGamount
+        if newPlaceAGamount < (Global.PlacesAGMin * newPlaceLevel):
+            return False
         
         self.placeIndex += 1
         newPlace = Place(self, self.placeIndex, startNode.x, startNode.y)
-        newPlace.range = placeToSplit.range / 2
+        newPlace.range = newPlaceRange
         newPlace.startRange = newPlace.range
-        newPlace.level = placeToSplit.level + 1
+        newPlace.level = newPlaceLevel
         newPlace.parent = placeToSplit
         placeToSplit.places.append(newPlace)
         self.places.append(newPlace)
         
-        newPlace.nodes.append(startNode)
-        startNode.place.nodes.remove(startNode)
-        startNode.place = newPlace
-        
-        for n in nodes:
-            if nodeDists[n] > newPlace.range: break
-            newPlace.nodes.append(n)
+        newPlace.nodes = nodesInNewPlace
+        for n in nodesInNewPlace:
             n.place.nodes.remove(n)
             n.place = newPlace
             
-        newPlace.CalculateAG()
+        newPlace.CalculateAG()  #ToDo: needed ???
         newPlace.startTotalAGamount = newPlace.AGamount
         newPlace.slowAGamount = newPlace.AGamount
         newPlace.CalculateRange() 
         newPlace.UpdateLocation()
+        return True
         
     def createHLNode(self, startNode):
         nodeDists = self.getAllNodesDist(startNode)

@@ -53,7 +53,8 @@ class MainWindow(Frame):
         startMenu = Menu()
         startMenu.add_command(label="Test All", command=self.startAll)
         startMenu.add_separator()
-        for config in Config.configs:
+        configs = Config.GetConfigs()
+        for config in configs:
              startMenu.add_command(label=config, command= lambda config=config: self.startSimulation(config))
         
         worldMenu = Menu()
@@ -163,7 +164,7 @@ class MainWindow(Frame):
             settingsCount = 1
         else:
             settingsCount = reduce(lambda x,y: x*y, settingsToRunLen)
-        self.testToRunCount = settingsCount * len(Config.configs) * len(Global.RandomSeeds)
+        self.testToRunCount = settingsCount * len(Config.GetConfigs()) * len(Global.RandomSeeds)
         self.currentTestIndex = 0
         self.testRunStarted = time.time()
         
@@ -182,7 +183,7 @@ class MainWindow(Frame):
         
     def runOneTestSuite(self, settingsText):
         nowTime = time.strftime("%Y-%m-%d--%H-%M-%S")
-        configsToTest = Config.configs
+        configsToTest = Config.GetConfigs()
         randomSeeds = Global.RandomSeeds
         
         savePath = "../../tests/" + nowTime + "/"

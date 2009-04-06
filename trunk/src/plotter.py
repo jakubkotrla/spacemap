@@ -270,7 +270,7 @@ def plotPlace(fileName):
     agTND = array( agT )
     agSND = array( agS )
     
-    plot(stepND, agCND, 'k.', label='AG')
+    plot(stepND, agCND, 'k-', label='AG')
     plot(stepND, agTND, 'g-', label='AG total')
     plot(stepND, agSND, 'b-', label='AG slow')
     xlabel("Time (steps)")
