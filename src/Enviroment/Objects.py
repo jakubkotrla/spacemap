@@ -5,7 +5,6 @@ class Object:
     def __init__(self, name, affs = []):
         self.name = name
         self.affordances = affs
-        self.attractivity = 0
     
     def ToString(self):
         strAff = ""
@@ -14,6 +13,9 @@ class Object:
         
         
 # Configuration part
+WaypointObject = Object('Waypoint', [])
+
+
 Meal = Object('Meal', [Eatability])
 Sandwich = Object('Sandwich', [Eatability])
 Apple = Object('Apple', [Eatability, Throwability])
@@ -62,8 +64,6 @@ Screwdriver = Object('Screwdriver', [Screwability])
 Pipe = Object('Pipe', [Smokeability])
 Wood = Object('Wood', [Fireability])
 Torch = Object('Torch', [Lightability])
-
-#kartacek a pasta
 
 
 Objects = [

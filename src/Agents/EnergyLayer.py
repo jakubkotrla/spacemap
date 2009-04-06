@@ -2,6 +2,7 @@
 from Enviroment.Global import Global
 from math import sqrt, fabs, log, e, ceil
 from Enviroment.Map import Point
+from Enviroment.Objects import WaypointObject
 import copy
 
 class Place:
@@ -395,6 +396,10 @@ class EnergyLayer:
         self.stepELNodesCreated = 0
         
     def CreateMap(self):
+        if Global.ELUseMapGeometry:
+            for p in self.area.points:
+                self.area.AddObject(WaypointObject, p.x, p.y, 5)
+        
         areaArea = self.area.GetArea()
         nodeCount = areaArea / Global.ELDensity ** 2
         self.desiredNodeCount = nodeCount * 2
