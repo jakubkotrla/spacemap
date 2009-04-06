@@ -180,8 +180,7 @@ class Map:
                 else:
                     hitPoint.x = newPos.x
                     hitPoint.y = newPos.y
-            else:
-                return hitPoint
+
         return hitPoint
         
     def canMoveExInner(self, start, end):

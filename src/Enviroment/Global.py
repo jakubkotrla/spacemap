@@ -92,6 +92,7 @@ class GlobalVariables:
         self.HLAGAddCoef = 2
         self.HLAGFadeOut = 1
         
+        self.CreatePlaces = True
         self.PlacesAGNeeded = 1500
         self.PlacesAGMin = 500
         self.PlaceAGFadeOut = 0.5 #1
