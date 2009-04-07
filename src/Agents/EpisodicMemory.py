@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-#untouched, original from Tomas Korenko source code
+#unchanged, original from Tomas Korenko source code
 
 import Emotion
 

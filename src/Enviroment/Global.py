@@ -92,7 +92,7 @@ class GlobalVariables:
         self.HLAGAddCoef = 2
         self.HLAGFadeOut = 1
         
-        self.CreatePlaces = True
+        self.CreatePlaces = False
         self.PlacesAGNeeded = 1500
         self.PlacesAGMin = 500
         self.PlaceAGFadeOut = 0.5
@@ -136,7 +136,7 @@ class GlobalVariables:
     def Gauss(self, x, c=1):
         return exp( - (x*x) / (2*(c*c)) )
     def GaussInverse(self, y, c=1):
-        #ToDo: solve y>1
+        if y > 1: raise ValueError
         return sqrt( - 2*c*c * log(y) )
     def Sign(self, int):
         if(int < 0): return -1;

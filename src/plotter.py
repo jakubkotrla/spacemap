@@ -1,5 +1,5 @@
 
-# simple script to plot outputted data
+# script to plot outputted data
 from pylab import *
 import os
 import csv

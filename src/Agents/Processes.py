@@ -1,12 +1,6 @@
-# -*- coding: UTF-8 -*-
 
-## Trieda reprezentujúca proces ktorý môže agent vykonať
-# - Atribúty triedy
-#   - name ... meno procesu
-#   - sources ... zdroje potrebné na vykonanie procesu - zoznam afordancií
-#   - intentions ... zoznam zámerov ktoré je potreba vykonať aby proces úspešne prebehol
-#   - baseTimeLimit ... základný čas ktorý sa môže proces vykonávať
-#   - durationTime ... čas ktorý sa proces vykonáva po zhromaždení všetkých zdrojov
+#based on source from Tomas Korenko, changed
+
 class Process:
     def __init__(self, name, intentions, sources, usedSources=[], newObjects=[], durationTime=0, baseTimeLimit=86400, iteration=1):
         self.name          = name

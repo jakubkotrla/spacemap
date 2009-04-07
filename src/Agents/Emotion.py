@@ -1,6 +1,6 @@
 
 
-#untouched, original from Tomas Korenko source code
+#unchanged, original from Tomas Korenko source code
 
 from Enviroment.Time import Time
 
