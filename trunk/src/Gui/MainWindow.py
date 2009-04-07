@@ -188,15 +188,7 @@ class MainWindow(Frame):
         
         savePath = "../../tests/" + nowTime + "/"
         os.makedirs(savePath)
-        copyfile("Enviroment/Global.py", savePath + "Global.py")
-        copyfile("plotter.py", "../../tests/plotter.py")
-        copyfile("../statter.exe", "../../tests/statter.exe")
-        copyfile("../LumenWorks.Framework.IO.dll", "../../tests/LumenWorks.Framework.IO.dll")
-        f = open(savePath + "Global.py", "a")
-        f.write("\n#real settings of Global.py\n")
-        f.write(settingsText)
-        f.close()
-        
+                
         if Global.SafeMode:
             for randomSeed in randomSeeds:
                 for configName in configsToTest:
@@ -211,6 +203,16 @@ class MainWindow(Frame):
             for randomSeed in randomSeeds:
                 for configName in configsToTest:
                     self.runOneSimulation(savePath, configName, randomSeed)
+        
+        copyfile("Enviroment/Global.py", savePath + "Global.py")
+        copyfile("plotter.py", "../../tests/plotter.py")
+        copyfile("../statter.exe", "../../tests/statter.exe")
+        copyfile("../LumenWorks.Framework.IO.dll", "../../tests/LumenWorks.Framework.IO.dll")
+        f = open(savePath + "Global.py", "a")
+        f.write("\n#real settings of Global.py\n")
+        f.write(settingsText)
+        f.close()
+        #run statter and plotter ?
             
 
     def runOneSimulation(self, savePath, configName, randomSeed):
@@ -293,8 +295,15 @@ class MainWindow(Frame):
         self.lockBack.acquire()
         while True:
             world.Step()
-            self.RenderState(world)
+            #self.RenderState(world)
             self.mapRenderer.RenderToFile(world, "../../exs/PIL" + str(world.step).zfill(6) + ".png", ["agent", "ov", "eps", "info"])
+            
+            # used only to get EPS of test rooms
+            self.mapRenderer.RenderSpaceMap()    
+            p=self.wxCanvas.postscript(width="1020",height="1020")
+            f=open("image" + str(world.step) + ".eps", "wb")
+            f.write(p)
+            f.close()
             
             if self.lock.acquire(False): break
             self.playbackLock.acquire()
@@ -308,6 +317,7 @@ class MainWindow(Frame):
         self.mapRenderer.RenderObjectVisibility()
         self.mapRenderer.RenderSpaceMap()
         self.mapRenderer.RenderAgent(world.agent)
+        #self.mapRenderer.RenderObjects() - only for dynamic worlds
         if Global.RenderVisibilityHistory:
             self.mapRenderer.RenderVisibilityHistory()
         else:

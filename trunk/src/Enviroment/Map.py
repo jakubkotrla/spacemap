@@ -108,8 +108,8 @@ class Map:
             guiId = mapRenderer.Line(edge.start.x, edge.start.y, edge.end.x, edge.end.y, "#000", "map edge")
             if firstLine == None:
                 firstLine = guiId
-        for wayPoint in self.wayPoints:
-            mapRenderer.PixelC(wayPoint, wayPoint.x, wayPoint.y, "#000", 2, "waypoint")
+        #for wayPoint in self.wayPoints:
+        #    mapRenderer.PixelC(wayPoint, wayPoint.x, wayPoint.y, "#000", 2, "waypoint")
         return firstLine
     
     def AddObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
@@ -442,6 +442,9 @@ class Map:
         for vc in agent.viewCones:
             if angle < vc.angle and dist < vc.distance:
                 visibility = visibility + vc.intensity
+                
+        if Global.ELUseMapGeometry and object.type.name == "Waypoint":
+            visibility = Global.WeakCoef(visibility, 2)
         return visibility
       
     def IsObjectVisible(self, agent, object):

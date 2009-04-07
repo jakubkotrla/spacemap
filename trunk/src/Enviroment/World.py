@@ -22,7 +22,7 @@ class World:
         self.events = config.GetWorldEvents()
         if Global.WorldDynamic > 0:
             self.events.extend(self.generateWorldEvents())
-        if len (self.events) > 0:
+        if len(self.events) > 0:
             for event in self.events:
                 Global.LogData("worldevents", event.ToString())
             Global.LogEnd("worldevents")

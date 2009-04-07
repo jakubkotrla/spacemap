@@ -1,16 +1,17 @@
-
+# -*- coding: UTF-8 -*-
 # script to plot outputted data
 from pylab import *
 import os
 import csv
 from numpy import *
+from matplotlib.font_manager import fontManager, FontProperties
 
 
 def addToQueue(visited, queue, point, value):
     hash = str(point[0]) + ";" + str(point[1])
     if hash not in visited and value > 0.1:
         visited[hash] = hash
-        queue.append( (point[0], point[1], (value/2)) )
+        queue.append( (point[0], point[1], (value * 0.6)) )
 def fill(map, x, y, value):
     visited = {}
     queue = []
@@ -25,7 +26,7 @@ def fill(map, x, y, value):
         addToQueue(visited, queue, (point[0],point[1]+1), point[2])
 
 
-def plotHeatMap(fileName, titleStr, defValue=None):
+def plotHeatMap(fileName, titleStr):
     rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
     rows = []
     rows.extend(rowsRAW)
@@ -39,19 +40,12 @@ def plotHeatMap(fileName, titleStr, defValue=None):
     mapaSqrt = [None]*101
     for i in range(101):
          mapaSqrt[i] = [None] * 101
-    for i in range(101):
-        for j in range(101):
-            mapaSqrt[i][j] = 0.0
-        
 
     for row in rows:
         y = int(row[0])
         x = int(row[1])
         value = float(row[2])
-        if defValue != None:
-            fill(mapa, x, y, defValue)
-        else:
-            fill(mapa, x, y, value)
+        fill(mapa, x, y, value)
 
     maxValue = 0
     maxValueSqrt = 0
@@ -59,7 +53,7 @@ def plotHeatMap(fileName, titleStr, defValue=None):
         for j in range(101):
             mapaSqrt[i][j] = sqrt(mapa[i][j])
             maxValue = max(maxValue, mapa[i][j])
-            maxValueSqrt = max(maxValue, mapaSqrt[i][j])
+            maxValueSqrt = max(maxValueSqrt, mapaSqrt[i][j])
     for i in range(101):
         for j in range(101):
             mapa[i][j] = maxValue - mapa[i][j]
@@ -70,44 +64,74 @@ def plotHeatMap(fileName, titleStr, defValue=None):
     ndA = array(mapa)    
     im = imshow(ndA, cmap=cm.gray, interpolation=None, origin='upper',extent=(0,100,0,100))
     colorbar()
-    title(titleStr)
+    title(titleStr, family=fontFamily)
     savefig(fileName+".png", format="PNG")
+    if saveEPS: savefig(fileName+".eps", format="EPS")
     clf()
 
     ndA = array(mapaSqrt)    
     im = imshow(ndA, cmap=cm.gray, interpolation='bilinear', origin='upper',extent=(0,100,0,100))
     colorbar()
-    title(titleStr + " sqrt")
-    savefig(fileName+"sqrt.png", format="PNG")
+    titleStr = ur'$\sqrt{'+titleStr+'}$'
+    title(titleStr, family=fontFamily)
+    savefig(fileName+".sqrt.png", format="PNG")
+    if saveEPS: savefig(fileName+".sqrt.eps", format="EPS")
     clf()
 
+def plotHeatMapDiff(fileName1, fileName2):
+    rowsRAW = csv.reader(open(fileName1, "rb"), delimiter=";")
+    rows1 = []
+    rows1.extend(rowsRAW)
+    rowsRAW = csv.reader(open(fileName2, "rb"), delimiter=";")
+    rows2 = []
+    rows2.extend(rowsRAW)
 
+    mapa1 = [None]*101
+    for i in range(101):
+         mapa1[i] = [None] * 101
+    for i in range(101):
+        for j in range(101):
+            mapa1[i][j] = 0.0
+    mapa2 = [None]*101
+    for i in range(101):
+         mapa2[i] = [None] * 101
+    for i in range(101):
+        for j in range(101):
+            mapa2[i][j] = 0.0
+    mapaSqrt = [None]*101
+    for i in range(101):
+         mapaSqrt[i] = [None] * 101
 
-def plotNC(fileName):
-    rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
-    rows = []
-    rows.extend(rowsRAW)
-    
-    stepsND = arange(0, len(rows), 1)
-    ncCount = map(lambda x: x[0], rows)
-    desiredCount = map(lambda x: x[3], rows)
-    objsCount = map(lambda x: x[4], rows)
-    
-    ncCountND = array( ncCount )
-    desiredCountND = array( desiredCount )
-    objsCountND = array( objsCount )
-    figure()
-    plot(stepsND, ncCountND, 'g-', label='El-node count')
-    plot(stepsND, desiredCountND, 'k:', label='desired EL-node count')
-    plot(stepsND, objsCountND, 'b:', label='Object count')
-    legend(loc='best')
-    
-    ylabel('EL-nodes count')
-    xlabel('time (steps)')
-    title('EL-nodes count in time')
-    savefig(fileName+".png", format="PNG")
+    for row in rows1:
+        y = int(row[0])
+        x = int(row[1])
+        value = float(row[2])
+        fill(mapa1, x, y, value)
+    for row in rows2:
+        y = int(row[0])
+        x = int(row[1])
+        value = float(row[2])
+        fill(mapa2, x, y, value)    
+        
+    for i in range(101):
+        for j in range(101):
+            mapaSqrt[i][j] = fabs(sqrt(mapa1[i][j]) - sqrt(mapa2[i][j]))
+
+    maxValueSqrt = 0
+    for i in range(101):
+        for j in range(101):
+            maxValueSqrt = max(maxValueSqrt, mapaSqrt[i][j])
+    for i in range(101):
+        for j in range(101):
+            mapaSqrt[i][j] = maxValueSqrt - mapaSqrt[i][j]
+
+    ndA = array(mapaSqrt)    
+    im = imshow(ndA, cmap=cm.gray, interpolation=None, origin='upper',extent=(0,100,0,100))
+    colorbar()
+    title(u"Heatmap sqrt diff", family=fontFamily)
+    savefig(fileName1+".diff.png", format="PNG")
+    if saveEPS: savefig(fileName+".diff.eps", format="EPS")
     clf()
-
 
 def plotHLNodes(fileName):
     pass
@@ -120,10 +144,11 @@ def plotRememberOne(fileName, rows):
     errorND = array( error )
     trainedND = array( trained )
     plot(trainedND, errorND, marker=",", color='red', drawstyle="steps", linestyle="None")
-    ylabel('Error')
-    xlabel('Amount trained')
-    title('Error / trained')
+    ylabel(u'Chyba', family=fontFamily)
+    xlabel(u'Míra naučení', family=fontFamily)
+    title(u'Chyba prostorové mapy v závislosti na naučenosti předmětů', family=fontFamily)
     savefig(fileName+".png", format="PNG")
+    if saveEPS: savefig(fileName+".eps", format="EPS")
     clf()
 
 def plotRememberTimeOne(fileName, rows, plotTrained=True):
@@ -140,16 +165,17 @@ def plotRememberTimeOne(fileName, rows, plotTrained=True):
         subplots_adjust(hspace=1)
         subplot(211)
         plot(stepND, trainedND, marker=",", color='red', drawstyle="steps", linestyle="None")
-        xlabel("Time (steps)")
-        ylabel('Amount trained')
-        title('Trained in time')
+        xlabel(u"čas (kroky)")
+        ylabel(u'míra naučení')
+        title(u'Míra naučení v čase')
     
         subplot(212)
     plot(stepND, errorND, marker=",", color='red', drawstyle="steps", linestyle="None")
-    ylabel('Error')
-    xlabel("Time (steps)")
-    title('Error in time - mean: %.2f'%meanError)
+    ylabel(u'Chyba', family=fontFamily)
+    xlabel(u"čas (kroky)", family=fontFamily)
+    title(u'Chyba mapy v čase', family=fontFamily)
     savefig(fileName+".png", format="PNG")
+    if saveEPS: savefig(fileName+".eps", format="EPS")
     clf()
         
 
@@ -188,10 +214,11 @@ def plotMeanErrorInTime(fileName):
         dataME.append(meanError)
     
     plot(dataStep, dataME, marker=".", color='red')
-    ylabel('Mean error')
-    xlabel('Time (steps)')
-    title('Mean error in time')
+    ylabel(u'průměrná chyba', family=fontFamily)
+    xlabel(u'čas (kroky)', family=fontFamily)
+    title(u'Průmerná chyba mapy v čase', family=fontFamily)
     savefig(fileName+".meanerror.png", format="PNG")
+    if saveEPS: savefig(fileName+".meanerror.eps", format="EPS")
     clf()
     
 def plotELNodeStats(fileName):
@@ -219,35 +246,38 @@ def plotELNodeStats(fileName):
     agMinND = array( agMin )
     agMaxND = array( agMax )
      
-    plot(stepND, distMeanND, 'b-', label='mean')
-    plot(stepND, distMinND, 'k:', label='min')
-    plot(stepND, distMaxND, 'k,', label='max')
+    plot(stepND, distMeanND, 'b-', label=u'průměr')
+    plot(stepND, distMinND, 'k:', label=u'min')
+    plot(stepND, distMaxND, 'k,', label=u'max')
     yscale('log')
-    xlabel("Time (steps)")
-    ylabel('Distance moved')
-    title('Distance moved in time')
-    legend(loc='best')
+    xlabel(u"čas (kroky)", family=fontFamily)
+    ylabel(u'změna polohy uzlu', family=fontFamily)
+    title(u'změna polohy uzlu v čase', family=fontFamily)
+    legend(loc='best', prop=fontObj)
     savefig(fileName+".dist.png", format="PNG")
+    if saveEPS: savefig(fileName+".dist.eps", format="EPS")
     clf()
     
-    plot(stepND, usageMeanND, 'b-', label='mean')
-    plot(stepND, usageMinND, 'k:', label='min')
-    plot(stepND, usageMaxND, 'k:', label='max')
-    xlabel("Time (steps)")
-    ylabel('Node usage')
-    title('Node usage in time')
-    legend(loc='best')
+    plot(stepND, usageMeanND, 'b-', label=u'průměr')
+    plot(stepND, usageMinND, 'k:', label=u'min')
+    plot(stepND, usageMaxND, 'k:', label=u'max')
+    xlabel(u"čas (kroky)", family=fontFamily)
+    ylabel(u'naplněnost uzlu', family=fontFamily)
+    title(u'Naplněnost uzlu v čase', family=fontFamily)
+    legend(loc='best', prop=fontObj)
     savefig(fileName+".usage.png", format="PNG")
+    if saveEPS: savefig(fileName+".usage.eps", format="EPS")
     clf()
     
-    plot(stepND, agMeanND, 'b-', label='mean')
-    plot(stepND, agMinND, 'k:', label='min')
-    plot(stepND, agMaxND, 'k:', label='max')
-    xlabel("Time (steps)")
-    ylabel('AG amount')
-    title('AG amount in time')
-    legend(loc='best')
+    plot(stepND, agMeanND, 'b-', label=u'průměr')
+    plot(stepND, agMinND, 'k:', label=u'min')
+    plot(stepND, agMaxND, 'k:', label=u'max')
+    xlabel(u"čas (kroky)", family=fontFamily)
+    ylabel(u'množství AG', family=fontFamily)
+    title(u'množství AG v čase', family=fontFamily)
+    legend(loc='best', prop=fontObj)
     savefig(fileName+".ag.png", format="PNG")
+    if saveEPS: savefig(fileName+".ag.eps", format="EPS")
     clf()
     
 def plotPlacesStats(fileName):
@@ -263,14 +293,15 @@ def plotPlacesStats(fileName):
     agMinND = array( agMin )
     agMaxND = array( agMax )
      
-    plot(stepND, agMeanND, 'b-', label='mean')
+    plot(stepND, agMeanND, 'b-', label='průměr')
     plot(stepND, agMinND, 'k:', label='min')
     plot(stepND, agMaxND, 'k:', label='max')
-    xlabel("Time (steps)")
-    ylabel('AG amount')
-    title('AG amount in time')
-    legend(loc='best')
+    xlabel(u"čas (kroky)", family=fontFamily)
+    ylabel(u'množství AG', family=fontFamily)
+    title(u'množství AG v čase', family=fontFamily)
+    legend(loc='best', prop=fontObj)
     savefig(fileName+".ag.png", format="PNG")
+    if saveEPS: savefig(fileName+".ag.eps", format="EPS")
     clf()
 
 def plotPlace(fileName):
@@ -287,31 +318,64 @@ def plotPlace(fileName):
     agTND = array( agT )
     agSND = array( agS )
     
-    plot(stepND, agCND, 'k-', label='AG')
-    plot(stepND, agTND, 'g-', label='AG total')
-    plot(stepND, agSND, 'b-', label='AG slow')
-    xlabel("Time (steps)")
-    ylabel('AG amount')
-    title('AG amount in time')
-    legend(loc='best')
+    plot(stepND, agCND, 'k-', label=u'AG')
+    plot(stepND, agTND, 'g-', label=u'AG total')
+    plot(stepND, agSND, 'b-', label=u'AG slow')
+    xlabel(u"čas (kroky)", family=fontFamily)
+    ylabel(u'množství AG', family=fontFamily)
+    title(u'množství AG v čase', family=fontFamily)
+    legend(loc='best', prop=fontObj)
     savefig(fileName+".ags.png", format="PNG")
+    if saveEPS: savefig(fileName+".ags.eps", format="EPS")
     clf()
 
-     
+def plotNC(fileName):
+    rowsRAW = csv.reader(open(fileName, "rb"), delimiter=";")
+    rows = []
+    rows.extend(rowsRAW)
+
+    stepsND = arange(0, len(rows), 1)
+    stepsND = array(map(lambda x: x[0], rows))
+    ncCount = map(lambda x: x[1], rows)
+    desiredCount = map(lambda x: x[4], rows)
+    objsCount = map(lambda x: x[5], rows)
+
+    ncCountND = array( ncCount )
+    desiredCountND = array( desiredCount )
+    objsCountND = array( objsCount )
+    figure()
+    plot(stepsND, ncCountND, 'g-', label=u'počet uzlů')
+    plot(stepsND, desiredCountND, 'k:', label=u'požadovaný počet uzlů')
+    plot(stepsND, objsCountND, 'b:', label=u'počet předmětů')
+    legend(loc='best', prop=fontObj)
+
+    ylabel(u'počet', family=fontFamily)
+    xlabel(u'čas (kroky)', family=fontFamily)
+    title(ur'Počet uzlů v čase', family=fontFamily)
+    savefig(fileName+".png", format="PNG")
+    if saveEPS: savefig(fileName+".eps", format="EPS")
+    clf()
+
+
+fontFamily = 'Arial'
+fontObj = FontProperties(family=fontFamily);
 full = False   
+saveEPS = False
 
 for root, dirs, files in os.walk('.'):
     print root
     for fname in files:
         if fname == "data-objheatmap.txt":
             print ("plotHeatMapObj " + root + "\\" + fname)
-            plotHeatMap(root + "\\" + fname, "Object HeatMap")
+            plotHeatMap(root + "\\" + fname, u"Mapa naučenosti předmětů")
+            print ("plotHeatMap DIFF")
+            plotHeatMapDiff(root + "\\" + fname, root + "\\data-elnodeheatmap.txt")
         elif fname == "data-elnodeheatmap.txt":
             print ("plotHeatMapELNode " + root + "\\" + fname)
-            plotHeatMap(root + "\\" + fname, "ELNodes HeatMap")
+            plotHeatMap(root + "\\" + fname, u"Mapa naplněnosti uzlů prostorové mapy")
         elif fname == "data-elnodeheatmapag.txt":
             print ("plotHeatMapELNodeAG " + root + "\\" + fname)
-            plotHeatMap(root + "\\" + fname, "ELNodes AG HeatMap")
+            plotHeatMap(root + "\\" + fname, u"Mapa množství AG uzlů prostorové mapy")
         elif fname == "data-nc.txt":
             print ("plotNC " + root + "\\" + fname)
             plotNC(root + "\\" + fname)
