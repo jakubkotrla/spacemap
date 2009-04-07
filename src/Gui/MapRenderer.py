@@ -25,15 +25,15 @@ class MapRenderer:
         if renderAtStart:
             self.mapEdges = self.map.Render(self)
         
-            self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
+            #self.agentRect = self.Pixel(agent, self.agent.x, self.agent.y, "red", "agent")
             self.agentMHlines = []
         
             self.objectsRects = []
-            for obj in self.map.objects:
-                if obj.type.name == "Waypoint":
-                    objId = self.Pixel(obj, obj.x, obj.y, "#0000a0", tags="info object", outline="#00aa00")
-                else:
-                    objId = self.Pixel(obj, obj.x, obj.y, "blue", tags="info object")
+#            for obj in self.map.objects:
+#                if obj.type.name == "Waypoint":
+#                    objId = self.Pixel(obj, obj.x, obj.y, "#0000a0", tags="info object", outline="#00aa00")
+#                else:
+#                    objId = self.Pixel(obj, obj.x, obj.y, "blue", tags="info object")
       
     def Clear(self):
         self.canvas.addtag_all("2del")
@@ -118,7 +118,16 @@ class MapRenderer:
                 x1 = agentx + vc.distance
                 y1 = agenty + vc.distance
                 self.Pie(vc, x0, y0, x1, y1, start, 2*angle, "red", tags="vcone")
-        
+    
+    def RenderObjects(self):
+        self.canvas.delete("object")
+        self.objectsRects = []
+        for obj in self.map.objects:
+            if obj.type.name == "Waypoint":
+                objId = self.Pixel(obj, obj.x, obj.y, "#0000a0", tags="info object", outline="#00aa00")
+            else:
+                objId = self.Pixel(obj, obj.x, obj.y, "blue", tags="info object")
+            
     def RenderObjectVisibility(self):
         for obj in self.objectsRects:
             if obj.visibility > 0:

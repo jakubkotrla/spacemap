@@ -29,8 +29,8 @@ class GlobalVariables:
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [468219]   #seeds to test
-        self.MaxTestSteps = 4000      #should be more than one day
-        self.MaxTestStepAfter = 0 
+        self.MaxTestSteps = 6000      #should be more than one day
+        self.MaxTestStepAfter = 5000 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -76,8 +76,6 @@ class GlobalVariables:
         self.EPFadeCoef = 0.5
         self.EPFadeLimit = 10
         
-        self.NodeCostCoef = 50
-        
         self.ELForgetNodeRate = 5           #how much EL.forgetEnergy is added each step
         self.ELDeleteNodeReTrainCount = 20
         self.ELDeleteNodeReTrainRange = 20
@@ -98,7 +96,8 @@ class GlobalVariables:
         self.PlaceAGFadeOut = 0.5
         self.PlaceMoveCoef = 0.02
         
-        self.ELUseMapGeometry = True
+        self.ELUseMapGeometry = False
+        self.ELMapGeometryAttractivity = 10
     
     def Random(self):
         return random()

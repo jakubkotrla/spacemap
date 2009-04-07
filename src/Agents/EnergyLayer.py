@@ -321,9 +321,9 @@ class EnergyLayerNode:
             ldy = newY - self.y
             distToMove = sqrt(ldx*ldx + ldy*ldy)
         
-        if self.area.IsInside(Point(newX, newY)):
-            self.x = newX
-            self.y = newY
+        #if self.area.IsInside(Point(newX, newY)): #ToDo: for release
+        self.x = newX
+        self.y = newY
         self.stepDiffX = self.stepDiffY = 0
 
         self.usage -= Global.ELNodeUsageFadeOut
@@ -389,7 +389,7 @@ class EnergyLayer:
     def CreateMap(self):
         if Global.ELUseMapGeometry:
             for p in self.area.points:
-                self.area.AddObject(WaypointObject, p.x, p.y, 5)
+                self.area.AddObject(WaypointObject, p.x, p.y, Global.ELMapGeometryAttractivity)
         
         areaArea = self.area.GetArea()
         nodeCount = areaArea / Global.ELDensity ** 2
@@ -406,7 +406,7 @@ class EnergyLayer:
             rootPlace.startRange = rootPlace.range
             self.places.append(rootPlace)
         
-        if Global.ELCreateNoise > Global.ELDensity or Global.ELCreateNoise == -1:
+        if Global.ELCreateNoise == -1:
             while len(self.nodes) < nodeCount:
                 x = float(Global.Randint(0, self.area.width-1))
                 y = float(Global.Randint(0, self.area.height-1))
@@ -681,7 +681,7 @@ class EnergyLayer:
     
     def Status(self):
         strObjs = str(len(self.area.objects))
-        s = str(len(self.nodes)) + ";" + str(self.stepEPCreated) + ";" + str(self.stepELNodesCreated) + ";" + str(self.desiredNodeCount) + ";" + strObjs
+        s = str(Global.GetStep()) + ';' + str(len(self.nodes)) + ";" + str(self.stepEPCreated) + ";" + str(self.stepELNodesCreated) + ";" + str(self.desiredNodeCount) + ";" + strObjs
         self.stepEPCreated = 0
         self.stepELNodesCreated = 0
         return s
@@ -695,17 +695,17 @@ class EnergyLayer:
             Global.LogData("elnodeheatmapag", nStr)
         
     def GetNodeCreateCost(self):
-        x = Global.NodeCostCoef * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = 100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(x)/50))
         xf = 1100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         costf = 0.0001 * (3 ** (float(xf)/50))
-        return (cost + costf)
+        return (cost)# + costf)
     def GetNodeDeleteCost(self):
-        x = Global.NodeCostCoef * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = 100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(-x)/50))
         xf = 1100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         costf = 0.0001 * (3 ** (float(-xf)/50))
-        return (cost + costf)
+        return (cost)# + costf)
 
     def getNodesAround(self, node, range):
         nodesAround = []
