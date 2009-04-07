@@ -17,7 +17,7 @@ Algoritmus umí urèit shluky, tedy umístit bod tam, kde je hodnì dat. Ve skuteèno
 To samé platí obecnì pro geometrické algoritmy shlukové analýzy, nelze je tedy použít na hlavní model mapy. Mohou ale být využity pøi vytváøení hiearchie uzlù.
 \\
 
-\section{SOM}
+\section{Samoorganizující mapy}
 
 Vytváøení map se ve velké míøe vìnuje robotika. Øeší však problémy na jiné úrovni, typicky tzv. SLAM
 \footnote{Simultaneous Localization and Mapping}
@@ -55,11 +55,11 @@ Jsou tedy jedním z možných øešení.
 \\
 
 \section{Kognitivní mapy}
-V \cite{litVoicu2003} autoøi popisují model hiearchické kognitivní mapy, který obsahuje i prostorovou mapu o dovu úrovních (místa a regiony).
+V \cite{litVoicu2003} autoøi popisují model hiearchické kognitivní mapy, který obsahuje i prostorovou mapu o dvou úrovních (místa a regiony).
 Je tvoøena ètyømi asociativními sítìmi:
 \begin{CompactItemize}
-\item lower level map - ukládá asociace mezi místama
-\item upper level map - ukládá asociace mezi regiony
+\item lower level map - ukládá asociace místo-místo
+\item upper level map - ukládá asociace region-region
 \item place-region map - ukládá pro každé místo, v kterém regionu je
 \item region-places map - ukládá pro kazždý region, která místa v nìm jsou 
 \end{CompactItemize}
