@@ -13,8 +13,8 @@ class RealObject:
         self.onMap = True
         self.amount = amount
         self.attractivity = attractivity
-        self.curAttractivity = attractivity #0.0 - 1.0
-        self.visibility = 0 #0.0 - 1.0
+        self.curAttractivity = attractivity   #0.0 - 1.0
+        self.visibility = 0                   #0.0 - 1.0
         self.trainHistory = 0
                 
     def Use(self):
@@ -266,7 +266,7 @@ class Map:
             sx = start.x
             sy = start.y
             for i in range(dividerCount-1):
-                px = round(sx + dx * dividerCoef)   #round leads to zigzag movement.. like human
+                px = round(sx + dx * dividerCoef)   #round leads to zigzag movement.. "like human"
                 py = round(sy + dy * dividerCoef)
                 divider = Point(px, py)
                 dividers.append(divider)

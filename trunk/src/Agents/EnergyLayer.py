@@ -223,7 +223,7 @@ class EnergyPoint:
             #intensity = Global.Gauss( dist / Global.SMNodeAreaDivCoef, Global.SMNodeAreaGaussCoef)
             dist = max(1, dist)
             intensity = 1.0 / dist
-            #inv = Global.SMNodeAreaDivCoef * Global.GaussInverse(intensity, Global.SMNodeAreaGaussCoef)
+            #intensity = Global.SMNodeAreaDivCoef * Global.GaussInverse(intensity, Global.SMNodeAreaGaussCoef)
             intensity = max(Global.MinPositiveNumber, intensity)
             nodesToIntensity[node] = intensity
             sumIntensity = sumIntensity + intensity
@@ -357,19 +357,10 @@ class EnergyLayerNode:
         newX = self.x + diffX * gCoef
         newY = self.y + diffY * gCoef
         
-        if self.index == 28 and Global.GetStep() > 126:
-            Global.Log("haha")
-        
-        p = Point(self.x, self.y)
-        d = self.area.IsInside(p)
-        
         hit = self.area.CanMoveEx(self, newX, newY)
         if hit.hit:
             newX = hit.x
             newY = hit.y
-            
-        p = Point(newX, newY)
-        d = self.area.IsInside(p)
         
         self.x = newX
         self.y = newY        
@@ -576,7 +567,8 @@ class EnergyLayer:
             n.place.nodes.remove(n)
             n.place = newPlace
             
-        newPlace.CalculateAG()  #ToDo: needed ???
+        newPlace.AGamount = newPlaceAGamount
+        newPlace.totalAGamount = newPlaceAGamount
         newPlace.startTotalAGamount = newPlace.AGamount
         newPlace.slowAGamount = newPlace.AGamount
         newPlace.CalculateRange() 
@@ -724,7 +716,6 @@ class EnergyLayer:
             ldy = n.y-node.y
             dist = ldx*ldx + ldy*ldy
             if dist < range:
-                #if self.area.CanMove(node, n.x, n.y):
                 nodesAround.append(n)
         return nodesAround
 
@@ -738,7 +729,6 @@ class EnergyLayer:
             ldy = n.y-node.y
             dist = ldx*ldx + ldy*ldy
             if dist < range:
-                #if self.area.CanMove(node, n.x, n.y):
                 nodesAround.append(n)
         return nodesAround
     

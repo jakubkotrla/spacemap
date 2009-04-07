@@ -1,25 +1,11 @@
-# -*- coding: UTF-8 -*-
+
+#based on source from Tomas Korenko, changed
 
 from copy import copy
 from Enviroment.Global import Global
 
-## Trieda reprezentujúca aktivovaný proces
-# - Atribúty triedy:
-#   - process ... pointer na proces
-#   - parent ... pointer na rodičovský aktivovaný proces
-#   - startTime ... čas začiatku vykonávania procesu
-#   - endTime ... čas ukončenia vykonávania procesu
-#   - resources ... zoznam objektov použitých pri vykonávaní procesu
-#   - iteration ... počet opakovaní procesu za sebou
-#   - location ... lokácia v ktorej bol proces vykonaný
-#   - successful ... úspešnosť vykonania procesu
-#   - hierarchyLevel ... úroveň procesu v hierarchhickom strome procesov
-#   - timeLimit ... maximálny čas na vykonanie procesu     
-#   - data ... slovník ďalších dát procesu     
+
 class ExcitedProcess:
-    ## Inicializácia inštancie triedy
-    # @param self pointer na aktivovaný proces
-    # @param process pointer na proces
     def __init__(self, process, intention, parent):
         self.process             = process
         self.intention           = intention.intention
@@ -33,8 +19,6 @@ class ExcitedProcess:
         self.iteration           = 0
         self.location            = None
         self.successful          = False
-        self.hierarchyLevel      = 0
-        self.timeLimit           = 0 
         self.data                = {}
         
     def TerminateProcess(self, successful=True):
@@ -80,26 +64,19 @@ class ExcitedProcess:
     def ToString(self):
         return "P_" + self.process.name
 
-## Trieda reprezentujúca aktivovaný zámer
-# - Atribúty triedy:
-#   - intention ... pointer na zámer
-#   - process ... pointer na aktivovaný proces spĺňajúci zámer
-#   - activity ... aktuálna aktivita zámeru          
+
 class ExcitedIntention:
-    ## Inicializácia inštancie triedy
-    # @param self pointer na aktivovaný zámer
-    # @param intention pointer na zámer
     def __init__(self, intention, parentExcProcess):
         self.intention = intention
         self.process   = None
         self.parentExcProcess = parentExcProcess
         self.data = {}
-        self.activity  = 0
     
     def IsProcess(self): return False
     def ToString(self):
         return "I_" + self.intention.name
-          
+
+
 class ProcessArea:
     def __init__(self, episodicMemory):
         self.episodicMemory = episodicMemory
@@ -128,7 +105,8 @@ class ProcessArea:
         
         if process.HasSources():
             self.actualBasicProcess = self.actualProcess
-            
+          
+        #init of smart processes  
         if process.name == "SearchRandom":
             self.actualProcess.data["step"] = "MoveTo"
             self.actualProcess.data["waypoints"] = None
