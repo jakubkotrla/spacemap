@@ -10,8 +10,8 @@ Agent si tedy nemusí vytváøet mapu, ani øešit analýzu obrazových dat èi podobné 
 \emph{Stojím na souøadnicích XY, dívám se smìrem na severozápad. Vidím dva pøedmìty: kvìtinu a talíø. Kvìtina je na souøadnicích XZ, talíø na YZ.}
 \\
 
-Prostorová mapa bude obsahovat \emph{uzly}. Uzel je bod v prostoru, který reprezentuje resp. pokrývá jeho èást, vé okolí. Imituje tak chování place cells.
-Model musí umìt tyto uzly prostorové mapy rozmístit do virtuálního svìta.
+Prostorová mapa bude obsahovat \emph{uzly}. Uzel je bod v prostoru, který reprezentuje resp. pokrývá jeho èást, své okolí. Imituje tak chování place cells.
+Model musí umìt na zaèátku simulace tyto uzly rozmístit do virtuálního svìta.
 V prùbìhu simulace musí jejich rozmístìní postupnì mìnit, tak aby jejich hustota byla vìtší v místech, kde agent vidìl více pøedmìtù, a menší v místech,
 kde agent vidìl ménì pøedmìtù. Nejmenší hustota by mìla být v místech, kde agent nevidìl žádné pøedmìty èi která vùbec nenavštívil.
 I v takovýchto místech ale musí být uzly mapy.
@@ -35,11 +35,13 @@ Model musí být online v tom smyslu, že v každém okamžiku musí dát použitelné výs
 \\
 
 Model by nemìl být zavislý na konkrétní abstrakci svìta èi architektuøe agenta.
-Jeho vstupem je pouze posloupnost vjemù. Tj. modelu je v každém kroku pøedložena množina (mùže být prázdná) vjemù. Vjem øíká informaci typu:
 
+\begin{definition}[Vjem]
+Vstupem modelu je pouze posloupnost vjemù. Tj. modelu je v každém kroku pøedložena množina (mùže být prázdná) vjemù. Vjem øíká informaci typu:
 \emph{"Vidím pøedmìt ABC na místì  x,y s intenzitou 0,4."}
 Vjem je tedy trojice: \emph{$<$pøedmìt, poloha, intenzita \footnote{Intenzitu budeme dále ve vzorcích oznaèovat znakem $\eta$}$>$}.
-\\
+\end{definition}
+
 
 Výstupem modelu je rozmístìní uzlù v prostoru a urèení polohy pøedmìtù, které agent døíve vidìl.
 \\

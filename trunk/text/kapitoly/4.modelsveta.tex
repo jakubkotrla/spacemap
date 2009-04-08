@@ -13,35 +13,28 @@ Ve svìtì mùe zatím bıt právì jeden agent.
 Napø. popojít o pár metrù trvá sekundy, zatímco pøeèíst si kapitolu v kníce mùe trvat i hodiny. Dobu trvání kroku mùe vzít model prostorové mapy v potaz.
 \\
 
-Virtuální svìt je 2D \footnote{z dùvodu jednodušší implementace geometrie a menších nárokù na vıkon}, obsahuje jednu místnost.
-Ta je reprezentována jednoduchım polygonem, urèenım mnoinou vrcholù.
-Prostor je tedy spojitı (note: disktrétní kvùli reprezentaci). Místnost má dané waypointy - místa, která jsou zajímavá z hlediska geometrie, tvaru místnosti, 
-napø. kouty, místa dobrého rozhledu apod.
+Virtuální svìt je 2D, obsahuje jednu místnost.
+Ta je reprezentována jednoduchım polygonem, urèenım mnoinou vrcholù. Pouité testovací svìty jsou v pøíloze A.
+Prostor je tedy spojitı \footnote{Pøi implementaci modelu dojde k diskretizaci prostoru, protoe poloha objektù je reprezentována jako float a v PC má omezenou pøesnost}.
+\begin{definition}[Waypoint]
+Místnost má dané waypointy - body, která jsou zajímavá z hlediska geometrie, tvaru místnosti, napø. kouty, místa dobrého rozhledu apod.
 Waypointy má agent pøímo k dispozici. Vyuívá je pøi hledání cesty v nekonvexní místnosti èi pøi náhodném hledání pøedmìtù.
-\\
-
-\begin{figure}
-  \centering
-  \subfloat[Místnost Lobby]{\label{fig:lobby}\includegraphics[width=0.4\textwidth]{kapitoly/img/lobby.ps}}
-  \qquad
-  \subfloat[Místnost CrazyRoom]{\label{fig:crazyroom}\includegraphics[width=0.4\textwidth]{kapitoly/img/crazy.ps}}
-  \caption{Ukázky rùznıch místností pouitıch pøi testování modelu}
-  \label{fig:worlds}
-\end{figure}
+\end{definition}
 
 V prostoru jsou umístìny pøedmìty. Pøedmìty jsou reprezentovány pouze jako body, jejich velikost je zanedbána, jejich poloha je urèena souøadnicemi.
 Pøedmìty mohou mít urèenou svoji statickou atraktivitu, jak moc jsou pro agenta zajímavé bez ohledu na èinnost, kterou agent právì provádí.
-Napø. kvìtina s velkım èervenım kvìtem bude mít vìtší atraktivitu ne zelená øasa. Pro úèely vıvoje modelu je atraktivita všech pøedmìtù rovna 1.
+Napø. kvìtina s velkım èervenım kvìtem bude mít vìtší atraktivitu ne zelená øasa.
+Není-li øeèeno jinak, je atraktivita všech pøedmìtù rovna 10.
 \\
 
 
 \section{Architektura agenta}
 
 Architektura agenta je pøevzata z [literatura-peskova] a lehce upravena. Øízení chování agenta je zjednodušeno, protoe pro vıvoj modelu není tak podstatné.
-Na druhou stranu jeho vnímání okolí je mnohem propracovanìjší.
+Naopak jeho pohyb svìtem a vnímání okolí je propracovanìjší.
 \\
 
-Stejnì jako v [literatura-peskova] je vnímání svìta agentem postaveno na Gibsonovì teorii afordancí [literatura].
+Stejnì jako v [literatura-peskova] je vnímání svìta agentem postaveno na Gibsonovì teorii afordancí [litGibson].
 Tato percepèní teorie øíká, e iví tvorové vnímají okolní svìt a pøedmìty spíše dle toho, k èemu se dají pouít, ne dle jejich fyzickıch vlastností
 (tvar, velikost, barva). To, k èemu se dá pøedmìt pouít, je vyjádøeno prostøednictvím tzv. afordancí, napø. "lze mì nabrousit", "lze se mnou krájet".
 Nù tedy není vnímána jako "kus kovu zasazenı do døeva, asi 15 centimetrù dlouhı", ale jako pøedmìt, kterı lze nabrousit a kterım lze krájet.
@@ -54,9 +47,9 @@ Vıhodou tohoto modelu je rozšiøitelnost, do svìta je moné snadno pøidat nové ob
 \\
 
 V prùbìhu simulace agent ve svìtì provádí èinnosti, kterımi splòuje své zámìry. Zámìr je nìjakı cíl agenta, napø. odpoèinout si.
-Má urèeno, jakımi èinnostmi je moné jej splnit, napø. lehnout si, posadit se. Kdy agent plní zámìr, náhodnì vybere jednu z èinností.
+Má urèeno, jakımi èinnostmi je moné jej splnit, napø. lehnout si, posadit se. Kdy agent plní zámìr, náhodnì vybere jednu z èinností, kterımi jej lze splnit.
 Pak se snaí získat zdroje (pøedmìty) nutné k provedení èinnosti - vytvoøí podzámìr Want(affordance). Ten znamená, e agent chce najít pøedmìt s danou afordancí.
-Zámìr Want(affordance) agent mùe splnit úspìšnım provedením jedné z tøí èinností:
+Zámìr \emph{Want(affordance)} agent mùe splnit úspìšnım provedením jedné z tøí èinností:
 
 \begin{CompactItemize}
 \item nalezením pøedmìtu v okolí
@@ -66,7 +59,7 @@ Zámìr Want(affordance) agent mùe splnit úspìšnım provedením jedné z tøí èinnost
 
 \begin{figure}[h]
   \centering
-  \scalebox{0.8}{\includegraphics{kapitoly/img/and-or.ps}}
+  \scalebox{0.8}{\includegraphics{img/and-or.ps}}
   \caption{Strom chytrıch akcí a jejich pod akcí}
   \label{fig:smart-actions}
 \end{figure}
@@ -107,10 +100,19 @@ LookForObject(pamìovı fantom) & vyhledání pøedmìtu odpovídajícího pamìovému fa
 \end{table}
 
 
-Souèástí svìta je i mnoina zámìrù a èinností, které agent mùe vykonávat. Závisí toti na pøedmìtech resp. jejich afordancích, které jsou ve svìtì dostupné. 
+Souèástí svìta je i mnoina zámìrù a èinností, které agent mùe vykonávat. Závisí toti na pøedmìtech resp. jejich afordancích, které jsou ve svìtì dostupné.
+Pokud by svìt obsahoval mnoho zámìrù, které nelze v daném svìte splnit, agent se bude stále pohybovat mezi waypointy, jak je ukázáno na obrázku \ref{fig:waypoint-hell}.
+To zpùsobí, e data, která bude dostávat prostorová mapa, nebudou odpovídat lidskému chování.
 Na zaèátku simulace je vygenerován agentùv scénáø, posloupnost zámìrù, kterou agent stále dokola provádí.
 Scénáø záleí pouze na zámìrech definovanıch v rámci svìta, aby bylo moné provádìt testy modelu se stejnım scénáøem.
 \\
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.4\textwidth]{img/waypoint-hell.eps}
+  \caption{Mapa ukazující, jak svìt agent vnímal. Bílá místa nikdy nevidìl, èím tmavší, tím èastìji agent místo vidìl. Agent se pohyboval pøevánì po waypointech, které jsou v rozích a ve støedu.}
+  \label{fig:waypoint-hell}
+\end{figure}
 
 Pamì agenta je rozdìlena na krátkodobou a dlouhodobou. Dlouhodobá pamì v našem pøípadì obsahuje pouze prostorovou mapu - vyvíjenı model.
 Krátkodobá pamìt se skládá ze tøí èástí: procesní èásti, percepèního pole a pamìové èásti.
@@ -147,8 +149,8 @@ Pøedmìty, které mají kladnou viditelnost, agent vidí a jsou pøedány k dalšímu zp
 
 \begin{figure}
   \centering
-  \subfloat[Pøi atomické akci Explore]{\label{fig:vcones-explore}\includegraphics{kapitoly/img/vcones-explore.ps}}                
-  \subfloat[Pøi ostatních akcích]{\label{fig:vcones-ostatni}\includegraphics{kapitoly/img/vcones-normal.ps}}
+  \subfloat[Pøi atomické akci Explore]{\label{fig:vcones-explore}\includegraphics{img/vcones-explore.ps}}                
+  \subfloat[Pøi ostatních akcích]{\label{fig:vcones-ostatni}\includegraphics{img/vcones-normal.ps}}
   \caption{Kruhové vıseèe urèující agentovo vnímání}
   \label{fig:vcones}
 \end{figure}
