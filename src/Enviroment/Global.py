@@ -42,7 +42,7 @@ class GlobalVariables:
         self.MAPhantomHabituation = 100    #habituation of new phantom(M)
         
         self.MapPickUpDistance = 2         #agent can use objects closer than this distance        
-        self.ObjDefaultAttractivity = 10   #default object attractivity    
+        self.ObjDefaultAttractivity = 1    #default object attractivity    
                 
         self.TrainEffectNoticed = 1.0
         self.TrainEffectNoticedAgain = 0.3

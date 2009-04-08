@@ -23,7 +23,7 @@ class PerceptionFilter:
          
     def SetAllTo(self, rObjs, attractivity):
         for rObj in rObjs:
-            rObj.curAttractivity = attractivity
+            rObj.curAttractivity = attractivity * rObj.attractivity
     
     def SetAllToRegardingAffs(self, rObjs, action, coef):
         sources = action.sources
@@ -33,7 +33,7 @@ class PerceptionFilter:
             for aff in rObj.type.affordances:
                 if aff in sources:
                     affs.append(aff)
-            rObj.curAttractivity = Global.WeakCoef(coef * len(affs)*1.0 / sourcesCount, 2)
+            rObj.curAttractivity = Global.WeakCoef(coef * float(len(affs)) / sourcesCount, 2) * rObj.attractivity
         
         
         

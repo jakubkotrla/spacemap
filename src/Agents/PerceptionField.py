@@ -183,7 +183,7 @@ class PerceptionField:
             self.memoryArea.RemovePhantom(memoryPhantom)
             memoryPhantom.MemoryObjectNotFound()
             return None
-        #else: found:        
+        #else: found:  
         phantom = self.GetPhantomForObj(foundObj)
         if phantom != None:
             phantom.Update(foundObj)

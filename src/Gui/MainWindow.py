@@ -295,7 +295,7 @@ class MainWindow(Frame):
         self.lockBack.acquire()
         while True:
             world.Step()
-            #self.RenderState(world)
+            self.RenderState(world)
             self.mapRenderer.RenderToFile(world, "../../exs/PIL" + str(world.step).zfill(6) + ".png", ["agent", "ov", "eps", "info"])
             
             # used only to get EPS of test rooms
