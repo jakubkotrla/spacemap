@@ -695,17 +695,17 @@ class EnergyLayer:
             Global.LogData("elnodeheatmapag", nStr)
         
     def GetNodeCreateCost(self):
-        x = 100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = Global.ELNodeCreateCostCoef * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(x)/50))
         xf = 1100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         costf = 0.0001 * (3 ** (float(xf)/50))
-        return (cost)# + costf)
+        return (cost + costf)
     def GetNodeDeleteCost(self):
-        x = 100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
+        x = Global.ELNodeCreateCostCoef * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(-x)/50))
         xf = 1100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         costf = 0.0001 * (3 ** (float(-xf)/50))
-        return (cost)# + costf)
+        return (cost + costf)
 
     def getNodesAround(self, node, range):
         nodesAround = []

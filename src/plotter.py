@@ -37,10 +37,7 @@ def plotHeatMap(fileName, titleStr):
     for i in range(101):
         for j in range(101):
             mapa[i][j] = 0.0
-    mapaSqrt = [None]*101
-    for i in range(101):
-         mapaSqrt[i] = [None] * 101
-
+ 
     for row in rows:
         y = int(row[0])
         x = int(row[1])
@@ -48,19 +45,13 @@ def plotHeatMap(fileName, titleStr):
         fill(mapa, x, y, value)
 
     maxValue = 0
-    maxValueSqrt = 0
     for i in range(101):
         for j in range(101):
-            mapaSqrt[i][j] = sqrt(mapa[i][j])
             maxValue = max(maxValue, mapa[i][j])
-            maxValueSqrt = max(maxValueSqrt, mapaSqrt[i][j])
     for i in range(101):
         for j in range(101):
             mapa[i][j] = maxValue - mapa[i][j]
-    for i in range(101):
-        for j in range(101):
-            mapaSqrt[i][j] = maxValueSqrt - mapaSqrt[i][j]
-
+ 
     ndA = array(mapa)    
     im = imshow(ndA, cmap=cm.gray, interpolation=None, origin='upper',extent=(0,100,0,100))
     colorbar()
@@ -69,70 +60,7 @@ def plotHeatMap(fileName, titleStr):
     if saveEPS: savefig(fileName+".eps", format="EPS")
     clf()
 
-    ndA = array(mapaSqrt)    
-    im = imshow(ndA, cmap=cm.gray, interpolation='bilinear', origin='upper',extent=(0,100,0,100))
-    colorbar()
-    titleStr = ur'$\sqrt{'+titleStr+'}$'
-    title(titleStr, family=fontFamily)
-    savefig(fileName+".sqrt.png", format="PNG")
-    if saveEPS: savefig(fileName+".sqrt.eps", format="EPS")
-    clf()
-
-def plotHeatMapDiff(fileName1, fileName2):
-    rowsRAW = csv.reader(open(fileName1, "rb"), delimiter=";")
-    rows1 = []
-    rows1.extend(rowsRAW)
-    rowsRAW = csv.reader(open(fileName2, "rb"), delimiter=";")
-    rows2 = []
-    rows2.extend(rowsRAW)
-
-    mapa1 = [None]*101
-    for i in range(101):
-         mapa1[i] = [None] * 101
-    for i in range(101):
-        for j in range(101):
-            mapa1[i][j] = 0.0
-    mapa2 = [None]*101
-    for i in range(101):
-         mapa2[i] = [None] * 101
-    for i in range(101):
-        for j in range(101):
-            mapa2[i][j] = 0.0
-    mapaSqrt = [None]*101
-    for i in range(101):
-         mapaSqrt[i] = [None] * 101
-
-    for row in rows1:
-        y = int(row[0])
-        x = int(row[1])
-        value = float(row[2])
-        fill(mapa1, x, y, value)
-    for row in rows2:
-        y = int(row[0])
-        x = int(row[1])
-        value = float(row[2])
-        fill(mapa2, x, y, value)    
-        
-    for i in range(101):
-        for j in range(101):
-            mapaSqrt[i][j] = fabs(sqrt(mapa1[i][j]) - sqrt(mapa2[i][j]))
-
-    maxValueSqrt = 0
-    for i in range(101):
-        for j in range(101):
-            maxValueSqrt = max(maxValueSqrt, mapaSqrt[i][j])
-    for i in range(101):
-        for j in range(101):
-            mapaSqrt[i][j] = maxValueSqrt - mapaSqrt[i][j]
-
-    ndA = array(mapaSqrt)    
-    im = imshow(ndA, cmap=cm.gray, interpolation=None, origin='upper',extent=(0,100,0,100))
-    colorbar()
-    title(u"Heatmap sqrt diff", family=fontFamily)
-    savefig(fileName1+".diff.png", format="PNG")
-    if saveEPS: savefig(fileName+".diff.eps", format="EPS")
-    clf()
-
+ 
 def plotHLNodes(fileName):
     pass
 
@@ -368,8 +296,6 @@ for root, dirs, files in os.walk('.'):
         if fname == "data-objheatmap.txt":
             print ("plotHeatMapObj " + root + "\\" + fname)
             plotHeatMap(root + "\\" + fname, u"Mapa naučenosti předmětů")
-            print ("plotHeatMap DIFF")
-            plotHeatMapDiff(root + "\\" + fname, root + "\\data-elnodeheatmap.txt")
         elif fname == "data-elnodeheatmap.txt":
             print ("plotHeatMapELNode " + root + "\\" + fname)
             plotHeatMap(root + "\\" + fname, u"Mapa naplněnosti uzlů prostorové mapy")

@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{algorithmicx}
 \usepackage{subfig}
 \usepackage[Algoritmus]{algorithm}
@@ -90,13 +91,6 @@
 }
 
 
-%\newcommand{\koment}[1]{
-%		\marginpar{#1}
-%}
-
-\newcommand{\koment}[1]{
-}
-
 \let\oldmarginpar\marginpar
 \renewcommand\marginpar[1]{\-\oldmarginpar[\raggedleft\footnotesize #1]%
 {\raggedright\footnotesize \textcolor{red}{#1}}}
@@ -110,17 +104,18 @@
 \newtheorem{proposition}[theorem]{Tvrzení}
 \newtheorem{corollary}[theorem]{Dùsledek}
 
-\newenvironment{proof}[1][Dùkaz]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+%\newenvironment{proof}[1][Dùkaz]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
 
 \newenvironment{definition}[1][Definice]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\item[\hskip \labelsep {\bfseries #1.}]}{\end{trivlist}}
 
 \newenvironment{example}[1][Pøíklad]{\begin{trivlist}
 \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
 
 \newenvironment{remark}[1][Pozorování]{\begin{trivlist}
 \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
 
 
 \begin{document}
@@ -141,7 +136,7 @@
 \include{kapitoly/5.0.modelmapy}
 \include{kapitoly/5.1.pametnapredmety}
 \include{kapitoly/5.2.kmlayer}
-\include{kapitoly/5.3.gravitylayer}
+%\include{kapitoly/5.3.gravitylayer}
 \include{kapitoly/5.4.energylayer}
 
 
@@ -152,6 +147,8 @@
 \appendix
 \include{prilohy/1.mistnosti}
 \include{prilohy/2.params}
+\include{prilohy/3.userdoc}
+\include{prilohy/4.progdoc}
 
 
 \bibliographystyle{plain}

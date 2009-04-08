@@ -1,4 +1,64 @@
 \chapter{Testovací místnosti}
 
-obrazky mistnosti
-seznam pøedmìtù, afordancí a procesù??
+Pro úèely testování modelu jsme vytvoøili nìkolik testovacích svìtù.
+\\
+
+\begin{CompactItemize}
+\item FullRoom - ètvercová místnost s 33 pøedmìty
+\item EmptyRoom - ètvercová místnost s jedním pøedmìtem
+\item Corridor - chodba s 10 pøedmìty
+\item Lobby - složitìjší místnost s 30 pøedmìty
+\item CrazyRoom - velmi složitá místnost s 24 pøedmìty
+\item SmallRoom - menší místnost s 14 pøedmìty
+\item SwitchRoom - místnost je na zaèátku stejná jako FullRoom, v prùbìhu se mìní
+\item HeapRoom - místnost pro testování hiearchie modelu a detekce míst
+\item HeapLineRoom - místnost pro testování hiearchie modelu a detekce míst
+\end{CompactItemize}
+
+Svìty resp. místnosti jsou zobrazeny na následujících stránkách. Modré ètverce jsou pøedmìty, èerné jsou waypointy.
+\\
+
+\begin{figure}
+  \centering
+  \subfloat[FullRoom]{\label{fig:fullroom}\includegraphics[width=0.5\textwidth]{img/rooms/fullroom.eps}}
+  \subfloat[emptyRoom]{\label{fig:emptyroom}\includegraphics[width=0.5\textwidth]{img/rooms/emptyroom.eps}}
+  \caption{Jednoduché místnosti}
+  \label{fig:simlpe-rooms}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \subfloat[Corridor]{\label{fig:corridor}\includegraphics[width=0.5\textwidth]{img/rooms/corridor.eps}}
+  \subfloat[Lobby]{\label{fig:lobby}\includegraphics[width=0.5\textwidth]{img/rooms/lobby.eps}}
+  \caption{Složitìjší místnosti}
+  \label{fig:advanced-rooms}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \subfloat[CrazyRoom]{\label{fig:crazyroom}\includegraphics[width=0.5\textwidth]{img/rooms/crazyroom.eps}}
+  \subfloat[SmallRoom]{\label{fig:smallroom}\includegraphics[width=0.5\textwidth]{img/rooms/smallroom.eps}}
+  \caption{Složitìjší místnosti}
+  \label{fig:advanced-rooms2}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \subfloat[HeapRoom]{\label{fig:heaproom}\includegraphics[width=0.5\textwidth]{img/rooms/heaproom.eps}}
+  \subfloat[HeapLineRoom]{\label{fig:heaplineroom}\includegraphics[width=0.5\textwidth]{img/rooms/heaplineroom.eps}}
+  \caption{Místnosti pro testování hiearchie modelu a detekce míst}
+  \label{fig:heaprooms}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \subfloat[Krok 0]{\label{fig:switchroom-1}\includegraphics[width=0.3\textwidth]{img/rooms/switchroom-1.eps}}
+  \subfloat[Krok 1500]{\label{fig:switchroom-2}\includegraphics[width=0.3\textwidth]{img/rooms/switchroom-2.eps}}
+  \subfloat[Krok 4000]{\label{fig:switchroom-3}\includegraphics[width=0.3\textwidth]{img/rooms/switchroom-3.eps}}
+  \caption{Místnost SwitchRoom a její promìny v èase}
+  \label{fig:switchroom}
+\end{figure}
+
+
+?? seznam pøedmìtù, afordancí a procesù ??
+\\

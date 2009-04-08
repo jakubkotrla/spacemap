@@ -1,4 +1,4 @@
-\section{Kohonen Map Layer}
+\section{Model založený na Kohonenovì mapì}
 
 Vìtšina modelù pamìti, zmínìných v tøetí kapitole, využívá samoorganizující Kohonenovy mapy [literatura]. 
 \\
@@ -8,19 +8,29 @@ Vìtšina modelù pamìti, zmínìných v tøetí kapitole, využívá samoorganizující Koho
 
 Kohonenova mapa by mìla splòovat naše požadavky. Umí rozmístit uzly do hustoty odpovídající rozmístìní pøedmìtù v prostoru.
 Umí se uèit online, každý vjem agenta je možné chápat jako prvek trénovací množiny dat. Jeví se tedy jako ideální.
-Navrhli jsme tedy model vrstvy uzlù založený na Kohonenovì mapì - Kohonen Map Layer.
+Navrhli jsme tedy model vrstvy uzlù založený na Kohonenovì mapì.
 \\
 
-?? OBR ctercove site ??
+?? definice vsech parametru ??
 \\
+
+
+
 
 Na zaèátku je prostor pokryt Kohonenovou mapou - ètvercovou sítí. Hustota uzlù je parametr modelu.
 Pokaždé, když je vjem, pøedán ke zpracování do Kohonen Map Layer, provede se trénování Kohonenovy mapy dle algoritmu \ref{alg:km-uceni}.
 \\
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{img/kml/kml-start-grid.eps}
+  \caption{Poèáteèní pokrytí svìta uzly}
+  \label{fig:kml-start}
+\end{figure}
+
 
 \begin{algorithm}[h!]
-\caption{Zpracování vjemu v Kohonen Map Layer}
+\caption{Zpracování vjemu}
 \label{alg:km-uceni}
 \begin{algorithmic}[1]
 \State $node \gets$ vyhrávající uzel (tedy nejbližší k poloze vjemu)

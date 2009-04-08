@@ -2,7 +2,7 @@
 
 \section{Shluková analýza}
 
-Dle pøedchozí kapitoly je jedním z prvních problémù, které musí model øešit, je shlukování uzlù mapy v místech, kde je hodnì pøedmìtù.
+Dle pøedchozí kapitoly je jedním z prvních problémù, které musí model øešit, shlukování uzlù mapy v místech, kde je hodnì pøedmìtù.
 Nabízí se algoritmy shlukové analýzy, napø. algoritmus K-Means \cite{litKMeans}.
 \\
 
@@ -12,7 +12,7 @@ aby se jejich rozdìlení zlepšilo. Algoritmus konèí v okamžiku, kdy se rozdìlení 
 \\
 
 K-Means algoritmus však pracuje nad všemi daty najednou, tedy agent by musel vidìt všechny pøedmìty souèasnì.
-Nedokáže tedy zpracovávat vjemy postupnì a nezávisle na ostatních. Pøi zmìnì rozložení pøedmìtù je tøeba jej celý provést znovu.
+Nedokáže zpracovávat vjemy postupnì a nezávisle na ostatních. Pøi zmìnì rozložení pøedmìtù je tøeba jej celý provést znovu.
 Algoritmus umí urèit shluky, tedy umístit bod tam, kde je hodnì dat. Ve skuteènosti potøebujeme opak, umístit hodnì uzlù tam, kde je pøedmìt.
 To samé platí obecnì pro geometrické algoritmy shlukové analýzy, nelze je tedy použít na hlavní model mapy. Mohou ale být využity pøi vytváøení hiearchie uzlù.
 \\
@@ -30,10 +30,13 @@ Krom nepøedvídatelných zmìn svìta kolem nìj jsou èásti robota, zodpovìdné za jeh
 \\
 
 Tyto netriviální úlohy náš model øešit nemusí, agent se pohybuje ve virtuálním svìtì a má pøesné informace o svém okolí.
-Pøesto se mùžeme inspirovat øešeními, protože úlohy jsou podobné. Velmi èasto je používána tzv. Kohonenova mapa [literatura], resp. samoorganizující se mapa.
+Pøesto se mùžeme inspirovat øešeními, protože úlohy jsou podobné.
+Velmi èasto jsou používány tzv. Kohonenovy mapy [literatura], nazývané též samoorganizující se mapy.
 Jedná se o typ neuronové sítì uèící se bez uèitele, využívá soutìžní strategii uèení.
+
+
 Samoorganizující mapy využili napø. autoøi \cite{litShapeSOM} ke konstrukci robota, který umí vytvoøit 3D mapu svého okolí pomocí dálkomìru.
-Kohonenovo uèení je použito v [literatura-panoramic-images] ke konstrukci map a urèení tzv. landmarks pro navigaci.
+Kohonenovo uèení je použito v [literatura-panoramic-images] ke konstrukci map a urèení orientaèních bodù a navigaci.
 \\
 
 Samoorganizující mapy jsou èasto používány také ke klasifikaci dat a analýze shlukù.
@@ -47,7 +50,7 @@ V \cite{litGHSOM} je popsán model rostoucí hiearchické Kohonenovy mapy, Growing 
 GHSOM zaèíná jako Kohonenova mapa tvoøená jedním uzlem a v prùbìhu uèení je rozšiøována:
 \begin{CompactItemize}
 \item jsou pøidávány øádky a sloupce uzlù
-\item pod uzly jsou pøidávány další úrovnì, opìt Kohonenovy mapy o jednom uzlu
+\item pod uzly jsou pøidávány další úrovnì, Kohonenovy mapy o jednom uzlu
 \end{CompactItemize}
 
 Samoorganizující mapy jsou používány pro vytváøení prostorových map a existují jejich rozšíøení s hiearchií a mechanismy pro rùst.
