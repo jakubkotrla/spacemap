@@ -1,0 +1,29 @@
+\section{Vrstva uzlù}
+
+Vrstva uzlù je èást prostorové mapy zodpovìdná za rozloení uzlù v prostoru, zmìnu jejich rozloení.
+Dále obsahuje mechanismy pro zmìnu poètu uzlù a vytváøení hiearchie.
+\\
+
+\begin{definition}[Okamitá naplnìnost uzlu]
+Uzel prostorové mapy má vazby na pamìové stopy. Tyto vazby mají intenzitu.
+Okamitá naplnìnost uzlu je souèet intenzit všech vazeb uzlu na pamìové stopy.
+Pøedstavuje míru nauèenosti uzlu, resp. míru jeho dùleitosti pro pamì na pøedmìty.
+Èím více pamìovıch stop vyuívá uzel a èím intenzivnìjší jsou, tím ménì by se mìla mìnit jeho poloha.
+\end{definition}
+
+Okamitá naplnìnost uzlu závisí pøímo na vazbách na pamìové stopy.
+Kdy klesá jejich intenzita, klesá stejnì i okamitá naplnìnost.
+Není tedy moné model dostateènì parametrizovat, tak aby okamitá naplnìnost uzlu klesala rychleji èi pomaleji, ne intenzita vazeb.
+\\
+
+\begin{definition}[ELNodeUsageFadeOut]
+Naplnìnost uzlu v èase klesá. ELNodeUsageFadeOut urèuje rychlost klesání.
+\end{definition}
+
+\begin{definition}[Naplnìnost uzlu]
+Naplnìnost je vlastnost uzlu. Pøi vytvoøení uzlu je rovna nule. V prùbìhu simulace se mìní, kdykoli je zvıšena intenzita vazby
+mezi uzlem a pamìovou stopou, je stejnì zvıšena i naplnìnost uzlu.
+V kadém kroku simulace je naplnìnost uzlu sníena o ELNodeUsageFadeOut, nemùe ale klesnout pod nulu.
+
+Naplnìnost uzlu $node$ budeme dále ve vzorcích oznaèovat znakem $\mu(node)$.
+\end{definition}

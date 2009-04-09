@@ -4,16 +4,18 @@ Pamì na pøedmìty øeší ukládání objektù (a potencionálnì dalších informací) k uz
 Tedy ukládá informace typu "objekt XY je v uzlu n42 s intenzitou 5,2". Pamì na pøedmìty vychází z práce Tomáše Korenka [literatura-korenko].
 \\
 
+\begin{definition}[Pamìová stopa pøedmìtu]
 Pamì nepracuje pøímo s reálnımi pøedmìty, ale vytváøí si jejich kopie, \emph{pamìové stopy pøedmìtù}.
 Pamìová stopa je reprezentace reálneho pøedmìtu v agentovì dlouhodobé pamìti, prostorové mapì.
 Je to trojice \emph{$<$pøedmìt, intenzita, poloha$>$}, kde pøedmìt je odkaz na reálnı pøedmìt; intenzita urèuje, jak moc si agent tento pøedmìt pamatuje
 a poloha jsou souøadnice, na kterıch se agent domnívá, e pøedmìt je.
 Pro kadı reálnı pøedmìt má pamì nejvıše jednu pamìovou stopu.
-\\
+\end{definition}
 
+\begin{definition}[Asociativní sí]
 Mezi pamìovımi stopami pøedmìtù a uzly mapy je asociativní sí, která se vytváøí v prùbìhu simulace, dle toho, jak agent vnímá pøedmìty kolem sebe.
-Asociativní sí je mnoina trojic \emph{$<$uzel, stopa, intenzita$>$}, tedy vazeb mezi pamìovımi stopami a uzly prostorové mapy, \(intenzita \in \mathbb{R}\).
-\\
+Asociativní sí je mnoina trojic \emph{$<$uzel,stopa,intenzita$>$}, tedy vazeb mezi pamìovımi stopami a uzly prostorové mapy, \(intenzita \in \mathbb{R}\).
+\end{definition}
 
 \begin{table}[h!]
 \begin{center}
@@ -35,14 +37,14 @@ ObjectUsed & agent pouil pøedmìt k provedení èinnosti \\
 \label{tab:typy-vjemu}
 \end{table}
 
-Pamìti je v kadém kroku pøedloena mnoina vjemù (mùe bıt prázdná). Vjem je trojice (pøedmìt, poloha, intenzita).
+Pamìti je v kadém kroku pøedloena mnoina vjemù (mùe bıt prázdná). Vjem je trojice $<pøedmìt,poloha,intenzita>$.
 Vjem má svùj typ, danı událostí, kterou byl vyvolán, jejich pøehled je v tabulce \ref{tab:typy-vjemu}.
 Kadı typ má urèenı koeficient, kterım je vynásobena intenzita vjemu pøed jeho zpracováním prostorovou mapou, tyto koeficienty jsou parametry modelu.
 \\
 
 
 Proces zpracování vjemu prostorovou mapou je shrnut v algoritmu \ref{alg:zpracovani-vjemu}.
-V prvním kroku je urèena pamìová stopa uchovávající informaci o pøedmìtu. Pokud není nalezena, je vytvoøena.
+V prvním kroku je urèena pamìová stopa uchovávající informaci o pøedmìtu. Pokud není nalezena, je vytvoøena nová.
 \\
 
 \begin{algorithm}[h!]
@@ -53,7 +55,7 @@ V prvním kroku je urèena pamìová stopa uchovávající informaci o pøedmìtu. Pokud
 \State zvıšení intenzity pamìové stopy o intenzitu vjemu
 \State $nodes\gets$ všechny uzly, do jejich okolí vjem padl
 \ForAll{$n \in nodes$}
-	\State $\Delta \eta \gets \eta(n, vjem)$ dle vzorce \ref{formula:intenzita-vazby} \label{alg:spacemap-intensity}
+	\State $\Delta \eta \gets \eta(n, vjem)$ dle vzorce \eqref{formula:intenzita-vazby} \label{alg:spacemap-intensity}
 	\State zvıšení intenzity vazby mezi pamìovou stopou a uzlem $n$ o $\Delta \eta$
 \EndFor
 \State vjem je pøedán vrstvì uzlù k dalšímu zpracování
@@ -94,7 +96,7 @@ Poloha pøedmìtu je váenı centroid všech uzlù, které mají vazbu na pamìovou sto
 \end{algorithmic}
 \end{algorithm}
 
-
-V kadém kroku simulace je sníena intenzita pamìovıch stop o MemObjIntensityFadeOut a
-intenzita všech vazeb mezi pamìovımi stopami a uzly prostorové mapy o LinkMemObjToNodeFadeOut.
-\\
+\begin{definition}[Zapomínání asociativní sítì]
+V kadém kroku simulace je sníena intenzita pamìovıch stop a
+intenzita všech vazeb mezi pamìovımi stopami a uzly prostorové mapy (MemObjIntensityFadeOut, LinkMemObjToNodeFadeOut).
+\end{definition}
