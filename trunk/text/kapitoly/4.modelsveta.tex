@@ -3,29 +3,63 @@
 Model prostorové mapy by mìl bıt nezávislı na konkrétní abstrakci svìta a architektuøe agenta.
 Pouze potøebuje nìjaké prostøedí pro vıvoj a testování.
 Rozhodli jsme se vytvoøit vlastní virtuální svìt a agenta, kterı v nìm ije - pohybuje se v nìm, provádí èinnosti a vnímá své okolí.
-Ve svìtì mùe zatím bıt právì jeden agent.
 \\
 
 
-\section{Model svìta}
+\section{Abstrakce svìta}
 
 Èas svìta je diskrétní, probíhá v krocích. Kadı krok má urèenou dobu trvání, která záleí na tom, co agent v daném kroku dìlal.
 Napø. popojít o pár metrù trvá sekundy, zatímco pøeèíst si kapitolu v kníce mùe trvat i hodiny. Dobu trvání kroku mùe vzít model prostorové mapy v potaz.
 \\
 
 Virtuální svìt je 2D, obsahuje jednu místnost.
-Ta je reprezentována jednoduchım polygonem, urèenım mnoinou vrcholù. Pouité testovací svìty jsou v pøíloze A.
-Prostor je tedy spojitı \footnote{Pøi implementaci modelu dojde k diskretizaci prostoru, protoe poloha objektù je reprezentována jako float a v PC má omezenou pøesnost}.
-\begin{definition}[Waypoint]
-Místnost má dané waypointy - body, která jsou zajímavá z hlediska geometrie, tvaru místnosti, napø. kouty, místa dobrého rozhledu apod.
-Waypointy má agent pøímo k dispozici. Vyuívá je pøi hledání cesty v nekonvexní místnosti èi pøi náhodném hledání pøedmìtù.
+Ta je reprezentována jednoduchım polygonem, urèenım mnoinou vrcholù. Pøíklady svìtù je moné najít v pøíloze A, kde jsou zobrazeny všechny testovací svìty.
+\begin{definition}[Poloha objektu]
+Prostor je spojitı\footnote{Pøi implementaci modelu dojde k diskretizaci prostoru, protoe numerická pøesnost PC je omezená},
+poloha všech objektù\footnote{Napø. pøedmìty, vrcholy polygonu urèujícího místnost, agent apod.}
+ve svìtì je dána dvojicí souøadnic \(<x,y> \in \mathbb{R}^2\). Polohu objektu $a$ budeme dále znaèit $a_{xy}$ resp. $a_x$ a $a_y$.
 \end{definition}
 
-V prostoru jsou umístìny pøedmìty. Pøedmìty jsou reprezentovány pouze jako body, jejich velikost je zanedbána, jejich poloha je urèena souøadnicemi.
+\begin{definition}[Vzdálenost]
+Vzdálenost ve svìte je euklidovská, tj. vzdálenost dvou objektù $a$, $b$ ve svìtì je urèena vzorcem:
+
+\begin{equation} 
+dist(a,b) = \sqrt{  (a_x-b_x)^2 + (a_y-b_y)^2 }
+\label{formula:vzdalenost}
+\end{equation}
+
+Vzdálenost objektù $a$,$b$ budeme dále oznaèovat: $dist(a,b)$.
+Je bezrozmìrná, pro úèely vıvoje a testování modelu jsme urèili velikost všech pøedmìtù a agenta jako 1$\times$1.
+Svìt resp. místnost se vdy vejde do ètverce velikosti 100$\times$100.
+\end{definition}
+
+\begin{definition}[Waypoint]
+Místnost má dané waypointy - místa, která jsou zajímavá z hlediska tvaru místnosti, napø. kouty, místa dobrého rozhledu apod.
+Waypoint je urèen svımi souøadnicemi.
+Agent má waypointy místnosti k dispozici. Vyuívá je pøi hledání cesty v nekonvexní místnosti èi pøi náhodném hledání pøedmìtù.
+U waypointu je uloeno, kdy jej agent naposledy navštívil.
+\end{definition}
+
+\begin{definition}[Velikost waypointu]
+Agent navštíví waypoint, pokud jeho vzdálenost od waypointu je menší ne velikost waypointu (WayPointArea).
+\end{definition}
+
+\begin{definition}[Odchylka waypointu]
+Kdy agent pøi svém pohybu svìtem má jako cíl waypoint, nemusí jít pøesnì na souøadnice waypointu.
+Mùe se odchılit v ose x i y o odchylku waypointu (WayPointNoise).
+\end{definition}
+
+\begin{definition}[Pøedmìt]
+V prostoru jsou umístìny pøedmìty.
+Pøedmìty jsou reprezentovány pouze jako body, jejich velikost je zanedbána. Agent pouívá pøedmìty ke splnìní svıch cílù. To je popsáno v následující kapitole.
+\end{definition}
+
+\begin{definition}[Atraktivita pøedmìtu]
 Pøedmìty mohou mít urèenou svoji statickou atraktivitu, jak moc jsou pro agenta zajímavé bez ohledu na èinnost, kterou agent právì provádí.
 Napø. kvìtina s velkım èervenım kvìtem bude mít vìtší atraktivitu ne zelená øasa.
-Není-li øeèeno jinak, je atraktivita všech pøedmìtù rovna 10.
-\\
+Není-li øeèeno jinak, je atraktivita všech pøedmìtù rovna 1.
+\end{definition}
+
 
 
 \section{Architektura agenta}
@@ -34,11 +68,12 @@ Architektura agenta je pøevzata z [literatura-peskova] a lehce upravena. Øízení 
 Naopak jeho pohyb svìtem a vnímání okolí je propracovanìjší.
 \\
 
-Stejnì jako v [literatura-peskova] je vnímání svìta agentem postaveno na Gibsonovì teorii afordancí [litGibson].
+\begin{definition}[Afordance]
+Stejnì jako v [literatura-peskova] je vnímání svìta agentem postaveno na Gibsonovì teorii afordancí \cite{litGibson}.
 Tato percepèní teorie øíká, e iví tvorové vnímají okolní svìt a pøedmìty spíše dle toho, k èemu se dají pouít, ne dle jejich fyzickıch vlastností
 (tvar, velikost, barva). To, k èemu se dá pøedmìt pouít, je vyjádøeno prostøednictvím tzv. afordancí, napø. "lze mì nabrousit", "lze se mnou krájet".
 Nù tedy není vnímána jako "kus kovu zasazenı do døeva, asi 15 centimetrù dlouhı", ale jako pøedmìt, kterı lze nabrousit a kterım lze krájet.
-\\
+\end{definition}
 
 Kadı pøedmìt má urèeno, jaké afordance agentovi nabízí. Èinnosti, které agent provádí, potøebují ke svému provedení urèité zdroje, pøedmìty s afordancemi.
 Èinnosti mají urèeno, jaké afordance potøebují, aby mohli bıt úspìšnì splnìny. Afordance lze chápat i jako jednoduché propojení mezi pøedmìty a èinnostmi
@@ -51,6 +86,12 @@ Má urèeno, jakımi èinnostmi je moné jej splnit, napø. lehnout si, posadit se. K
 Pak se snaí získat zdroje (pøedmìty) nutné k provedení èinnosti - vytvoøí podzámìr Want(affordance). Ten znamená, e agent chce najít pøedmìt s danou afordancí.
 Zámìr \emph{Want(affordance)} agent mùe splnit úspìšnım provedením jedné z tøí èinností:
 
+
+%\begin{definition}[]
+%\end{definition}
+%self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
+
+
 \begin{CompactItemize}
 \item nalezením pøedmìtu v okolí
 \item vzpomenutím si, kde se takovı pøedmìt nachází, pøesunutí k nìmu a jeho nalezení
@@ -60,13 +101,14 @@ Zámìr \emph{Want(affordance)} agent mùe splnit úspìšnım provedením jedné z tøí 
 \begin{figure}[h]
   \centering
   \scalebox{0.8}{\includegraphics{img/and-or.ps}}
-  \caption{Strom chytrıch akcí a jejich pod akcí}
+  \caption{Strom chytrıch akcí a jejich subakcí}
   \label{fig:smart-actions}
 \end{figure}
-    
+
 
 Kadá tato èinnost se skládá z nìkolika akcí, které mohou obsahovat další subakce, a není moné ji provést v jednom kroku simulace.
-Vıše zmínìné èinnosti jsou tedy implementovány jako tzv. chytré akce, které si pamatují aktuální stav a dle nìj dokáí urèit, jakou akci má agent vykonat.
+Vıše zmínìné èinnosti jsou tedy implementovány jako tzv. chytré akce, které si pamatují aktuální stav a dle nìj dokáí urèit, jakou subakci má agent vykonat.
+Strom akcí a subakcí je na obrázku \ref{fig:smart-actions}.
 Napø. pro náhodné hledání pøedmìtu je pouita chytrá akce "SearchRandom". Ta je schopná urèit, kam se agent má pøesunout pomocí další chytré akce "MoveTo".
 Teprve akce "MoveToPartial" je atomická a lze ji provést v jednom kroku simulace.
 \\
@@ -74,10 +116,15 @@ Teprve akce "MoveToPartial" je atomická a lze ji provést v jednom kroku simulace
 Chytré akce jsou:
 \begin{CompactItemize}
 \item MoveTo(x,y) - pøesun agenta na pozici x,y. Nejdøíve je nalezena cesta, pokud je svìt konvexní místnost, jedná se o úseèku; pokud svìt není konvexní, jsou pouity waypointy a cesta je lomená èára. Kadá úseèka je pak rovnomìrnì rozdìlena na kratší èásti tak, aby délka její nejdelší èásti byla menší ne PARAM. Díky tomu se agent kadé kolo simulace posune jen o malı kus.
-\item SearchRandom(afordance) - náhodné hledání pøedmìtu s danou afordancí. Agent má u kadého waypointu uloen èas, kdy jej naposledy vidìl. Tato akce zajistí, e agent postupnì navštíví všechny waypointy. Zaène tím, kterı má nejstarší èas  a k tomu waypointu, kterı navštívil jako poslední. Toto poøadí je urèeno na zaèátku akce. K pøesunu mezi waypointy agent provádí chytrou akci MoveTo.
+\item SearchRandom(afordance) - náhodné hledání pøedmìtu s danou afordancí. Agent má u kadého waypointu uloen èas, kdy jej naposledy vidìl. Tato akce zajistí, e agent postupnì navštíví všechny waypointy. Zaène tím, kterı má nejstarší èas a k tomu waypointu, kterı navštívil jako poslední. Toto poøadí je urèeno na zaèátku akce. K pøesunu mezi waypointy agent provádí chytrou akci MoveTo.
 \item LookUpInMemory(afordance) - získání pøedmìtu s danou afordancí s vyuitím prostorové mapy. Agent si nejdøíve vybaví pøedmìt s danou afordancí, kterı si pamatuje nejlépe (urèí prostorová mapa). K tomutu pøedmìtu se pøesune pomocí chytré akce MoveTo. Pak spustí atomickou akci LookForObject, která je jen speciálním pøípadem akce Explore.
-\item Execute - provedení èinnosti. Tato akce je spuštìna pouze pokud èinnost, kterou chce agent vykonat, má ji všechny zdroje, tedy èinnost má pro kadou poadovanou afordanci pøipojenı fantom pøedmìtu. Pak agent oveøí, zda všechny zdroje èinnosti jsou dostupné, tedy e je v jejich bezprostøední blízkosti (PARAM). Pokud ne, pøesune se k nim pomocí chytré akce MoveTo.  - note o jediné aff na èinnost
+\item Execute - provedení èinnosti. Tato akce je spuštìna pouze pokud èinnost, kterou chce agent vykonat, má ji všechny zdroje, tedy èinnost má pro kadou poadovanou afordanci pøipojenı fantom pøedmìtu. Pak agent oveøí, zda všechny zdroje èinnosti jsou dostupné, tedy e je v jejich bezprostøední blízkosti. Pokud ne, pøesune se k nim pomocí chytré akce MoveTo.
 \end{CompactItemize}
+
+?? - note o jediné aff na èinnost
+
+%\begin{definition}[MapPickUpDistance]
+%\end{definition}
 
 \begin{table}[h!]
 \begin{center}
@@ -101,8 +148,12 @@ LookForObject(pamìovı fantom) & vyhledání pøedmìtu odpovídajícího pamìovému fa
 
 
 Souèástí svìta je i mnoina zámìrù a èinností, které agent mùe vykonávat. Závisí toti na pøedmìtech resp. jejich afordancích, které jsou ve svìtì dostupné.
-Pokud by svìt obsahoval mnoho zámìrù, které nelze v daném svìte splnit, agent se bude stále pohybovat mezi waypointy, jak je ukázáno na obrázku \ref{fig:waypoint-hell}.
-To zpùsobí, e data, která bude dostávat prostorová mapa, nebudou odpovídat lidskému chování.
+Pokud by svìt obsahoval mnoho zámìrù, které nelze v daném svìtì splnit,
+bude se agent chovat hloupì a data, která bude dostávat prostorová mapa, budou spíše náhodná, ne aby pøipomínala lidské chování.
+Agent stráví vìtšinu èasu pohybem mezi waypointy, jak je ukázáno na obrázku \ref{fig:waypoint-hell}, a hledáním pøedmìtù s afordancemi, které se ve svìtì nenacházejí.
+Bude vìnovat ménì èasu a tedy i pozornosti ostatním pøedmìtùm.
+\\
+
 Na zaèátku simulace je vygenerován agentùv scénáø, posloupnost zámìrù, kterou agent stále dokola provádí.
 Scénáø záleí pouze na zámìrech definovanıch v rámci svìta, aby bylo moné provádìt testy modelu se stejnım scénáøem.
 \\
@@ -121,17 +172,30 @@ Percepèní pole obsahuje odrazy zpozorovanıch pøedmìtù z vnìjšího svìta, tzv. fan
 Pamìová èást obsahuje pamìové fantomy, odrazy pøedmìtù vybavené z dlouhodobé pamìti.
 \\
 
+\begin{definition}[Velikost percepèního pole]
+Percepèní pole obsahuje fantomy, pøedmìty, které agent právì vnímá.
+Agent mùe v jednom kroku simulace vidìt libovolné mnoství pøedmìtù, ale je schopen jich vnímat jen omezenı poèet.
+Vycházíme z kapacitní teorie pozornosti, která øíká, e celková kapacita lidské pozornosti je omezená \cite{litCapacityAtt}.
+Poèet fantomù, které mohou bıt souèasnì v percepèním poli je dán velikostí percepèního pole. Tento parametr je pro všechny testy roven magickému èíslu 7
+dle experimentálních vısledkù z \cite{lit7plusminus2}. Zmìna parametru na nisí hodnotu mùe velmi ovlivnit uèení prostorové mapy. (PFSize)
+\end{definition}
+
+
 V kadém kroku simulace agent dostane mnoinu pøedmìtù, které vidí.
 Ta je urèena z agentovy pozice a smìru, kterım se dívá a závisí i na právì provádìné atomické akci.
-Protoe zpùsob vnímání okolí je pro model podstatné, rozhodli jsme se implementovat pokroèilı model z poèítaèové hry Thief [literatura-thief], s lehkou úpravou.
+Protoe zpùsob vnímání okolí je pro model podstatnı, rozhodli jsme se implementovat s lehkou úpravou pokroèilı model z poèítaèové hry Thief [literatura-thief].
 Vıslednı model bere v potaz vzdálenost pøedmìtù od agenta i jak moc by se agent musel otoèit, aby se díval pøímo na nì.
-Agent má definované tzv. visibility cones, kruhové vıseèe, urèené polomìrem a úhlem. Jsou orientovány smìrem, kterım se agent dívá.
-Dále mají vıseèe definováno, jak moc je agent vnímavı na pøedmìty v nich - váha vıseèe.
 \\
 
-Viditelnost pøedmìtu je urèená vzorcem \ref{formula:viditelnost}, kde \emph{p} je pøedmìt, \emph{V} je mnoina vıseèí, které agent právì má a
-\(p \in v\) znamená, e pøedmìt leí ve vıseèi.
-\\
+\begin{definition}[Zorné pole]
+Agent má definovaná tzv. zorná pole, kruhové vıseèe. Jejich støed je v místì agenta a jsou orientovány smìrem, kterım se agent dívá.
+Zorné pole je urèeno polomìrem, úhlem a váhou, která øíká, jak moc je agent vnímavı na pøedmìty v nìm.
+\end{definition}
+
+\begin{definition}[Viditelnost pøedmìtu]
+V kadém kroku má kadı pøedmìt urèenu svou viditelnost vzorcem \ref{formula:viditelnost}, kde \emph{p} je pøedmìt, \emph{V} je mnoina zornıch polí agenta,
+které agent právì má a \(p \in v\) znamená, e pøedmìt leí v zorném poli.
+\end{definition}
 
 \begin{equation} 
 viditelnost(p) = 
@@ -144,31 +208,62 @@ viditelnost(p) =
 \end{equation}
 \\
 
-Pøedmìty, které mají kladnou viditelnost, agent vidí a jsou pøedány k dalšímu zpracování.
-\\
-
 \begin{figure}
   \centering
   \subfloat[Pøi atomické akci Explore]{\label{fig:vcones-explore}\includegraphics{img/vcones-explore.ps}}                
   \subfloat[Pøi ostatních akcích]{\label{fig:vcones-ostatni}\includegraphics{img/vcones-normal.ps}}
-  \caption{Kruhové vıseèe urèující agentovo vnímání}
+  \caption{Zorná pole urèující agentovo vnímání}
   \label{fig:vcones}
 \end{figure}
 
-Mnoina vıseèí urèuje agentùv zpùsob vnímání. Toho jsme vyuili a definovali dvì rùzné mnoiny kruhovıch vıseèí.
+Mnoina zornıch polí urèuje agentùv zpùsob vnímání. Toho jsme vyuili a definovali dvì rùzné mnoiny zornıch polí.
 Jednu pro chvíle, kdy se agent rozhlíí (atomická akce Explore) - obrázek \ref{fig:vcones-explore}, a jednu pro zbylé pøípady - obrázek \ref{fig:vcones-ostatni}.
 Úhel 360° v prvním pøípadì simuluje to, e pøi rozhlíení se agent postupnì podívá do všech stran.
 \\
 
-Viditelné pøedmìty projdou filtrem pozornosti, kde je upravena jejich aktuální atraktivita. Atraktivita pøedmìtu má dvì sloky, statickou a dynamickou.
-Dynamická atraktivita záleí na atomické akcí a èinnosti, kterou agent právì provádí, nabıvá hodnot 0..1, viz tabulka.
-Aktuální atraktivita pøedmìtu je souèin statické a dynamické atraktivity a jejich viditelnosti.
+Pøedmìty, které mají kladnou viditelnost, agent vidí a jsou pøedány k dalšímu zpracování filtru pozornosti.
+Poté jsou do pøidány do percepèního pole. Pokud se v nìm udrí alespoò jeden krok simulace, jsou pøedány prostorové mapì a jejich fantomy procesní èásti.
 \\
+
+\begin{definition}[Aktuální atraktivita pøedmìtu]
+Filtr pozornosti upravuje aktuální atraktivitu pøedmìtù. Atraktivita pøedmìtu má dvì sloky, statickou a dynamickou.
+Dynamická atraktivita záleí na atomické akcí a èinnosti, kterou agent právì provádí, nabıvá hodnot z intervalu \(<x,y>\), viz tabulka \ref{tab:act-attr}.
+Aktuální atraktivita pøedmìtu je souèin statické a dynamické atraktivity a jejich viditelnosti.
+\end{definition}
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|l|p{4.8cm}|p{4.8cm}|}
+\hline
+\multirow{2}{*}{Atomická akce} & \multicolumn{2}{|c|}{Dynamická atraktivita pøedmìtu} \\
+\cline{2-3}
+ & bez poadované afordance & s poadovanou afordancí \\
+\hline
+Remember & 0 & 0 \\
+\hline
+LookForObject & 0 & 0 \\
+\hline
+MoveToPartial & 1 & 1 \\
+\hline
+Explore & 0.5 & 1 \\
+\hline
+ExecuteReal & 0.5 & 0.75 \\
+\hline
+\end{tabular}\\
+\end{center}
+\centering
+\caption{Dynamická atraktivita pøedmìtu v závislosti na atomické akci}
+\label{tab:act-attr}
+\end{table}
 
 Pokud je fantom pøedmìtu ji v percepèním poli, intenzita fantomu stoupne o aktuální atraktivitu pøedmìtu.
 Pokud není, je vytvoøen novı fantom a pøidán do percepèního pole s intenzitou odpovídající aktuální atraktiviì pøedmìtu.
-Pøidání fantomu však není propagováno hned dále (napø. do prostorové mapy).
+Pøidání fantomu však není propagováno hned dále (do prostorové mapy a procesní èásti).
 Kdy jsou zpracovány všechny pøedmìty, které agent tento krok vidìl, jsou fantomy v percepèním poli seøazeny dle intenzity.
-Pokud je fantomù více ne velikost percepèního pole (PARAM), jsou fantomy s nejniší intenzitou z pole odstranìny.
+Pokud je fantomù více ne velikost percepèního pole, jsou fantomy s nejniší intenzitou z pole odstranìny.
 Teprve nyní jsou novì pøidané fantomy pøedány prostorové mapì a procesní èásti (pouze ty, které se vešly do percepèního pole).
+\\
+
+
+?? prepsat na algoritmus ??
 \\
