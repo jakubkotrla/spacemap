@@ -49,53 +49,13 @@
 
 \newcommand{\keywords}[1] {\small {#1} \normalsize}
 
-\newcommand{\putpicscale}[4]{
-		\begin{figure}[H]
-		\centering
-		\scalebox{#1}{\includegraphics{#2}}
-		\caption{#3 \label{#4}}
-		\end{figure}
-}
 
-\newcommand{\pputpicscale}[4]{
-		\begin{figure}[th]
-		\centering
-		\scalebox{#1}{\includegraphics{#2}}
-		\caption{#3}
-		\label{#4}
-		\end{figure}
-}
-
-\newcommand{\putpicscalesingle}[4]{
-		\begin{figure}[pb]
-		\centering
-		\scalebox{#1}{\includegraphics{#2}}
-		\caption{#3 \label{#4}}
-		\end{figure}
-}
-
-\newcommand{\putpicscalenocaption}[2]{
-		\begin{figure}[th]
-		\centering
-		\scalebox{#1}{\includegraphics{#2}}
-		\end{figure}
-}
-
-\newcommand{\putpic}[3]{
-		\begin{figure}[th]
-		\centering		
-		\includegraphics{#1}
-		\caption{#2}
-		\label{#3}
-		\end{figure}
-}
 
 
 \let\oldmarginpar\marginpar
 \renewcommand\marginpar[1]{\-\oldmarginpar[\raggedleft\footnotesize #1]%
 {\raggedright\footnotesize \textcolor{red}{#1}}}
 
-\newcommand{\comment}[1]{}
 
 \newcommand{\FuncReturn}[1] {\State \textbf{return} {#1}}
 
@@ -128,15 +88,15 @@
 \tableofcontents
 
 %\include{kapitoly/0.abstrakt}
-\include{kapitoly/1.uvod}
-\include{kapitoly/2.rozborproblemu}
-\include{kapitoly/3.pribuzneprace}
-\include{kapitoly/4.modelsveta}
+%\include{kapitoly/1.uvod}
+%\include{kapitoly/2.rozborproblemu}
+%\include{kapitoly/3.pribuzneprace}
+%\include{kapitoly/4.modelsveta}
 
 \include{kapitoly/5.0.modelmapy}
 \include{kapitoly/5.1.pametnapredmety}
-\include{kapitoly/5.2.kmlayer}
-%\include{kapitoly/5.3.gravitylayer}
+\include{kapitoly/5.2.vrstvauzlu}
+\include{kapitoly/5.3.kmlayer}
 \include{kapitoly/5.4.energylayer}
 
 

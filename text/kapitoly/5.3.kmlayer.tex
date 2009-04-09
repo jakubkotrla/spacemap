@@ -4,7 +4,7 @@ Vìtšina modelù pamìti, zmínìnıch v tøetí kapitole, vyuívá samoorganizaèní Kohon
 Kohonenova mapa je model neuronové sítì uèící se bez uèitele, vyuívá soutìní strategii uèení.
 Neurony jsou v Kohonenovì mapì uspoøádány do nìjaké topologické struktury, nejèastìji do dvourozmìrné møíky.
 Tím je urèeno, jaké neurony spolu sousedí.
-Okolím neuronu $N_s(c)$ velikosti $s$ neuronu $c$ pak rozumíme jeho sousedy a další neurony, jejich vzdálenost v topologii je menší ne $s$:
+Okolím neuronu $N_s(c)$ velikosti $s$ neuronu $c$ pak rozumíme jeho sousedy a další neurony, jejich vzdálenost v topologii je menší ne $s$:
 
 \begin{equation} 
 N_s(c) = \{j:d(j,c)\leq s\}
@@ -17,23 +17,24 @@ Vítìznın neuronem se stane ten, kterı se nejvíce podobá vstupu. Jeho váha a váhy
 Ostatní neurony jsou neaktivní a neuèí se. Kohonenova mapa a další modely samoorganizaèních map jsou popsány napø. v \cite{litSimaNeruda}.
 \\
 
-Kohonenova mapa by mìla splòovat naše poadavky. Umí rozmístit uzly do hustoty odpovídající rozmístìní pøedmìtù v prostoru.
-Umí se uèit online, kadı vjem agenta je moné chápat jako prvek trénovací mnoiny dat. Jeví se tedy jako ideální.
-Navrhli jsme tedy model vrstvy uzlù zaloenı na Kohonenovì mapì.
-\\
-
-?? definice vsech parametru ??
-\\
-
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.5\textwidth]{img/kml/kml-start-grid.eps}
   \caption{Poèáteèní pokrytí svìta uzly}
   \label{fig:kml-start}
 \end{figure}
 
+Kohonenova mapa by mìla splòovat naše poadavky. Umí rozmístit uzly do hustoty odpovídající rozmístìní pøedmìtù v prostoru.
+Umí se uèit online, kadı vjem agenta je moné chápat jako prvek trénovací mnoiny dat. Jeví se jako ideální.
+Navrhli jsme tedy model vrstvy uzlù zaloenı na Kohonenovì mapì.
+\\
 
-Na zaèátku je prostor pokryt Kohonenovou mapou - ètvercovou sítí. Hustota uzlù je parametr modelu.
+\begin{definition}[Koeficient uèení]
+Rychlost uèení Kohonenovy mapy je parametrizovatelná. Navrenı model toho vyuívá, koeficient uèení urèuje tuto rychlost.
+\end{definition}
+
+
+Na zaèátku je prostor pokryt Kohonenovou mapou, uzly jsou uspoøádány do ètvercové møíky, viz obrázek \ref{fig:kml-start}.
 Pokadé, kdy je vjem pøedán ke zpracování, provede se trénování Kohonenovy mapy dle algoritmu \ref{alg:km-uceni}.
 \\
 
@@ -47,13 +48,18 @@ Pokadé, kdy je vjem pøedán ke zpracování, provede se trénování Kohonenovy mapy
 \State $queue \gets node$
 \While{$queue\not= \emptyset$}
 	\State $n \gets first(queue)$
-	\State $queue \gets queue  \setminus {n}$
+	\State $queue \gets queue  \setminus \{n\}$
 	\State Zmìna polohy $n$ dle vzorce \ref{formula:km-uceni} \label{alg:km-uceni-vzorec}
 	\State $queue \gets$ sousedi $n$ (pokud nebyli ješte trénováni)
 \EndWhile
 \State vjem je pøedán vrstvì uzlù k dalšímu zpracování
 \end{algorithmic}
 \end{algorithm}
+
+Vyhrávající uzel $node_{win}$ je urèen dle vzdálenosti mezi uzlem a vjemem:
+\begin{equation}
+node_{win} = \arg \min_{node \in nodes} dist(node,vjem)
+\end{equation}
 
 V algoritmu je na øádce \ref{alg:km-uceni-vzorec} zmìnìna poloha uzlu mapy. Uzel je posunut smìrem k poloze vjemu o \(\Delta xy(n, vjem)\) dle vzorce:
 
@@ -62,16 +68,16 @@ V algoritmu je na øádce \ref{alg:km-uceni-vzorec} zmìnìna poloha uzlu mapy. Uzel
 \label{formula:km-uceni}
 \end{equation}
 
-kde \(coef_{neighbour}\) je vzdálenost mezi vyhrávajícím uzlem a právì trénovanım uzlem v Kohonenovì mapì,
-\emph{dist} je vzdálenost uzlu od vjemu v prostoru a \(coef_{learn}\) je parametr modelu.
-Vzorec \ref{formula:km-uceni} je analogií uèení Kohonenovy mapy.
+kde \(coef_{neighbour}\) je vzdálenost mezi vyhrávajícím uzlem a právì trénovanım uzlem v Kohonenovì mapì
+ a \(coef_{learn}\) je koeficient uèení Kohonenovy mapy.
+Vzorec \eqref{formula:km-uceni} je analogií uèení Kohonenovy mapy.
 \\
 
 Tímto algoritmem by se mìla prostorová mapa v prùbìhu simulace nauèit rozloení pøedmìtù ve svìtì a pøizpùsobit se mu.
 Uzly mapy se postupnì pøesunou do míst s velkou èetností vjemù a rozloení uzlù by se tak mìlo v èase postupnì blíit rozloení pøedmìtù.
 \\
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \subfloat[Po 1000 krocích]{\label{fig:kml-preuceni-1}\includegraphics[width=0.5\textwidth]{img/kml/kml-preuceni-1.eps}}
   \subfloat[Po 4000 krocích]{\label{fig:kml-preuceni-2}\includegraphics[width=0.5\textwidth]{img/kml/kml-preuceni-2.eps}}
@@ -102,7 +108,7 @@ Agent je bude vnímat stejnì jako ostatní pøedmìty, v prùbìhu simulace budou k so
 Tím by mìly udret Kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty nejsou.
 \\
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \subfloat[Po 500 krocích]{\label{fig:kml-bo-1}\includegraphics[width=0.5\textwidth]{img/kml/bo-0.5-0500.eps}}
   \subfloat[Po 1000 krocích]{\label{fig:kml-bo-2}\includegraphics[width=0.5\textwidth]{img/kml/bo-0.5-1000.eps}}
@@ -110,8 +116,7 @@ Tím by mìly udret Kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty n
   \label{fig:kml-baseobjs}
 \end{figure}
 
-Vısledek testu je na obrázku \ref{fig:kml-baseobjs}.
-\footnote{Další vısledky testù s rùznou hodnotou atraktivity base objects jsou na pøiloeném CD ??}
+Vısledek testu je na obrázku \ref{fig:kml-baseobjs}\footnote{Další vısledky testù s rùznou hodnotou atraktivity base objects jsou na pøiloeném CD ??}.
 Ukazuje, e øešení nevyhovuje. Mapa se stahuje do støedu místnosti bez ohledu na vliv base objects.
 Dùvodem je to, e tìištì všech base objects je ve støedu místnosti.
 Tomu bychom mohli na první zabránit zvıšením atraktivity base objects, které jsou na kraji místnosti.
@@ -123,27 +128,26 @@ Tím jsme pøevedli pùvodní problém na problém opaènı. Øešení s pouitím base obje
 
 \subsection{Odpudivost uzlù} \label{s:km-odpudivost}
 Do modelu jsme pøidali vzájemnou odpudivost uzlù sítì. V kadém kroku simulace se uzly, které jsou pøíliš blízko u sebe, odpuzují.
-Vzájemná odpudivost dvou uzlù závisí na jejich vzdálenosti a jejich naplnìnosti.
-\\
 
-\begin{definition}[Naplnìnost uzlu]
-Uzel prostorové mapy má vazby na pamìové stopy. Naplnìnost uzlu je souèet intenzit všech jeho vazeb na pamìové stopy.
-Pøedstavuje míru dùleitosti uzlu pro pamì na pøedmìty.
-Èím více pamìovıch stop vyuívá uzel a èím intenzivnìjší jsou, tím ménì by se mìla mìnit jeho poloha.
-Uzel s vysokou naplnìností bude v místì, kde je hodnì pøedmìtù.
-V takovıch místech by hustota uzlù mìla bıt vìtší a proto je nutné, aby v takovıch místech byla vzájemná odpudivost uzlù menší.
-Naplnìnost uzlu $node$ budeme dále ve vzorcích oznaèovat znakem $\mu(node)$
+\begin{definition}[Síla odpudivosti]
+Síla odpudivosti je parametr modelu, urèující, jak moc se budou uzly odpuzovat.
 \end{definition}
 
+
+Vzájemná odpudivost dvou uzlù závisí na síle odpudivosti, vzdálenosti uzlù a jejich naplnìnosti.
+Uzel s vysokou naplnìností bude v místì, kde je hodnì pøedmìtù.
+V takovıch místech by hustota uzlù mìla bıt vìtší a proto je nutné, aby v takovıch místech byla vzájemná odpudivost uzlù menší.
+\\
+
 \begin{equation} 
-odpudivost(n_i, n_j) = \frac{ coef }{ dist(n_i, n_j)^2 \times \mu(n_i) \times \mu(n_j) } 
+odpudivost(n_i, n_j) = \frac{ sila_{odpudivost} }{ dist(n_i, n_j)^2 \times \mu(n_i) \times \mu(n_j) } 
 \label{formula:km-odpudivost}
 \end{equation}
 \\
 
 Naplnìnost uzlu lze pøi urèování vzájemné odpudivosti chápat jako analogii k hmotnosti tìles, s tím rozdílem,
-e odpudivost dvou uzlù je nepøímo úmìrná souèinu jejich naplnìností. Odpudivost je dána vzorcem \ref{formula:km-odpudivost},
-kde \emph{coef} je parametr modelu.
+e odpudivost dvou uzlù je nepøímo úmìrná souèinu jejich naplnìností. Odpudivost je dána vzorcem \eqref{formula:km-odpudivost},
+kde $sila_{odpudivost}$ je síla odpudivosti.
 V kadém kroku simulace je spoètena vzájemná odpudivost uzlù. Tím jsou urèeny všechny odpudivé síly, které na uzly pùsobí.
 Poloha uzlù je pak upravena dle tìchto sil.
 \\
@@ -160,18 +164,18 @@ Poloha uzlù je pak upravena dle tìchto sil.
 \\
 
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
-  \subfloat[Celá místnost s naznaèenım vıøezem]{\label{fig:kml-ag-cele}\includegraphics[height=0.35\textwidth]{img/kml/ag-cele.eps}}
-  \qquad
-  \subfloat[Vıøez]{\label{fig:kml-ag-vyrez}\includegraphics[height=0.35\textwidth]{img/kml/ag-vyrez.eps}}
-  \caption{Test modelu s odpudivostí}
+  \subfloat[Celá místnost s naznaèenım vıøezem]{\label{fig:kml-ag-cele}\includegraphics[height=0.36\textwidth]{img/kml/ag-cele.eps}}
+  \quad
+  \subfloat[Vıøez]{\label{fig:kml-ag-vyrez}\includegraphics[height=0.36\textwidth]{img/kml/ag-vyrez.eps}}
+  \caption{Test modelu s odpudivostí uzlù}
   \label{fig:kml-ag}
 \end{figure}
 
-Vısledek testu je na obrázku \ref{fig:kml-ag}.
-\footnote{Další vısledky testù s rùznou hodnotou ??AGcoef ?? jsou na pøiloeném CD ??}
-Ukazuje, e odpudivé síly deformují Kohonenovu mapu do stavu, kdy její následující uèení nedává smysl.
+Vısledek testu je na obrázku \ref{fig:kml-ag}\footnote{Další vısledky testù s rùznou hodnotou síly odpudivosti jsou na pøiloeném CD ??, jsou obdobné}.
+Ukazuje, e odpudivost skuteènì rozprostøe uzly po celé místnosti.
+Objevil se však jinı problém, odpudivé síly deformují Kohonenovu mapu do stavu, kdy její následující uèení nedává smysl.
 Sí se pøekroutí tak, e uzly (na obrázku \ref{fig:kml-ag} èervenì vyznaèené), které jsou ve virtuálním svìtì vedle sebe, jsou v síti daleko a obrácenì.
 \\
 
