@@ -17,26 +17,25 @@ Algoritmus umí urèit shluky, tedy umístit bod tam, kde je hodnì dat. Ve skuteèno
 To samé platí obecnì pro geometrické algoritmy shlukové analýzy, nelze je tedy použít na hlavní model mapy. Mohou ale být využity pøi vytváøení hiearchie uzlù.
 \\
 
-\section{Samoorganizující mapy}
+\section{Samoorganizaèní mapy}
 
-Vytváøení map se ve velké míøe vìnuje robotika. Øeší však problémy na jiné úrovni, typicky tzv. SLAM
-\footnote{Simultaneous Localization and Mapping}
-problém.
+Mapování prostoru a vytváøení prostorových map se ve velké míøe vìnuje robotika. Øeší však problémy na jiné úrovni, typicky tzv. SLAM\footnote{Simultaneous Localization and Mapping} problém.
 Robot umístìný do neznámého prostøedí, vybavený senzory, má za úkol toto prostøedí zmapovat.
 Musí z obrazových dat vytvoøit mapu svého okolí, pohybovat se v nìm bez srážek a neztratit informaci o své poloze v právì vytváøené mapì.
-To je celé ztíženo nepøesností senzorù a nespolehlivostí pohybového aparátu,
-pokud øídící èást robota vyšle pøíkaz "2 metry vpøed", nemùže si být jistá, že se robot skuteènì pøesune o dva metry vpøed.
-Krom nepøedvídatelných zmìn svìta kolem nìj jsou èásti robota, zodpovìdné za jeho pohyb, stejnì nepøesné jako robotovy senzory.
+To je celé ztíženo nepøesností senzorù a nespolehlivostí pohybového aparátu.
+Pokud øídící èást robota vyšle pøíkaz "2 metry vpøed", nemùže si být jistá, zda se robot skuteènì pøesune o dva metry vpøed.
+Èásti robota, zodpovìdné za jeho pohyb, jsou ve vykonání pøíkazù stejnì nepøesné jako robotovy senzory.
+Navíc stav svìta v bezprostøedním okolí robota se mùže náhle a nepøedvídatelnì zmìnit, napø. do cesty mùže vjet jiný robot.
 \\
 
 Tyto netriviální úlohy náš model øešit nemusí, agent se pohybuje ve virtuálním svìtì a má pøesné informace o svém okolí.
 Pøesto se mùžeme inspirovat øešeními, protože úlohy jsou podobné.
-Velmi èasto jsou používány tzv. Kohonenovy mapy [literatura], nazývané též samoorganizující se mapy.
+Velmi èasto jsou používány tzv. Kohonenovy mapy \cite{litKohonen}, nazývané též samoorganizaèní mapy.
 Jedná se o typ neuronové sítì uèící se bez uèitele, využívá soutìžní strategii uèení.
+\\
 
-
-Samoorganizující mapy využili napø. autoøi \cite{litShapeSOM} ke konstrukci robota, který umí vytvoøit 3D mapu svého okolí pomocí dálkomìru.
-Kohonenovo uèení je použito v [literatura-panoramic-images] ke konstrukci map a urèení orientaèních bodù a navigaci.
+Samoorganizaèní mapy využili napø. autoøi \cite{litShapeSOM} ke konstrukci robota, který umí vytvoøit 3D mapu svého okolí pomocí dálkomìru.
+Kohonenovo uèení je použito v [literatura-panoramic-images] ke konstrukci map, urèení orientaèních bodù a navigaci.
 \\
 
 Samoorganizující mapy jsou èasto používány také ke klasifikaci dat a analýze shlukù.
@@ -45,15 +44,15 @@ Existuje nìkolik rozšíøení Kohonenových map, v \cite{litGNG} a \cite{litGNG2} je
 tzv. Growing Neural Gas Network vkládá nové uzly na místa nejvìtší chyby.
 \\
 
-V \cite{litGHSOM} je popsán model rostoucí hiearchické Kohonenovy mapy, Growing Hierarchical Self-Organizing Map
-\footnote{seznam dalších publikací o GHSOM lze nalézt na adrese http://www.ifs.tuwien.ac.at/~andi/ghsom/publications.html}.
+V \cite{litGHSOM} je popsán model rostoucí hiearchické Kohonenovy mapy,
+Growing Hierarchical Self-Organizing Map \footnote{více informací o GHSOM lze nalézt na adrese http://www.ifs.tuwien.ac.at/~andi/ghsom/publications.html}.
 GHSOM zaèíná jako Kohonenova mapa tvoøená jedním uzlem a v prùbìhu uèení je rozšiøována:
 \begin{CompactItemize}
 \item jsou pøidávány øádky a sloupce uzlù
 \item pod uzly jsou pøidávány další úrovnì, Kohonenovy mapy o jednom uzlu
 \end{CompactItemize}
 
-Samoorganizující mapy jsou používány pro vytváøení prostorových map a existují jejich rozšíøení s hiearchií a mechanismy pro rùst.
+Samoorganizující mapy jsou používány pro vytváøení prostorových map a existují jejich rozšíøení s hiearchií a mechanismy pro rùst mapy.
 Jsou tedy jedním z možných øešení.
 \\
 
