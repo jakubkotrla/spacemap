@@ -281,8 +281,8 @@ class EnergyLayerNode:
 
             self.AGamount += ((1.0/ max(1, dist)) * Global.ELAGAddCoef) * (1 / max(self.AGamount, 1))
             
-            gDiffCoef = dist2 * max(0.8, self.usage) * max(0.8,node.usage)
-            gDiffCoef = float(Global.ELAntigravityCoef) / max(0.64, gDiffCoef)
+            gDiffCoef = dist2 * max(Global.ELAGUsageCoef, self.usage) * max(Global.ELAGUsageCoef,node.usage)
+            gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.ELAGUsageCoef2, gDiffCoef)
             
             dist = max(Global.MinPositiveNumber, dist)
             self.stepDiffX += ldx * (gDiffCoef / dist)

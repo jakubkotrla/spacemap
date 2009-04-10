@@ -288,7 +288,7 @@ def plotNC(fileName):
 fontFamily = 'Arial'
 fontObj = FontProperties(family=fontFamily);
 full = False   
-saveEPS = False
+saveEPS = True
 
 for root, dirs, files in os.walk('.'):
     print root

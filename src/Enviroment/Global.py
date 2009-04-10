@@ -30,7 +30,7 @@ class GlobalVariables:
 
         self.RandomSeeds = [468219]   #seeds to test
         self.MaxTestSteps = 5000      #should be more than one day
-        self.MaxTestStepAfter = 25000 
+        self.MaxTestStepAfter = 0 
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -61,7 +61,7 @@ class GlobalVariables:
         self.LinkMemObjToNodeFadeOut = 0.005    #amount to decrease intensity of links memObj-node every step
                                 
         self.ELDensity = 10       #one node will be created for area of appr. ELDensity x ELDensity
-        self.ELCreateNoise = 3    #noise when creating nodes, >ELDensity or ==-1 leads to completely random xy
+        self.ELCreateNoise = 3    #noise when creating nodes, ==-1 leads to completely random xy
                 
         self.ELNodeUsageFadeOut = 0.005     #amount to decrease intensity of el-node every step
                 
@@ -69,6 +69,7 @@ class GlobalVariables:
         self.ELGravityCoef = 1.0
         self.ELAntigravityCoef = 8.0
         self.ELAntigravityRange = 20
+        self.ELAGUsageCoef = 0.8
         self.MaxELNodeMove = 4.0
         
         self.EPCreateEnergy = 140
