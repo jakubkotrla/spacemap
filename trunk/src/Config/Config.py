@@ -23,7 +23,7 @@ class ConfigSingleton:
         #self.configs["EmptyRoom"] = EmptyRoom()
         #self.configs["FullRoom"] = FullRoom()
         #self.configs["Corridor"] = Corridor()
-        #self.configs["Lobby"] = Lobby()
+        self.configs["Lobby"] = Lobby()
         #self.configs["CrazyRoom"] = CrazyRoom()
         #self.configs["SmallRoom"] = SmallRoom()
         #self.configs["SwitchRoom"] = SwitchRoom()

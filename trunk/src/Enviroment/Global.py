@@ -70,6 +70,7 @@ class GlobalVariables:
         self.ELAntigravityCoef = 8.0
         self.ELAntigravityRange = 20
         self.ELAGUsageCoef = 0.8
+        self.ELAGUsageCoef2 = self.ELAGUsageCoef * self.ELAGUsageCoef
         self.MaxELNodeMove = 4.0
         
         self.EPCreateEnergy = 140
@@ -93,7 +94,7 @@ class GlobalVariables:
         self.HLAGAddCoef = 2
         self.HLAGFadeOut = 1
         
-        self.CreatePlaces = False
+        self.CreatePlaces = True
         self.PlacesAGNeeded = 1500
         self.PlacesAGMin = 500
         self.PlaceAGFadeOut = 0.5
