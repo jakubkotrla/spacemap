@@ -273,7 +273,7 @@ def plotNC(fileName):
     objsCountND = array( objsCount )
     figure()
     plot(stepsND, ncCountND, 'g-', label=u'počet uzlů')
-    plot(stepsND, desiredCountND, 'k:', label=u'požadovaný počet uzlů')
+    plot(stepsND, desiredCountND, 'k:', label=u'chtěný počet uzlů')
     plot(stepsND, objsCountND, 'b:', label=u'počet předmětů')
     legend(loc='best', prop=fontObj)
 

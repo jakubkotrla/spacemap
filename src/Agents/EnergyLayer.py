@@ -51,8 +51,9 @@ class Place:
         return sumNodeAGamount
     
     def CalculateRange(self):
-        coef = log( max(2, (self.slowAGamount / self.startTotalAGamount)), 2)
-        coef = (0.2 / coef) + 0.8
+        #coef = log( max(2, (self.slowAGamount / self.startTotalAGamount)), 2)
+        #coef = (0.2 / coef) + 0.8
+        coef = (0.2 * (self.startTotalAGamount / self.slowAGamount) ) + 0.8
         self.range = self.startRange * coef
     
     def UpdateLocation(self):
@@ -476,13 +477,13 @@ class EnergyLayer:
         if Global.CreatePlaces:
             placesToDelete = []
             for place in self.places:
-                if place.AGamount > Global.PlacesAGNeeded * (2**(place.level) - 1):
-                    self.createPlaces(place)
-                            
                 place.CalculateAG()
                 if place.slowAGamount < Global.PlacesAGMin * (place.level-1):
                     placesToDelete.append(place)
                     continue
+                
+                if place.AGamount > Global.PlacesAGNeeded * (2**(place.level) - 1):
+                    self.createPlaces(place)
                 
                 if place.parent != None:
                     place.UpdateLocation()
@@ -695,12 +696,16 @@ class EnergyLayer:
             Global.LogData("elnodeheatmapag", nStr)
         
     def GetNodeCreateCost(self):
+        #return 100 * (float(len(self.nodes)) / self.desiredNodeCount)
+                
         x = Global.ELNodeCreateCostCoef * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(x)/50))
         xf = 1100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         costf = 0.0001 * (3 ** (float(xf)/50))
         return (cost + costf)
     def GetNodeDeleteCost(self):
+        #return 100 * (self.desiredNodeCount / float(len(self.nodes)))       
+        
         x = Global.ELNodeCreateCostCoef * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
         cost = 100 * (3 ** (float(-x)/50))
         xf = 1100 * float(len(self.nodes) - self.desiredNodeCount) / self.desiredNodeCount
