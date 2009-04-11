@@ -60,11 +60,6 @@ def plotHeatMap(fileName, titleStr):
     if saveEPS: savefig(fileName+".eps", format="EPS")
     clf()
 
- 
-def plotHLNodes(fileName):
-    pass
-
-
 def plotRememberOne(fileName, rows):
     trained = map(lambda x: x[1], rows)
     error = map(lambda x: x[2], rows)
@@ -305,9 +300,6 @@ for root, dirs, files in os.walk('.'):
         elif fname == "data-nc.txt":
             print ("plotNC " + root + "\\" + fname)
             plotNC(root + "\\" + fname)
-        elif fname == "data-hlnodes.txt":
-            print ("plotNC " + root + "\\" + fname)
-            plotHLNodes(root + "\\" + fname)
         elif fname.startswith("data-rememberinfo") and fname.endswith(".txt"):
             print ("plotRem " + root + "\\" + fname)
             plotMeanErrorInTime(root + "\\" + fname)

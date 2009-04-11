@@ -22,15 +22,15 @@ class GlobalVariables:
       
         self.WorldDynamic = 0    #chance to add/remove objects every 100 world step
       
-        self.SaveELNodesStatus = True
+        self.SaveELNodesStatus = True           #save status of EnergyLayerNodes
         self.RenderVisibilityHistory = False    #show visibility objects
         self.CalculateVisibilityHistory = False #calculate visibility of visibility objects
         self.VisibilityHistoryArea = 2          #visibility object is square AxA
         self.AgentMoveHistoryLength = 4         #how many agent moves are displayed
 
         self.RandomSeeds = [468219]   #seeds to test
-        self.MaxTestSteps = 5000      #should be more than one day
-        self.MaxTestStepAfter = 0 
+        self.MaxTestSteps = 5000      #how many stept do in TestAll mode, 1000 ~ should be more than one day
+        self.MaxTestStepAfter = 0     #how many steps do in TestAll mode with agent out of world, after MaxTestSteps
         
         self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
         self.WayPointArea = 10      #agent sees waypoints closer than WayPointArea
@@ -49,7 +49,6 @@ class GlobalVariables:
         self.TrainEffectUsed = 3.0
         self.TrainEffectFound = 2.0
         self.TrainEffectNotFound = 1.0
-        self.TrainEffectUsedUp = 1.0
         
         self.SMUpdateMaxDuration = 100  #if action takes more seconds, SP.StepUpdate call Layer.StepUpdate multiple times 
         self.SMNodeAreaDivCoef = 1      #when MemObj's linkToNodes are intensed - alter node's gauss area
@@ -70,7 +69,7 @@ class GlobalVariables:
         self.ELAntigravityCoef = 8.0
         self.ELAntigravityRange = 20
         self.ELAGUsageCoef = 0.8
-        self.ELAGUsageCoef2 = self.ELAGUsageCoef * self.ELAGUsageCoef
+        self.ELAGUsageCoef2 = self.ELAGUsageCoef * self.ELAGUsageCoef       #only precomputed value
         self.MaxELNodeMove = 4.0
         
         self.EPCreateEnergy = 140
@@ -78,30 +77,20 @@ class GlobalVariables:
         self.EPFadeCoef = 0.5
         self.EPFadeLimit = 10
         
-        self.ELNodeCreateCostCoef = 50
-        
         self.ELForgetNodeRate = 5           #how much EL.forgetEnergy is added each step
         self.ELDeleteNodeReTrainCount = 20
         self.ELDeleteNodeReTrainRange = 20
         
-        self.SMBigUpdateFreq = 9
+        self.SMBigUpdateFreq = 9    #how often update memoryObject locatin and save it - only for getting data
         self.ELAGAddCoef = 3
         self.ELAGFadeOut = 0.1
-        self.HLFadeOut = 1
-        self.HLAGNeeded = 4000
-        self.HLAGNeededSum = 50000
-        
-        self.HLAGAddCoef = 2
-        self.HLAGFadeOut = 1
-        
+           
         self.CreatePlaces = True
         self.PlacesAGNeeded = 1500
         self.PlacesAGMin = 500
         self.PlaceAGFadeOut = 0.5
         self.PlaceMoveCoef = 0.02
-        
-        self.ELUseMapGeometry = False
-        self.ELMapGeometryAttractivity = 10
+
     
     def Random(self):
         return random()

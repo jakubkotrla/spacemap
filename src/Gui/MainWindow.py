@@ -299,11 +299,10 @@ class MainWindow(Frame):
             self.mapRenderer.RenderToFile(world, "../../exs/PIL" + str(world.step).zfill(6) + ".png", ["agent", "ov", "eps", "info"])
             
             # used only to get EPS of test rooms
-            self.mapRenderer.RenderSpaceMap()    
-            p=self.wxCanvas.postscript(width="1020",height="1020")
-            f=open("image" + str(world.step) + ".eps", "wb")
-            f.write(p)
-            f.close()
+            #p=self.wxCanvas.postscript(width="1020",height="1020")
+            #f=open("image" + str(world.step) + ".eps", "wb")
+            #f.write(p)
+            #f.close()
             
             if self.lock.acquire(False): break
             self.playbackLock.acquire()

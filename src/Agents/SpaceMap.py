@@ -103,7 +103,6 @@ class SpaceMap:
         memObjs = self.objectsToMemObjs.values()
         for memObj in memObjs:
             self.updateMemoryObjectLocation(memObj)
-        self.Layer.StepUpdateBig()
        
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:
