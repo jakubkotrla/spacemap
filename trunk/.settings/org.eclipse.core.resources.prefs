@@ -1,4 +1,4 @@
-#Tue Apr 07 18:28:34 CEST 2009
+#Fri Apr 10 12:40:55 CEST 2009
 eclipse.preferences.version=1
 encoding//src/Agents/EpisodicMemory.py=UTF-8
 encoding//src/Agents/Intelligence.py=UTF-8
@@ -7,4 +7,5 @@ encoding//src/Agents/PerceptionField.py=UTF-8
 encoding//src/Agents/ProcessArea.py=UTF-8
 encoding//src/Agents/Processes.py=UTF-8
 encoding//src/Agents/Scenarios.py=UTF-8
+encoding//src/plotter.EPS.py=UTF-8
 encoding//src/plotter.py=UTF-8
