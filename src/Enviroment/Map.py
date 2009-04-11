@@ -442,9 +442,7 @@ class Map:
         for vc in agent.viewCones:
             if angle < vc.angle and dist < vc.distance:
                 visibility = visibility + vc.intensity
-                
-        if Global.ELUseMapGeometry and object.type.name == "Waypoint":
-            visibility = Global.WeakCoef(visibility, 2)
+
         return visibility
       
     def IsObjectVisible(self, agent, object):
