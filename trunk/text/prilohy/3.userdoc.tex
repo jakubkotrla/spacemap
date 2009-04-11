@@ -6,7 +6,7 @@ Nejdøíve je tøeba nainstalovat potøebné knihovny:
 - Python
  - GTK+
 
-Pro vizualizaci výstupních dat je tøeba nainstalovat
+Nástroje pro vizualizaci výstupních dat dále potøebují:
 - knihovnu numpy
 - knihovnu matplotlib
 - .Net Framework 3.5
@@ -14,6 +14,26 @@ Pro vizualizaci výstupních dat je tøeba nainstalovat
 
 \section{Ovládání aplikace}
 Aplikace se spouští hlavním souborem mainGUI.py.
+Mùže pracovat ve dvou módech: interaktivním a testovacím.
+\\
+
+V interaktivním módu aplikace spustí test jedné místnosti. Stav svìta, agenta a prostorové mapy, je zobrazen v oknì aplikace.
+Simulaci je možné pozastavit, znovu spustit a zobrazovat informace o nìkterých objektech ve svìta a prostorové mapy.
+Po kliknutím na pøedmìt èi uzel prostorové mapy se zobrazí malé okno s podrobnými údaji. Pro tyto úèely je vhodné simulaci pozastavit.
+\\
+
+V testovacím módu aplikace spustí postupnì všechny dostupné testy.
+Stav svìta a prostorové mapy není zobrazen v oknì aplikace, ale je v ukládán do souborù ve formátu PNG.
+V oknì aplikace jsou zobrazeny jen základní informace o prùbìhu testu.
+\\
+
+V obou módech jsou ukládána podrobná data do textových souborù. Tato data je možné pomocí dalších nástrojù vizualizovat.
+Nastavení aplikace má dvì èásti:
+
+\begin{CompactItemize}
+\item nastavení parametrù modelu - soubor Enviroment/Global.py
+\item urèení testovacích svìtù - soubor Config/Config.py a soubory svìtù v adresáøi Config
+\end{CompactItemize}
 
 
 \section{Výstupní data a jejich vizualizace}
