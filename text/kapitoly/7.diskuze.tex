@@ -1,15 +1,32 @@
 \chapter{Diskuze}
 
-\section{Vlastnosti modelu}
+
 jak to dopadlo..??
 
 
-\section{Moná rozšíøení na úrovni modelu}
-
-Zmìna Agcoef a AGrange v èase, globálnì èi lépe pro kadı uzel, dle Agamount (nemá-li se s kım odpuzovat v okolí, zvìtší si okolí a sílu
+\section{Adaptivní odpudivost}
+V pøedstaveném modelu je vzájemná odpudivost uzlù závislá pouze na jejich vzdálenosti a naplnìnosti.
+Je dále ovlivnìna parametry modelu, které jsou však v prùbìhu celé simulace konstantní.
 \\
 
-Sjednocení EP, ELnode - kadı má ivotnost - buï více úrovní, èi spojitá míra úrovnì - kadı uzel má jak moc mizí apod.
+Jedna z moností, jak zlepšit rozloení uzlù v prostoru, je mìnit parametry ovlivòující odpudivost,
+pøedevším \param{sílu odpudivosti} a \param{dosah odpudivosti}, v prùbìhu simulace.
+Parametry by se mohly mìnit podle aktuální hustoty uzlù, která se odráí v mnoství odpudivosti.
+Dalším øešením by bylo pøidat ji do vıpoètu odpudivosti,
+tím by parametry pøestaly bıt stejné pro všechny uzly a odpudivost uzlù by se tak pøizpùsobovala lokální situaci.
+\\
+
+
+\section{Sjednocení stopy vjemu a uzlu}
+V pøedstaveném modelu jsou dva podobné objekty: stopa vjemu a uzel prostorové mapy.
+Na stopu vjemu lze nahlíet jako na doèasnı uzel mapy, kterı má danou svou ivotnost.
+Souèasnì lze nahlíet na uzel mapy jako na trvalìjší stopu vjemu.
+Stopa vjemu a uzel jsou tedy jen dva rùzné stupnì tého typu objektu, stopa vjmeu je uzel nultého stupnì.
+\\
+
+Model lze rozšíøít o další stupnì, uzly by vytváøely další uzly, které by mìl ještì trvalejší charakter.
+Stupìò uzlu by urèoval jeho trvalost, ochotu se pohybovat, míru s jakou vytváøí další uzly vyššího stupnì.
+Úplnım zobecnìním modelu by byla zmìna stupnì uzlu z diskrétní velièiny na spojitou. Mapa by tak obsahovala mnoho uzlù rùzného stupnì.
 \\
 
 
@@ -38,14 +55,43 @@ Model by bylo vhodné rozšíøit, aby rychlost klesání závisela na aktuální hodnotì
 Pokud je hodnota vysoká, klesá rychleji, pokud se hodnota blíí k nule, klesá èím dál pomaleji.
 \\
 
-\section{Moná rozšíøení nad modelem}
-
-Ukládat do uzlu i co agent dìlal - tj. EP kterı místo MO bude mít Process
-Další  mapa ukládající pouze to
-I co vidìl, e dìlají další agenti
+Model øeší zapomínání pouze za relativnì krátkou dobu.
+Pøeneseme-li mìøítko èasu modelu, kroky simulace, do reálného svìta, je vidìt, e model vyhovuje pro dobu trvající øádovì jednotky a desítky tıdnù.
+Pokud by model mìl uspokojivì øešit zapomínání v øádu let, bylo vhodné rozšíøit intezitu vjemu do komplexnìjší velièiny,
+napø. pøidat mechanismy pracující s emocemi.
 \\
 
-Hiearchie/ontologie affordancí, pro shlukování pøedmìtù dle toho èi dle topologie
+
+
+\section{Rozšíøení uzlu a místa}
+Do uzlu je v modelu ukládána pouze informace o poloze pøedmìtù.
+Uzly lze však vyuít i uchování dalších informací, napø. které èinnosti poblí nich agent provádìl.
+Vznikla by asociativní sí vazeb mezi èinnostmi a uzly. Jinım øešením by bylo vytváøet více map, pro kadı typ uchovávané informace jednu.
+\\
+
+Ukládané informace pak mohou bıt propagovány z uzlù do míst a z nich do nadøazenıch míst.
+Agent by pak byl schopen urèit nejèastìjší èinnosti provádìné v urèité místì a vytvoøit si tak pøedstavu o jeho funkènosti,
+napø: místo, kde se nejèastìji jí a pøipravuje jídlo oznaèí místo k tomu urèené.
+Pokud bychom mu dodali dostatek informací, bude schopen jej oznaèit slovem \emph{kuchynì} èi \emph{jídelna}.
+K tomu úèelu by bylo tøeba vytvoøit hierachii afordancí èi je nìjak jinak kategorizovat.
+\\
+
+Model byl vytvoøen v prostøedí svìta jen s jedním agentem. Pokud by svìt obsahoval více agentù, objevují se další informace, které je moné ukládat,
+napø. kde se agent setkal s jinım konkrétním agentem èi co vidìl dìlat ostatní agenty.
+Pokud by spolu agenti komunikovali, mohli by si pøedávat informace o poloze pøedmìtù.
+Taková informace je pak z hlediska modelu prostorové mapy jen další typ vjemu, jeho intenzita by závisela napø. na dùvìryhodnosti agenta.
+Celı proces pøedání informace o poloze pøedmìtu agentem $a_1$ agentovi $a_2$ si pak lze pøedstavit takto:
+\begin{CompactItemize}
+\item agent $a_1$ si vybaví pamìovou stopu a vytvoøí si pamìového fantoma
+\item pamìová stopa je pøedána agentovi $a_2$
+\item agent $a_2$ vytvoøí na základì pamìové stopy vjem, jeho intenzita bude odvozena z intenzity pamìové stopy a dalších faktorech
+\item prostorová mapa agenta $a_2$ zpracuje vjem
+\end{CompactItemize}
+
+
+Uloenou pozici objektu\footnote{pamìovou stopy v prostorové mapì agenta $a_2$}
+by bylo vhodné obohatit o informaci, e tuto polohu se agent dozvìdìl od jiného agenta a od kterého.
+Zde je moné model dále obohacovat, agent mùe napø. po èase zapomenout, kdo mu o poloze pøedmìtu øekl.
 \\
 
 
