@@ -20,15 +20,15 @@ from HeapLineRoom import HeapLineRoom
 class ConfigSingleton:
     def __init__(self):
         self.configs = {}
-        #self.configs["EmptyRoom"] = EmptyRoom()
-        #self.configs["FullRoom"] = FullRoom()
-        #self.configs["Corridor"] = Corridor()
+        self.configs["EmptyRoom"] = EmptyRoom()
+        self.configs["FullRoom"] = FullRoom()
+        self.configs["Corridor"] = Corridor()
         self.configs["Lobby"] = Lobby()
-        #self.configs["CrazyRoom"] = CrazyRoom()
-        #self.configs["SmallRoom"] = SmallRoom()
-        #self.configs["SwitchRoom"] = SwitchRoom()
+        self.configs["CrazyRoom"] = CrazyRoom()
+        self.configs["SmallRoom"] = SmallRoom()
+        self.configs["SwitchRoom"] = SwitchRoom()
         self.configs["HeapRoom"] = HeapRoom()
-        #self.configs["HeapLineRoom"] = HeapLineRoom()
+        self.configs["HeapLineRoom"] = HeapLineRoom()
         
     def GetConfigs(self):
         cfgs = self.configs.keys()

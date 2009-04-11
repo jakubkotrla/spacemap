@@ -159,14 +159,6 @@ class MapRenderer:
         for ep in energyPoints:
             self.PointC(ep, ep.x, ep.y, "#00c800", 0.5, "energylayerpoint info")
         
-        hlNodes = self.agent.intelligence.spaceMap.Layer.hlNodes
-        self.canvas.delete("energylayerHLnode")
-        for hlNode in hlNodes:
-            self.PixelC(hlNode, hlNode.x, hlNode.y, None, 1, "energylayerHLnode info", outline="#00a800")
-            self.CircleC(hlNode, hlNode.x, hlNode.y, hlNode.range, "#00a800", "energylayerHLnode info")
-            for node in hlNode.nodes:
-                self.Line(hlNode.x, hlNode.y, node.x, node.y, "#00c900", "energylayerHLnode")
-        
         elnodes = self.agent.intelligence.spaceMap.Layer.nodes
         self.canvas.delete("energylayernode")
         for node in elnodes:
@@ -298,18 +290,6 @@ class MapRenderer:
                 else:
                     draw.rectangle([x,y, x+10,y+10], fill=(0, 0, 255), outline=None)
         
-        
-        for hlNode in elayer.hlNodes:
-            x = (hlNode.x-hlNode.range)*self.zoom + 10
-            y = (hlNode.y-hlNode.range)*self.zoom + 10
-            x2 = (hlNode.x+hlNode.range)*self.zoom + 10
-            y2 = (hlNode.y+hlNode.range)*self.zoom + 10
-            draw.ellipse([x,y, x2,y2], fill=None, outline=(0, 128, 0))
-            x = hlNode.x*self.zoom - 5 + 10
-            y = hlNode.y*self.zoom - 5 + 10
-            draw.rectangle([x,y, x+10,y+10], fill=None, outline=(0, 128, 0))
-            for node in hlNode.nodes:
-                draw.line( [x+5, y+5, self.zoom*node.x+10, self.zoom*node.y+10], fill=(0, 222, 0))
         for place in elayer.places:
             if place.parent == None: continue
             x = (place.x-place.range)*self.zoom + 10
