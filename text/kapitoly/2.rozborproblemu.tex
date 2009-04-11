@@ -37,11 +37,14 @@ Model musí být online v tom smyslu, že v každém okamžiku musí dát použitelné výs
 Model by nemìl být zavislý na konkrétní abstrakci svìta èi architektuøe agenta.
 
 \begin{definition}[Vjem]
-Vstupem modelu je pouze posloupnost vjemù. Tj. modelu je v každém kroku pøedložena množina (mùže být prázdná) vjemù. Vjem øíká informaci typu:
+Vstupem modelu je pouze posloupnost vjemù. Modelu jsou postupnì pøedkládány vjemy, ze kterých se uèí. Vjem øíká informaci typu:
+\\
 \emph{"Vidím pøedmìt ABC na místì XY s intenzitou 0,4."}
+\\
 Vjem je tedy trojice: \emph{$<$pøedmìt, poloha, intenzita \footnote{Intenzitu budeme dále ve vzorcích oznaèovat znakem $\eta$}$>$}.
 \end{definition}
 
 
 Výstupem modelu je rozmístìní uzlù v prostoru a urèení polohy pøedmìtù, které agent døíve vidìl.
+Dále detekce míst, kde je u sebe nahromadìno více pøedmìtù èi kde se agent èasto vyskytuje a provádí nìjakou èinnost.
 \\

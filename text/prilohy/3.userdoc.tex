@@ -4,6 +4,7 @@
 Nejdøíve je tøeba nainstalovat potøebné knihovny:
 
 - Python
+ - GTK+
 
 Pro vizualizaci výstupních dat je tøeba nainstalovat
 - knihovnu numpy
@@ -16,3 +17,13 @@ Aplikace se spouští hlavním souborem mainGUI.py.
 
 
 \section{Výstupní data a jejich vizualizace}
+
+Výstupem aplikace jsou:
+\begin{CompactItemize}
+\item obrázky ukazující stav svìta a prostorové mapy v každém kroku simulace
+\item obrázek ukazující stav v posledním kroku simulace vèetnì nauèenosti pøedmìtu (jak moc se jej agent mìl šanci nauèit, nezávisle na prostorové mapì)
+\item textové soubory ve formátu CVS
+\end{CompactItemize}
+
+Data v textových souborech je možné vizualizovat použitím nástrojù statter.exe\footnote{
+statter.exe je potøeba pouze, pokud uživatel chce vidìt podrobné informace o stavu uzlù prostorové mapy v prùbìhu simulace} a plotter.py.

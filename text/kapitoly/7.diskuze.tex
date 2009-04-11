@@ -13,36 +13,118 @@ Sjednocení EP, ELnode - kadı má ivotnost - buï více úrovní, èi spojitá míra úr
 \\
 
 
-pokrocilejsi zapominani
-- scitani vice exponenciel
-- pri odecitani e-forget se bere v potaz naplnenost uzlu
-- pri vyberu uzlu se bere v  potaz naplnenost uzlu
 
+\section{Zapomínání}
+Model obsahuje nìkolik mechanismù pro zapomínání:
+
+\begin{CompactItemize}
+\item sniování intenzit pamìovıch stop a vazeb mezi stopu a uzlem
+\item slábnutí a zmizení stop vjemu
+\item klesání naplnìnosti uzlu
+\item klesání mnoství odpudivosti uzlu
+\item zapomínání uzlù
+\item klesání intenzity místa
+\end{CompactItemize}
+
+Zapomínání uzlù je moné rozšiøit nìkolika zpùsoby.
+Cenu vytvoøení a zapomenutí uzlu je moné skládat z více exponenciel, aby bylo dosaeno pozvolnìjšího prùbìhu funkce a dalšího zpomalení zapomínání uzlù.
+Dále je moné pøi zapomínání uzlù brát v potaz jejich naplnìnost. Uzel, kterı je pro prostorovou mapu dùleitı stojí zapomenout více.
+To se mùe promítnout do sníení energie na zapomínání, bude sníena v závislosti na naplìnosti uzlu, kterı byl zapomenut.
+Samotnı vıbìr uzlu, kterı bude zapomenut, mùe bıt ovlivnìn jejich naplnìností.
+\\
+
+Slábnutí a klesání rùznıch vlastností uzlù, vazeb a míst je v pøedstaveném modelu lineární, nezávisí na aktuální hodnotì vlasnosti.
+Model by bylo vhodné rozšíøit, aby rychlost klesání závisela na aktuální hodnotì.
+Pokud je hodnota vysoká, klesá rychleji, pokud se hodnota blíí k nule, klesá èím dál pomaleji.
+\\
 
 \section{Moná rozšíøení nad modelem}
-
-Snadné rozšíøení do 3D
-2d z dùvodu jednodušší implementace geometrie a menších nárokù na vıkon.
-\\
-
-Druhım pøijemnım vısledkem je, e model lze snadno rozšíøit pro svìty vìtší ne jeden uzavøenı prostor, pokud agent bude znát topologii svìta.
-Toto rozšíøení je podrobnìji popsáno v sedmé kapitole.
-\\
-
 
 Ukládat do uzlu i co agent dìlal - tj. EP kterı místo MO bude mít Process
 Další  mapa ukládající pouze to
 I co vidìl, e dìlají další agenti
 \\
 
-
 Hiearchie/ontologie affordancí, pro shlukování pøedmìtù dle toho èi dle topologie
 \\
 
 
 
-\section{Moná další vyuití modelu}
-Model lze pouít i na odlišné vìci jako - a proc
-Hraní pexesa
-Nauèení se rozloení kláves na klávesnici
+
+\section{Rozšíøení modelu pro sloitìjší svìty} \label{chapter-complex-space}
+Model je navren pro velmi jednoduchı svìt, obsahující pouze jednu 2D místnost.
+Tato kapitola pøedstaví rozšíøení modelu pro svìt obsahující více místností, které jsou 3D.
+\\
+
+Rozšíøení modelu do 3D je pøímoèaré. Všechny algoritmy a vzorce pracují nezávisle na dimenzi svìta.
+Poloha objektù prostorové mapy bude urèena tøemi souøadnicemi $<x,y,z>$. Vzdálenost mezi objekty bude euklidovská:
+\begin{equation} 
+dist_{3D}(a,b) = \sqrt{  (a_x-b_x)^2 + (a_y-b_y)^2 + (a_z-b_z)^2}
+\label{formula:vzdalenost-3D}
+\end{equation}
+Místnost mùe bıt obecnı mnohoúhelník. Model bude potøebovat od vnìjšího svìta pouze následující rozhraní: 
+\begin{CompactItemize}
+\item urèit obsah mnohostìnnu
+\item testovat náleení bodu do mnohostìnnu
+\item urèit prùseèík úseèky a stìny
+\item urèit viditelnost pøedmìtu\footnote{Zorná pole, popsaná v kapitole \ref{chapter-agent} jako kruhové vıseèe, budou kuely.}
+\end{CompactItemize}
+
+Implementace tìchto funkcí bude klást vıraznì vìtší nároky na vıpoèetní vıkon, ne model v 2D svìtì.
+Pro tyto úèely by bylo vhodné vyuít hotové øešení, napø. nìjakı volnì dostupnı herní èi fyzikální engine.
+\\
+
+
+Svìt kolem nás není omezen na jednu uzavøenou místnost, skládá se z mnoha prostorù, které se dìlí na menší a menší.
+Svìt kolem nás mùeme chápat jako hiearchii takovıch prostorù, i kdy hranice mezi nimi nejsou vdy jasnì urèené.
+Napø. dùm se dìlí na podlaí, ta dále na byty, které jsou sloeny z nìkolika místnosti.
+Model je moné rozšíøit tak, aby dokázal pracovat ve svìtì urèeném jako hiearchie prostorù.
+\\
+
+\begin{definition}[Hiearchickı svìt]
+Svìt se skládá z prostorù. Kadı prostor je obecnı mnohoúhelník, rozdìlenı na další podprostory. Tím je vytvoøena hiaerchie prostorù.
+Koøen stromu této hiearchie je samotnı svìt, listy stromu jsou prostory, které ji nemá smysl dále dìlit, napø. malá uzavøená místnost, lednièka èi šuplík.
+Podprostory v prostoru jsou chápány jako pøedmìty, napø. lednièka je prostor obsahující pøedmìty, ale z hlediska místnosti je pouze pøedmìt.
+\end{definition}
+
+Èást prostorové mapy \emph{pamì na pøedmìty} pracuje nezávisle na velikosti svìta.
+\emph{Vrstva uzlù} je na nìm závislá, proto si mapa vytvoøí novu pro kadı prostor.
+V døíve uvedeném pøíkladu domu by kadá místnost, byt i podlaí mìlo vlastní \emph{vrstvu uzlù}.
+Hiearchii svìta musí model dostat k dispozici. \footnote{
+ Model by si tuto hiearchii mohl konstruovat sám obdobnım zpùsobem, jakım si vytváøí místa v kapitole \ref{chapter-place-detect}.
+ Pak by mìl pouze jednu velmi rozsáhlou vrstvu uzlù.
+ To by nebylo vhodné z hlediska nároku na vıpoèetní vıkon. Navíc lidé tuto hiearchii vnímají okamitì, nemusejí se ji zdlouhavì uèit.
+}\\
+
+To navíc umoòuje parametrizovat vrstvù uzlù na míru konkrétní místnosti, dokonce pouít jiné implementace a urèité modifikace modelu.
+Napø. malá místnost plná pøedmìtù (sklad) a velká témìø prázdná místnost (hala) mohou mít zcela jiné nastavení parametrù jako je hustota mapy èi cena uzlu.
+\\
+
+
+
+\section{Další moná pouití modelu}
+Model je navren jako èást episodické pamìti virtuálního agenta. Není však závislı na jeho architektuøe.
+Má urèité poadavky na geometrii virtuální svìta, pro kterı vytváøí prostorovou mapu:
+
+\begin{CompactItemize}
+\item svìt je 2D polygon, kterı se vejde do ètverce pøiblinì 100$\times$100
+\item pøedmìty nemají velikost, jsou reprepzentovánı svım støedem
+\end{CompactItemize}
+
+Tyto poadavky však nejsou pro mnoho úloh zásadním zpùsobem omezující.
+Model je moné pouít i pro jiné úèely.
+Struènì øeèeno model umí ukládat informaci o rozloení pøedmìtù v omezeném prostoru na základì postupnıch informací o jejich poloze.
+Dále umí urèit \emph{místa}, oblasti, kde je více pøedmìtù.
+\\
+
+Model by bylo moné pouít napø. pro vytvoøení poèítaèového protivníka do hry pexeso.
+V kadém kole hry agent vidí dvojici karet - dva vjemy pøedmìtù.
+Díky tomu, e vjemy mají intenzitu, mùe model brát v potaz i fakt, e agent se na karty dívá z urèítého uzlu a vzdálenosti.
+Atraktivita pøedmìtu mùe bıt pouita pro simulaci rozeznatelností obrázku na kartì:
+Jinou atraktivitu bude mít karta s obrázkem èeveného vykøièníku a jinou karta s ilustrací v nevıraznıch pastelovıch barvách.
+Kdy bude chtít najít kartu do páru, model urèí její polohu s nepøeností odpovídající poètu otoèení hledané karty.
+\\
+
+Další úlohou, kde by bylo moné model pouít, je uèení se rozloení kláves na klávesnici virtuálním agentem a simulace jeho pøeklepù.
+Psaním písmen, tedy pouíváním kláves, by se model rozloení uèil a v prùbìhu èasu by frekvence pøeklepù klesala.
 \\

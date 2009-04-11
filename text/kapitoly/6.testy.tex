@@ -1,16 +1,74 @@
-\chapter{Testy}
+\chapter{Vısledky testù modelu}
 
-Testovací data (scénáøe, místnosti), zpùsob testování
+Tato kapitola obsahuje vısledky testù modelu.
+Jednak testy finálního modelu na rùznıch datech, druhak testy modelu s rùznımi hodnotami nìkterıch klíèovıch parametrù.
 \\
 
-Test vysledneho modelu - vsechna data
+Samotnı test je urèen testovacím svìtem\footnote{Pøehled všech testovacích místností je v pøíloze A.}
+, tedy místností a scénáøem a hodnotami parametrù.
+V nìkterıch pøípadech bylo testována rùzná øešení konkrétních podúloh.
+V takovıch pøípadech nestaèí zmìnit parametry modelu, ale je nutné upravit samotnı algortimus.
+Takové pøípady budou explicitnì popsány a rùzné algoritmy vysvìtleny.
 \\
 
-test na poèet uzlù - desired node count, reseni
+
+
+ obrázek ukazující stav svìta a prsotorové mapy v 
+
+\section{Testy finálního modelu}
+
+Test vysledneho modelu - vsechna data a vetsina mistnosti
+Vse pak mit na CD
 \\
 
-Test na usage
+
+\section{Vliv naplnìnosti} \label{chapter-test-ag}
+
+V tomto testu ukáeme, jak dùleitou roli hraje vliv naplnìnosti pøi urèování vzájemné odpudivosti dvou uzlù ve vzorci \eqref{formula:el-odpudivost}.
+Provedli jsme 5000 krokù simulace v místnostech EmptyRoom a FullRoom. ?? adresar na CD ??.
 \\
+
+V prvním testu nebyla naplnìnost uzlù pøi poèítání odpudivosti vùbec brána v úvahu.
+Vısledek je na obrázku \ref{fig:usage-ag-no} a ukazuje, e v tom pøípadì model rozmisuje uzly v prostoru témìø rovnomìrnì.
+Z toho vyplıvá, e naplìnost uzlu hraje v modelu vıznamnou roli.
+Obrázky \ref{fig:usage-ag-0.5}, \ref{fig:usage-ag-0.8}, \ref{fig:usage-ag-1} ukazují vısledky testù pro rùzné hodnoty \param{vlivu naplnìnosti}.
+\\
+
+\begin{figure}[p]
+  \centering
+  \subfloat[EmptyRoom]{\includegraphics[width=0.5\textwidth]{img/usage/nousage-empty.eps}}
+  \subfloat[FullRoom]{\includegraphics[width=0.5\textwidth]{img/usage/nousage-full.eps}}
+  \caption{Test odpudivosti uzlù, jejich naplnìnost není brána v uvahu.}
+  \label{fig:usage-ag-no}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \subfloat[EmptyRoom]{\includegraphics[width=0.5\textwidth]{img/usage/usage1-empty.eps}}
+  \subfloat[FullRoom]{\includegraphics[width=0.5\textwidth]{img/usage/usage1-full.eps}}
+  \caption{Test odpudivosti uzlù, vliv naplnìnosti $=1$.}
+  \label{fig:usage-ag-1}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \subfloat[EmptyRoom]{\includegraphics[width=0.5\textwidth]{img/usage/usage0.8-empty.eps}}
+  \subfloat[FullRoom]{\includegraphics[width=0.5\textwidth]{img/usage/usage0.8-full.eps}}
+  \caption{Test odpudivosti uzlù, vliv naplnìnosti $=0,8$.}
+  \label{fig:usage-ag-0.8}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \subfloat[EmptyRoom]{\includegraphics[width=0.5\textwidth]{img/usage/usage0.5-empty.eps}}
+  \subfloat[FullRoom]{\includegraphics[width=0.5\textwidth]{img/usage/usage0.5-full.eps}}
+  \caption{Test odpudivosti uzlù, vliv naplnìnosti $=0,5$.}
+  \label{fig:usage-ag-0.5}
+\end{figure}
+
+
+
+
 
 Pohyb, vliv na chybu
 \\
