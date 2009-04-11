@@ -30,7 +30,7 @@ ObjectNotFound & agent nenalezl pøedmìt tam, kde ho hledal pøi chytré akce LookU
 \hline
 ObjectUsed & agent pouil pøedmìt k provedení èinnosti \\
 \hline
-\end{tabular}\\
+\end{tabular}
 \end{center}
 \centering
 \caption{Atomické akce}
@@ -80,12 +80,6 @@ Funkce $norm$ je libovolná klesající funkce mající obor hodnot $<0,1>$, napø. ne
 Èást algoritmu \ref{alg:zpracovani-vjemu} mùe bıt provádìna v rámci vrstvy uzlù, napø. v modelu Energy Layer.
 \\
 
-Prostorová mapa je schopna øíci, kde se nacházejí pøedmìty, které agent pøed tím vidìl. Tato informace je uloena v døíve zmínìné asociativní síti.
-Èím blíe je pøedmìt nìjakému uzlu mapy, tím vyšší je intenzita vazby mezi nimi.
-Kdy agent hledá pøedmìt mající nìjakou affordanci, provede se proces popsanı v \ref{alg:vzpomenuti}. V kroku 2 je spoèítána poloha pøedmìtu z informací uloenıch v asociativní síti.
-Poloha pøedmìtu je váenı centroid všech uzlù, které mají vazbu na pamìovou stopu, váhou je intenzita vazeb.
-\\
-
 \begin{algorithm}[h!]
 \caption{Vzpomenutí si na pøedmìt}
 \label{alg:vzpomenuti}
@@ -96,8 +90,18 @@ Poloha pøedmìtu je váenı centroid všech uzlù, které mají vazbu na pamìovou sto
 \end{algorithmic}
 \end{algorithm}
 
+Prostorová mapa je schopna øíci, kde se nacházejí pøedmìty, které agent pøed tím vidìl. Tato informace je uloena v døíve zmínìné asociativní síti.
+Èím blíe je pøedmìt nìjakému uzlu mapy, tím vyšší je intenzita vazby mezi nimi.
+Kdy agent hledá pøedmìt mající nìjakou affordanci, provede se proces popsanı v algoritmu \ref{alg:vzpomenuti}. V kroku 2 je spoèítána poloha pøedmìtu z informací uloenıch v asociativní síti.
+Poloha pøedmìtu je váenı centroid všech uzlù, které mají vazbu na pamìovou stopu, váhou je intenzita vazeb:
+\\
+
+\begin{equation} 
+c_w(stopa) = \frac{\displaystyle \sum_{n \in stopa} n_{xy} \times \eta(vazba_n) }{\displaystyle \sum_{n \in stopa} \eta(vazba_n) }
+\label{formula:el-centroid-mista}
+\end{equation}
+
 \begin{definition}[Zapomínání asociativní sítì]
 V kadém kroku simulace je sníena intenzita pamìovıch stop a
 intenzita všech vazeb mezi pamìovımi stopami a uzly prostorové mapy (MemObjIntensityFadeOut, LinkMemObjToNodeFadeOut).
 \end{definition}
-

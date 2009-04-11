@@ -80,8 +80,8 @@ Model je však pouit pouze pro navigaci. Mùe bıt vhodné pokud by rozsáhlı virtu
 V \cite{litCAN} je popsán model prostorové mapy, kterı umí ukládat informace o poloze pøedmìtù.
 Vyuívá k tomu autoasociativní Hopfiedovy sítì [literatura]. Popsaná sí si pamatuje vazby mezi pøedmìty a oblastmi. Je sloená z 1500 neuronù:
 \begin{CompactItemize}
-\item 1000 neuronù kóduje oblasti, støílí spojitì
-\item 500 neuronù kóduje pøedmìty, støílí diskrétnì
+\item 1000 neuronù kóduje oblasti, jejich vıstup je spojitı $\in <0,1>$
+\item 500 neuronù kóduje pøedmìty, jejich vıstup je diskrétní $\in \{0,1\}$
 \end{CompactItemize}
 
 Autorùm se podaøilo nauèit sí natolik, e kdy je síti pøedán vjem odpovídající oblasti, støílí uzly kódující pøedmìt, kterı je v oblasti nauèenı a obrácenì.
