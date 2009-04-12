@@ -60,7 +60,6 @@ class Place:
         
         self.totalAGamount = sumNodeAGamount
         if sumNodeAGamount == 0: return
-        nodeCount = len(self.nodes) 
         x = x / sumNodeAGamount
         y = y / sumNodeAGamount
         p = Point(x,y)
@@ -74,13 +73,10 @@ class Place:
         x = 0
         y = 0
         sumNodeAGamount = 0
-        count = 0
         for node in placeToProcess.nodes:
-            nodeAG = node.AGamount
-            x += node.x * nodeAG
-            y += node.y * nodeAG
-            sumNodeAGamount += nodeAG
-            count += 1
+            x += node.x * node.AGamount
+            y += node.y * node.AGamount
+            sumNodeAGamount += node.AGamount
         for place in placeToProcess.places:
             (lx, ly, lsumNodeAGamount, lcount) = self.updateLocDeep(place)
             x += lx
@@ -157,7 +153,6 @@ class EnergyLayerNode:
         self.usage = 0
         self.AGamount = 0
         self.place = None
-        self.places = []
                 
         self.stepDiffX = 0
         self.stepDiffY = 0
@@ -572,4 +567,5 @@ class EnergyLayer:
             nodesAround[n] = sqrt(dist)
         return nodesAround
     
+
  

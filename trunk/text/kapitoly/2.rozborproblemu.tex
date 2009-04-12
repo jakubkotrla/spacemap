@@ -10,12 +10,13 @@ Agent si tedy nemusí vytváøet mapu, ani øešit analýzu obrazových dat èi podobné 
 \emph{Stojím na souøadnicích XY, dívám se smìrem na severozápad. Vidím dva pøedmìty: kvìtinu a talíø. Kvìtina je na souøadnicích XZ, talíø na YZ.}
 \\
 
+\begin{definition}[Uzel]
 Prostorová mapa bude obsahovat \emph{uzly}. Uzel je bod v prostoru, který reprezentuje resp. pokrývá jeho èást, své okolí. Imituje tak chování place cells.
 Model musí umìt na zaèátku simulace tyto uzly rozmístit do virtuálního svìta.
 V prùbìhu simulace musí jejich rozmístìní postupnì mìnit, tak aby jejich hustota byla vìtší v místech, kde agent vidìl více pøedmìtù, a menší v místech,
 kde agent vidìl ménì pøedmìtù. Nejmenší hustota by mìla být v místech, kde agent nevidìl žádné pøedmìty èi která vùbec nenavštívil.
 I v takovýchto místech ale musí být uzly mapy.
-\\
+\end{definition}
 
 Model musí umožnit ukládat k uzlùm informace o umístìní pøedmìtù. Tyto informace si mùže agent pozdìji vyžádat.
 Pøesnost tìchto informací by mìla v èase rùst, pokud je agent opakovanì dostává. Naopak pokud agent informaci o poloze pøedmìtù delší dobu nedostane,
@@ -39,7 +40,7 @@ Model by nemìl být zavislý na konkrétní abstrakci svìta èi architektuøe agenta.
 \begin{definition}[Vjem]
 Vstupem modelu je pouze posloupnost vjemù. Modelu jsou postupnì pøedkládány vjemy, ze kterých se uèí. Vjem øíká informaci typu:
 \\
-\emph{"Vidím pøedmìt ABC na místì XY s intenzitou 0,4."}
+\emph{Vidím pøedmìt ABC na místì XY s intenzitou 0,4.}
 \\
 Vjem je tedy trojice: \emph{$<$pøedmìt, poloha, intenzita \footnote{Intenzitu budeme dále ve vzorcích oznaèovat znakem $\eta$}$>$}.
 \end{definition}
