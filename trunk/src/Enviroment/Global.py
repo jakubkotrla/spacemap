@@ -48,7 +48,7 @@ class GlobalVariables:
         self.TrainEffectNoticedAgain = 0.3
         self.TrainEffectUsed = 3.0
         self.TrainEffectFound = 2.0
-        self.TrainEffectNotFound = 1.0
+        self.TrainEffectNotFound = -1.0
         
         self.SMUpdateMaxDuration = 100  #if action takes more seconds, SP.StepUpdate call Layer.StepUpdate multiple times 
         self.SMNodeAreaDivCoef = 1      #when MemObj's linkToNodes are intensed - alter node's gauss area
@@ -90,6 +90,7 @@ class GlobalVariables:
         self.PlacesAGMin = 500
         self.PlaceAGFadeOut = 0.5
         self.PlaceMoveCoef = 0.02
+        self.PlacesAGGrow = 0.1
 
     
     def Random(self):

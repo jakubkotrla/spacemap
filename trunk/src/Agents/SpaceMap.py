@@ -195,7 +195,5 @@ class SpaceMap:
         
     def ObjectUsed(self, rObject):
         self.objectTrain(rObject, Global.TrainEffectUsed)
-        
-    def ObjectUsedUp(self, rObject):
-        self.objectTrain(rObject, Global.TrainEffectUsedUp)
+
 
