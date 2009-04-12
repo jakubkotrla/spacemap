@@ -1,4 +1,4 @@
-\section{Pamìt na pøedmìty}
+\section{Pamìt na pøedmìty} \label{chapter-pamet-predmety}
 
 Pamì na pøedmìty øeší ukládání objektù (a potencionálnì dalších informací) k uzlùm.
 Tedy ukládá informace typu "objekt XY je v uzlu n42 s intenzitou 5,2". Pamì na pøedmìty vychází z práce Tomáše Korenka [literatura-korenko].
@@ -37,6 +37,12 @@ ObjectUsed & agent pouil pøedmìt k provedení èinnosti \\
 \label{tab:typy-vjemu}
 \end{table}
 
+\begin{definition}[Dosah uèení]
+Parametr modelu \param{dosah uèení} urèuje nejvyšší vzdálenost, na kterou budou vytváøeny vazby mezi pamìovou stopou a uzlem mapy.
+(SMTrainRange)
+\end{definition}
+
+
 Pamìti je v kadém kroku pøedloena mnoina vjemù (mùe bıt prázdná). Vjem je trojice $<pøedmìt,poloha,intenzita>$.
 Vjem má svùj typ, danı událostí, kterou byl vyvolán, jejich pøehled je v tabulce \ref{tab:typy-vjemu}.
 Kadı typ má urèenı koeficient, kterım je vynásobena intenzita vjemu pøed jeho zpracováním prostorovou mapou, tyto koeficienty jsou parametry modelu.
@@ -53,7 +59,7 @@ V prvním kroku je urèena pamìová stopa uchovávající informaci o pøedmìtu. Pokud
 \begin{algorithmic}[1]
 \State urèení pamìové stopy pøedmìtu
 \State zvıšení intenzity pamìové stopy o intenzitu vjemu
-\State $nodes\gets$ všechny uzly, do jejich okolí vjem padl
+\State $nodes\gets$ všechny uzly, do jejich okolí vjem padl dle $dosah_{uceni}$
 \ForAll{$n \in nodes$}
 	\State $\Delta \eta \gets \eta(n, vjem)$ dle vzorce \eqref{formula:intenzita-vazby} \label{alg:spacemap-intensity}
 	\State zvıšení intenzity vazby mezi pamìovou stopou a uzlem $n$ o $\Delta \eta$
