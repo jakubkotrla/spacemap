@@ -1,44 +1,161 @@
 \chapter{Parametry modelu}
 
 
-parametry sveta ??
-
-pøehled parametrù modelu
-
-seznam všech parametrù modelu s vysvìtlením a doporuèenımi hodnotami
-
-
 \begin{table}[h!]
 \begin{center}
-\begin{tabular}{|l|l|l|p{6cm}|}\hline
+\begin{tabular}{|l|l|r|r|}\hline
 
-jmenoEN & jmenoCZ & vysvetlení & doporuceneHodnoty \\
+\param{Maximální krok agenta} & \texttt{MaxAgentMove} & 10 & 2 - 20 \\
 \hline
 
-jmenoEN & jmenoCZ & vysvetlení & doporuceneHodnoty \\
+\param{Velikost waypointu} & \texttt{WayPointArea} & 10 & 5 - 20 \\
 \hline
 
-jmenoEN & jmenoCZ & vysvetlení & doporuceneHodnoty \\
+\param{Odchylka waypointu} & \texttt{WayPointNoise} & 10 & 0 - 20 \\
 \hline
 
-jmenoEN & jmenoCZ & vysvetlení & doporuceneHodnoty \\
+\param{Velikost percepèního pole} & \texttt{PFSize} & 7 & 5 - 9 \\
 \hline
 
-jmenoEN & jmenoCZ & vysvetlení & doporuceneHodnoty \\
+\param{Vzdálenost nutná k pouití pøedmìtu} & \texttt{MapPickUpDistance} & 2 & 1 - 5 \\
 \hline
 
-jmenoEN & jmenoCZ & vysvetlení & doporuceneHodnoty \\
-\hline
-
-jmenoEN & jmenoCZ & vysvetlení & doporuceneHodnoty \\
-\hline
-
-jmenoEN & jmenoCZ & vysvetlení & doporuceneHodnoty \\
+\param{Vıchozí atraktivita pøedmìtù} & \texttt{ObjDefaultAttractivity} & 1 & 0,5 - 2 \\
 \hline
 
 \end{tabular}
 \end{center}
 \centering
-\caption{Parametry modelu}
+\caption{Parametry svìta a agenta}
+\label{tab:typy-vjemu}
+\end{table}
+
+
+
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|p{6cm}|l|l|l|}\hline
+
+
+\param{Efekt zpozorování pøedmìtu} & \texttt{TrainEffectNoticed} & 1 & 1 \\
+\hline
+
+\param{Efekt zpozorování pøedmìtu znovu} & \texttt{TrainEffectNoticedAgain} & 0,3 & 0,1 - 0,5 \\
+\hline
+
+\param{Efekt pouití pøedmìtu} & \texttt{TrainEffectUsed} & 3 & 1 - 10 \\
+\hline
+
+\param{Efekt nalezení pøedmìtu} & \texttt{TrainEffectFound} & 2 & 1 - 3 \\
+\hline
+
+\param{Efekt nenalezení pøedmìtu} & \texttt{TrainEffectNotFound} & -1 & -1 \\
+\hline
+
+\param{Maximální délka atomické akce, pokud je delší, provede prostorová pamì více krokù} & \texttt{SMUpdateMaxDuration} & 100 & 10 - 10000 \\
+\hline
+
+\param{Dosah uèení} & \texttt{SMTrainRange} &  10 & 10 - 20 \\
+\hline
+
+\param{Poèáteèní naplnìnost uzlu} & \texttt{MemObjIntenseToNewNode} & 1 & 1 - 5 \\
+\hline
+
+\param{Míra zapomínání pamìovıch stop pøedmìtù} & \texttt{MemObjIntensityFadeOut} &   0,01 & 0,001 - 0,1 \\
+\hline
+
+\param{Míra zapomínání vazeb mezi uzly a pamìovımi stopami} & \texttt{LinkMemObjToNodeFadeOut} & 0,005 & 0,001 - 0,1 \\
+\hline
+
+\end{tabular}
+\end{center}
+\centering
+\caption{Parametry pamìti na pøedmìty}
+\label{tab:typy-vjemu}
+\end{table}
+
+
+
+
+
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|l|l|r|r|}\hline
+
+\param{Hustota mapy} & \texttt{ELDensity} & 10 & 10 \\
+\hline
+
+\param{Poèáteèní odchylka mapy} & \texttt{ELCreateNoise} & 3 & 1 - 5 \\
+\hline
+
+\param{Rychlost klesání naplnìnosti} & \texttt{ELNodeUsageFadeOut} & 0,005 & 0,001 - 0,01 \\
+\hline
+
+\param{Dosah pøitalivosti} & \texttt{ELGravityRange} & 20 & 10 - 30 \\
+\hline
+
+\param{Síla pøitalivosti} & \texttt{ELGravityCoef} & 1 & 0,2 - 3 \\
+\hline
+
+\param{Dosah odpudivosti} & \texttt{ELAntigravityRange} & 20 & 10 - 30 \\
+\hline
+
+\param{Síla odpudivosti} & \texttt{ELAntigravityCoef} &  8 & 4 - 20 \\
+\hline
+
+\param{Vliv naplnìnosti} & \texttt{ELAGUsageCoef} & 0,8 & 0,4 - 1 \\
+\hline
+
+\param{Limit pohybu uzlu} & \texttt{MaxELNodeMove} &  4 & 1 - 5 \\
+\hline
+
+\param{Vliv vjemu} & \texttt{EPCreateEnergy} &  140 &  100 - 200\\
+\hline
+
+\param{Odchylka vytvoøení uzlu} & \texttt{ELNodeAddNoise} &  2  & 1 - 5 \\
+\hline
+
+\param{Míra slabnutí stopy vjemu} & \texttt{EPFadeCoef} & 0,5  & 0 - 0,9 \\
+\hline
+
+\param{Limit zmizení stopy vjemu} & \texttt{EPFadeLimit} &  10 & 1 - 20 \\
+\hline
+
+\param{Míra zapomínání uzlù} & \texttt{ELForgetNodeRate} & 5 & 1 - 10 \\
+\hline
+
+\param{Poèet opakování} & \texttt{ELDeleteNodeReTrainCount} & 20 & 10 - 50 \\
+\hline
+
+\param{Velikost okolí} & \texttt{ELDeleteNodeReTrainRange} & 20 & 5 - 40 \\
+\hline
+
+\param{Rychlost rùstu $\varrho$} & \texttt{ELAGAddCoef} &  3 & 1 - 5 \\
+\hline
+
+\param{Rychlost klesání $\varrho$} & \texttt{ELAGFadeOut} &  0,1 & 0,01 - 1 \\
+\hline
+
+\param{Limit vzniku podmísta} & \texttt{PlacesAGNeeded} &  1500 & 500 - 5000 \\
+\hline
+
+\param{Limit zapomenutí místa} & \texttt{PlacesAGMin} &  500 & 100 - 200 \\
+\hline
+
+\param{Rychlost rùstu intenzity} & \texttt{PlacesAGGrow} &  0,1 & 0,01 - 0,5 \\
+\hline
+
+\param{Rychlost klesání intenzity} & \texttt{PlaceAGFadeOut} &  0,5 & 0,1 - 1 \\
+\hline
+
+\param{Pohyblivost míst} & \texttt{PlaceMoveCoef} &  0,02 & 0,01 - 0,5 \\
+\hline
+
+\end{tabular}
+\end{center}
+\centering
+\caption{Parametry gravitaèního modelu vrstvy uzlù}
 \label{tab:typy-vjemu}
 \end{table}

@@ -88,9 +88,12 @@ Pak se snaží získat zdroje (pøedmìty) nutné k provedení èinnosti - vytvoøí podzá
 Zámìr \emph{Want(affordance)} agent mùže splnit úspìšným provedením jedné z tøí èinností:
 
 
-%\begin{definition}[]
+\begin{definition}[Maximální krok agenta]
+Parametr modelu \param{maximální krok agenta} urèuje maximální vzdálenost, o kterou agent zmìní svoji polohu v jednom kroku simulace.
+\end{definition}
+
+%\begin{definition}[MapPickUpDistance]
 %\end{definition}
-%self.MaxAgentMove = 10      #max distance agent can move in one MoveToPartial
 
 
 \begin{CompactItemize}
@@ -116,16 +119,12 @@ Teprve akce "MoveToPartial" je atomická a lze ji provést v jednom kroku simulace
 
 Chytré akce jsou:
 \begin{CompactItemize}
-\item MoveTo(x,y) - pøesun agenta na pozici x,y. Nejdøíve je nalezena cesta, pokud je svìt konvexní místnost, jedná se o úseèku; pokud svìt není konvexní, jsou použity waypointy a cesta je lomená èára. Každá úseèka je pak rovnomìrnì rozdìlena na kratší èásti tak, aby délka její nejdelší èásti byla menší než PARAM. Díky tomu se agent každé kolo simulace posune jen o malý kus.
+\item MoveTo(x,y) - pøesun agenta na pozici x,y. Nejdøíve je nalezena cesta, pokud je svìt konvexní místnost, jedná se o úseèku; pokud svìt není konvexní, jsou použity waypointy a cesta je lomená èára. Každá úseèka je pak rovnomìrnì rozdìlena na kratší èásti tak, aby délka její nejdelší èásti byla menší než \param{maximální krok agenta}. Díky tomu se agent každé kolo simulace posune jen o malý kus.
 \item SearchRandom(afordance) - náhodné hledání pøedmìtu s danou afordancí. Agent má u každého waypointu uložen èas, kdy jej naposledy vidìl. Tato akce zajistí, že agent postupnì navštíví všechny waypointy. Zaène tím, který má nejstarší èas až k tomu waypointu, který navštívil jako poslední. Toto poøadí je urèeno na zaèátku akce. K pøesunu mezi waypointy agent provádí chytrou akci MoveTo.
 \item LookUpInMemory(afordance) - získání pøedmìtu s danou afordancí s využitím prostorové mapy. Agent si nejdøíve vybaví pøedmìt s danou afordancí, který si pamatuje nejlépe (urèí prostorová mapa). K tomutu pøedmìtu se pøesune pomocí chytré akce MoveTo. Pak spustí atomickou akci LookForObject, která je jen speciálním pøípadem akce Explore.
 \item Execute - provedení èinnosti. Tato akce je spuštìna pouze pokud èinnost, kterou chce agent vykonat, má již všechny zdroje, tedy èinnost má pro každou požadovanou afordanci pøipojený fantom pøedmìtu. Pak agent oveøí, zda všechny zdroje èinnosti jsou dostupné, tedy že je v jejich bezprostøední blízkosti. Pokud ne, pøesune se k nim pomocí chytré akce MoveTo.
 \end{CompactItemize}
 
-?? - note o jediné aff na èinnost
-
-%\begin{definition}[MapPickUpDistance]
-%\end{definition}
 
 \begin{table}[h!]
 \begin{center}

@@ -1,15 +1,26 @@
 \chapter{Závìr}
-V práci jsme pøedstavili model prostorové mapy pro agenta pohybujícího se ve virtuálním svìtì.
-Model umožòuje imitovat nìkteré rysy lidského chování.
+
+Model prostorové mapy, který jsme v této práci pøedstavili, splòuje základní požadavky, které na nìj byly kladeny v kapitole \ref{chapter-rozbor}.
+Prostorová mapa je složena z uzlù, které jsou analogií place cells.
+Obsahuje mechanismy, které umožòují imitovat nìkteré rysy lidského chování, napø. nepøesnot, shlukování pøedmìtù a zapomínání.
 \\
 
+%Model není simulací procesù, které se odehrávají v lidském mozku.
 
-Èeho bylo dosaženo, co model umí, co ne...
+Model není závislý na konkrétní abstrakci svìta a agenta.
+Byl definován a otestován pouze v jednoduchém svìtì, v kapitole \ref{chapter-complex-space} je však popsáno pøímoèaré rozšíøení pro složité 3D svìty.
+Model je možné použít pro zcela netypické svìty, napø. rozložení karet ve høe pexeso.
+\\
 
+Model lze dále rozšiøovat a zobecòovat.
+Vìtšina parametrù, které mají vliv na chování prostorové mapy, jsou konstanty, které zùstávají v prùbìhu simulace stejné.
+Bylo by vhodné pøidat do modelu mechanismy, které by dokázaly v èase mìnit klíèové parametry, napø. dosah odpudivosti uzlù èi rychlost klesání intenzit vazeb.
+\\
 
-shrnuti možných rozšíøení z diskuze
-
-Podaøilo se vytvoøit model splòující požadavky, tedy 
-Uèící se online
-Rozprostírá uzly do prostoru stejnì jako jsou objekty
-Umožòuje ukládat informaci o poloze objektù
+Model jsme implementovali v prototypové aplikaci v jazyce Python a provedli jeho testy v rùzných svìtech s rùzným nastavením.
+Testy ukázali, že model dokáže rozmístit uzly do prostoru dle èetnosti vjemù pøedmìtù.
+Je schopen jejich rozmístìní pozvolna upravit, pokud dojde ke zmìnì svìta.
+Poèet uzlù se v prùbìhu mìní, dle potøeby, èímž je imitováno postupné uèení a zapomínání.
+V prùbìhu simulace si agent vytváøí místa, která reprezentují oblasti s vyšším poètem pøedmìtù.
+Místa jsou uspoøádána do hiearchie, agent si nejdøíve vytvoøí místa pøedstavující vìtší oblasti a v prùbìhu simulace dále je dìlí.
+\\

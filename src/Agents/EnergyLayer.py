@@ -39,7 +39,7 @@ class Place:
             self.AGamount += node.AGamount
         self.totalAGamount = self.calculateAGdeep(self)
         
-        self.slowAGamount += self.totalAGamount * (1.0 / max(self.slowAGamount / 10, 1))
+        self.slowAGamount += self.totalAGamount * (1.0 / max(self.slowAGamount * Global.PlacesAGGrow, 1))
         self.slowAGamount -= Global.PlaceAGFadeOut 
         
     def calculateAGdeep(self, placeToProcess):
@@ -55,7 +55,7 @@ class Place:
         self.range = self.startRange * coef
     
     def UpdateLocation(self):
-        (x, y, sumNodeAGamount, count) = self.updateLocDeep(self)
+        (x, y, sumNodeAGamount) = self.updateLocDeep(self)
         self.totalAGamount = sumNodeAGamount
         
         self.totalAGamount = sumNodeAGamount
@@ -78,12 +78,11 @@ class Place:
             y += node.y * node.AGamount
             sumNodeAGamount += node.AGamount
         for place in placeToProcess.places:
-            (lx, ly, lsumNodeAGamount, lcount) = self.updateLocDeep(place)
+            (lx, ly, lsumNodeAGamount) = self.updateLocDeep(place)
             x += lx
             y += ly
             sumNodeAGamount += lsumNodeAGamount
-            count += lcount
-        return (x, y, sumNodeAGamount, count)
+        return (x, y, sumNodeAGamount)
        
 
 class EnergyPoint:
@@ -176,14 +175,15 @@ class EnergyLayerNode:
     def Intense(self, intensity):
         self.usage += intensity
                 
-    def StepUpdate(self, nodesAround):
+    def StepUpdate(self, nodesAround, normalStep=True):
         for node in nodesAround:
             ldx = (self.x - node.x) 
             ldy = (self.y - node.y)
             dist2 = ldx*ldx+ldy*ldy
             dist = sqrt(dist2)
 
-            self.AGamount += ((1.0/ max(1, dist)) * Global.ELAGAddCoef) * (1 / max(self.AGamount, 1))
+            if normalStep:
+                self.AGamount += ((1.0/ max(1, dist)) * Global.ELAGAddCoef) * (1 / max(self.AGamount, 1))
             
             gDiffCoef = dist2 * max(Global.ELAGUsageCoef, self.usage) * max(Global.ELAGUsageCoef,node.usage)
             gDiffCoef = float(Global.ELAntigravityCoef) / max(Global.ELAGUsageCoef2, gDiffCoef)
@@ -192,7 +192,7 @@ class EnergyLayerNode:
             self.stepDiffX += ldx * (gDiffCoef / dist)
             self.stepDiffY += ldy * (gDiffCoef / dist)
         
-    def StepUpdateMove(self, saveStatus=True):
+    def StepUpdateMove(self, normalStep=True):
         massCoef = 1.0/max(1, self.usage)
 
         dx = self.stepDiffX * massCoef
@@ -220,22 +220,22 @@ class EnergyLayerNode:
                 newX = self.x
                 newY = self.y 
         
-        if saveStatus and Global.SaveELNodesStatus:
+        if normalStep and Global.SaveELNodesStatus:
             ldx = newX - self.x
             ldy = newY - self.y
             distToMove = sqrt(ldx*ldx + ldy*ldy)
         
-        #if self.area.IsInside(Point(newX, newY)): #ToDo: for release
-        self.x = newX
-        self.y = newY
+        if self.area.IsInside(Point(newX, newY)): #ToDo: for release
+            self.x = newX
+            self.y = newY
         self.stepDiffX = self.stepDiffY = 0
 
-        self.usage -= Global.ELNodeUsageFadeOut
-        if self.usage < 0: self.usage = 0
+        if normalStep:
+            self.usage -= Global.ELNodeUsageFadeOut
+            if self.usage < 0: self.usage = 0
+            self.AGamount -= Global.ELAGFadeOut
         
-        self.AGamount -= Global.ELAGFadeOut
-        
-        if saveStatus and Global.SaveELNodesStatus:
+        if normalStep and Global.SaveELNodesStatus:
             status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f"%(distToMove,self.usage,self.AGamount)
             Global.LogData("elnode-status", status)
            
@@ -471,7 +471,7 @@ class EnergyLayer:
         nodesToRun = nodes = self.getNodesAround(node, Global.ELDeleteNodeReTrainRange) 
         for i in range(Global.ELDeleteNodeReTrainCount):
             for n in nodesToRun:
-                n.StepUpdate(self.getNodesAround(n, Global.ELAntigravityRange))
+                n.StepUpdate(self.getNodesAround(n, Global.ELAntigravityRange), False)
                 n.StepUpdateMove(False)
         
     def CreateNode(self, point, memObject):
