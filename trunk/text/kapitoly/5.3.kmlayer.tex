@@ -13,7 +13,7 @@ N_s(c) = \{j:d(j,c)\leq s\}
 
 kde $d(j,c)$ je vzdálenost v topologické struktuøe.
 Neurony Kohonenovy mapy pøi uèení souteží o to, který z nich bude aktivní pøi daném vstupu.
-Vítìznýn neuronem se stane ten, který se nejvíce podobá vstupu. Jeho váha a váhy neuronù v jeho okolí jsou upraveny.
+Vítìzným neuronem se stane ten, který se nejvíce podobá vstupu. Jeho váha a váhy neuronù v jeho okolí jsou upraveny.
 Ostatní neurony jsou neaktivní a neuèí se. Kohonenova mapa a další modely samoorganizaèních map jsou popsány napø. v \cite{litSimaNeruda}.
 \\
 
@@ -43,13 +43,13 @@ Pokaždé, když je vjem pøedán ke zpracování, provede se trénování Kohonenovy mapy
 \caption{Zpracování vjemu}
 \label{alg:km-uceni}
 \begin{algorithmic}[1]
-\State $node \gets$ vyhrávající uzel (nejbližší k poloze vjemu)
-\State $queue \gets \emptyset$
-\State $queue \gets node$
+\State $node_{win} \gets$ vyhrávající uzel (nejbližší k poloze vjemu)
+%\State $queue \gets \emptyset$
+\State $queue \gets \{node_{win}\}$
 \While{$queue\not= \emptyset$}
 	\State $n \gets first(queue)$
 	\State $queue \gets queue  \setminus \{n\}$
-	\State Zmìna polohy $n$ dle vzorce \ref{formula:km-uceni} \label{alg:km-uceni-vzorec}
+	\State zmìna polohy $n$ dle vzorce \ref{formula:km-uceni} \label{alg:km-uceni-vzorec}
 	\State $queue \gets$ sousedi $n$ (pokud nebyli ješte trénováni)
 \EndWhile
 \State vjem je pøedán vrstvì uzlù k dalšímu zpracování

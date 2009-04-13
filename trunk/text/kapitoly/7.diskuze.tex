@@ -1,19 +1,7 @@
 \chapter{Diskuze}
 Model prostorové mapy popsaný v kapitole \ref{chapter-model} resp. \ref{chapter-model-el} splòuje základní požadavky, které jsme na nìj kladli.
-V prùbìhu jeho testování a vytváøení se objevila celá øada možných rozšíøení a vylepšení.
+V prùbìhu jeho testování a vytváøení se však objevila celá øada možných rozšíøení a vylepšení.
 Nìkterá z nich jsou popsána v této kapitole.
-\\
-
-\section{Adaptivní odpudivost}
-V pøedstaveném modelu je vzájemná odpudivost uzlù závislá pouze na jejich vzdálenosti a naplnìnosti.
-Je dále ovlivnìna parametry modelu, které jsou však v prùbìhu celé simulace konstantní.
-\\
-
-Jedna z možností, jak zlepšit rozložení uzlù v prostoru, je mìnit parametry ovlivòující odpudivost,
-pøedevším \param{sílu odpudivosti} a \param{dosah odpudivosti}, v prùbìhu simulace.
-Parametry by se mohly mìnit podle aktuální hustoty uzlù, která se odráží v množství odpudivosti.
-Dalším øešením by bylo pøidat ji do výpoètu odpudivosti,
-tím by parametry pøestaly být stejné pro všechny uzly a odpudivost uzlù by se tak pøizpùsobovala lokální situaci.
 \\
 
 \section{Pøitažlivost stop vjemu}
@@ -31,6 +19,18 @@ Výsledkem bude, že slabší vjemy budou pøitaženy k silnìjším.
 \\
 
 % ?? ToDo ukazat/overit na prikladu na prikladu, ze to tak je.
+
+\section{Adaptivní odpudivost}
+V pøedstaveném modelu je vzájemná odpudivost uzlù závislá pouze na jejich vzdálenosti a naplnìnosti.
+Je dále ovlivnìna parametry modelu, které jsou však v prùbìhu celé simulace konstantní.
+\\
+
+Jedna z možností, jak zlepšit rozložení uzlù v prostoru, je mìnit parametry ovlivòující odpudivost,
+pøedevším \param{sílu odpudivosti} a \param{dosah odpudivosti}, v prùbìhu simulace.
+Parametry by se mohly mìnit podle aktuální hustoty uzlù, která se odráží v množství odpudivosti.
+Dalším øešením by bylo pøidat ji do výpoètu odpudivosti,
+tím by parametry pøestaly být stejné pro všechny uzly a odpudivost uzlù by se tak pøizpùsobovala lokální situaci.
+\\
 
 
 \section{Sjednocení stopy vjemu a uzlu}

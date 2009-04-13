@@ -112,7 +112,7 @@ Nauèenost pøedmìtu neklesá.
 Na konci simulace máme k dispozici množinu pøedmìtù, jejich polohu a nauèenost\footnote{Tyto informace jsou nezávislé na prostorové mapì.}.
 Prostorová mapa má k dispozici množinu uzlù, jejich polohu a naplnìnost. Pøedpokládáme, že naplnìnost uzlù bude odrážet nauèenost pøedmìtù.
 Vizualizace dat pro místnost FullRoom je na obrázku \ref{fig:test-heatmap}, další jsou na pøiloženém CD.
-Ukazuje, že náš pøepoklad je správný, uzly prostorové mapy, reps. jejich naplnìnost se blíží nauèenosti pøedmìtù.
+Ukazuje, že náš pøepoklad je správný, uzly prostorové mapy, resp. jejich naplnìnost se blíží nauèenosti pøedmìtù.
 \\
 
 
@@ -126,7 +126,8 @@ Ukazuje, že náš pøepoklad je správný, uzly prostorové mapy, reps. jejich naplnìn
 
 \newpage
 
-Dalším mìøítkem je pøesnost zapamatovaných poloh pøedmìtù. V každém kroku simulace mùžeme urèit, na jaké poloze se agent odmnívá, že pøedmìt je.
+Dalším mìøítkem je pøesnost zapamatovaných poloh pøedmìtù.
+V každém kroku simulace mùžeme urèit, na jaké poloze se agent domnívá, že pøedmìt je.
 To mùžeme porovnat s realitou.
 Na obrázcích \ref{fig:test-error1} a \ref{fig:test-error2} je zobrazen vývoj rozdílu mezi realitou a agentovou prostorovou mapu v
 èase\footnote{Výsledky v dalších místnostech jsou opìt na pøiloženém CD.}.
@@ -178,7 +179,9 @@ PlacesAGMin & 500 & 300 \\
 \end{table}
 
 Výsledky testu s výchozími hodnotami parametrù jsou na obrázku \ref{fig:test-places-ll}, výsledky testu se zmìnìnými parametry jsou na obrázku \ref{fig:test-places-lh}.
-Je vidìt, že zmìna testovaných parametrù zpùsobila vznik více míst. I v témìø prázné místnosti vznikla tøi místa.
+Je vidìt, že zmìna testovaných parametrù zpùsobila vznik více míst. I v témìø prázdné místnosti vznikla tøi místa.
+\\
+
 Vedlejším efektem však bylo vytvoøení míst i tam, kde jsme je neoèekávali a nechtìli.
 Zvýraznìná místa na obrázku \ref{fig:test-places-lh-heap} nevznikly pøímo díky hustotì uzlù.
 Ke svému vzniku spotøebovali množství odpudivosti nahromadìné v uzlech v tìsné blízkosti jiných míst.
@@ -208,7 +211,7 @@ Ke svému vzniku spotøebovali množství odpudivosti nahromadìné v uzlech v tìsné b
 
 \section{Test dynamického svìta}
 Model prostorové mapy je vytvoøen tak, aby se dokázal pøizpùsobit mìnícímu se prostøedí.
-Provedli jsme tedy test v místnosti SwitchRoom, kterou jsme navrhli právì pro tento úèel.
+Provedli jsme test v místnosti SwitchRoom, kterou jsme navrhli právì pro tento úèel.
 V místnosti dojde ke dvìma zmìnám, v kroku 1500 je odebrána èást pøedmìtù a v kroku 4000 je nìkolik z nich vráceno zpìt a vytvoøeno nìkolik
 nových\footnote{Místnost SwitchRoom a její zmìny jsou zobrazeny v pøíloze A}.
 \\
