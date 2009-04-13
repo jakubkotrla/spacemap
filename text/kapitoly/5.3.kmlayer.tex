@@ -7,7 +7,7 @@ Tím je urèeno, jaké neurony spolu sousedí.
 Okolím neuronu $N_s(c)$ velikosti $s$ neuronu $c$ pak rozumíme jeho sousedy a další neurony, jejich vzdálenost v topologii je menší ne $s$:
 
 \begin{equation} 
-N_s(c) = \{j:d(j,c)\leq s\}
+N_s(c) = \{j:d(j,c)\leq s\}.
 \label{formula:km-okoli}
 \end{equation}
 
@@ -58,13 +58,13 @@ Pokadé, kdy je vjem pøedán ke zpracování, provede se trénování Kohonenovy mapy
 
 Vyhrávající uzel $node_{win}$ je urèen dle vzdálenosti mezi uzlem a vjemem:
 \begin{equation}
-node_{win} = \arg \min_{node \in nodes} dist(node,vjem)
+node_{win} = \arg \min_{node \in nodes} dist(node,vjem).
 \end{equation}
 
 V algoritmu je na øádce \ref{alg:km-uceni-vzorec} zmìnìna poloha uzlu mapy. Uzel je posunut smìrem k poloze vjemu o \(\Delta xy(n, vjem)\) dle vzorce:
 
 \begin{equation} 
-\Delta xy(n, vjem) = coef_{neighbour}(n, node) \times coef_{learn} \times dist(n, vjem)
+\Delta xy(n, vjem) = coef_{neighbour}(n, node) \times coef_{learn} \times dist(n, vjem),
 \label{formula:km-uceni}
 \end{equation}
 
@@ -86,24 +86,24 @@ Uzly mapy se postupnì pøesunou do míst s velkou èetností vjemù a rozloení uzlù 
 \end{figure}
 
 Test modelu (obrázek \ref{fig:kml-preuceni}) ukázal, e k tomu skuteènì dojde, ale více, ne bychom chtìli.
-Problém, kterı nastal, je e se sí pro naše potøeby "pøeuèila" 
+Problém, kterı nastal, je e se sí pro naše potøeby \uv{pøeuèila}
 %\footnote{jedná se analogii pøeuèení neuronové sítì}
  - uzly se èasem všechny pøesunuli k pøedmìtùm a prostor bez pøedmìtù zùstal prázdnı, bez uzlù.
-Navrhli jsem dvì øešení:
+Navrhli jsme dvì øešení:
 \begin{CompactItemize}
-\item Base objects - pøidání umìlıch objektù, které se budou snait dret pùvodní rozloení uzlù Kohonenovy mapy
+\item Umìlé pøedmìty - pøidání umìlıch pøedmìtù, které se budou snait dret pùvodní rozloení uzlù Kohonenovy mapy
 \item Odpudivost uzlù - uzly mapy se budou vzájemnì odpuzovat, aby se nenahromadily všechny na jedno místo
 \end{CompactItemize}
 
 Vıše zmínìná øešení jsme vyzkoušeli v jednoduché ètvercové místnosti.
 \\
 
-\subsection{Base objects}
-Toto øešení pøidává do svìta umìlé pøedmìty, tzv. base objects.
-Tyto umìlé pøedmìty musí mít niší atraktivitu ne reálné pøedmìty, aby je nepøebily a mapa se mohla nìco nauèit.
+\subsection{Umìlé pøedmìty}
+Toto øešení pøidává do svìta další pøedmìty, agent je nevyuívá k plnìní svıch zámìrù, pouze je vnímá a mìní dle nich svou prostorovou mapu.
+Umìlé pøedmìty musí mít niší atraktivitu ne reálné pøedmìty, aby je nemìly na prostorovou mapu vìtší vliv ne opravdové pøedmìty.
 \\
 
-Base objects jsou do svìta pøidány na zaèátku, pøi vytváøení ètvercové sítì. V kadém místì, kde je uzel sítì, je vytvoøen jeden base object.
+Umìlé pøedmìty jsou do svìta pøidány na zaèátku, pøi vytváøení ètvercové sítì. V kadém místì, kde je uzel sítì, je vytvoøen jeden umìlı pøedmìt.
 Agent je bude vnímat stejnì jako ostatní pøedmìty, v prùbìhu simulace budou k sobì pøitahovat uzly sítì stejnì jako reálné pøedmìty.
 Tím by mìly udret Kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty nejsou.
 \\
@@ -116,14 +116,14 @@ Tím by mìly udret Kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty n
   \label{fig:kml-baseobjs}
 \end{figure}
 
-Vısledek testu je na obrázku \ref{fig:kml-baseobjs}\footnote{Další vısledky testù s rùznou hodnotou atraktivity base objects jsou na pøiloeném CD.}.
-Ukazuje, e øešení nevyhovuje. Mapa se stahuje do støedu místnosti bez ohledu na vliv base objects.
-Dùvodem je to, e tìištì všech base objects je ve støedu místnosti.
+Vısledek testu je na obrázku \ref{fig:kml-baseobjs}\footnote{Další vısledky testù s rùznou hodnotou atraktivity umìlıch pøedmìtù jsou na pøiloeném CD.}.
+Ukazuje, e øešení nevyhovuje. Mapa se stahuje do støedu místnosti bez ohledu na vliv umìlıch pøedmìtù.
+Dùvodem je to, e tìištì všech umìlıch pøedmìtù je ve støedu místnosti.
 Tomu bychom mohli na první zabránit zvıšením atraktivity base objects, které jsou na kraji místnosti.
 Jednoduchım protipøíkladem takového øešení je místnost, která bude mít objekty pouze na kraji (na zdech, v rozích).
-Pak bychom potøebovali zvıšit atraktivitu base objects uprostøed místnosti resp. obecnì bychom museli zvıšit atraktivitu base objects v místech,
+Pak bychom potøebovali zvıšit atraktivitu base objects uprostøed místnosti resp. obecnì bychom museli zvıšit atraktivitu umìlıch pøedmìtù v místech,
 kde nejsou reálné pøedmìty.
-Tím jsme pøevedli pùvodní problém na problém opaènı. Øešení s pouitím base objects tedy nevyhovuje.
+Tím jsme pøevedli pùvodní problém na problém opaènı. Øešení s pouitím umìlıch pøedmìtù tedy nevyhovuje.
 \\
 
 \subsection{Odpudivost uzlù} \label{s:km-odpudivost}
@@ -158,7 +158,7 @@ Poloha uzlù je pak upravena dle tìchto sil.
    n \in nodes
   }}
   odpudivost(n, node)
-}{ max(1, \mu(node)) } 
+}{ max(1, \mu(node)) }
 \label{formula:el-odpudivost}
 \end{equation}
 \\

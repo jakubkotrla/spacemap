@@ -26,7 +26,7 @@ ve svìtì je dána dvojicí souøadnic \(<x,y> \in \mathbb{R}^2\). Polohu objektu $a
 Vzdálenost ve svìte je euklidovská, tj. vzdálenost dvou objektù $a$, $b$ ve svìtì je urèena vzorcem:
 
 \begin{equation} 
-dist(a,b) = \sqrt{  (a_x-b_x)^2 + (a_y-b_y)^2 }
+dist(a,b) = \sqrt{  (a_x-b_x)^2 + (a_y-b_y)^2 }.
 \label{formula:vzdalenost}
 \end{equation}
 
@@ -66,15 +66,15 @@ Není-li øeèeno jinak, je atraktivita všech pøedmìtù rovna 1.
 
 \section{Architektura agenta} \label{chapter-agent}
 
-Architektura agenta je pøevzata z [literatura-peskova] a lehce upravena. Øízení chování agenta je zjednodušeno, protože pro vývoj modelu není tak podstatné.
+Architektura agenta je pøevzata z \cite{litPeskova} a lehce upravena. Øízení chování agenta je zjednodušeno, protože pro vývoj modelu není tak podstatné.
 Naopak jeho pohyb svìtem a vnímání okolí je propracovanìjší.
 \\
 
 \begin{definition}[Afordance]
-Stejnì jako v [literatura-peskova] je vnímání svìta agentem postaveno na Gibsonovì teorii afordancí \cite{litGibson}.
+Stejnì jako v \cite{litPeskova} je vnímání svìta agentem postaveno na Gibsonovì teorii afordancí \cite{litGibson}.
 Tato percepèní teorie øíká, že živí tvorové vnímají okolní svìt a pøedmìty spíše dle toho, k èemu se dají použít, než dle jejich fyzických vlastností
-(tvar, velikost, barva). To, k èemu se dá pøedmìt použít, je vyjádøeno prostøednictvím tzv. afordancí, napø. "lze mì nabrousit", "lze se mnou krájet".
-Nùž tedy není vnímána jako "kus kovu zasazený do døeva, asi 15 centimetrù dlouhý", ale jako pøedmìt, který lze nabrousit a kterým lze krájet.
+(tvar, velikost, barva). To, k èemu se dá pøedmìt použít, je vyjádøeno prostøednictvím tzv. afordancí, napø. \uv{lze mì nabrousit}, \uv{lze se mnou krájet}.
+Nùž tedy není vnímána jako \uv{kus kovu zasazený do døeva, asi 15 centimetrù dlouhý}, ale jako pøedmìt, který lze nabrousit a kterým lze krájet.
 \end{definition}
 
 Každý pøedmìt má urèeno, jaké afordance agentovi nabízí. Èinnosti, které agent provádí, potøebují ke svému provedení urèité zdroje, pøedmìty s afordancemi.
@@ -106,8 +106,8 @@ Zámìr \emph{Want(affordance)} agent mùže splnit úspìšným provedením jedné z tøí 
 Každá tato èinnost se skládá z nìkolika akcí, které mohou obsahovat další subakce, a není možné ji provést v jednom kroku simulace.
 Výše zmínìné èinnosti jsou tedy implementovány jako tzv. chytré akce, které si pamatují aktuální stav a dle nìj dokáží urèit, jakou subakci má agent vykonat.
 Strom akcí a subakcí je na obrázku \ref{fig:smart-actions}.
-Napø. pro náhodné hledání pøedmìtu je použita chytrá akce "SearchRandom". Ta je schopná urèit, kam se agent má pøesunout pomocí další chytré akce "MoveTo".
-Teprve akce "MoveToPartial" je atomická a lze ji provést v jednom kroku simulace.
+Napø. pro náhodné hledání pøedmìtu je použita chytrá akce \emph{SearchRandom}. Ta je schopná urèit, kam se agent má pøesunout pomocí další chytré akce \emph{MoveTo}.
+Teprve akce \emph{MoveToPartial} je atomická a lze ji provést v jednom kroku simulace.
 \\
 
 \begin{definition}[Maximální krok agenta]
@@ -195,7 +195,7 @@ dle experimentálních výsledkù z \cite{lit7plusminus2}. Zmìna parametru na nižsí 
 
 V každém kroku simulace agent dostane množinu pøedmìtù, které vidí.
 Ta je urèena z agentovy pozice a smìru, kterým se dívá a závisí i na právì provádìné atomické akci.
-Protože zpùsob vnímání okolí je pro model podstatný, rozhodli jsme se implementovat s lehkou úpravou pokroèilý model z poèítaèové hry Thief [literatura-thief].
+Protože zpùsob vnímání okolí je pro model podstatný, rozhodli jsme se implementovat s lehkou úpravou pokroèilý model z poèítaèové hry Thief \cite{litThief}.
 Výsledný model bere v potaz vzdálenost pøedmìtù od agenta i jak moc by se agent musel otoèit, aby se díval pøímo na nì.
 \\
 

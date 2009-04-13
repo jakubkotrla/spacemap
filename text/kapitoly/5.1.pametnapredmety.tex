@@ -1,7 +1,9 @@
 \section{Pamìt na pøedmìty} \label{chapter-pamet-predmety}
 
 Pamì na pøedmìty øeší ukládání objektù (a potencionálnì dalších informací) k uzlùm.
-Tedy ukládá informace typu "objekt XY je v uzlu n42 s intenzitou 5,2". Pamì na pøedmìty vychází z práce Tomáše Korenka [literatura-korenko].
+Tedy ukládá informace typu:
+\emph{Objekt XY je v uzlu n42 s intenzitou 5,2}.
+Pamì na pøedmìty vychází z práce Tomáše Korenka \cite{litKorenko}.
 \\
 
 \begin{definition}[Pamìová stopa pøedmìtu]
@@ -19,7 +21,7 @@ Asociativní sí je mnoina trojic \emph{$<$uzel,stopa,intenzita$>$}, tedy vazeb 
 
 \begin{table}[h!]
 \begin{center}
-\begin{tabular}{lp{6cm}}\toprule[0.5pt]
+\begin{tabular}{lp{9cm}}\toprule[0.5pt]
 Typ vjemu & Zpùsob vzniku \\
 
 \midrule[0.2pt]
@@ -34,7 +36,7 @@ ObjectNotFound & Agent nenalezl pøedmìt tam, kde ho hledal pøi chytré akce LookU
 
 \midrule[0.05pt]
 
-ObjectUsed & Agent pøedmìt pouil, tento vjem není vytváøen a zpracováván pøi v prùbìhu vnímání, ale pøi provádìní atomické akce ExecuteReal \\
+ObjectUsed & Agent pøedmìt pouil, tento vjem není vytváøen a zpracováván v prùbìhu vnímání, ale pøi provádìní atomické akce ExecuteReal \\
 
 \bottomrule[0.5pt]
 \end{tabular}
@@ -83,7 +85,7 @@ V kroku \ref{alg:spacemap-intensity} je urèena intenzita o kterou bude zvıšena v
    n \in nodes
   }}
   norm( dist(n, vjem) )
-}
+} ,
 \label{formula:intenzita-vazby}
 \end{equation}
 \\
@@ -110,7 +112,7 @@ Poloha pøedmìtu je váenı centroid všech uzlù, které mají vazbu na pamìovou sto
 \\
 
 \begin{equation} 
-c_w(stopa) = \frac{\displaystyle \sum_{n \in stopa} n_{xy} \times \eta(vazba_n) }{\displaystyle \sum_{n \in stopa} \eta(vazba_n) }
+c_w(stopa) = \frac{\displaystyle \sum_{n \in stopa} n_{xy} \times \eta(vazba_n) }{\displaystyle \sum_{n \in stopa} \eta(vazba_n) }.
 \label{formula:el-centroid-mista}
 \end{equation}
 
