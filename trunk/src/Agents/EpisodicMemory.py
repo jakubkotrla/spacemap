@@ -1,9 +1,12 @@
 # -*- coding: UTF-8 -*-
-#unchanged, original from Tomas Korenko source code
+## @package Agents.EpisodicMemory
+# UNCHANGED, original from Tomas Korenko source code
 
 import Emotion
 
-## Trieda reprezentujúca časový ukazateľ
+## UNCHANGED, original from Tomas Korenko source code
+#
+# Trieda reprezentujúca časový ukazateľ
 # - Atribúty triedy:
 #   - process ... pointer na proces
 #   - _process ... pointer na aktivovaný proces
@@ -110,8 +113,10 @@ class MemoryLink:
             print space, self.process.name, self.startTime.ToString(), "-", self.endTime.ToString(), self.emotion, self.importance, self.successful
         else:
             print space, self.process.name, self.startTime.ToString(), "-", self.importance    
-            
-## Trieda reprezentujúca proces v epizodickej pamäti
+
+## UNCHANGED, original from Tomas Korenko source code
+#      
+# Trieda reprezentujúca proces v epizodickej pamäti
 # - Atribúty triedy:
 #   - name ... meno procesu
 #   - sources ... zoznam afordancií potrebných na vykonanie procesu
@@ -159,8 +164,10 @@ class MemoryProcess:
     def AddParent(self, parentProcess):
         if parentProcess not in self.parents:
             self.parents.append(parentProcess)
-    
-## Trieda reprezentujúca epizodickú pamäť agenta
+
+## UNCHANGED, original from Tomas Korenko source code
+#   
+# Trieda reprezentujúca epizodickú pamäť agenta
 # - Atribúty triedy:
 #   - processes ... slovník použitých procesov
 #   - days ... slovník prvých procesov jednotlivých dní

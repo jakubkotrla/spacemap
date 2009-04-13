@@ -1,3 +1,5 @@
+## @package Gui.MainWindow
+# Main GUI file, uses TkInter to create window and other GUI elements and run the whole application.
 
 from Tkinter import *  
 from threading import *
@@ -15,7 +17,8 @@ from Enviroment.Objects import Objects
 from Agents.Agent import Agent
 from MapRenderer import MapRenderer  
 from Config.Config import Config                         
-                                     
+
+## Main GUI class. Handles all GUI interaction, threading etc.                                  
 class MainWindow(Frame):
     def __init__(self, master=None):                    
         Frame.__init__(self, master)
@@ -28,7 +31,8 @@ class MainWindow(Frame):
         self.currentTestIndex = 0
         self.testRunStarted = 0
         
-        self.lock = None
+        ## Locks used to control Pause/Resume/Quit in two theards enviroment.
+        self.lock = None                        
         self.playbackLock = None
         self.playbackLockLocked = False 
         
@@ -41,14 +45,15 @@ class MainWindow(Frame):
         self.createWidgets()   
         self.createMenu()
         
-    
+    ## Creates Canvas GUI element.
     def createWidgets(self):
         self.wxCanvas = Canvas(self, width=1500, height=1020)
         self.wxCanvas.grid(row=0, column=0)
         self.wxCanvas.bind('<Button-1>', self.canvasClick)
         self.wxCanvas.width = 1500
         self.wxCanvas.height = 1020
-                                  
+    
+    ## Creates Menu GUI elements.                              
     def createMenu(self):
         startMenu = Menu()
         startMenu.add_command(label="Test All", command=self.startAll)
@@ -71,7 +76,8 @@ class MainWindow(Frame):
         menubar.add_cascade(label="World", menu=worldMenu)
         menubar.add_command(label="Quit", command=self.quitSimulation)
         self.winfo_toplevel().config(menu=menubar)
-        
+    
+    ## Creates new window showing affordances in world.   
     def showAffordances(self):
         wndAffordances = Toplevel()
         wndAffordances.geometry("400x200")
@@ -83,6 +89,8 @@ class MainWindow(Frame):
         scrollBar.pack(side=RIGHT, fill=Y)
         for aff in Affordances:
             txt.insert("end", aff.name)
+            
+    ## Creates new window showing object types in world.
     def showObjectTypes(self):
         wndObjects = Toplevel()
         wndObjects.geometry("400x200")
@@ -94,6 +102,8 @@ class MainWindow(Frame):
         scrollBar.pack(side=RIGHT, fill=Y)
         for obj in Objects:
             txt.insert("end", obj.ToString())
+            
+    ## Creates new window showing objects in world.
     def showObjects(self):
         wndRealObjects = Toplevel()
         wndRealObjects.geometry("400x200")
@@ -111,6 +121,7 @@ class MainWindow(Frame):
         if Global.CalculateVisibilityHistory:
             Global.RenderVisibilityHistory = not Global.RenderVisibilityHistory    
     
+    ## Creates new window showing information about objects below mouse cursor.
     def canvasClick(self, event):
         x = int(self.wxCanvas.canvasx(event.x))
         y = int(self.wxCanvas.canvasy(event.y))
@@ -140,10 +151,16 @@ class MainWindow(Frame):
                 self.wndInfo.txt.insert("end", strI)
     def wndInfoClosed(self, event):
         self.wndInfo = None    
-
+    
+    
+    ## Starts TestAll mode in separate thread.
     def startAll(self):
         th = Thread(None, self.simulationTestAllThread, name="simulationTestAllThread")
         th.start()
+        
+    ## Does TestAll, runs in separate thread.
+    #
+    # Constructs all test suites to run, using reflection to get settings in Global with name parametrTESTSET.
     def simulationTestAllThread(self):
         self.lock = Lock()
         
@@ -170,6 +187,7 @@ class MainWindow(Frame):
         
         self.simulationTestAllRecursive(settingsToRun)
     
+    ## Recursively gets to one test suite/settings to run.
     def simulationTestAllRecursive(self, settingsToRun, settingsText=''):  
         if len(settingsToRun) < 1:  
             self.runOneTestSuite(settingsText)
@@ -181,6 +199,7 @@ class MainWindow(Frame):
                 settingsTextIn = settingsText + "#" + name + "=" + str(settings) + "\n"
                 self.simulationTestAllRecursive(settingsToRunNext, settingsTextIn)
         
+    ## Runs one test suite - all worlds and random seeds with one settings.
     def runOneTestSuite(self, settingsText):
         nowTime = time.strftime("%Y-%m-%d--%H-%M-%S")
         configsToTest = Config.GetConfigs()
@@ -214,7 +233,7 @@ class MainWindow(Frame):
         f.close()
         #run statter and plotter ?
             
-
+    ## Runs one simulation - one world and one random seed.
     def runOneSimulation(self, savePath, configName, randomSeed):
         savePath = savePath + str(randomSeed) + "-" + configName + "/"
         os.makedirs(savePath)
@@ -267,6 +286,7 @@ class MainWindow(Frame):
             self.mapRenderer.Clear()
             self.mapRenderer = None
 
+    ## Starts simulation in interactive mode in separate thread.
     def startSimulation(self, configName):
         dirList = os.listdir("../../exs/")
         for fname in dirList:
@@ -289,6 +309,7 @@ class MainWindow(Frame):
         th = Thread(None, self.simulationThread, name="simulationThread")
         th.start()     
     
+    ## Does simulation in interactive mode, runs in separate thread.
     def simulationThread(self):
         world = Global.World
         self.lockBack = Lock()
@@ -312,6 +333,7 @@ class MainWindow(Frame):
         Global.LogEnd()
         return
     
+    ## Rendes curent state of world, agent and SpaceMap on screen.
     def RenderState(self, world):
         self.mapRenderer.RenderObjectVisibility()
         self.mapRenderer.RenderSpaceMap()
@@ -350,15 +372,17 @@ class MainWindow(Frame):
         
         Global.LogData("nc", world.agent.intelligence.spaceMap.Layer.Status())
   
-    
+    ## Pauses simulation using locks.
     def pauseSimulation(self):
         if self.playbackLock != None and not self.playbackLockLocked:
             self.playbackLock.acquire()
             self.playbackLockLocked = True
+    ## Resume simulation by releasing locks.
     def resumeSimulation(self):
         if self.playbackLock != None and self.playbackLockLocked:
             self.playbackLock.release()
             self.playbackLockLocked = False
+    ## Exits and re;eases all locks to properly exit application.
     def exitLocks(self):        
         if self.playbackLock != None and self.playbackLockLocked:
             self.playbackLock.release()
@@ -366,6 +390,7 @@ class MainWindow(Frame):
             self.lock.release()
             self.lockBack.acquire()
             self.lockBack.release()
+    ## Stops interactive mode. Another simulation can be runned, even TestAll.
     def stopSimulation(self):
         Global.Log("Stoping simulation...")
         self.exitLocks()
@@ -374,7 +399,8 @@ class MainWindow(Frame):
         self.mapRenderer.Clear()
         self.mapRenderer = None
         self.lock = None
-        
+    
+    ## Quits application.    
     def quitSimulation(self):
         if self.lock != None:
             self.exitLocks()

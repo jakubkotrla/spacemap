@@ -1,3 +1,5 @@
+## @package Agents.ActionSelector
+# Contains Action Selector responsible for action selection every step.
 
 from Intentions import Intentions, Intention
 from Enviroment.Affordances import *
@@ -7,17 +9,20 @@ from Enviroment.Global import Global
 from Enviroment.Map import Hit, Point
 from copy import copy
 
-
+## Class responsible for selecting atomic action
+#
+# Every step an atomic action is selected based on actual state of and-or tree of intentions and process.
+# And-or tree is saved in ProcessArea.
 class ActionSelector:
     def __init__(self, agent, config, processArea, perceptionField, episodicMemory, spaceMap):
-        self.agent           = agent
-        self.intentions      = Intentions()
-        self.processes       = Processes()
-        self.scenario       = Scenario()
-        self.processArea   = processArea
+        self.agent = agent
+        self.intentions = Intentions()
+        self.processes = Processes()
+        self.scenario = Scenario()
+        self.processArea = processArea
         self.perceptionField = perceptionField
-        self.episodicMemory  = episodicMemory
-        self.spaceMap        = spaceMap
+        self.episodicMemory = episodicMemory
+        self.spaceMap = spaceMap
         
         config.GetAgentIntentions(self)
         self.scenario.SaveScenario()
@@ -25,9 +30,13 @@ class ActionSelector:
                                                      self.processes.atomic["LookUpInMemory"],
                                                      self.processes.atomic["SearchRandom"]])
     
+    ## Returns atomic action ActionOut representing the fact, that agent is out of the world and is not doing anything.
     def GetOutAction(self):
         return self.processes.atomic["ActionOut"]
     
+    ## Returns ExcitedProcess representing atomic action to be done in this step.
+    #
+    # Entry method, calls other internal methods to select correct atomic action.
     def GetAction(self, emotion):
         if self.processArea.HasNoIntention():
             self.ChooseIntention()
@@ -61,6 +70,12 @@ class ActionSelector:
             return self.GetAtomicAction(emotion, excProcess)
 
 
+    ## Returns process to accomplish given intention.
+    #
+    # For complex intentions with several possible processes, chooses randomly.
+    # For intention I_Want chooses first one, order of smart action matters.
+    # If there is no availble process returns None.
+    #
     def ChooseProcessForIntention(self, emotion, intention, parentProcess):
         processes = intention.processes
         if parentProcess != None:
@@ -74,7 +89,11 @@ class ActionSelector:
             return Global.Choice(processes)
 
 
-
+    ## Returns atomic action based on current state of internal and-or tree of process and intentions.
+    #
+    # Checks if all required affordances are available and then adds Execute to and-or tree and calls GetAtomicActionForSmrtProcess().
+    # If all required affordances are not available, adds intention I_Want and atomic action Explore.
+    # Returns selected atomic action as ExcitedProcess.  
     def GetAtomicAction(self, emotion, excProcess):
         #if excProcess is already atomic (because of Want/SearchRandom/..more.. intention), just return it
         if excProcess.IsSmartProcess():
@@ -112,7 +131,11 @@ class ActionSelector:
             return self.GetAtomicActionforSmartProcess(emotion, atomicProcess)
         return atomicProcess
 
-
+    ## Chooses atomic action for smart process based on smart action state.
+    #
+    # Call self recursively if needed for MoveTo.
+    # Chooses right wapyoint, solves Execute and ExecuteReal difference.
+    # @param excProcess The smart action as ExcitedProcess.
     def GetAtomicActionforSmartProcess(self, emotion, excProcess):
         if (excProcess.process.name == "SearchRandom"):
 
@@ -231,7 +254,9 @@ class ActionSelector:
         else:
             return excProcess
 
-    
+    ## Chooses intention if agent has no one active.
+    #
+    # Uses pre-generated scenario via call to Scenario.GetActiveIntetion().
     def ChooseIntention(self):
         mostActiveIntention = self.scenario.GetActiveIntention()
         if mostActiveIntention == None:
@@ -239,7 +264,10 @@ class ActionSelector:
             mostActiveIntention = self.intentions.GetRandomHighLevelIntention()
         self.processArea.ActivateIntention(mostActiveIntention, None) 
         
-        
+    ## Updates and-or tree of processes and intentions after action execution every step.
+    #
+    # Determines succes of executed atomic action and temrinates it. 
+    # In case of smart actions terminates more parent processes.
     def ActionDone(self, emotion):
         actExcProcess = self.processArea.GetActProcess()
         actProcess = actExcProcess.process
@@ -288,7 +316,7 @@ class ActionSelector:
                 self.processArea.TerminateIntentionWant(emotion)
             else:
                 # whole LookUpInMemory failed - terminate LookForObject and LookUpInMemory
-                # ToDo: dynamicWorld: now try different location
+                # in really dynamicWorld: now try different location, TBD
                 self.processArea.TerminateAtomicProcess(emotion, False)
                 self.processArea.TerminateProcess(emotion, False)
             

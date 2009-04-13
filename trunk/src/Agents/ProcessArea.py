@@ -1,15 +1,17 @@
-
-#based on source from Tomas Korenko, changed
+## @package Agents.ProcessArea
+# Contains ProcessArea handling and-or tree of ExcitedIntentions and ExcitedProcesses.
+# Based on source from Tomas Korenko, changed.
 
 from copy import copy
 from Enviroment.Global import Global
 
-
+## Represents active process in and-or tree.
 class ExcitedProcess:
     def __init__(self, process, intention, parent):
         self.process             = process
         self.intention           = intention.intention
         self.excParentIntention  = intention
+        ## Parent ExcitedProcess, skip link.
         self.parent              = parent
         self.completedIntentions = []  
         self.failedProcesses     = []
@@ -20,7 +22,8 @@ class ExcitedProcess:
         self.location            = None
         self.successful          = False
         self.data                = {}
-        
+     
+    ## Terminates self, propagates succes or failure to parent Excitedprocess.   
     def TerminateProcess(self, successful=True):
         self.endTime    = copy(Global.Time)
         self.successful = successful
@@ -46,11 +49,13 @@ class ExcitedProcess:
     
     def IsInProgress(self):
         return self.endTime == None
-        #Future: won't work for intention-competing
+        #Future: won't work for intention-competition
     
+    ## Returns list of Affrodances.
     def GetAllSources(self):
         return self.process.sources
-        
+    
+    ## Returns list of Affrodances.
     def GetMissingSources(self):
         affordances = copy(self.process.sources)
         for objectPhantom in self.resources:
@@ -64,7 +69,7 @@ class ExcitedProcess:
     def ToString(self):
         return "P_" + self.process.name
 
-
+## Represents active intention in and-or tree.
 class ExcitedIntention:
     def __init__(self, intention, parentExcProcess):
         self.intention = intention
@@ -76,7 +81,7 @@ class ExcitedIntention:
     def ToString(self):
         return "I_" + self.intention.name
 
-
+## Represents agent's process area.
 class ProcessArea:
     def __init__(self, episodicMemory):
         self.episodicMemory = episodicMemory
@@ -84,6 +89,7 @@ class ProcessArea:
         self.processes       = {}
         self.actualIntention = None
         self.actualProcess   = None
+        ## Active process just above intnetion I_Want in and-or tree.
         self.actualBasicProcess = None
         
     def HasNoIntention(self):
@@ -95,10 +101,12 @@ class ProcessArea:
     def GetActProcess(self):
         return self.actualProcess
     
-    def ActivateIntention(self, excitedIntention, parentExcProcess):
-        self.actualIntention = ExcitedIntention(excitedIntention, parentExcProcess)
+    ## Sets give intention as active, creates ExcitedIntention.
+    def ActivateIntention(self, intention, parentExcProcess):
+        self.actualIntention = ExcitedIntention(intention, parentExcProcess)
         return self.actualIntention
     
+    ## Sets given process as active, creates ExcitedProcess and inits it if is smart.
     def ActivateProcess(self, emotion, process, parentExcIntention, parent=None):
         self.actualProcess = ExcitedProcess(process, parentExcIntention, parent)
         self.episodicMemory.StoreProcess(self.actualProcess, emotion)
@@ -120,13 +128,14 @@ class ProcessArea:
         return self.actualProcess
    
    
-    #only for terminating atomic processes
+    ## Terminates atomic process.
     def TerminateAtomicProcess(self, emotion, successful=True):
         if self.actualProcess != None:
             self.actualProcess.TerminateProcess(successful)
             #commented in original: self.episodicMemory.StoreProcess(self.actualProcess, emotion)
             self.actualProcess = self.actualProcess.parent
    
+    ## Terminates normal process, updates and-or tree: eventually terminates parent proces.
     def TerminateProcess(self, emotion, successful=True):
         if self.actualProcess == None:
             self.actualIntention = None #there is no process left - HL intention finnished
@@ -153,15 +162,16 @@ class ProcessArea:
                 #there is no process left - HL intention finnished
                 self.actualIntention = None
 
-    
+    ## Terminate actual intention as failure.
     def TerminateIntentionFalse(self, emotion):
         self.actualIntention = None
         self.TerminateProcess(emotion, False)
-        
+    
+    ## Terminate actual intention I_Want.    
     def TerminateIntentionWant(self, emotion):
         self.actualIntention = self.actualProcess.excParentIntention
     
-    #links given phantom to current process - when Agents notice objects via explore
+    ## Links given phantom to current process - when Agents notice objects via atomic action Explore.
     def PhantomAdded(self, phantom):
         realProcess = self.actualBasicProcess
         affs = phantom.object.type.affordances
@@ -171,6 +181,7 @@ class ProcessArea:
                 phantom.SetOwnerProcess(realProcess)
                 phantom.affordance = aff
     
+    ## Returns True if agents is looking for given phantom. 
     def LookingForPhantom(self, memPhantom):
         p = self.actualProcess
         while p.process.name != "LookUpInMemory":
@@ -178,7 +189,7 @@ class ProcessArea:
             if p == None: return False  #not looking for anything now
         return p.data["phantom"] == memPhantom
     
-    #links given phantom instead of MemoryPhantom to current process - when Agents notice objects via LookForObject
+    ## Links given phantom instead of MemoryPhantom to current process - when Agents notice objects via LookForObject.
     def PhantomAddedForMemoryPhantom(self, phantom, memoryPhantom):
         phantom.affordance = memoryPhantom.affordance
         realProcess = self.actualBasicProcess
@@ -188,7 +199,7 @@ class ProcessArea:
         realProcess.resources.append(phantom)
         realProcess.resources.remove(memoryPhantom)
         
-    #links given phantom to current process - when Agents remembers objects via Remember
+    ## Links given phantom to current process - when Agents remembers objects via Remember.
     def PhantomRemembered(self, phantom):
         affs = phantom.object.type.affordances
         realProcess = self.actualBasicProcess
@@ -198,13 +209,15 @@ class ProcessArea:
             if aff in wantedAffs:
                 phantom.SetOwnerProcess(realProcess)
                 phantom.affordance = aff
-            
+    
+    ## Returns True if given phantom is used right now.        
     def IsPhantomUsedNow(self, phantom):
         realProcess = self.actualBasicProcess
         if self.actualProcess.process.name == "ExecuteReal":
             return phantom.ownerProcess == realProcess
         return False
    
+    ## Returns state of ProcessArea - and-or tree - as lists of strings. 
     def GetText(self):
         txt = []
         act = self.actualProcess

@@ -1,5 +1,7 @@
+## @package Enviroment.Affordances
+# Contains list of affordances available for worlds.
 
-
+## Represent affordance, has name.
 class Affordance:
 
     def __init__(self, name):
@@ -33,7 +35,7 @@ Repairability = Affordance('Repairability')
 Screwability = Affordance('Screwability')
 Sewability = Affordance('Sewability')
 
-
+## List of all available affordances.
 Affordances = [
     Cutability,
     Eatability,

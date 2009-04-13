@@ -1,15 +1,24 @@
+## @package Agents.Agent
+# Contains Agent - class representing virtual agent.
 
 from Intelligence import Intelligence
 from math import pi,atan2
 from Enviroment.Global import Global
 
-
+## Represents one agent field of view.
 class ViewCone:
     def __init__(self, intensity, angle, distance):
+        ## How much is agent sensitive to objects in this ViewCone.
         self.intensity = intensity
+        ## Angle defining half width of ViewCone, max angle to left and right from agent direction, PI means full circle. 
         self.angle = angle
+        ## Length of ViewCone, max distance in which object are perceived.
         self.distance = distance  
         
+
+## Represents virtual agent, responsible for its location, movement and other high-level tasks.
+#
+# Uses class Intelligence to implement full-featured virtual agent.
 class Agent:
     def __init__(self, config):
         self.intelligence = Intelligence(self, config)
@@ -18,7 +27,8 @@ class Agent:
         self.newX = self.x
         self.newY = self.y
         self.dirAngle = pi / 4
-        
+
+        ## current text describing state of ProcessArea, used to show best info about its state in GUI.
         self.paText = ' '
         
         self.viewConesNormal = []
@@ -38,7 +48,11 @@ class Agent:
         for vc in self.viewConesForExplore:
             self.viewConeForExploreMaxDist = max(self.viewConeForExploreMaxDist, vc.distance)
         self.viewConeMaxDist = self.viewConeNormalMaxDist 
-     
+    
+    ## One step of agent if it is out of the world.
+    #
+    # Does nothing in virtual world - no movement, perception etc.
+    # Only update its SpaceMap. 
     def StepOut(self):
         action = self.intelligence.actionSelector.GetOutAction()
         action.duration = 10
@@ -46,7 +60,15 @@ class Agent:
         self.paText = 'out'
         Global.Time.AddSeconds(action.duration)
         self.intelligence.spaceMap.StepUpdate(action)
-        
+    
+    ## One step in agent life.
+    #
+    # 1. get atomic action from ActionSelector
+    # 2. executes atomic action
+    # 3. perceive visible objects around
+    # 4. updates PerceptionField, MemoryArea
+    # 5. updates ProcessArea via call to ActionSelector.ActionDone()
+    # 6. updates SpaceMap   
     def Step(self):
         action = self.intelligence.GetAction()
         map = Global.Map
@@ -124,6 +146,7 @@ class Agent:
 
     def ToString(self):
         return "Agent"
+    ## Returns agents history as was saved by EpisodicMemory. 
     def TellTheStory(self, txt):
         self.intelligence.TellTheStory(txt)
     

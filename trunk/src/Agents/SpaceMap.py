@@ -1,9 +1,12 @@
+## @package Agents.SpaceMap
+# Implements agent's spatial map.
 
 from Enviroment.Global import Global
 from EnergyLayer import EnergyLayer
 from Enviroment.Map import Point, RealObject
 from math import log
 
+## Represents "pametova stopa predmetu".
 class MemoryObject:
     def __init__(self, rObject, intensity=1):
         self.object = rObject
@@ -13,12 +16,14 @@ class MemoryObject:
         self.linkToNodes = []
         self.intensity = intensity
         self.effectivity = intensity    #only for SpaceMap to find best MemObj (intensity and distance) 
-        
+    
+    ## Creates new link to node.    
     def AddLinkToNode(self, node, intensity=1):
         l = LinkMemoryObjectToNode(self, node, intensity)
         self.linkToNodes.append(l)
         node.linkToObjects.append(l)
         
+    ## Increases intensity of link to given node, creates one if not found.
     def IntenseToNode(self, node, intensity):
         foundLink = None
         for l in self.linkToNodes:
@@ -31,9 +36,12 @@ class MemoryObject:
             node.linkToObjects.append(link)
         else:
             foundLink.Intense(intensity)
+            
+    ## Increases self-intensity.
     def Intense(self, intensity):
         self.intensity = self.intensity + intensity
 
+    ## Decreases self-intensity and intensity of all its links to nodes.
     def StepUpdate(self):
         self.intensity = self.intensity - Global.MemObjIntensityFadeOut
         for link in self.linkToNodes:
@@ -44,6 +52,7 @@ class MemoryObject:
         return self.type.name + "(M) at [" + strXY + "]"
     
 
+## Represents link MemoryObject-Node.
 class LinkMemoryObjectToNode:
     def __init__(self, object, node, intensity):
         self.object = object
@@ -51,24 +60,26 @@ class LinkMemoryObjectToNode:
         self.intensity = intensity
         self.node.Intense(intensity)
         
+    ## Increases self-intensity.
     def Intense(self, intensity):
         self.intensity = self.intensity + intensity
         self.node.Intense(intensity)
     
-    #called from MemoryObject.StepUpdate
+    ## Decreaes self-intensity, eventually deleting self. Called from MemoryObject.StepUpdate().
     def StepUpdate(self):
         self.intensity = self.intensity - Global.LinkMemObjToNodeFadeOut
         if self.intensity <= 0:
             self.object.linkToNodes.remove(self)
             self.node.linkToObjects.remove(self)
-            
+    
+    ## Propagates deletion of node to MemoryObject.        
     def NodeDeleted(self):
         self.object.linkToNodes.remove(self)
     def ToString(self):
         strInt = '%.4f'%(self.intensity)
         return "LinkTo( " + strInt + " ): " + self.object.ToString()
     
-
+## Represents "prostorova pamet" and "pamet na predmety". 
 class SpaceMap:
     def __init__(self, agent):
         self.agent   = agent
@@ -80,7 +91,8 @@ class SpaceMap:
         
         self.Layer = EnergyLayer(self.map)
         self.Layer.CreateMap()
-        
+     
+    ## One step of simulation of SpaceMap. Calls StepUpdate of its MemoryObjecst and underlying node layer. 
     def StepUpdate(self, action):
         if action.duration > Global.SMUpdateMaxDuration:
             count = int( log(3 + action.duration - Global.SMUpdateMaxDuration) )
@@ -98,12 +110,14 @@ class SpaceMap:
             self.StepUpdateBig()
         else:
             self.updateStep += 1
-            
+     
+    ## Used only to save data about error of SpaceMap to CSV data file.       
     def StepUpdateBig(self):
         memObjs = self.objectsToMemObjs.values()
         for memObj in memObjs:
             self.updateMemoryObjectLocation(memObj)
-       
+    
+    ## Returns most intense and closest MemoryObject with given affordance.   
     def GetMemoryObject(self, affordance):
         if affordance not in self.affsToMemObjs:
             return None
@@ -122,7 +136,8 @@ class SpaceMap:
             return self.updateMemoryObjectLocation(memObjs[0])
         else:
             return None
-        
+     
+    ## Updates loction of MemoryObject - computes weighted centroid of its links to nodes.   
     def updateMemoryObjectLocation(self, memObject):
         links = memObject.linkToNodes
         x = 0
@@ -155,7 +170,7 @@ class SpaceMap:
 
         return memObject
         
-    
+    ## Internal method to train SpaceMap to given object with given effect. 
     def objectTrain(self, rObject, effect):
         effect = effect * rObject.curAttractivity * rObject.visibility
         rObject.trainHistory = rObject.trainHistory + effect
@@ -169,8 +184,8 @@ class SpaceMap:
             memObj = MemoryObject(rObject)
             self.objectsToMemObjs[rObject] = memObj
         
-        memObj.x = rObject.x    #little nasty hack
-        memObj.y = rObject.y
+        memObj.x = rObject.x    #little nasty hack, memObj.xy was weighted centorid of links to nodes 
+        memObj.y = rObject.y    #this will fix it and make memObj correct for EnergyLayer training
         self.Layer.Train(memObj, effect)    #that will train memObj-to-nodes now and then continually in EP.StepUpdate
                     
         # put memObject to all its affordances
@@ -180,19 +195,24 @@ class SpaceMap:
             if memObj not in self.affsToMemObjs[aff]:
                 self.affsToMemObjs[aff].append(memObj)
 
+    ## Train SpaceMap to given object, object was noticed.
     def ObjectNoticed(self, rObject):
         self.objectTrain(rObject, Global.TrainEffectNoticed)
-                
+    
+    ## Train SpaceMap to given object, object was noticed again.            
     def ObjectNoticedAgain(self, rObject):
         self.objectTrain(rObject, Global.TrainEffectNoticedAgain)    
-        
+    
+    ## Train SpaceMap to given object, object was found.
     def ObjectFound(self, rObject):
         self.objectTrain(rObject, Global.TrainEffectFound)
         
+    ## Train SpaceMap to given object, object was not ofund.
     def ObjectNotFound(self, rObject):
         Global.Log("SM.ObjectNotFound: object not found: " + rObject.ToString())
-        #ToDo: dynamicWorld: objectTrain TrainEffectNotFound
-        
+        #dynamicWorld: objectTrain TrainEffectNotFound TBD.
+    
+    ## Train SpaceMap to given object, object was used by agent.
     def ObjectUsed(self, rObject):
         self.objectTrain(rObject, Global.TrainEffectUsed)
 
