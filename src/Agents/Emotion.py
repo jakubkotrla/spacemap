@@ -1,6 +1,5 @@
-
-
-#unchanged, original from Tomas Korenko source code
+## @package Agents.Emotion
+# UNCHANGED, original from Tomas Korenko source code
 
 from Enviroment.Time import Time
 
@@ -23,7 +22,7 @@ intensityChange_FailedProcess = 100
 pleasureChange_ItemNotFound = -20
 intensityChange_ItemNotFound = 20
 
-
+## UNCHANGED, original from Tomas Korenko source code
 class Emotion:
     def __init__(self, filename, time):
         f = open(filename,'r')

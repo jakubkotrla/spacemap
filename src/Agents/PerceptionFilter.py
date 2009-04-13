@@ -1,11 +1,14 @@
+## @package Agents.PerceptionFilter
+# Contains PerceptionFilter - simple perception filter.
 
 from Enviroment.Global import Global
 
+## Represents agent's perception filter.
 class PerceptionFilter:
     def __init__(self):
         pass
 
-    #sets rObj.curAttractivity based on active process
+    ## Sets rObj.curAttractivity based on given active process.
     def ProcessObjects(self, rObjs, action):
         name = action.process.name
         if name == "Remember":
@@ -20,11 +23,13 @@ class PerceptionFilter:
             self.SetAllToRegardingAffs(rObjs, action, 0.5)
         else:
             Global.Log("Programmer.Error: PerceptionFilter process name unknown: " + name)
-         
+    
+    ## Utility method, sets all objects' attractivity to given value.
     def SetAllTo(self, rObjs, attractivity):
         for rObj in rObjs:
             rObj.curAttractivity = attractivity * rObj.attractivity
     
+    ## Utility method, sets all objects' attractivity regarding mutual affrodances between given current action and object.
     def SetAllToRegardingAffs(self, rObjs, action, coef):
         sources = action.sources
         sourcesCount = len(sources)

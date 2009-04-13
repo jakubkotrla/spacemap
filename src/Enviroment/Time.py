@@ -1,7 +1,10 @@
+## @package Enviroment.Time
+# Implements advanced time functions.
 
 import string
 import math
 
+## Represents arbitrary time.
 class Time:
     def __init__(self, day=0, hour=0, minute=0, second=0, week = 0):
         self.day = day
@@ -10,7 +13,7 @@ class Time:
         self.second = second
         self.week = week
 
-
+    ## Returns True if self was before given time.
     def Before(self, time):
         if time.day > self.day:
             return True
@@ -24,7 +27,8 @@ class Time:
             return True
         else:
             return False
-            
+    
+    ## Adds given count of seconds to self.        
     def AddSeconds(self, seconds):
         self.second += int(math.floor(seconds))
         if self.second > 59:
@@ -62,9 +66,11 @@ class Time:
     def GetSecondsInDay(self):
         return self.hour*3600 + self.minute*60 + self.second
     
+    ## Returns count of seconds from time zero, lie Unix timeestamp.
     def GetSeconds(self):
         return self.week*3600*24*7 + self.day*3600*24 + self.hour*3600 + self.minute*60 + self.second
     
+    ## Formats self to human readable string.
     def TimeToHumanFormat(self, full=False):
         strDay = str(self.week*7 + self.day)
           

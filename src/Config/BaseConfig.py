@@ -1,3 +1,5 @@
+## @package Config.BaseConfig
+# Base class for all worlds.
 
 from Enviroment.Affordances import *
 from Enviroment.Objects import *
@@ -5,12 +7,14 @@ from Agents.Intentions import Intentions, Intention
 from Agents.Processes import Processes, Process
 from Agents.Scenarios import Scenario
 
+## Base class for all worlds, implements common tasks.
 class BaseConfig:
     def __init__(self):
         self.intentions = Intentions()
         self.processes = Processes()
         self.scenario = Scenario()
-        
+     
+    ## Populates self.intentions and self.processes.    
     def prepareProcessIntentionsItems(self):
         P_Eat = Process("Eating", [], [Eatability], [Eatability], [], 1800)
         self.processes.AddProcess(P_Eat)
@@ -67,6 +71,7 @@ class BaseConfig:
         I_Nail = Intention("Nail", [P_Nail])
         self.intentions.AddIntention(I_Nail)
     
+    ## Creates list of high-level intentioins used for pre-generting agent's scenrio. Override in subclasses.
     def prepareProcessIntentions(self):    
         self.intentions.AddHighLevelIntention("Eat")
         self.intentions.AddHighLevelIntention("Drink")
@@ -80,11 +85,12 @@ class BaseConfig:
         self.intentions.AddHighLevelIntention("Repair")
         self.intentions.AddHighLevelIntention("Nail")
                      
-    
+    ## Pre-generates agent's scenario.
     def prepareScenario(self):             
         self.scenario = Scenario()
         self.scenario.Generate(self.intentions)
         
+    ## Sets agents intentions, processes and scenario to ActionSelector. Called from ActionSelector.
     def GetAgentIntentions(self, actionSelector):
         self.intentions = Intentions()
         self.processes = Processes()
@@ -97,13 +103,16 @@ class BaseConfig:
         actionSelector.processes = self.processes
         actionSelector.intentions = self.intentions
         actionSelector.scenario = self.scenario
-       
+    
+    ## Creates world. Override in subclasses.  
     def prepareMap(self, map):
         pass
     
+    ## Creates world's future history. Override in subclasses.
     def GetWorldsEvents(self):
         return []
 
+    ## Creates world.
     def SetUpMap(self, map):
         self.prepareMap(map)
         

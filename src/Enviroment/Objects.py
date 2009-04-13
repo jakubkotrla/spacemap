@@ -1,6 +1,9 @@
+## @package Enviroment.Objects
+# Contains list of object types available for worlds.
 
 from Enviroment.Affordances import *
 
+## Represents type of object, has affordances.
 class Object:
     def __init__(self, name, affs = []):
         self.name = name
@@ -65,7 +68,7 @@ Pipe = Object('Pipe', [Smokeability])
 Wood = Object('Wood', [Fireability])
 Torch = Object('Torch', [Lightability])
 
-
+## List of all available object types.
 Objects = [
     Meal,
     Sandwich,

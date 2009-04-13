@@ -1,3 +1,5 @@
+## @package Gui.MapRenderer
+# Renders world state to screen or file.
 
 import time
 from math import *
@@ -9,7 +11,9 @@ from PIL import Image, ImageDraw, ImageFont, ImageColor
 from Tkinter import NW
 from Enviroment.Time import Time 
 
-
+## Renders world state to screen or file.
+#
+# Handles zooming from 100x100 world  to 1000x1000 screen of PNG via self.zoom.
 class MapRenderer:
     def __init__(self, canvas, map, agent, mainWindow, renderAtStart=True):
         self.canvas = canvas
@@ -34,21 +38,25 @@ class MapRenderer:
                     objId = self.Pixel(obj, obj.x, obj.y, "#0000a0", tags="info object", outline="#00aa00")
                 else:
                     objId = self.Pixel(obj, obj.x, obj.y, "blue", tags="info object")
-      
+    
+    ## Clears screen.  
     def Clear(self):
         self.canvas.addtag_all("2del")
         self.canvas.delete("2del")
         self.canvas.create_polygon(0,0, self.canvas.width, 0, self.canvas.width, self.canvas.height, 0, self.canvas.height, fill="white")
-        
+    
+    ## Returns object by given GuiId fo MainWindow.ClickOnCanvas.    
     def GuiIdToObject(self, id):
         return self.guiIdsToObjects[id]  
-        
+    
+    ## Draws Pixel - square 10x10.   
     def Pixel(self, object, cx, cy, color, tags="pixel", outline=""):
         x = cx*self.zoom - round(self.zoom/2) 
         y = cy*self.zoom - round(self.zoom/2)
         id = self.canvas.create_rectangle(x+10,y+10, x+self.zoom+10,y+self.zoom+10, fill=color, outline=outline, tags=tags)
         self.guiIdsToObjects[id] = object
-        return id 
+        return id
+    ## Draws Pixel with given size coeficient.
     def PixelC(self, object, cx, cy, color, coef, tags="pixelc", outline=""):
         coef = coef * 2
         x = cx*self.zoom - round(self.zoom/coef) 
@@ -56,6 +64,7 @@ class MapRenderer:
         id = self.canvas.create_rectangle(x+10,y+10, x+round(2*self.zoom/coef)+10,y+round(2*self.zoom/coef)+10, fill=color, outline=outline, tags=tags)
         self.guiIdsToObjects[id] = object
         return id
+    ## Draws arbitrary rectangle.
     def Rectangle(self, object, cx, cy, w, h, color, tags="rectangle", outline=""):
         x = cx*self.zoom
         y = cy*self.zoom
@@ -64,12 +73,14 @@ class MapRenderer:
         id = self.canvas.create_rectangle(x+10,y+10, x2+10,y2+10, fill=color, outline=outline, tags=tags)
         self.guiIdsToObjects[id] = object
         return id
+    ## Draws arbitrary circle given by range.
     def CircleC(self, object, cx, cy, diameter, color, tags="ovalc"):
         x = cx*self.zoom - round(diameter*self.zoom) 
         y = cy*self.zoom - round(diameter*self.zoom)
         id = self.canvas.create_oval(x+10,y+10, x+round(2*diameter*self.zoom)+10,y+round(2*diameter*self.zoom)+10, fill="", outline=color, tags=tags)
         self.guiIdsToObjects[id] = object
         return id
+    ## Draws arbitrary circle given by size coeficient.
     def PointC(self, object, cx, cy, color, coef, tags="pointc"):
         coef = coef * 2
         x = cx*self.zoom - round(self.zoom/coef) 
@@ -77,20 +88,17 @@ class MapRenderer:
         id = self.canvas.create_oval(x+10,y+10, x+round(2*self.zoom/coef)+10,y+round(2*self.zoom/coef)+10, fill="", outline=color, tags=tags)
         self.guiIdsToObjects[id] = object
         return id
+    ## Draws pie arc.
     def Pie(self, object, x0, y0, x1, y1, start, width, color, tags="pie"):
         id = self.canvas.create_arc(x0*self.zoom+10, y0*self.zoom+10, x1*self.zoom+10, y1*self.zoom+10, start=start, extent=width, style="pieslice", fill="", outline=color, tags=tags)
         self.guiIdsToObjects[id] = object
         return id
-    
+    ## Draws arbitrary line.
     def Line(self, x,y,x2,y2, color, tags="line"):
         return self.canvas.create_line(self.zoom*x+10,self.zoom*y+10, self.zoom*x2+10,self.zoom*y2+10, fill=color, tags=tags)
     
-    def DeleteGuiObject(self, id):
-        self.canvas.delete(id)
-        if id in self.guiIdsToObjects:
-            del self.guiIdsToObjects[id]
     
-    
+    ## Renders agent to screen - red square, several lasts movements and its viewCones - fields of view.
     def RenderAgent(self, agent):
         lId = self.Line(self.agent.x, self.agent.y, self.agent.newX, self.agent.newY, "#fcc", "agenttrail")
         self.agentMHlines.append(lId)
@@ -119,6 +127,7 @@ class MapRenderer:
                 y1 = agenty + vc.distance
                 self.Pie(vc, x0, y0, x1, y1, start, 2*angle, "red", tags="vcone")
     
+    ## Renders obejcts to screen.
     def RenderObjects(self):
         self.canvas.delete("object")
         self.objectsRects = []
@@ -127,7 +136,8 @@ class MapRenderer:
                 objId = self.Pixel(obj, obj.x, obj.y, "#0000a0", tags="info object", outline="#00aa00")
             else:
                 objId = self.Pixel(obj, obj.x, obj.y, "blue", tags="info object")
-            
+   
+    ## Renders object visibility to screen - changes their color.          
     def RenderObjectVisibility(self):
         for obj in self.objectsRects:
             if obj.visibility > 0:
@@ -135,6 +145,7 @@ class MapRenderer:
             else:
                 self.canvas.itemconfigure(obj.guiId, fill="#0000ff")
     
+    ## Renders visibility objects - heatmap to screen. 
     def RenderVisibilityHistory(self):
         for vObj in self.map.visibilityHistory:
             intensity = 255 - int(255 * vObj.visibility*1.0 / self.map.visibilityMaxEver)
@@ -147,12 +158,14 @@ class MapRenderer:
                 self.canvas.tag_lower(vObj.guiId, self.mapEdges)
             else:
                 self.canvas.itemconfigure(vObj.guiId, fill=color)
-                
+    
+    ## Hides visibility objects - heatmap from screen.       
     def HideVisibilityHistory(self):
         self.canvas.delete("visibilityobject")
         for vObj in self.map.visibilityHistory:
             vObj.guiId = None
-            
+    
+    ## Renders SpaceMap - EnergyPoints, nodes, Places to screen.         
     def RenderSpaceMap(self):
         energyPoints = self.agent.intelligence.spaceMap.Layer.energyPoints
         self.canvas.delete("energylayerpoint")
@@ -173,7 +186,7 @@ class MapRenderer:
             for node in place.nodes:
                  self.Line(place.x, place.y, node.x, node.y, "#0000aa", "energylayerPlace")
          
-    
+    ## Shows progress of TestAll mode on screen.
     def RenderProgress(self, progressObject, configName):
         txt = "Progress:\n\n\n"
         txt = txt + " Total test to run: "
@@ -194,13 +207,17 @@ class MapRenderer:
         timeLeft.AddSeconds(secs)
         txt = txt + timeLeft.TimeToHumanFormat(True) + "\n\n"
         self.canvas.create_text(10, 10, text=txt, width=500, anchor=NW, tags="progress")
+        
+    ## Shows progress of TestAll mode on screen - only current step of current test.
     def RenderProgressInTest(self, step, stepCount):
         self.canvas.delete("progresstest")
         txt = "Test: " + str(step) + "/" + str(stepCount)
         self.canvas.create_text(10, 200, text=txt, width=500, anchor=NW, tags="progresstest")
         
-    
-    #layers full: [agent, eps(energyPoints), ov(object.visibility), vh(visibilityHistory), objvh(objectVisibilityHistory), info(text info, log, etc.), wp(waypoint)]
+    ## Renders state of world and spaceMap to PNG file with given name.
+    #
+    # Layers specifies which objects render. 
+    # Layers full: [agent, eps(energyPoints), ov(object.visibility), vh(visibilityHistory), objvh(objectVisibilityHistory), info(text info, log, etc.), wp(waypoint)]
     def RenderToFile(self, world, filename, layers=[]):
         if "info" in layers:
             im = Image.new("RGB", (1500, 1020), (255, 2555, 255))

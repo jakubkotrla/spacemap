@@ -1,3 +1,5 @@
+## @package Enviroment.Map
+# Implements geometry of virtual world.
 
 from math import *
 from Enviroment.Objects import *
@@ -5,6 +7,7 @@ from Enviroment.World import *
 from Global import Global
 from Agents.ProcessArea import *
 
+## Represents object in virtual world
 class RealObject:
     def __init__(self, type, x, y, attractivity, amount):
         self.type = type
@@ -17,7 +20,7 @@ class RealObject:
         self.visibility = 0                   #0.0 - 1.0
         self.trainHistory = 0
                 
-    def Use(self):
+    def Use(self):              #not used yet
         self.amount =- 1
         return (self.amount < 1)
     
@@ -26,15 +29,19 @@ class RealObject:
     def IdStr(self):
         return str(self.x) + "," + str(self.y)
 
+## Represents location in world.
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        
+    ## Returns True if given point is equal, handles float rounding error.
     def Eq(self, point):
         return fabs(self.x-point.x)<Global.MinPositiveNumber and fabs(self.y - point.y)<Global.MinPositiveNumber
     def ToString(self):
         return str(self.x) + "," + str(self.y)
-        
+
+## Contains information about intersection of two lines.         
 class Hit(Point):
     def __init__(self, x, y, hit):
         Point.__init__(self, x, y)
@@ -42,12 +49,13 @@ class Hit(Point):
         self.edge = None  #first edge hit
         self.dist = 0     #distance to first hit, only for Map
         
-
+## Represents edge of polygon - map.
 class Edge:
     def __init__(self, start, end):
         self.start = start
         self.end = end
 
+## Represents path in world - list of points.
 class Path:
     def __init__(self, points, dist):
         self.points = []
@@ -55,6 +63,7 @@ class Path:
     def Last(self):
         return self.points[-1]
 
+## Represents waypoint
 class Waypoint(Point):
     def __init__(self, x, y):
         Point.__init__(self, x, y)
@@ -62,6 +71,7 @@ class Waypoint(Point):
     def ToString(self):
         return "Waypoint[" + str(self.x) + ", " + str(self.y) + "].lastVisited = " + str(self.lastVisited)
 
+## Used for calculation of advanced heatmap, extremely slow.
 class VisibilityObject(Point):
     def __init__(self, x, y):
         Point.__init__(self, x, y)
@@ -69,7 +79,8 @@ class VisibilityObject(Point):
         self.guiId = None
     def ToString(self):
         return "VO[" + str(self.x) + ", " + str(self.y) + "].visibility = " + str(self.visibility)
-             
+        
+## Represents gemetry of virtual world.     
 class Map:
     def __init__(self):
         self.width = 0
@@ -78,11 +89,14 @@ class Map:
         self.wayPoints = []
         self.edges = []  
         self.objects = []
+        ## Several last agent's moves.
         self.agentMoves = []
         self.mapRenderer = None
+        ## List of VisibilityObjects. 
         self.visibilityHistory = []
         self.visibilityMaxEver = 0
-        
+     
+    ## Creates list of map edges from map points - vertices of polygon.   
     def CalculateEdges(self):
         lastPoint = self.points[-1]
         for point in self.points:
@@ -100,7 +114,8 @@ class Map:
                 if self.IsInside( Point(xx,yy) ):    
                     vObj = VisibilityObject(xx, yy)
                     self.visibilityHistory.append(vObj)
-        
+     
+    ## Renders self on screen.   
     def Render(self, mapRenderer):
         self.mapRenderer = mapRenderer
         firstLine = None
@@ -108,33 +123,39 @@ class Map:
             guiId = mapRenderer.Line(edge.start.x, edge.start.y, edge.end.x, edge.end.y, "#000", "map edge")
             if firstLine == None:
                 firstLine = guiId
-        #for wayPoint in self.wayPoints:
-        #    mapRenderer.PixelC(wayPoint, wayPoint.x, wayPoint.y, "#000", 2, "waypoint")
+        for wayPoint in self.wayPoints:
+            mapRenderer.PixelC(wayPoint, wayPoint.x, wayPoint.y, "#000", 2, "waypoint")
         return firstLine
     
+    ## Adds new object to map, retusn create object.
     def AddObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
         rObject = RealObject(type, x, y, attractivity, amount)    
         self.objects.append(rObject)
         return rObject
+    ## Creates new object, returns it. 
     def CreateObject(self, type, x, y, attractivity = Global.ObjDefaultAttractivity, amount=1):
         rObject = RealObject(type, x, y, attractivity, amount)
         rObject.onMap = False
         return rObject    
+    ## Adds object rpeviously created with CreateObject() to map.
     def AddExistingObject(self, rObject):
         self.objects.append(rObject)
         rObject.onMap = True
+    ## Removes existing object from map.
     def RemoveExistingObject(self, rObject):
         self.objects.remove(rObject)
         rObject.onMap = False
     
+    ## Sets initial agent location.
     def SetAgentStart(self, x, y):
         self.agentMoves.append( Point(x, y) )
+    ## Sets initial agent location.
     def PlaceAgent(self, agent):
         agent.newX = agent.x = self.agentMoves[0].x
         agent.newY = agent.y = self.agentMoves[0].y
         self.calculateVisibility(agent)
         
-    
+    ## Moves agent to given location if posible. Returns duration of movement as distance.
     def MoveAgent(self, agent, newX, newY):
         if not self.CanMove(agent, newX, newY):
             Global.Log("Programmer.Error: Map.MoveAgent out of map")
@@ -150,7 +171,7 @@ class Map:
             agent.newY = newY
         return round(duration)
       
-    #start has old position in .x and .y 
+    ## Returns True if one can move from start to newXY. False otherwise. 
     def CanMove(self, start, newX, newY):
         hitPoint = None
         newPos = Point(newX,newY)
@@ -167,6 +188,7 @@ class Map:
                 else:
                     return False
         return True
+    ## Returns Hit instance describing if one can move from start to newXY and possible intersection with map edges.
     def CanMoveEx(self, start, newX, newY):
         newPos = Point(newX, newY)
         hitPoint = self.canMoveExInner(start, newPos)
@@ -182,7 +204,8 @@ class Map:
                     hitPoint.y = newPos.y
 
         return hitPoint
-        
+    
+    ## Utility method doing real work.    
     def canMoveExInner(self, start, end):
         hitPoint = None
         
@@ -209,7 +232,7 @@ class Map:
             return Hit(0, 0, False)
         else:
             return hitPoint
-    
+    ## Utility method, sliding on edge. Returns new location as Point.
     def moveAlongEdge(self, edge, start, newPos):
         edx = edge.end.x - edge.start.x
         edy = edge.end.y - edge.start.y
@@ -229,6 +252,7 @@ class Map:
             x2 = (edx*newPos.x - edy*(y2-newPos.y)) / edx   
             return self.AreIntersecting(edge.start, edge.end, Point(x2,y2), Point(x1, y1))    
     
+    ## PathFinder - finds path from start to newXY.
     def GetPath(self, start, newX, newY):
         if self.CanMove(start, newX, newY):
             return self.dividePath([start, Point(newX, newY)])
@@ -239,7 +263,7 @@ class Map:
                 return path
             else:
                 return None
-    
+    ## Divides path to equal parts so that one part is shorter than Global.MaxAgentMove.
     def dividePath(self, path):
         last = path[0]
         path2 = path[1:]
@@ -252,7 +276,7 @@ class Map:
             newPath.append(part)
             last = part
         return newPath
-    
+    ## Utility method doing real work.
     def dividePathPart(self, start, end):
         dist = self.DistanceObjs(start, end)
         if dist > Global.MaxAgentMove:
@@ -277,7 +301,7 @@ class Map:
         else:
             return None
     
-    #using inner points as in http://alienryderflex.com/shortest_path/
+    ## PathFinder implementation, using inner points as in http://alienryderflex.com/shortest_path/.
     def findPath(self, start, end):
         dist = {}
         previous = {}
@@ -313,6 +337,7 @@ class Map:
             point = previous[point]
         path.insert(0, start)
         return path
+    ## Returns list of waypoints plus end location, that can be directly moved to in line.
     def getNeighbours(self, point, end):
         neighbours = []
         for p in self.wayPoints:
@@ -324,6 +349,7 @@ class Map:
                 neighbours.append(end)
         return neighbours
     
+    ## Returns Hit instance describing intersection of two lines.
     def AreIntersecting(self, edge1point1, edge1point2, edge2point1, edge2point2):
         # 0 = ax + by + c
         a1 = edge1point2.y - edge1point1.y
@@ -356,8 +382,10 @@ class Map:
         
         return Hit(x,y, True)       
    
-    #from http://alienryderflex.com/polygon/
-    #more at http://tog.acm.org/editors/erich/ptinpoly/
+    ## Returns True if given point is in polygon representing world.
+    #
+    # From http://alienryderflex.com/polygon/.
+    # More at http://tog.acm.org/editors/erich/ptinpoly/.
     def IsInside(self, point):
         for p in self.points:
             if point.Eq(p): return True
@@ -386,7 +414,9 @@ class Map:
             Global.Log("Programmer.Error: IsInside countX!=countY for: " + point.ToString())
         return (countX or countY)
     
-    #from http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
+    ## Returns area of world.
+    #
+    # From http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/.
     def GetArea(self):
         sum = 0
         vertices = copy(self.points)
@@ -396,6 +426,7 @@ class Map:
             sum = sum + vertices[i].x * vertices[i+1].y - vertices[i].y * vertices[i+1].x
         return fabs( sum * 0.5)
     
+    ## Returns random location inside world.
     def GetRandomLocation(self):
         x = Global.Randint(0, self.width) 
         y = Global.Randint(0, self.height)
@@ -406,6 +437,7 @@ class Map:
             p = Point(x,y)    
         return p
     
+    #not used yet
     def UseObject(self, excProcess, realObject):
         if realObject.Use():
             self.objects.remove(realObject)
@@ -413,6 +445,7 @@ class Map:
             return True
         return False    
  
+    ## Returns list of object that agent can see right now.
     def GetVisibleObjects(self, agent):
         self.calculateVisibility(agent)
         objs = []
@@ -421,6 +454,7 @@ class Map:
                 objs.append(obj)
         return objs 
       
+    ## Returns visibility of given object by given agent.
     def GetVisibility(self, agent, object):
         dist = self.DistanceObjs(agent, object)
         if dist > agent.viewConeMaxDist: return 0
@@ -444,46 +478,57 @@ class Map:
                 visibility = visibility + vc.intensity
 
         return visibility
-      
+    
+    ## Returns True if given object is visible for given agent.  
     def IsObjectVisible(self, agent, object):
         object.visibility = self.GetVisibility(agent, object)
         return (object.visibility > 0)
     
+    ## Does one step of simulation of map - calculates visibility of objects and waypoints.
     def Step(self, agent):
         self.calculateWayPointsVisited(agent)
         if Global.CalculateVisibilityHistory:
             self.calculateVisibilityHistory(agent)
     
+    ## Calcualtes visibility of waypoints.
     def calculateWayPointsVisited(self, agent):
         for wayPoint in self.wayPoints:
             if self.DistanceObjs(wayPoint, agent) < Global.WayPointArea:
                 wayPoint.lastVisited = Global.GetSeconds()
-            
+    
+    ## Calcualtes visibility of objects.
     def calculateVisibility(self, agent):
         for obj in self.objects:
             visibility = self.GetVisibility(agent, obj)
             obj.visibility = visibility
-            
+    
+    ## Calcualtes visibility of Visibilityobjects, extremely slow.       
     def calculateVisibilityHistory(self, agent):
         for obj in self.visibilityHistory:
             visibility = self.GetVisibility(agent, obj)
             obj.visibility += visibility
             if obj.visibility > self.visibilityMaxEver:
                 self.visibilityMaxEver = obj.visibility
-      
+    
+    ## Saves heatmap of object.trained to CSV data file. 
     def SaveHeatMap(self):
         for obj in self.objects:
             objStr = str(obj.x) + ";" + str(obj.y) + ";%.4f"%(obj.trainHistory)
             Global.LogData("objheatmap", objStr)
-      
+    
+    ## Returns distance between two points.
     def Distance(self, x1,y1,x2,y2):
         ldx = x2-x1
         ldy = y2-y1
         return sqrt(ldx*ldx+ldy*ldy)
+    
+    ## Returns distance between two points.
     def DistanceObj(self, x,y,object):
         ldx = x-object.x
         ldy = y-object.y
         return sqrt(ldx*ldx+ldy*ldy)
+    
+    ## Returns distance between two points.
     def DistanceObjs(self, o1,o2):
         ldx = o1.x-o2.x
         ldy = o1.y-o2.y

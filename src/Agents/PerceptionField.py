@@ -1,9 +1,11 @@
+## @package Agents.PerceptionField
+# Contains PerceptionField and Phantom.
 
 import copy
 from Enviroment.Global import Global
 from PerceptionFilter import PerceptionFilter
 
-
+## REpresents Phantom of seen object.
 class Phantom:
     def __init__(self, rObject, memoryPhantom=None):
         self.object      = rObject
@@ -11,12 +13,15 @@ class Phantom:
         self.ownerProcess = None
         habEffect = rObject.curAttractivity * rObject.visibility
         self.habituation = Global.PFPhantomHabCreate * habEffect
+        ## Pointer to MemoryPhantom, if object was looked for and there is corresponding MemoryPhantom i MemoryArea. None otherwise.
         self.memoryPhantom = memoryPhantom
-        
+    
+    ## Increase habituation as a result of ObjectNoticedAgain.
     def Update(self, rObject):
         hab = Global.PFPhantomHabUpdate * rObject.curAttractivity * rObject.visibility
         self.habituation += hab
     
+    ## Decrease habituation of Phantom.
     def Habituate(self, amount):
         self.habituation -= amount
         return self.habituation < 1
@@ -26,7 +31,8 @@ class Phantom:
             Global.Log("Programmer.Error: Phantom with owner process set again: " + self.object.ToString())
         self.ownerProcess = process
         process.resources.append(self)
-        
+    
+    ## Deletes self and recreates MemoryPhantom in MemoryArea if any.    
     def DeletedOrLost(self):
         if self.ownerProcess != None:
             if self in self.ownerProcess.resources:
@@ -38,6 +44,7 @@ class Phantom:
         self.memoryPhantom = None
         #self will be deleted
     
+    ## Reset ist ownerProcess, its MemoryPhantom's ownerProcess as well.
     def OwnerProcessTerminated(self):
         #self.ownerProcess.resources.remove(self) - meaningless, process will never be used again, is only stored in episodic memory
         self.ownerProcess = None
@@ -55,7 +62,7 @@ class Phantom:
             s = "Phantom(E, " + str(self.habituation) + ") of " + self.object.ToString()
         return s
 
-
+## Represent agent's shortterm memory for seen objects, contains list of objects' phantoms. 
 class PerceptionField:
     def __init__(self, agent, processArea, spaceMap, memoryArea):
         self.agent = agent
@@ -65,6 +72,10 @@ class PerceptionField:
         self.memoryArea = memoryArea
         self.perceptionFilter = PerceptionFilter()
 
+    ## Notice new and already seen object to PF.
+    #
+    # Phantoms are sorted by theirs habiuation and only Global.PFsize of phantoms is stored.
+    # Stored phantoms are propagated to ProcessArea and SpaceMap.
     def NoticeObjects(self, visibleObjects, actProcess):
         self.perceptionFilter.ProcessObjects(visibleObjects, actProcess)
         phantomsToSpaceMap = {}
@@ -110,6 +121,7 @@ class PerceptionField:
                 self.processArea.PhantomAdded(phantom)
                 self.spaceMap.ObjectNoticed(phantom.object)
 
+    ## One step of simualtion of PF, decrase habituation of phantoms and removes habituated ones. 
     def Update(self, action):
         habituatedPhantoms = []
         for phantom in self.environmentPhantoms:
@@ -122,12 +134,14 @@ class PerceptionField:
             habituatedPhantom.DeletedOrLost()
             Global.Log("PF: removing(habituated) phantom for object " + habituatedPhantom.object.ToString())
 
+    ## Returns phantom of given object if any in PF. Otherwise returns None. 
     def GetPhantomForObj(self, rObj):
         for phantom in self.environmentPhantoms:
             if phantom.object == rObj:
                 return phantom
         return None 
     
+    ## Finds phantoms for given ExcitedProcess to fill in missing slots/sources regarding affordances.
     def TryToLinkPhantomsFor(self, excProcess, missingSources):
         for wantedAff in missingSources:
             phantomForAff = None
@@ -137,7 +151,10 @@ class PerceptionField:
             if phantomForAff != None:
                 phantomForAff.SetOwnerProcess(excProcess)
                 phantomForAff.affordance = wantedAff
-                        
+    
+    ## Propagate using of objects to SpaceMap.
+    #
+    # In future this will solve ObjectUsedUp scenario.                  
     def UseObjectPhantoms(self, excProcess):
         for phantom in excProcess.resources:
             if phantom.GetType() != "e":
@@ -146,7 +163,7 @@ class PerceptionField:
             self.spaceMap.ObjectUsed(phantom.object)
         
         map = Global.Map
-        usedSources = [] #excProcess.process.usedSources Future: object.amount
+        usedSources = [] #excProcess.process.usedSources Future: object.amount TBD.
         for usedSource in usedSources:
             for phantom in excProcess.resources:
                 if usedSource == phantom.affordance:
@@ -156,7 +173,8 @@ class PerceptionField:
                         Global.Log("PF: removing(used) phantom for object " + phantom.object.ToString())
         #reset all phantoms used by that process - to avoid phantom.Error when object/phantom used second time
         #above is done more generally in ExcitedProcess.TerminateProcess
-        
+    
+    ## Updates list of phantoms regarding new agent's location, only removes phantoms not present in agent's field of view.    
     def UpdatePhantomsBecauseOfMove(self, agent):
         map = Global.Map
         lostPhantoms = []
@@ -168,6 +186,7 @@ class PerceptionField:
             phantom.DeletedOrLost()
             Global.Log("PF: removing(lost) phantom for object " + phantom.object.ToString())
     
+    ## Implements smart action "LookForObject". Simulates PF.NoticeObjects and propagates ObjectFound or ObjectNotFound to SpaceMap.
     def LookForObject(self, memoryPhantom):
         memObject = memoryPhantom.object
         map = Global.Map
