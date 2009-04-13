@@ -84,6 +84,7 @@
 \begin{document}
 \lstset{language=C++}
 \input epsf
+\pagenumbering{gobble}
 
 \pagestyle{plain}
 %\include{kapitoly/0..hlavicka}
@@ -91,6 +92,9 @@
 \tableofcontents
 
 %\include{kapitoly/0.abstrakt}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
 \include{kapitoly/1.uvod}
 \include{kapitoly/2.rozborproblemu}
 \include{kapitoly/3.pribuzneprace}
@@ -108,10 +112,13 @@
 \include{kapitoly/8.zaver}
 
 \appendix
+
+
 \include{prilohy/1.mistnosti}
 \include{prilohy/2.params}
 \include{prilohy/3.userdoc}
 \include{prilohy/4.progdoc}
+\include{prilohy/5.cd}
 
 
 \bibliographystyle{jk}
