@@ -1,8 +1,8 @@
 \chapter{Diskuze}
-
-
-jak to dopadlo..??
-
+Model prostorové mapy popsaný v kapitole \ref{chapter-model} resp. \ref{chapter-model-el} splòuje základní požadavky, které jsme na nìj kladli.
+V prùbìhu jeho testování a vytváøení se objevila celá øada možných rozšíøení a vylepšení.
+Nìkterá z nich jsou popsána v této kapitole.
+\\
 
 \section{Adaptivní odpudivost}
 V pøedstaveném modelu je vzájemná odpudivost uzlù závislá pouze na jejich vzdálenosti a naplnìnosti.
@@ -17,8 +17,20 @@ tím by parametry pøestaly být stejné pro všechny uzly a odpudivost uzlù by se ta
 \\
 
 \section{Pøitažlivost stop vjemu}
-??
+Pokud je v místnosti oblast, kde je poblíž sebe více pøedmìtù, prostorová mapa v ní vytvoøí více uzlù.
+Pokud však budou mít pøedmìty nízkou aktraktivitu, napø. $^1/_{10}$ výchozí atraktivity, nedojde k vzniku nových uzlù.
+Poèáteèní intenzita stop vjemu vytváøených v této oblasti bude pøílis malá, aby pokryla rostoucí cenu uzlu.
+Pøestože v oblasti jich bude hodnì, žádná z nich nebude dost intenzivní.
 \\
+
+Pokud èlovìk vidí hromadu malých nezajímavých vìcí, nezapamatuje si jednotlivé vìci, zapamatuje si však fakt, že v dané oblasti byla "velká hromada nìèeho".
+Øešením by bylo pøidat do modelu pøitažlivost stop vjemu. Lze ji chápat jako shlukování vjemù, které jsou blízko u sebe.
+Síla pøitažlivosti by mìla být nepøímo úmìrná intenzitì stopy vjemu, budou se tak shlukovat pouze vjemy s malou intenzitou.
+Také ochota stopy mìnit svoji polohu, tedy velikost zmìny polohy by mìla být nepøímo úmìrná na její intenzitì.
+Výsledkem bude, že slabší vjemy budou pøitaženy k silnìjším.
+\\
+
+% ?? ToDo ukazat/overit na prikladu na prikladu, ze to tak je.
 
 
 \section{Sjednocení stopy vjemu a uzlu}

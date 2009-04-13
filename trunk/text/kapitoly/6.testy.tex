@@ -1,31 +1,60 @@
 \chapter{Výsledky testù modelu}
 
 Tato kapitola obsahuje výsledky testù modelu.
-Jednak testy finálního modelu na rùzných datech, druhak testy modelu s rùznými hodnotami nìkterých klíèových parametrù.
+Jednak testy finálního modelu prostorové mapy na rùzných datech, druhak testy modelu s rùznými hodnotami nìkterých klíèových parametrù.
 \\
 
-Samotný test je urèen testovacím svìtem\footnote{Pøehled všech testovacích místností je v pøíloze A.}
-, tedy místností a scénáøem a hodnotami parametrù.
+Samotný test je urèen testovacím svìtem\footnote{Pøehled všech testovacích místností je v pøíloze A.},
+tedy místností a scénáøem a hodnotami parametrù.
 V nìkterých pøípadech bylo testována rùzná øešení konkrétních podúloh.
 V takových pøípadech nestaèí zmìnit parametry modelu, ale je nutné upravit samotný algortimus.
-Takové pøípady budou explicitnì popsány a rùzné algoritmy vysvìtleny.
 \\
 
 
 
- obrázek ukazující stav svìta a prsotorové mapy v 
-
-\section{Testy finálního modelu}
-
-Test vysledneho modelu - vsechna data a vetsina mistnosti
-Vse pak mit na CD
+\section{Testy finálního modelu} \label{chapter-test-final}
+Model prostorové mapy popsaný v kapitole \ref{chapter-model} resp. \ref{chapter-model-el}
+s výchozím nastavením parametrù dle tabulky \ref{tab:param-el} v pøíloze B jsme otestovali v osmi rùzných místnostech. 
+Na obrázku \ref{fig:final-crazy}, \ref{fig:final-heapline} a \ref{fig:final-lobby} jsou výsledky ve tøech místnostech.
+Výsledky v dalších místnostech, další výstupní data a videa zachycující prùbìh testù jsou na pøiloženém CD.
 \\
+
+
+\begin{figure}[p]
+  \centering
+  \subfloat[Krok 1000]{\includegraphics[width=0.5\textwidth]{img/final/crazy1000.eps}}
+  \subfloat[Krok 5000]{\includegraphics[width=0.5\textwidth]{img/final/crazy5000.eps}}
+  \caption{Test finálního modelu, místnost CrazyRoom.}
+  \label{fig:final-crazy}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \subfloat[Krok 1000]{\includegraphics[width=0.5\textwidth]{img/final/heapline1000.eps}}
+  \subfloat[Krok 5000]{\includegraphics[width=0.5\textwidth]{img/final/heapline5000.eps}}
+  \caption{Test finálního modelu, místnost HeapLineRoom.}
+  \label{fig:final-heapline}
+\end{figure}
+
+
+\newpage
+
+\begin{figure}[h!]
+  \centering
+  \subfloat[Krok 1000]{\includegraphics[width=0.5\textwidth]{img/final/lobby1000.eps}}
+  \subfloat[Krok 5000]{\includegraphics[width=0.5\textwidth]{img/final/lobby5000.eps}}
+  \caption{Test finálního modelu, místnost Lobby.}
+  \label{fig:final-lobby}
+\end{figure}
+
+
+
 
 
 \section{Vliv naplnìnosti} \label{chapter-test-ag}
 
 V tomto testu ukážeme, jak dùležitou roli hraje vliv naplnìnosti pøi urèování vzájemné odpudivosti dvou uzlù ve vzorci \eqref{formula:el-odpudivost}.
-Provedli jsme 5000 krokù simulace v místnostech EmptyRoom a FullRoom. ?? adresar na CD ??.
+Provedli jsme 5000 krokù simulace v místnostech EmptyRoom a FullRoom.
 \\
 
 V prvním testu nebyla naplnìnost uzlù pøi poèítání odpudivosti vùbec brána v úvahu.
@@ -68,12 +97,140 @@ Obrázky \ref{fig:usage-ag-0.5}, \ref{fig:usage-ag-0.8}, \ref{fig:usage-ag-1} uka
 
 
 
+\newpage
+
+\section{Pøesnost mapy}
+Jedním z objektivních kritérií modelu je pøenost mapy, nakolik odpovídá realitì virtuálního svìta.
+
+\begin{definition}[Nauèenost pøedmìtu]
+V prùbìhu simulace agent vidí a používá pøedmìty a prostorová mapa dostává vjemy, které to odráží.
+Nauèenost pøedmìtu je vlastnost vyjadøující, jak moc agent pøedmìt vnímal a použival.
+Na zaèátku simulace je rovna nule. V prùbìhu simulace, pokaždé, když je vytvoøen vjem pøedmìtu, je nauèenost pøedmìtu zvýšena o intenzitu vjemu.
+Nauèenost pøedmìtu neklesá.
+\end{definition}
+
+Na konci simulace máme k dispozici množinu pøedmìtù, jejich polohu a nauèenost\footnote{Tyto informace jsou nezávislé na prostorové mapì.}.
+Prostorová mapa má k dispozici množinu uzlù, jejich polohu a naplnìnost. Pøedpokládáme, že naplnìnost uzlù bude odrážet nauèenost pøedmìtù.
+Vizualizace dat pro místnost FullRoom je na obrázku \ref{fig:test-heatmap}, další jsou na pøiloženém CD.
+Ukazuje, že náš pøepoklad je správný, uzly prostorové mapy, reps. jejich naplnìnost se blíží nauèenosti pøedmìtù.
+\\
+
+
+\begin{figure}[h]
+  \centering
+  \subfloat[Nauèenost pøedmìtù]{\includegraphics[width=0.5\textwidth]{img/heatmap/predmet.eps}}
+  \subfloat[Naplnìnost uzlù]{\includegraphics[width=0.5\textwidth]{img/heatmap/uzel.eps}}
+  \caption{Vizualizace naplnìnosti uzlù a nauèenosti pøedmìtù.}
+  \label{fig:test-heatmap}
+\end{figure}
+
+\newpage
+
+Dalším mìøítkem je pøesnost zapamatovaných poloh pøedmìtù. V každém kroku simulace mùžeme urèit, na jaké poloze se agent odmnívá, že pøedmìt je.
+To mùžeme porovnat s realitou.
+Na obrázcích \ref{fig:test-error1} a \ref{fig:test-error2} je zobrazen vývoj rozdílu mezi realitou a agentovou prostorovou mapu v
+èase\footnote{Výsledky v dalších místnostech jsou opìt na pøiloženém CD.}.
+V tomto testu model uspìl jen v polovinì testovaných dat.
+\\
+
+
+\begin{figure}[h]
+  \centering
+  \subfloat[Místnost Corridor]{\includegraphics[width=0.5\textwidth]{img/error/corridor.eps}}
+  \subfloat[Místnost CrazyRoom]{\includegraphics[width=0.5\textwidth]{img/error/crazy.eps}}
+  \caption{Prùmìrná chyba polohy pøedmìtù v èase.}
+  \label{fig:test-error1}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \subfloat[Místnost FullRoom]{\includegraphics[width=0.5\textwidth]{img/error/full.eps}}
+  \subfloat[Místnost HeapRoom]{\includegraphics[width=0.5\textwidth]{img/error/heap.eps}}
+  \caption{Prùmìrná chyba polohy pøedmìtù v èase.}
+  \label{fig:test-error2}
+\end{figure}
+
+\newpage
+
+\section{Test limitù míst}
+V kapitole \ref{chapter-place-detect} byl popsán mechanismus vytváøení míst.
+Model prostorové mapy je díky nìmu schopen rozpoznat oblasti s vyšší hustotou uzlù a vytvoøit v takové oblasti místo.
+V tomto testu jsme se rozhodli vyzkoušet vliv parametrù \param{rychlost klesání $\varrho$}, \param{limit vzniku podmísta} a \param{limit zapomenutí místa}.
+Test jsme provedli s nastavením parametrù tak, aby došlo k vytvoøení více míst, jejich hodnoty jsou v tabulce \ref{tab:test-mist}, test mìl 4000 krokù simulace.
+\\
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|l|l|l|}\hline
+Parametr & Výchozí hodnota & Testovaná hodnota \\
+\hline
+ELAGFadeOut & 0,1 & 0,05 \\
+\hline
+PlacesAGNeeded & 1500 & 1000 \\
+\hline
+PlacesAGMin & 500 & 300 \\
+\hline
+\end{tabular}
+\end{center}
+\centering
+\caption{Hodnoty parametrù testu}
+\label{tab:test-mist}
+\end{table}
+
+Výsledky testu s výchozími hodnotami parametrù jsou na obrázku \ref{fig:test-places-ll}, výsledky testu se zmìnìnými parametry jsou na obrázku \ref{fig:test-places-lh}.
+Je vidìt, že zmìna testovaných parametrù zpùsobila vznik více míst. I v témìø prázné místnosti vznikla tøi místa.
+Vedlejším efektem však bylo vytvoøení míst i tam, kde jsme je neoèekávali a nechtìli.
+Zvýraznìná místa na obrázku \ref{fig:test-places-lh-heap} nevznikly pøímo díky hustotì uzlù.
+Ke svému vzniku spotøebovali množství odpudivosti nahromadìné v uzlech v tìsné blízkosti jiných míst.
+\\
+
+
+\begin{figure}[p]
+  \centering
+  \subfloat[EmptyRoom]{\includegraphics[width=0.5\textwidth]{img/places/lh-empty.eps}}
+  \subfloat[HeapRoom]{\includegraphics[width=0.5\textwidth]{img/places/lh-heap.eps}}
+  \caption{Test vytváøení míst, výchozí hodnoty parametrù.}
+  \label{fig:test-places-ll}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \subfloat[EmptyRoom]{\includegraphics[width=0.5\textwidth]{img/places/ll-empty.eps}}
+  \subfloat[HeapRoom]{\label{fig:test-places-lh-heap}\includegraphics[width=0.5\textwidth]{img/places/ll-heap.eps}}
+  \caption{Test vytváøení míst, zmìnìné hodnoty parametrù.}
+  \label{fig:test-places-lh}
+\end{figure}
+
+
+
+
+\newpage
+
 \section{Test dynamického svìta}
-
-
-
-Pohyb, vliv na chybu
+Model prostorové mapy je vytvoøen tak, aby se dokázal pøizpùsobit mìnícímu se prostøedí.
+Provedli jsme tedy test v místnosti SwitchRoom, kterou jsme navrhli právì pro tento úèel.
+V místnosti dojde ke dvìma zmìnám, v kroku 1500 je odebrána èást pøedmìtù a v kroku 4000 je nìkolik z nich vráceno zpìt a vytvoøeno nìkolik
+nových\footnote{Místnost SwitchRoom a její zmìny jsou zobrazeny v pøíloze A}.
 \\
 
-Ruzna odpudivost
+Výsledek testu je na obrázcích \ref{fig:test-dyn-nc} a \ref{fig:test-dyn}. Je na nich vidìt, že mapa se skuteènì pøizpùsobila novým pøedmìtùm
+pøidaným v kroku 4000 v dolním pravém rohu a brzy tam vzniklo místo.
+Poèet uzlù mapy také zareagoval na zmìnu poètu pøedmìtù, krátce po kroku 1500 pøestal rùst, pozdìji zaèal zvolna klesat.
+Když byly pøidány nové pøedmìty, poèet uzlù zaèal pozvolna stoupat.
+Prùbìh testu je lépe vidìt na videu, které je na pøiloženém CD.
 \\
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\textwidth]{img/dyn/nc.eps}
+  \caption{Poèet uzlù prostorové mapy v èase, testovací místnost SwitchRoom.}
+  \label{fig:test-dyn-nc}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \subfloat[Krok 4001]{\includegraphics[width=0.5\textwidth]{img/dyn/step4001.eps}}
+  \subfloat[Krok 4400]{\includegraphics[width=0.5\textwidth]{img/dyn/step4400.eps}}
+  \caption{Test dynamického svìta, v kroku 4000 jsou pøidány pøedmìty do pravého dolního rohu, v kroku 4400 tam již je místo.}
+  \label{fig:test-dyn}
+\end{figure}

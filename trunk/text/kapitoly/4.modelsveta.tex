@@ -3,6 +3,7 @@
 Model prostorové mapy by mìl být nezávislý na konkrétní abstrakci svìta a architektuøe agenta.
 Pouze potøebuje nìjaké prostøedí pro vývoj a testování.
 Rozhodli jsme se vytvoøit vlastní virtuální svìt a agenta, který v nìm žije - pohybuje se v nìm, provádí èinnosti a vnímá své okolí.
+Abstrakce svìta a architektura agenta je popsána v této kapitole. 
 \\
 
 
@@ -118,12 +119,17 @@ Teprve akce "MoveToPartial" je atomická a lze ji provést v jednom kroku simulace
 \\
 
 Chytré akce jsou:
-\begin{CompactItemize}
-\item MoveTo(x,y) - pøesun agenta na pozici x,y. Nejdøíve je nalezena cesta, pokud je svìt konvexní místnost, jedná se o úseèku; pokud svìt není konvexní, jsou použity waypointy a cesta je lomená èára. Každá úseèka je pak rovnomìrnì rozdìlena na kratší èásti tak, aby délka její nejdelší èásti byla menší než \param{maximální krok agenta}. Díky tomu se agent každé kolo simulace posune jen o malý kus.
-\item SearchRandom(afordance) - náhodné hledání pøedmìtu s danou afordancí. Agent má u každého waypointu uložen èas, kdy jej naposledy vidìl. Tato akce zajistí, že agent postupnì navštíví všechny waypointy. Zaène tím, který má nejstarší èas až k tomu waypointu, který navštívil jako poslední. Toto poøadí je urèeno na zaèátku akce. K pøesunu mezi waypointy agent provádí chytrou akci MoveTo.
-\item LookUpInMemory(afordance) - získání pøedmìtu s danou afordancí s využitím prostorové mapy. Agent si nejdøíve vybaví pøedmìt s danou afordancí, který si pamatuje nejlépe (urèí prostorová mapa). K tomutu pøedmìtu se pøesune pomocí chytré akce MoveTo. Pak spustí atomickou akci LookForObject, která je jen speciálním pøípadem akce Explore.
-\item Execute - provedení èinnosti. Tato akce je spuštìna pouze pokud èinnost, kterou chce agent vykonat, má již všechny zdroje, tedy èinnost má pro každou požadovanou afordanci pøipojený fantom pøedmìtu. Pak agent oveøí, zda všechny zdroje èinnosti jsou dostupné, tedy že je v jejich bezprostøední blízkosti. Pokud ne, pøesune se k nim pomocí chytré akce MoveTo.
-\end{CompactItemize}
+
+\begin{description}
+  \item[MoveTo(x,y)] \hfill \\
+  pøesun agenta na pozici x,y. Nejdøíve je nalezena cesta, pokud je svìt konvexní místnost, jedná se o úseèku; pokud svìt není konvexní, jsou použity waypointy a cesta je lomená èára. Každá úseèka je pak rovnomìrnì rozdìlena na kratší èásti tak, aby délka její nejdelší èásti byla menší než \param{maximální krok agenta}. Díky tomu se agent každé kolo simulace posune jen o malý kus.
+  \item[SearchRandom(afordance)] \hfill \\
+  náhodné hledání pøedmìtu s danou afordancí. Agent má u každého waypointu uložen èas, kdy jej naposledy vidìl. Tato akce zajistí, že agent postupnì navštíví všechny waypointy. Zaène tím, který má nejstarší èas až k tomu waypointu, který navštívil jako poslední. Toto poøadí je urèeno na zaèátku akce. K pøesunu mezi waypointy agent provádí chytrou akci MoveTo.
+  \item[LookUpInMemory(afordance)] \hfill \\
+  získání pøedmìtu s danou afordancí s využitím prostorové mapy. Agent si nejdøíve vybaví pøedmìt s danou afordancí, který si pamatuje nejlépe (urèí prostorová mapa). K tomutu pøedmìtu se pøesune pomocí chytré akce MoveTo. Pak spustí atomickou akci LookForObject, která je jen speciálním pøípadem akce Explore.
+  \item[Execute(èinnost)] \hfill \\
+  provedení èinnosti. Tato akce je spuštìna pouze pokud èinnost, kterou chce agent vykonat, má již všechny zdroje, tedy èinnost má pro každou požadovanou afordanci pøipojený fantom pøedmìtu. Pak agent oveøí, zda všechny zdroje èinnosti jsou dostupné, tedy že je v jejich bezprostøední blízkosti. Pokud ne, pøesune se k nim pomocí chytré akce MoveTo.
+\end{description}
 
 
 \begin{table}[h!]
@@ -262,8 +268,4 @@ Pøidání fantomu však není propagováno hned dále (do prostorové mapy a procesní è
 Když jsou zpracovány všechny pøedmìty, které agent tento krok vidìl, jsou fantomy v percepèním poli seøazeny dle intenzity.
 Pokud je fantomù více než velikost percepèního pole, jsou fantomy s nejnižší intenzitou z pole odstranìny.
 Teprve nyní jsou novì pøidané fantomy pøedány prostorové mapì a procesní èásti (pouze ty, které se vešly do percepèního pole).
-\\
-
-
-?? prepsat na algoritmus ??
 \\

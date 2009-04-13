@@ -217,7 +217,7 @@ def plotPlacesStats(fileName):
     agMinND = array( agMin )
     agMaxND = array( agMax )
      
-    plot(stepND, agMeanND, 'b-', label='průměr')
+    plot(stepND, agMeanND, 'b-', label=u'průměr')
     plot(stepND, agMinND, 'k:', label='min')
     plot(stepND, agMaxND, 'k:', label='max')
     xlabel(u"čas (kroky)", family=fontFamily)
