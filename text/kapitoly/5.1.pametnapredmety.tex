@@ -19,21 +19,31 @@ Asociativní sí je mnoina trojic \emph{$<$uzel,stopa,intenzita$>$}, tedy vazeb 
 
 \begin{table}[h!]
 \begin{center}
-\begin{tabular}{|l|p{6cm}|}\hline
-ObjectNoticed & agent vidí pøedmìt, kterı minulı krok simulace nevidìl \\
-\hline
-ObjectNoticedAgain & agent vidí pøedmìt, kterı vidìl ji pøedchozí krok simulace \\
-\hline
-ObjectFound & agent nalezl pøedmìt jako vısledek chytré akce LookUpInMemory \\
-\hline
-ObjectNotFound & agent nenalezl pøedmìt tam, kde ho hledal pøi chytré akce LookUpInMemory \\
-\hline
+\begin{tabular}{lp{6cm}}\toprule[0.5pt]
+Typ vjemu & Zpùsob vzniku \\
+
+\midrule[0.2pt]
+
+ObjectNoticed & Agent vidí pøedmìt, kterı minulı krok simulace nevidìl \\
+
+ObjectNoticedAgain & Agent vidí pøedmìt, kterı vidìl ji pøedchozí krok simulace \\
+
+ObjectFound & Agent nalezl pøedmìt jako vısledek chytré akce LookUpInMemory \\
+
+ObjectNotFound & Agent nenalezl pøedmìt tam, kde ho hledal pøi chytré akce LookUpInMemory \\
+
+\midrule[0.05pt]
+
+ObjectUsed & Agent pøedmìt pouil, tento vjem není vytváøen a zpracováván pøi v prùbìhu vnímání, ale pøi provádìní atomické akce ExecuteReal \\
+
+\bottomrule[0.5pt]
 \end{tabular}
 \end{center}
 \centering
 \caption{Typy vjemu}
 \label{tab:typy-vjemu}
 \end{table}
+
 
 \begin{definition}[Dosah uèení]
 Parametr modelu \param{dosah uèení} urèuje nejvyšší vzdálenost, na kterou budou vytváøeny vazby mezi pamìovou stopou a uzlem mapy.

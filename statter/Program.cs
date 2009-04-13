@@ -11,8 +11,24 @@ namespace statter
 {
     class Program
     {
-        // input: CSV file with lines: step ; node-index ; distMoved ; usage ; AGamount
-        // ouput: CSV file with lines: step ; meanDistMoved ; maxDistMoved ; meanUsage ; maxUsage ; meanAGamount ; maxAGamount
+        /// <summary>
+        /// statter.exe - computes mean, min and max values in data files
+        /// 
+        /// INPUT: CSV file
+        /// OUTPUT: CSV file
+        /// 
+        /// 
+        /// For input file data-elnode-status.txt:
+        ///  step ; node-index ; distMoved ; usage ; AGamount
+        /// ouput file data-elnode-status.stats.txt: 
+        ///  step ; meanDistMoved ; minDistMoved ; maxDistMoved ; meanUsage ; minUsage ; maxUsage ; meanAGamount ; minAGamount ; maxAGamount
+        ///
+        /// For input file data-place-status.txt:
+        ///  place-index ; x ; y ; level ; range ; AGamount ; totalAGamount ; slowAGamount
+        /// ouput file data-places-status.stats.txt: 
+        ///  step ; meanAGamount ; minAGamount ; maxAGamount
+        ///  
+        /// </summary>
         static void Main(string[] args)
         {
             string fileName = String.Empty;
@@ -190,8 +206,6 @@ namespace statter
             StringBuilder sb = new StringBuilder();
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", false);
 
-            double distMean;
-            double usageMean;
             double agMean;
 
             while (csv.ReadNextRecord())
