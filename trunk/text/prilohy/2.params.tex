@@ -1,46 +1,32 @@
 \chapter{Parametry modelu}
 
-Tato pøíloha obsahuje pøehled vech parametrù svìta, agenta a modelu.
+Tato pøíloha obsahuje pøehled všech parametrù svìta, agenta a modelu.
+V tabulce je vdy uvedeno jméno parametru, jméno promìnné v prototypové aplikaci, vıchozí hodnota parametru a doporuèenı rozsah hodnot.
 \\
 
-\begin{table}[h!]
-\begin{center}
-\begin{tabular}{|l|p{5cm}|p{2cm}|p{2cm}|}\hline
-
-\param{název parametru} & \texttt{promìnná v} \texttt{prototypové aplikaci} & vıchozí hodnota & doporuèené hodnoty \\
-\hline
-
-\end{tabular}
-\end{center}
-\centering
-\caption{Parametry}
-\label{tab:params}
-\end{table}
-
-
 
 \begin{table}[h!]
 \begin{center}
-\begin{tabular}{|l|l|r|r|}\hline
+\begin{tabular}{llcc}\toprule[0.5pt]
 
-\param{Maximální krok agenta} & \texttt{MaxAgentMove} & 10 & 2 - 20 \\
-\hline
+\param{název parametru} & \texttt{název promìnné} &  &  \\
+\midrule[0.4pt]
 
-\param{Velikost waypointu} & \texttt{WayPointArea} & 10 & 5 - 20 \\
-\hline
+\param{Maximální krok agenta} & \texttt{MaxAgentMove} & 10 & 2--20 \\
 
-\param{Odchylka waypointu} & \texttt{WayPointNoise} & 10 & 0 - 20 \\
-\hline
+\param{Velikost waypointu} & \texttt{WayPointArea} & 10 & 5--20 \\
 
-\param{Velikost percepèního pole} & \texttt{PFSize} & 7 & 5 - 9 \\
-\hline
+\param{Odchylka waypointu} & \texttt{WayPointNoise} & 10 & 0--20 \\
 
-\param{Vzdálenost nutná k pouití pøedmìtu} & \texttt{MapPickUpDistance} & 2 & 1 - 5 \\
-\hline
+\midrule[0.1pt]
 
-\param{Vıchozí atraktivita pøedmìtù} & \texttt{ObjDefaultAttractivity} & 1 & 0,5 - 2 \\
-\hline
+\param{Velikost percepèního pole} & \texttt{PFSize} & 7 & 5--9 \\
 
+\param{Vzdálenost nutná k pouití pøedmìtu} & \texttt{MapPickUpDistance} & 2 & 1--5 \\
+
+\param{Vıchozí atraktivita pøedmìtù} & \texttt{ObjDefaultAttractivity} & 1 & 0,5--2 \\
+
+\bottomrule[0.5pt]
 \end{tabular}
 \end{center}
 \centering
@@ -49,49 +35,46 @@ Tato pøíloha obsahuje pøehled vech parametrù svìta, agenta a modelu.
 \end{table}
 
 
-
-
-\begin{table}[h!]
+\begin{sidewaystable}[h!]
 \begin{center}
-\begin{tabular}{|p{6cm}|l|l|l|}\hline
+\begin{tabular}{p{10cm}lcc}
 
+\toprule[0.5pt]
+
+\param{název parametru} & \texttt{název promìnné} &  &  \\
+\midrule[0.4pt]
 
 \param{Efekt zpozorování pøedmìtu} & \texttt{TrainEffectNoticed} & 1 & 1 \\
-\hline
 
-\param{Efekt zpozorování pøedmìtu znovu} & \texttt{TrainEffectNoticedAgain} & 0,3 & 0,1 - 0,5 \\
-\hline
+\param{Efekt zpozorování pøedmìtu znovu} & \texttt{TrainEffectNoticedAgain} & 0,3 & 0,1--0,5 \\
 
-\param{Efekt pouití pøedmìtu} & \texttt{TrainEffectUsed} & 3 & 1 - 10 \\
-\hline
+\param{Efekt pouití pøedmìtu} & \texttt{TrainEffectUsed} & 3 & 1--10 \\
 
-\param{Efekt nalezení pøedmìtu} & \texttt{TrainEffectFound} & 2 & 1 - 3 \\
-\hline
+\param{Efekt nalezení pøedmìtu} & \texttt{TrainEffectFound} & 2 & 1--3 \\
 
 \param{Efekt nenalezení pøedmìtu} & \texttt{TrainEffectNotFound} & -1 & -1 \\
-\hline
 
-\param{Maximální délka atomické akce, pokud je delší, provede prostorová pamì více krokù} & \texttt{SMUpdateMaxDuration} & 100 & 10 - 10000 \\
-\hline
+\midrule[0.1pt]
 
-\param{Dosah uèení} & \texttt{SMTrainRange} &  10 & 10 - 20 \\
-\hline
+\param{Maximální délka atomické akce, pokud je delší, provede prostorová pamì více krokù} & \texttt{SMUpdateMaxDuration} & 100 & 10--10000 \\
 
-\param{Poèáteèní naplnìnost uzlu} & \texttt{MemObjIntenseToNewNode} & 1 & 1 - 5 \\
-\hline
+\midrule[0.1pt]
 
-\param{Míra zapomínání pamìovıch stop pøedmìtù} & \texttt{MemObjIntensityFadeOut} &   0,01 & 0,001 - 0,1 \\
-\hline
+\param{Dosah uèení} & \texttt{SMTrainRange} &  10 & 10--20 \\
 
-\param{Míra zapomínání vazeb mezi uzly a pamìovımi stopami} & \texttt{LinkMemObjToNodeFadeOut} & 0,005 & 0,001 - 0,1 \\
-\hline
+\param{Poèáteèní naplnìnost uzlu} & \texttt{MemObjIntenseToNewNode} & 1 & 1--5 \\
 
+\param{Míra zapomínání pamìovıch stop pøedmìtù} & \texttt{MemObjIntensityFadeOut} &   0,01 & 0,001--0,1 \\
+
+\param{Míra zapomínání vazeb mezi uzly a pamìovımi stopami} & \texttt{LinkMemObjToNodeFadeOut} & 0,005 & 0,001--0,1 \\
+
+\bottomrule[0.5pt]
 \end{tabular}
 \end{center}
 \centering
 \caption{Parametry pamìti na pøedmìty}
 \label{tab:param-pametpredmety}
-\end{table}
+\end{sidewaystable}
 
 
 
@@ -100,80 +83,70 @@ Tato pøíloha obsahuje pøehled vech parametrù svìta, agenta a modelu.
 
 \begin{table}[h!]
 \begin{center}
-\begin{tabular}{|l|l|r|r|}\hline
+\begin{tabular}{llcc}\toprule[0.5pt]
+
+\param{název parametru} & \texttt{název promìnné} &  &  \\
+\midrule[0.4pt]
 
 \param{Hustota mapy} & \texttt{ELDensity} & 10 & 10 \\
-\hline
 
-\param{Poèáteèní odchylka mapy} & \texttt{ELCreateNoise} & 3 & 1 - 5 \\
-\hline
+\param{Poèáteèní odchylka mapy} & \texttt{ELCreateNoise} & 3 & 1--5 \\
 
-\param{Rychlost klesání naplnìnosti} & \texttt{ELNodeUsageFadeOut} & 0,005 & 0,001 - 0,01 \\
-\hline
+\midrule[0.1pt]
 
-\param{Dosah pøitalivosti} & \texttt{ELGravityRange} & 20 & 10 - 30 \\
-\hline
+\param{Dosah pøitalivosti} & \texttt{ELGravityRange} & 20 & 10--30 \\
 
-\param{Síla pøitalivosti} & \texttt{ELGravityCoef} & 1 & 0,2 - 3 \\
-\hline
+\param{Síla pøitalivosti} & \texttt{ELGravityCoef} & 1 & 0,2--3 \\
 
-\param{Dosah odpudivosti} & \texttt{ELAntigravityRange} & 20 & 10 - 30 \\
-\hline
+\param{Dosah odpudivosti} & \texttt{ELAntigravityRange} & 20 & 10--30 \\
 
-\param{Síla odpudivosti} & \texttt{ELAntigravityCoef} &  8 & 4 - 20 \\
-\hline
+\param{Síla odpudivosti} & \texttt{ELAntigravityCoef} &  8 & 4--20 \\
 
-\param{Vliv naplnìnosti} & \texttt{ELAGUsageCoef} & 0,8 & 0,4 - 1 \\
-\hline
+\param{Vliv naplnìnosti} & \texttt{ELAGUsageCoef} & 0,8 & 0,4--1 \\
 
-\param{Limit pohybu uzlu} & \texttt{MaxELNodeMove} &  4 & 1 - 5 \\
-\hline
+\param{Limit pohybu uzlu} & \texttt{MaxELNodeMove} &  4 & 1--5 \\
 
-\param{Vliv vjemu} & \texttt{EPCreateEnergy} &  140 &  100 - 200\\
-\hline
+\midrule[0.1pt]
 
-\param{Odchylka vytvoøení uzlu} & \texttt{ELNodeAddNoise} &  2  & 1 - 5 \\
-\hline
+\param{Vliv vjemu} & \texttt{EPCreateEnergy} &  140 &  100--200\\
 
-\param{Míra slabnutí stopy vjemu} & \texttt{EPFadeCoef} & 0,5  & 0 - 0,9 \\
-\hline
+\param{Odchylka vytvoøení uzlu} & \texttt{ELNodeAddNoise} &  2  & 1--5 \\
 
-\param{Limit zmizení stopy vjemu} & \texttt{EPFadeLimit} &  10 & 1 - 20 \\
-\hline
+\param{Míra slabnutí stopy vjemu} & \texttt{EPFadeCoef} & 0,5  & 0--0,9 \\
 
-\param{Míra zapomínání uzlù} & \texttt{ELForgetNodeRate} & 5 & 1 - 10 \\
-\hline
+\param{Limit zmizení stopy vjemu} & \texttt{EPFadeLimit} &  10 & 1--20 \\
 
-\param{Poèet opakování} & \texttt{ELDeleteNodeReTrainCount} & 20 & 10 - 50 \\
-\hline
+\param{Rychlost klesání naplnìnosti} & \texttt{ELNodeUsageFadeOut} & 0,005 & 0,001--0,01 \\
 
-\param{Velikost okolí} & \texttt{ELDeleteNodeReTrainRange} & 20 & 5 - 40 \\
-\hline
+\midrule[0.1pt]
 
-\param{Rychlost rùstu $\varrho$} & \texttt{ELAGAddCoef} &  3 & 1 - 5 \\
-\hline
+\param{Míra zapomínání uzlù} & \texttt{ELForgetNodeRate} & 5 & 1--10 \\
 
-\param{Rychlost klesání $\varrho$} & \texttt{ELAGFadeOut} &  0,1 & 0,01 - 1 \\
-\hline
+\param{Poèet opakování} & \texttt{ELDeleteNodeReTrainCount} & 20 & 10--50 \\
 
-\param{Limit vzniku podmísta} & \texttt{PlacesAGNeeded} &  1500 & 500 - 5000 \\
-\hline
+\param{Velikost okolí} & \texttt{ELDeleteNodeReTrainRange} & 20 & 5--40 \\
 
-\param{Limit zapomenutí místa} & \texttt{PlacesAGMin} &  500 & 100 - 200 \\
-\hline
+\midrule[0.1pt]
 
-\param{Rychlost rùstu intenzity} & \texttt{PlacesAGGrow} &  0,1 & 0,01 - 0,5 \\
-\hline
+\param{Rychlost rùstu $\varrho$} & \texttt{ELAGAddCoef} &  3 & 1--5 \\
 
-\param{Rychlost klesání intenzity} & \texttt{PlaceAGFadeOut} &  0,5 & 0,1 - 1 \\
-\hline
+\param{Rychlost klesání $\varrho$} & \texttt{ELAGFadeOut} &  0,1 & 0,01--1 \\
 
-\param{Pohyblivost míst} & \texttt{PlaceMoveCoef} &  0,02 & 0,01 - 0,5 \\
-\hline
+\param{Limit vzniku podmísta} & \texttt{PlacesAGNeeded} &  1500 & 500--5000 \\
 
+\param{Limit zapomenutí místa} & \texttt{PlacesAGMin} &  500 & 100--200 \\
+
+\param{Rychlost rùstu intenzity} & \texttt{PlacesAGGrow} &  0,1 & 0,01--0,5 \\
+
+\param{Rychlost klesání intenzity} & \texttt{PlaceAGFadeOut} &  0,5 & 0,1--1 \\
+
+\param{Pohyblivost míst} & \texttt{PlaceMoveCoef} &  0,02 & 0,01--0,5 \\
+
+\bottomrule[0.5pt]
 \end{tabular}
 \end{center}
 \centering
 \caption{Parametry gravitaèního modelu vrstvy uzlù}
 \label{tab:param-el}
 \end{table}
+

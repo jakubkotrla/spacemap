@@ -11,7 +11,7 @@ Abstrakce svìta a architektura agenta je popsána v této kapitole.
 
 Èas svìta je diskrétní, probíhá v krocích. Kadı krok má urèenou dobu trvání, která záleí na tom, co agent v daném kroku dìlal.
 Napø. popojít o pár metrù trvá sekundy, zatímco pøeèíst si kapitolu v kníce mùe trvat i hodiny. Dobu trvání kroku mùe vzít model prostorové mapy v potaz.
-Pro pøiblinou pøedstavu je moné øíci, e 1 den agenta trvá v prùmìru 1000 krokù simulace.
+Pro pøiblinou pøedstavu je moné øíci, e 1 den agenta trvá v prùmìru 500-1000 krokù simulace.
 \\
 
 Virtuální svìt je 2D, obsahuje jednu místnost\footnote{V dalším textu budeme slovem místnost myslet celı svìt, nebude-li øeèeno jinak.}.
@@ -133,23 +133,30 @@ Chytré akce jsou:
 
 \begin{table}[h!]
 \begin{center}
-\begin{tabular}{|l|p{6cm}|}\hline
+\begin{tabular}{lp{6cm}}\toprule[0.5pt]
+
+Atomická akce & Efekt \\
+
+\midrule[0.2pt]
+
 MoveToPartial(x,y) & pøesun na pozici x,y\\
-\hline
+
 ExecuteReal(èinnost) & provedení èinnosti\\
-\hline
+
 Explore & rozhlédnutí se po okolí\\
-\hline
+
 Remember(afordance) & vybavení si pøedmìtu z prostorové mapy, kterı ma danou afordanci\\
-\hline
+
 LookForObject(pamìovı fantom) & vyhledání pøedmìtu odpovídajícího pamìovému fantomu\\
-\hline
+
+\bottomrule[0.5pt]
 \end{tabular}\\
 \end{center}
 \centering
 \caption{Atomické akce}
 \label{tab:atomic-actions}
 \end{table}
+
 
 
 Souèástí svìta je i mnoina zámìrù a èinností, které agent mùe vykonávat. Závisí toti na pøedmìtech resp. jejich afordancích, které jsou ve svìtì dostupné.
@@ -238,28 +245,32 @@ Aktuální atraktivita pøedmìtu je souèin statické a dynamické atraktivity a jejic
 
 \begin{table}[h!]
 \begin{center}
-\begin{tabular}{|l|p{4.8cm}|p{4.8cm}|}
-\hline
-\multirow{2}{*}{Atomická akce} & \multicolumn{2}{|c|}{Dynamická atraktivita pøedmìtu} \\
-\cline{2-3}
+\begin{tabular}{lcc}
+\toprule[0.5pt]
+\multirow{2}{*}{Atomická akce} & \multicolumn{2}{c}{Dynamická atraktivita pøedmìtu} \\
+\cmidrule[0.2pt]{2-3}
  & bez poadované afordance & s poadovanou afordancí \\
-\hline
+
+\midrule[0.2pt]
+
 Remember & 0 & 0 \\
-\hline
+
 LookForObject & 0 & 0 \\
-\hline
+
 MoveToPartial & 1 & 1 \\
-\hline
-Explore & 0.5 & 1 \\
-\hline
-ExecuteReal & 0.5 & 0.75 \\
-\hline
+
+Explore & 0,5 & 1 \\
+
+ExecuteReal & 0,5 & 0,75 \\
+
+\bottomrule[0.5pt]
 \end{tabular}\\
 \end{center}
 \centering
 \caption{Dynamická atraktivita pøedmìtu v závislosti na atomické akci}
 \label{tab:act-attr}
 \end{table}
+
 
 Pokud je fantom pøedmìtu ji v percepèním poli, intenzita fantomu stoupne o aktuální atraktivitu pøedmìtu.
 Pokud není, je vytvoøen novı fantom a pøidán do percepèního pole s intenzitou odpovídající aktuální atraktiviì pøedmìtu.
