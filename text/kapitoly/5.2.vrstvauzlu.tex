@@ -18,13 +18,14 @@ Není tedy moné model dostateènì parametrizovat, tak aby okamitá naplnìnost uzl
 
 \begin{definition}[Rychlost klesání naplnìnosti]
 Parametr modelu \param{rychlost klesání naplnìnosti} uzlu urèuje, jak rychle bude naplnìnost uzlu klesat.
-(ELNodeUsageFadeOut)
 \end{definition}
 
 \begin{definition}[Naplnìnost uzlu]
-Naplnìnost je vlastnost uzlu. Pøi vytvoøení uzlu je rovna nule. V prùbìhu simulace se mìní, kdykoli je zvıšena intenzita vazby
-mezi uzlem a pamìovou stopou, je stejnì zvıšena i naplnìnost uzlu.
-V kadém kroku simulace je naplnìnost uzlu sníena o ELNodeUsageFadeOut, nemùe ale klesnout pod nulu.
-
+Naplnìnost je vlastnost uzlu, která záleí pøímo na \emph{okamité naplnìnosti uzlu}, nemìní se však tak rychle, má urèitou pamì.
 Naplnìnost uzlu $node$ budeme dále ve vzorcích oznaèovat znakem $\mu(node)$.
 \end{definition}
+
+Pøi vytvoøení nového uzlu je jeho naplnìnost rovna nule. V prùbìhu simulace se mìní, kdykoli je zvıšena intenzita vazby
+mezi uzlem a pamìovou stopou, je stejnì zvıšena i naplnìnost uzlu.
+V kadém kroku simulace je naplnìnost uzlu sníena o parametr \param{rychlost klesání naplnìnosti}, nemùe ale klesnout pod nulu.
+\\

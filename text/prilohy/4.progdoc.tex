@@ -1,25 +1,26 @@
 \chapter{Programátorská dokumentace}
 
-Model popsaný v kapitole ?? jsme 
+Model prostorové mapy popsaný v kapitole \ref{chapter-model} resp. \ref{chapter-model-el} jsme implementovali v prototypov0 aplikace v jazyce Python.
+Aplikace je na pøiloženém CD vèetnì dalších knihoven nutných pro její bìh.
+Aplikace využívá knihovnu TkInter pro GUI a knihovnu PIL\footnote{Python Imaging Library} pro ukládání dat do grafických souborù.
+\\
 
-Prototypová aplikace je implementována v jazyce Python.
+%Ve svìtì mùže zatím být právì jeden agent.
 
 zakladni myslenky implementace
-
-pouzite veci
-python
-tkinter
-PIL
-
-numpy
-matplotlib
-statter a plotter
+\\
 
 pojmenovani trid a mapovani modelu do implementace
-
-
-Ve svìtì mùže zatím být právì jeden agent.
+\\
 
 efektivita - pomale protoze aritmetika v pythonu
+\\
 
-??? reference vygenerovana z kmentaru ???
+\section{Pomocné nástroje}
+Souèástí aplikace jsou dvì utility:
+
+\begin{CompactItemize}
+\item program statter.exe - poèítá prùmìrné, max a min hodnoty dat v souboru \texttt{data-elnode-status.txt} a ukládá je do souboru \texttt{data-elnode-status.stats.txt}
+\item skript plotter.py - vizualizuje výstupní data aplikace, využívá knihoven NumPy a matplotlib
+\end{CompactItemize}
+
