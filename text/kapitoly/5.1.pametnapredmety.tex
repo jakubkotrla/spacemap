@@ -31,7 +31,7 @@ ObjectNotFound & agent nenalezl pøedmìt tam, kde ho hledal pøi chytré akce LookU
 \end{tabular}
 \end{center}
 \centering
-\caption{Atomické akce}
+\caption{Typy vjemu}
 \label{tab:typy-vjemu}
 \end{table}
 
@@ -40,7 +40,7 @@ Parametr modelu \param{dosah uèení} urèuje nejvyšší vzdálenost, na kterou budou 
 \end{definition}
 
 
-Pamìti je v kadém kroku pøedloena mnoina vjemù (mùe bıt prázdná). Vjem je trojice $<pøedmìt,poloha,intenzita>$.
+Pamìti je v kadém kroku pøedloena mnoina vjemù (mùe bıt prázdná). Vjem je trojice \emph{$<$pøedmìt,poloha,intenzita$>$}.
 Vjem má svùj typ, danı událostí, kterou byl vyvolán, jejich pøehled je v tabulce \ref{tab:typy-vjemu}.
 Kadı typ má urèenı koeficient, kterım je vynásobena intenzita vjemu pøed jeho zpracováním prostorovou mapou, tyto koeficienty jsou parametry modelu.
 \\
@@ -80,7 +80,7 @@ V kroku \ref{alg:spacemap-intensity} je urèena intenzita o kterou bude zvıšena v
 
 kde \emph{nodes} je mnoina všech uzlù, do jejich okolí vjem padl a $dist$ je vzdálenost uzlu od polohy vjemu.
 Funkce $norm$ je libovolná klesající funkce mající obor hodnot $<0,1>$, napø. nepøímá úmìra $norm(x) = 1/max(1,x)$ èi Gaussova funkce.
-Èást algoritmu \ref{alg:zpracovani-vjemu} mùe bıt provádìna v rámci vrstvy uzlù, napø. v modelu Energy Layer.
+%Èást algoritmu \ref{alg:zpracovani-vjemu} mùe bıt provádìna v rámci vrstvy uzlù, napø. v modelu Energy Layer.
 \\
 
 \begin{algorithm}[h!]
@@ -106,5 +106,6 @@ c_w(stopa) = \frac{\displaystyle \sum_{n \in stopa} n_{xy} \times \eta(vazba_n) 
 
 \begin{definition}[Zapomínání asociativní sítì]
 V kadém kroku simulace je sníena intenzita pamìovıch stop a
-intenzita všech vazeb mezi pamìovımi stopami a uzly prostorové mapy (MemObjIntensityFadeOut, LinkMemObjToNodeFadeOut).
+intenzita všech vazeb mezi pamìovımi stopami a uzly prostorové mapy.
+%(MemObjIntensityFadeOut, LinkMemObjToNodeFadeOut)
 \end{definition}

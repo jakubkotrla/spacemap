@@ -2,7 +2,7 @@
 
 \section{Shluková analıza}
 
-Dle pøedchozí kapitoly je jedním z prvních problémù, které musí model øešit, shlukování uzlù mapy v místech, kde je hodnì pøedmìtù.
+Dle pøedchozí kapitoly je jedním z problémù, které musí model øešit, urèení míst s vyššíím poètem pøedmìtù a shlukování uzlù mapy v takovıch místech.
 Nabízí se algoritmy shlukové analızy, napø. algoritmus K-Means \cite{litKMeans}.
 \\
 
@@ -34,14 +34,14 @@ Velmi èasto jsou pouívány tzv. Kohonenovy mapy \cite{litKohonen}, nazıvané té 
 Jedná se o typ neuronové sítì uèící se bez uèitele, vyuívá soutìní strategii uèení.
 \\
 
-Samoorganizaèní mapy vyuili napø. autoøi \cite{litShapeSOM} ke konstrukci robota, kterı umí vytvoøit 3D mapu svého okolí pomocí dálkomìru.
+Samoorganizaèní mapy vyuili napø. autoøi v \cite{litShapeSOM} ke konstrukci robota, kterı umí vytvoøit 3D mapu svého okolí pomocí dálkomìru.
 Kohonenovo uèení je pouito v [literatura-panoramic-images] ke konstrukci map, urèení orientaèních bodù a navigaci.
 \\
 
-Samoorganizující mapy jsou èasto pouívány také ke klasifikaci dat a analıze shlukù.
+Samoorganizaèní mapy jsou èasto pouívány také ke klasifikaci dat a analıze shlukù.
 Napø. v \cite{litMelody} je pouita dvojice Kohonenovıch map, navzájem propojenıch, ke klasifikaci melodií.
-Existuje nìkolik rozšíøení Kohonenovıch map, v \cite{litGNG} a \cite{litGNG2} je popsán model rostoucích samoorganizujících map,
-tzv. Growing Neural Gas Network vkládá nové uzly na místa nejvìtší chyby.
+Existuje nìkolik rozšíøení Kohonenovıch map, v \cite{litGNG} a \cite{litGNG2} je popsán model rostoucích samoorganizaèních map,
+tzv. Growing Neural Gas Network. Model GNG v prùbìhu uèení vkládá nové uzly na místa nejvìtší chyby.
 \\
 
 V \cite{litGHSOM} je popsán model rostoucí hiearchické Kohonenovy mapy,
@@ -52,7 +52,7 @@ GHSOM zaèíná jako Kohonenova mapa tvoøená jedním uzlem a v prùbìhu uèení je rozš
 \item pod uzly jsou pøidávány další úrovnì, Kohonenovy mapy o jednom uzlu
 \end{CompactItemize}
 
-Samoorganizující mapy jsou pouívány pro vytváøení prostorovıch map a existují jejich rozšíøení s hiearchií a mechanismy pro rùst mapy.
+Samoorganizaèní mapy jsou pouívány pro vytváøení prostorovıch map a existují jejich rozšíøení s hiearchií a mechanismy pro rùst mapy.
 Jsou tedy jedním z monıch øešení.
 \\
 
@@ -72,19 +72,22 @@ Model je pouit pouze pro navigaci a aktualizaci mapy, neobsahuje pamì na pøedm
 \\
 
 V \cite{litFiltr} autoøi navrhují vytvoøit kognitivní mapu jako filtr mezi agentem a reprezentací svìta.
-Virtuální svìt je reprezentován jako tzv. IHT graf obsahující topologickou a geometrickou informaci.
+Virtuální svìt je reprezentován jako tzv. IHT\footnote{Informed Hierarchical Topological graph} graf obsahující topologickou a geometrickou informaci.
 Prostorová mapa jednotlivıch agentù je vytváøena jako filtr, umoòující agentùm pøistupovat k této reprezentaci v závislosti na agentovì minulosti.
 Model je však pouit pouze pro navigaci. Mùe bıt vhodné pokud by rozsáhlı virtuální svìt obsahoval velké mnoství agentù.
 \\
 
 V \cite{litCAN} je popsán model prostorové mapy, kterı umí ukládat informace o poloze pøedmìtù.
-Vyuívá k tomu autoasociativní Hopfiedovy sítì [literatura]. Popsaná sí si pamatuje vazby mezi pøedmìty a oblastmi. Je sloená z 1500 neuronù:
+Vyuívá k tomu autoasociativní Hopfiedovy sítì.
+% [literatura].
+Popsaná sí si pamatuje vazby mezi pøedmìty a oblastmi. Autoøi provedli experiemnt se sítí sloené z 1500 neuronù:
 \begin{CompactItemize}
 \item 1000 neuronù kóduje oblasti, jejich vıstup je spojitı $\in <0,1>$
 \item 500 neuronù kóduje pøedmìty, jejich vıstup je diskrétní $\in \{0,1\}$
 \end{CompactItemize}
 
-Autorùm se podaøilo nauèit sí natolik, e kdy je síti pøedán vjem odpovídající oblasti, støílí uzly kódující pøedmìt, kterı je v oblasti nauèenı a obrácenì.
+Autorùm se podaøilo nauèit sí natolik, e kdy je síti pøedán vstup odpovídající oblasti, jsou aktivní neurony kódující pøedmìt, kterı je v oblasti nauèenı a obrácenì,
+pokud je síti pøedán vstup odpovídající pøedmìtu, jsou aktivní neurony kódující oblasti, kde je pøedmìt nauèenı.
 \\
 
 Tento model se blíí simulování procesù, o kterıch se domníváme, e se odehrávají v lidském mozku.

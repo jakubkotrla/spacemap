@@ -1,7 +1,7 @@
 \chapter{Model svìta a agenta}
 
 Model prostorové mapy by mìl být nezávislý na konkrétní abstrakci svìta a architektuøe agenta.
-Pouze potøebuje nìjaké prostøedí pro vývoj a testování.
+Potøebovali jsme však nìjaké jednoduché prostøedí pro jeho vývoj a testování.
 Rozhodli jsme se vytvoøit vlastní virtuální svìt a agenta, který v nìm žije - pohybuje se v nìm, provádí èinnosti a vnímá své okolí.
 Abstrakce svìta a architektura agenta je popsána v této kapitole. 
 \\
@@ -17,7 +17,7 @@ Pro pøibližnou pøedstavu je možné øíci, že 1 den agenta trvá v prùmìru 1000 krok
 Virtuální svìt je 2D, obsahuje jednu místnost\footnote{V dalším textu budeme slovem místnost myslet celý svìt, nebude-li øeèeno jinak.}.
 Ta je reprezentována jednoduchým polygonem, urèeným množinou vrcholù. Pøíklady svìtù je možné najít v pøíloze A, kde jsou zobrazeny všechny testovací svìty.
 \begin{definition}[Poloha objektu]
-Prostor je spojitý\footnote{Pøi implementaci modelu dojde k diskretizaci prostoru, protože numerická pøesnost PC je omezená},
+Prostor je spojitý\footnote{Pøi implementaci modelu dojde k diskretizaci prostoru, protože numerická pøesnost poèítaèù je omezená},
 poloha všech objektù\footnote{Napø. pøedmìty, vrcholy polygonu urèujícího místnost, agent apod.}
 ve svìtì je dána dvojicí souøadnic \(<x,y> \in \mathbb{R}^2\). Polohu objektu $a$ budeme dále znaèit $a_{xy}$ resp. $a_x$ a $a_y$.
 \end{definition}
@@ -43,12 +43,12 @@ U waypointu je uloženo, kdy jej agent naposledy navštívil.
 \end{definition}
 
 \begin{definition}[Velikost waypointu]
-Agent navštíví waypoint, pokud jeho vzdálenost od waypointu je menší než velikost waypointu (WayPointArea).
+Agent navštíví waypoint, pokud jeho vzdálenost od waypointu je menší než velikost waypointu.
 \end{definition}
 
 \begin{definition}[Odchylka waypointu]
 Když agent pøi svém pohybu svìtem má jako cíl waypoint, nemusí jít pøesnì na souøadnice waypointu.
-Mùže se odchýlit v ose x i y o odchylku waypointu (WayPointNoise).
+Mùže se odchýlit v ose $x$ i $y$ o odchylku waypointu.
 \end{definition}
 
 \begin{definition}[Pøedmìt]
@@ -79,22 +79,14 @@ Nùž tedy není vnímána jako "kus kovu zasazený do døeva, asi 15 centimetrù dlouhý
 
 Každý pøedmìt má urèeno, jaké afordance agentovi nabízí. Èinnosti, které agent provádí, potøebují ke svému provedení urèité zdroje, pøedmìty s afordancemi.
 Èinnosti mají urèeno, jaké afordance potøebují, aby mohli být úspìšnì splnìny. Afordance lze chápat i jako jednoduché propojení mezi pøedmìty a èinnostmi
-bez nutnosti pøesnì specifikovat jaké všechny pøedmìty jsou k èinnosti tøeba a k èemu všemu lze pøedmìt použít.
+bez nutnosti pøesnì specifikovat, jaké všechny pøedmìty jsou k èinnosti tøeba a k èemu všemu lze pøedmìt použít.
 Výhodou tohoto modelu je rozšiøitelnost, do svìta je možné snadno pøidat nové objekty a èinnosti.
 \\
 
 V prùbìhu simulace agent ve svìtì provádí èinnosti, kterými splòuje své zámìry. Zámìr je nìjaký cíl agenta, napø. odpoèinout si.
 Má urèeno, jakými èinnostmi je možné jej splnit, napø. lehnout si, posadit se. Když agent plní zámìr, náhodnì vybere jednu z èinností, kterými jej lze splnit.
-Pak se snaží získat zdroje (pøedmìty) nutné k provedení èinnosti - vytvoøí podzámìr Want(affordance). Ten znamená, že agent chce najít pøedmìt s danou afordancí.
+Pak se snaží získat zdroje (pøedmìty) nutné k provedení èinnosti - vytvoøí podzámìr \emph{Want(affordance)}. Ten znamená, že agent chce najít pøedmìt s danou afordancí.
 Zámìr \emph{Want(affordance)} agent mùže splnit úspìšným provedením jedné z tøí èinností:
-
-
-\begin{definition}[Maximální krok agenta]
-Parametr modelu \param{maximální krok agenta} urèuje maximální vzdálenost, o kterou agent zmìní svoji polohu v jednom kroku simulace.
-\end{definition}
-
-%\begin{definition}[MapPickUpDistance]
-%\end{definition}
 
 
 \begin{CompactItemize}
@@ -118,11 +110,18 @@ Napø. pro náhodné hledání pøedmìtu je použita chytrá akce "SearchRandom". Ta je 
 Teprve akce "MoveToPartial" je atomická a lze ji provést v jednom kroku simulace.
 \\
 
+\begin{definition}[Maximální krok agenta]
+Parametr modelu \param{maximální krok agenta} urèuje maximální vzdálenost, o kterou agent zmìní svoji polohu v jednom kroku simulace.
+\end{definition}
+
+%\begin{definition}[MapPickUpDistance]
+%\end{definition}
+
 Chytré akce jsou:
 
 \begin{description}
   \item[MoveTo(x,y)] \hfill \\
-  pøesun agenta na pozici x,y. Nejdøíve je nalezena cesta, pokud je svìt konvexní místnost, jedná se o úseèku; pokud svìt není konvexní, jsou použity waypointy a cesta je lomená èára. Každá úseèka je pak rovnomìrnì rozdìlena na kratší èásti tak, aby délka její nejdelší èásti byla menší než \param{maximální krok agenta}. Díky tomu se agent každé kolo simulace posune jen o malý kus.
+  pøesun agenta na polohu $<x,y>$. Nejdøíve je nalezena cesta, pokud je svìt konvexní místnost, jedná se o úseèku; pokud svìt není konvexní, jsou použity waypointy a cesta je lomená èára. Každá úseèka je pak rovnomìrnì rozdìlena na kratší èásti tak, aby délka její nejdelší èásti byla menší než \param{maximální krok agenta}. Díky tomu se agent každé kolo simulace posune jen o malý kus.
   \item[SearchRandom(afordance)] \hfill \\
   náhodné hledání pøedmìtu s danou afordancí. Agent má u každého waypointu uložen èas, kdy jej naposledy vidìl. Tato akce zajistí, že agent postupnì navštíví všechny waypointy. Zaène tím, který má nejstarší èas až k tomu waypointu, který navštívil jako poslední. Toto poøadí je urèeno na zaèátku akce. K pøesunu mezi waypointy agent provádí chytrou akci MoveTo.
   \item[LookUpInMemory(afordance)] \hfill \\
@@ -183,7 +182,7 @@ Percepèní pole obsahuje fantomy, pøedmìty, které agent právì vnímá.
 Agent mùže v jednom kroku simulace vidìt libovolné množství pøedmìtù, ale je schopen jich vnímat jen omezený poèet.
 Vycházíme z kapacitní teorie pozornosti, která øíká, že celková kapacita lidské pozornosti je omezená \cite{litCapacityAtt}.
 Poèet fantomù, které mohou být souèasnì v percepèním poli je dán velikostí percepèního pole. Tento parametr je pro všechny testy roven magickému èíslu 7
-dle experimentálních výsledkù z \cite{lit7plusminus2}. Zmìna parametru na nižsí hodnotu mùže velmi ovlivnit uèení prostorové mapy. (PFSize)
+dle experimentálních výsledkù z \cite{lit7plusminus2}. Zmìna parametru na nižsí hodnotu mùže velmi ovlivnit uèení prostorové mapy.
 \end{definition}
 
 

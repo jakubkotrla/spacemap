@@ -5,7 +5,7 @@ V této kapitole popíšeme požadavky na model, jeho vstupy a výstupy.
 \\
 
 Agent má na zaèátku úplnou informaci o geometrii a topologii svìta. V prùbìhu simulace se agent pohybuje svìtem a vnímá své okolí.
-V každém okamžiku ví, kde pøesnì se nalézá, kterým smìrem se dívá, jaké pøedmìty vidí a kde jsou tyto pøedmìty ve virtuálním svìte umístìny.
+V každém okamžiku ví, kde pøesnì se nalézá, kterým smìrem se dívá, jaké pøedmìty vidí a kde jsou tyto pøedmìty ve virtuálním svìtì umístìny.
 Agent si tedy nemusí vytváøet mapu, ani øešit analýzu obrazových dat èi podobné úlohy z robotiky. Dostává pøesná geometrická data - napø:
 
 \emph{Stojím na souøadnicích XY, dívám se smìrem na severozápad. Vidím dva pøedmìty: kvìtinu a talíø. Kvìtina je na souøadnicích XZ, talíø na YZ.}
@@ -21,15 +21,15 @@ I v takovýchto místech ale musí být uzly mapy.
 
 Model musí umožnit ukládat k uzlùm informace o poloze pøedmìtù. Tyto informace si mùže agent pozdìji vyžádat.
 Pøesnost tìchto informací by mìla v èase rùst, pokud je agent opakovanì dostává. Naopak pokud agent informaci o poloze pøedmìtù delší dobu nedostane,
-informace by se mìla stát nepøesnou a postupnì vymizet, až do té míry, že agent bude schopen øíci pouze, že pøedmìt vidìl, nebude však schopen urèit kde.
+informace by se mìla stát nepøesnou a postupnì vymizet, až do té míry, že agent bude schopen øíci pouze to, že pøedmìt vidìl, nebude však schopen urèit kde.
 \\
 
 Poèet uzlù prostorové mapy by se mìl pøizpùsobit velikosti svìta a poètu pøedmìtù v nìm.
-Souèástí modelu tedy musí být i mechanismus korigující poèet uzlù mapy v èase, v závislosti na poètu pøedmìtù, které agent vidí, resp. èetnosti vjemù pøedmìtù.
+Souèástí modelu tedy musí být mechanismus korigující poèet uzlù mapy v èase, v závislosti na poètu pøedmìtù, které agent vidí, resp. èetnosti vjemù pøedmìtù.
 \\
 
 Model by mìl být hiearchický èi alespoò umožnit vytvoøení hiearchie.
-Všechny uzly mapy by nemìly být rovnocenné, v prùbìhu simulace by mìly vznikat další vrstvy uzlù vyšší úrovnì, které budou pokrývat vìtší oblast.
+Všechny uzly mapy by nemìly být rovnocenné, v prùbìhu simulace by mìly vznikat další uzly vyšší úrovnì, které budou pokrývat vìtší oblast.
 Tyto uzly by mìly vznikat pøedevším v místech, kde agent vidìl mnoho pøedmìtù. Takto by model mìl být schopen urèit oblasti, kde je více pøedmìtù.
 \\
 
