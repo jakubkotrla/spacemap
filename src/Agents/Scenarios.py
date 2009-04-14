@@ -11,13 +11,13 @@ class Scenario:
         self.intentions = []
         self.index = -1
     
-    ## Pre-generate scenario based on available intentions.
+    ## Pre-generates scenario based on available intentions.
     def Generate(self, clsIntentions):
         seed(Global.RandomSeeds[0])
         for i in range(100):
             self.intentions.append( clsIntentions.GetRandomHighLevelIntention() )
         
-    ## Return next intention to be done.
+    ## Returns next intention to be done.
     def GetActiveIntention(self):
         self.index += 1
         if self.index >= len(self.intentions):

@@ -1,7 +1,7 @@
 ## @package Enviroment.Affordances
 # Contains list of affordances available for worlds.
 
-## Represent affordance, has name.
+## Represents affordance, has name.
 class Affordance:
 
     def __init__(self, name):

@@ -31,7 +31,7 @@ class GlobalVariables:
         
         ## Whether show visibility objects, to set this True CalculateVisibilityHistory must be True.
         self.RenderVisibilityHistory = False
-        ## Whether calculate visibility of visibility objects - extrmely slow.
+        ## Whether calculate visibility of visibility objects - extremely slow.
         self.CalculateVisibilityHistory = False 
         ## VisibilityObject is square AxA
         self.VisibilityHistoryArea = 2  
@@ -42,7 +42,7 @@ class GlobalVariables:
         ## Random seeds to test in TestAll mode
         self.RandomSeeds = [468219]
         
-        ## How many steps do in TestAll mode, 500-1000 ~ should be one day in anget's life
+        ## How many steps do in TestAll mode, 500-1000 ~ should be one day in agent's life
         self.MaxTestSteps = 5000
         ## How many steps do in TestAll mode with agent out of world, after MaxTestSteps
         self.MaxTestStepAfter = 0     
@@ -76,7 +76,7 @@ class GlobalVariables:
         self.TrainEffectFound = 2.0
         self.TrainEffectNotFound = -1.0
         
-        ## If action takes more seconds, SP.StepUpdate call Layer.StepUpdate multiple times 
+        ## If action takes more seconds, SP.StepUpdate calls Layer.StepUpdate multiple times 
         self.SMUpdateMaxDuration = 100  
         
         ## When MemObj's linkToNodes are intensed - alter node's gauss area
@@ -131,7 +131,7 @@ class GlobalVariables:
         ## Range of local antigravity steps after node deletion
         self.ELDeleteNodeReTrainRange = 20
         
-        ## How often update memoryObject locatin and save it - only for getting data
+        ## How often update memoryObject location and save it - only for getting data
         self.SMBigUpdateFreq = 9
         ## Coeficient used when increasing node.AGamount    
         self.ELAGAddCoef = 3

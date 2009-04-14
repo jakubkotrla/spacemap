@@ -23,7 +23,7 @@ class MemoryObject:
         self.linkToNodes.append(l)
         node.linkToObjects.append(l)
         
-    ## Increases intensity of link to given node, creates one if not found.
+    ## Increases intensity of link to given node, creates new link if not found.
     def IntenseToNode(self, node, intensity):
         foundLink = None
         for l in self.linkToNodes:
@@ -65,7 +65,7 @@ class LinkMemoryObjectToNode:
         self.intensity = self.intensity + intensity
         self.node.Intense(intensity)
     
-    ## Decreaes self-intensity, eventually deleting self. Called from MemoryObject.StepUpdate().
+    ## Decreases self-intensity, eventually deleting self. Called from MemoryObject.StepUpdate().
     def StepUpdate(self):
         self.intensity = self.intensity - Global.LinkMemObjToNodeFadeOut
         if self.intensity <= 0:
@@ -207,7 +207,7 @@ class SpaceMap:
     def ObjectFound(self, rObject):
         self.objectTrain(rObject, Global.TrainEffectFound)
         
-    ## Train SpaceMap to given object, object was not ofund.
+    ## Train SpaceMap to given object, object was not found.
     def ObjectNotFound(self, rObject):
         Global.Log("SM.ObjectNotFound: object not found: " + rObject.ToString())
         #dynamicWorld: objectTrain TrainEffectNotFound TBD.

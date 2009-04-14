@@ -66,7 +66,7 @@ class Time:
     def GetSecondsInDay(self):
         return self.hour*3600 + self.minute*60 + self.second
     
-    ## Returns count of seconds from time zero, lie Unix timeestamp.
+    ## Returns count of seconds from time zero, like Unix timeestamp.
     def GetSeconds(self):
         return self.week*3600*24*7 + self.day*3600*24 + self.hour*3600 + self.minute*60 + self.second
     

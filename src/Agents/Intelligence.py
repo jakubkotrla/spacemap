@@ -1,5 +1,5 @@
 ## @package Agents.Intelligence
-# Contains Intelligence representing collection of classes implememting agent's intelligence.
+# Contains Intelligence representing collection of classes implementing agent's intelligence.
 
 from PerceptionField import PerceptionField
 from ProcessArea import ProcessArea

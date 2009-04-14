@@ -38,7 +38,7 @@ class MemoryPhantom:
             str = "Phantom(M) of " + self.object.ToString()
         return str
 
-## Represents "pametova cast" of shortterm memory
+## Represents "pametova cast" of short-term memory
 class MemoryArea:
     def __init__(self, agent, spaceMap, processArea):
         self.agent = agent
@@ -59,7 +59,7 @@ class MemoryArea:
         self.processArea.PhantomRemembered(memPhantom)
         return memPhantom
     
-    ## Return first MemoryPhantom for given object if exists - i.e. agent thinks of it.
+    ## Return first MemoryPhantom for given object if exists - agent thinks of it.
     def GetPhantomForObject(self, rObj):
         for phantom in self.memoryPhantoms:
             if rObj == phantom.object.object:

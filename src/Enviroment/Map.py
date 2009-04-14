@@ -80,7 +80,7 @@ class VisibilityObject(Point):
     def ToString(self):
         return "VO[" + str(self.x) + ", " + str(self.y) + "].visibility = " + str(self.visibility)
         
-## Represents gemetry of virtual world.     
+## Represents geometry of virtual world.     
 class Map:
     def __init__(self):
         self.width = 0
@@ -137,7 +137,7 @@ class Map:
         rObject = RealObject(type, x, y, attractivity, amount)
         rObject.onMap = False
         return rObject    
-    ## Adds object rpeviously created with CreateObject() to map.
+    ## Adds object previously created with CreateObject() to map.
     def AddExistingObject(self, rObject):
         self.objects.append(rObject)
         rObject.onMap = True
@@ -155,7 +155,7 @@ class Map:
         agent.newY = agent.y = self.agentMoves[0].y
         self.calculateVisibility(agent)
         
-    ## Moves agent to given location if posible. Returns duration of movement as distance.
+    ## Moves agent to given location if possible. Returns duration of movement as distance.
     def MoveAgent(self, agent, newX, newY):
         if not self.CanMove(agent, newX, newY):
             Global.Log("Programmer.Error: Map.MoveAgent out of map")
@@ -490,19 +490,19 @@ class Map:
         if Global.CalculateVisibilityHistory:
             self.calculateVisibilityHistory(agent)
     
-    ## Calcualtes visibility of waypoints.
+    ## Calculates visibility of waypoints.
     def calculateWayPointsVisited(self, agent):
         for wayPoint in self.wayPoints:
             if self.DistanceObjs(wayPoint, agent) < Global.WayPointArea:
                 wayPoint.lastVisited = Global.GetSeconds()
     
-    ## Calcualtes visibility of objects.
+    ## Calculates visibility of objects.
     def calculateVisibility(self, agent):
         for obj in self.objects:
             visibility = self.GetVisibility(agent, obj)
             obj.visibility = visibility
     
-    ## Calcualtes visibility of Visibilityobjects, extremely slow.       
+    ## Calculates visibility of Visibilityobjects, extremely slow.       
     def calculateVisibilityHistory(self, agent):
         for obj in self.visibilityHistory:
             visibility = self.GetVisibility(agent, obj)
