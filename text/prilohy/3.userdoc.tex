@@ -5,53 +5,88 @@ Nejdøíve je tøeba nainstalovat potøebné knihovny:
 \begin{CompactItemize}
 \item interpetor jazyka Python 
 \item grafická knihovna GTK+
-\end{CompactItemize}
-
-Nástroje pro vizualizaci výstupních dat dále potøebují:
-\begin{CompactItemize}
-\item knihovna NumPy
-\item knihovna Matplotlib
-\item knihovna .Net Framework 3.5 (pouze pro statter.exe)
+\item knihovna NumPy\footnote{pro nástroj \texttt{plotter.py}\label{fn:repeat}} a Matplotlib\footref{fn:repeat}
+\item knihovna .Net Framework 3.5\footnote{pro nástroj \texttt{statter.exe}}
 \end{CompactItemize}
 
 
 
+Tyto knihovny jsou na pøiloženém CD.
+Aplikaci je pak nutné zkopírovat na pevný disk.
+\\
 
 \section{Ovládání aplikace}
-Aplikace se spouští hlavním souborem \texttt{mainGUI.py}.
-Aplikaci lze ovládat menu.
+Aplikace se spouští hlavním souborem \texttt{mainGUI.py}, lze ji ovládat pomocí menu.
+Menu \texttt{World} umožòuje zobrazit pøehled afordancí, typù pøedmìtù a pøedmìtù. Menu \texttt{Quit} ukonèí aplikaci.
 Mùže pracovat ve dvou módech: interaktivním a testovacím.
 \\
 
-
-V interaktivním módu aplikace spustí test jedné místnosti. Stav svìta, agenta a prostorové mapy, je zobrazen v oknì aplikace.
-Simulaci je možné pozastavit, znovu spustit a zobrazovat informace o nìkterých objektech ve svìta a prostorové mapy.
-Po kliknutím na pøedmìt èi uzel prostorové mapy se zobrazí malé okno s podrobnými údaji. Pro tyto úèely je vhodné simulaci pozastavit.
+Interaktivní mód lze spustit vybráním jména testovacího svìta v položce menu \texttt{Start}.
+Aplikace pak spustí simulaci jedné místnosti. Stav svìta, agenta a prostorové mapy, je zobrazen v oknì aplikace.
+Simulaci je možné pozastavit (\texttt{Pause}), znovu spustit (\texttt{Resume}) a zrušit (\texttt{Stop}).
+V prùbìhu simulace lze zobrazitt informace o nìkterých objektech svìta a prostorové mapy:
+kliknutím na pøedmìt èi uzel prostorové mapy se zobrazí malé okno s podrobnými údaji. Pro tyto úèely je vhodné simulaci pozastavit.
+V prùbìhu aplikace ukládá data do adresáøe \texttt{../../exs}.
 \\
 
-V testovacím módu aplikace spustí postupnì všechny dostupné testy.
-Stav svìta a prostorové mapy není zobrazen v oknì aplikace, ale je v ukládán do souborù ve formátu PNG.
+Testovací mód lze spustím položkou \texttt{TestAll} menu \texttt{Start}.
+Aplikace spustí postupnì všechny dostupné testy. Vytvoøí adresáø \texttt{../../tests/yyyy-mm-dd--hh-mm-ss/}.
+Do tohoto adresáøe zkopíruje své aktuální nastavení - soubor \texttt{Global.py}
+Pro každý testovaný svìt vytvoøí v tomto adresáøi podadresáø \texttt{/nazev-sveta} a do nìj ukládá data.
+Stav svìta a prostorové mapy není zobrazen v oknì aplikace, ale je ukládán do souborù ve formátu PNG.
 V oknì aplikace jsou zobrazeny jen základní informace o prùbìhu testu.
-Testovací mód lze spustím položkou TestAll menu Start.
+V tomto módu je aplikace optimalizována na výkon a nelze ji ukonèit pomocí menu \texttt{Quit}, je nutné ji zavøít klasickým tlaèítkem Windows: Close v pravém horním rohu aplikace.
 \\
 
-V obou módech jsou ukládána podrobná data do textových souborù. Tato data je možné pomocí dalších nástrojù vizualizovat.
+
+V obou módech jsou ukládána podrobná data do textových souborù. Tato data je možné pomocí nástrojù \texttt{statter.exe} a \texttt{plotter.py} vizualizovat.
+Test devíti svìtù s 5000 kroky simulace mùže vygenerovat až 3GB dat.
 Nastavení aplikace má dvì èásti:
 
 \begin{CompactItemize}
-\item nastavení parametrù modelu - soubor Enviroment/Global.py
-\item urèení testovacích svìtù - soubor Config/Config.py a soubory svìtù v adresáøi Config
+\item nastavení parametrù modelu - soubor \texttt{Enviroment/Global.py}
+\item urèení testovacích svìtù - soubor \texttt{Config/Config.py} a soubory svìtù v adresáøi \texttt{Config}
 \end{CompactItemize}
 
+Význam parametrù v souboru \texttt{Global.py} je uveden v komentáøích a v pøíloze B.
+\\
 
 \section{Výstupní data a jejich vizualizace}
 
-Výstupem aplikace jsou:
-\begin{CompactItemize}
-\item obrázky ukazující stav svìta a prostorové mapy v každém kroku simulace
-\item obrázek ukazující stav v posledním kroku simulace vèetnì nauèenosti pøedmìtu (jak moc se jej agent mìl šanci nauèit, nezávisle na prostorové mapì)
-\item textové soubory ve formátu CSV
-\end{CompactItemize}
+Výstupem aplikace jsou následující soubory:
+\begin{description}
+\item[PIL000000.png--PIL999999.png] \hfill \\
+  obrázky stavu svìta a prostorové mapy v každém kroku simulace
+\item[visibilityobjectheatmap.png] \hfill \\
+  obrázek stavu v posledním kroku simulace vèetnì nauèenosti pøedmìtu
+\item[data-scenario.txt] \hfill \\
+  agentùv scénáø
+\item[data-nc.txt] \hfill \\
+  poèet uzlù
+\item[data-elnode-status.txt] \hfill \\
+  stav všech uzlù v každém kroku
+\item[data-place-status.txt] \hfill \\
+  stav všech míst v každém kroku
+\item[data-rememberinfo.txt] \hfill \\
+  chyba mapy pro každý objekt každý 10-tý krok  
+\item[data-elnodeheatmap.txt] \hfill \\
+  mapa rozložení uzlù po skonèení simulace s jejich naplnìností
+\item[data-elnodeheatmapag.txt] \hfill \\
+ mapa rozložení uzlù po skonèení simulace s jejich množstvím odpudivosti
+\item[data-objheatmap.txt] \hfill \\
+  mapa rozložení pøedmìtù po skonèení simulace s jejich nauèeností
+\item[log.txt] \hfill \\
+  podrobné informace o prùbìhu simulace  
+\end{description}
 
-Data v textových souborech je možné vizualizovat použitím nástrojù statter.exe\footnote{
-statter.exe je potøeba pouze, pokud uživatel chce vidìt podrobné informace o stavu uzlù prostorové mapy v prùbìhu simulace} a plotter.py.
+Data v textových souborech je možné vizualizovat použitím nástrojù \texttt{statter.exe}\footnote{
+je potøeba pouze, pokud uživatel chce vidìt podrobné informace o stavu uzlù prostorové mapy v prùbìhu simulace} a \texttt{plotter.py}.
+Oba nástroje pracují tak, že po spuštìní projdou aktuální adresáø a rekurzivnì všechny podadresáøe a zpracují všechny nalezené soubory se správným jménem.
+\\
+
+Nástroj statter.exe spoèítá prùmìrné, minimální a maximální hodnoty dat v souborech
+\texttt{data-elnode-status.txt} a \texttt{data-place-status.txt} a uloží je do souborù \texttt{data-elnode-status.stats.txt} a \texttt{data-places-status.stats.txt}.
+\\
+
+Nástroj \texttt{plotter.py} na základì textových souborù vytvoøí grafy a uloží je do souborù ve formátu PNG.
+\\
