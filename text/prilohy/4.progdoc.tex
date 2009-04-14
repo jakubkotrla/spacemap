@@ -1,26 +1,124 @@
 \chapter{Programátorská dokumentace}
 
-Model prostorové mapy popsanı v kapitole \ref{chapter-model} resp. \ref{chapter-model-el} jsme implementovali v prototypov0 aplikace v jazyce Python.
-Aplikace je na pøiloeném CD vèetnì dalších knihoven nutnıch pro její bìh.
-Aplikace vyuívá knihovnu TkInter pro GUI a knihovnu PIL\footnote{Python Imaging Library} pro ukládání dat do grafickıch souborù.
+Prototypová aplikace je napsána v jazyce Python, vyuívá knihovnu TkInter pro GUI a knihovnu PIL\footnote{Python Imaging Library} k ukládání dat do grafickıch souborù.
+Aplikace je rozdìlena do ètyø modulù:
+
+\begin{description}
+\item[\texttt{Gui}] - grafické rozhraní aplikace a grafické vıstupy
+\item[\texttt{Config}] - testovací svìty
+\item[\texttt{Enviroment}] - model svìta a parametry
+\item[\texttt{Agents}] -  model agent a prostorové mapy
+\end{description}
+
+Grafické rozhraní a øízení celé aplikace a zajišuje tøída \texttt{Gui.MainWindow}. Tøída \texttt{Gui.MapRender} vykresluje stav svìta do okna aplikace a do souboru.
+Svìt je reprezentován tøídami \texttt{Enviroment.World} a dalšími tøídami v modulu \texttt{Enviroment}.
+Tøída \texttt{Enviroment.Global} obsahuje pomocné metody a všechny parametry modelu.
 \\
 
-%Ve svìtì mùe zatím bıt právì jeden agent.
-
-zakladni myslenky implementace
+Agent je reprezentován tøídou \texttt{Agents.Agent}.
+Tøída \texttt{Intelligence} pøedstavuje jeho \uv{mozek}, obsahuje další tøídy, které zajišují øízení jeho chování, vnímání a pamì.
 \\
 
-pojmenovani trid a mapovani modelu do implementace
+Jeden krok simulace je zavolání metody \texttt{World.Step()}. Ta provede jeden krok agenta metodou \texttt{Agent.Step()}, popsanou v algoritmu \ref{alg:prog-step}.
+Pak metodou \texttt{Map.Step()} spoèitá viditelnost pøedmìtù.
 \\
 
-efektivita - pomale protoze aritmetika v pythonu
+\begin{algorithm}[h!]
+\caption{Jeden krok simulace agenta}
+\label{alg:prog-step}
+\begin{algorithmic}[1]
+\State vybrání atomické akce - \texttt{ActionSelector.GetAction()}
+\State provedeni akce
+\State vnímání viditelnıch pøedmìtù
+\State aktualizace \texttt{PerceptionField}
+\State aktualizace \texttt{MemoryArea}
+\State aktualizace And-Or stromu akcí v \texttt{ProcessArea} zavoláním metody \texttt{ActionSelector.ActionDone()}
+\State aktualizace prostorové mapy: \texttt{SpaceMap} a \texttt{EnergyLayer}
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{llcc}\toprule[0.5pt]
+
+Pojem modelu & \texttt{Název v implementaci} \\
+\midrule[0.4pt]
+
+Svìt & \texttt{World} \\
+Místnost & \texttt{Map} \\
+Pøedmìt & \texttt{RealObject} \\
+Typ pøedmìtu & \texttt{Object} \\
+
+\midrule[0.1pt]
+ 
+Agent & \texttt{Agent} \\
+Vıbìr akce & \texttt{ActionSelector} \\
+Chytrá akce & \texttt{smart action} \\
+
+\midrule[0.1pt]
+ 
+Zorné pole & \texttt{ViewCone} \\
+Percepèní filtr & \texttt{PerceptionFilter} \\
+Percepèní pole & \texttt{PerceptionField} \\
+Fantom & \texttt{Phantom} \\
+
+\midrule[0.1pt]
+
+Pamìová èást & \texttt{MemoryArea} \\
+Pamìovı fantom & \texttt{MemoryPhantom} \\
+
+\midrule[0.1pt]
+
+Procesní èást, And-Or strom akcí & \texttt{ProcessArea} \\
+Zámìr & \texttt{Intetion} \\
+Èinnost & \texttt{Process} \\
+Aktivní zámìr & \texttt{ExcitedIntention} \\
+Aktivní èinnost & \texttt{ExcitedProcess} \\
+
+\midrule[0.1pt]
+
+Prostorová mapa a pamì na pøedmìty & \texttt{SpaceMap} \\
+Pamìová stopa pøedmìtu  & \texttt{MemoryObject} \\
+Vazba mezi pamìovou stopou a uzlem & \texttt{LinkMemoryObjectToNode} \\
+
+\midrule[0.1pt]
+
+Gravitaèní model vrstvy uzlù & \texttt{EnergyLayer} \\
+Uzel prostorové mapy & \texttt{EnergyLayerNode} \\
+Naplnìnost uzlu & \texttt{EnergyLayerNode.usage} \\
+Stopa vjemu & \texttt{EnergyPoint} \\
+Intenzita stopy vjemu & \texttt{EnergyPoint.energy} \\
+Mnoství odpudisvoti & \texttt{AGamount} \\
+Místo & \texttt{Place} \\
+Intenzita místa & \texttt{Place.slowAGamount} \\
+
+\bottomrule[0.5pt]
+\end{tabular}
+\end{center}
+\centering
+\caption{Pøenesní modelu do implementace}
+\label{tab:prog-model}
+\end{table}
+
+Tabulka \ref{tab:prog-model} popisuje pøenesení modelu do implementace.
+%Soubory \texttt{EpisodicMemory} a \texttt{Emotion} byly pøevzaty od Tomáše Korenka beze zmìny.
+\\
+
+Rychlost aplikace závísí na poètu uzlù prostorové mapy,
+nejnároènìjší operací je poèítání vzdáleností mezi všemi uzly a zmìna jejich polohy s kontrolou, aby neopustily mapu.
+To zahrnuje mnoho jednoduchıch aritmetickıch operací s èísly s plovoucí desetinnou èárkou, které jsou bohuel v Pythonu pomalé.
+Z tìchto dùvodù je program \texttt{statter}.exe napsán v jazyce C\#.
+Pøedpokládáme, e implementace v jazyku typu C++/C\# èi Java, by vıraznì zrychlila aplikaci.
 \\
 
 \section{Pomocné nástroje}
-Souèástí aplikace jsou dvì utility:
+Souèástí aplikace jsou dva pomocné nástroje:
 
-\begin{CompactItemize}
-\item program statter.exe - poèítá prùmìrné, max a min hodnoty dat v souboru \texttt{data-elnode-status.txt} a ukládá je do souboru \texttt{data-elnode-status.stats.txt}
-\item skript plotter.py - vizualizuje vıstupní data aplikace, vyuívá knihoven NumPy a matplotlib
-\end{CompactItemize}
-
+\begin{description}
+\item[program \texttt{statter.exe}] \hfill \\
+  poèítá prùmìrné, maximální a minimální hodnoty dat v souborech \texttt{data-elnode-status.txt} a \texttt{data-place-status.txt} a ukládá je do \texttt{data-elnode-status.stats.txt} a \texttt{data-places-status.stats.txt}.
+\item[skript \texttt{plotter.py}] \hfill \\
+  vizualizuje vıstupní data aplikace, vyuívá knihoven NumPy a Matplotlib
+\end{description}

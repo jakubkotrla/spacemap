@@ -18,10 +18,11 @@ class ExcitedProcess:
         self.startTime           = copy(Global.Time)
         self.endTime             = None
         self.resources           = []
-        self.iteration           = 0
-        self.location            = None
+        self.iteration           = 0       #not used yet
+        self.location            = None    #not used yet
         self.successful          = False
-        self.data                = {}
+        ## Additional data and pointers specific to different types of processes
+        self.data                = {}   
      
     ## Terminates self, propagates succes or failure to parent Excitedprocess.   
     def TerminateProcess(self, successful=True):
@@ -51,11 +52,11 @@ class ExcitedProcess:
         return self.endTime == None
         #Future: won't work for intention-competition
     
-    ## Returns list of Affrodances.
+    ## Returns list of Affordances.
     def GetAllSources(self):
         return self.process.sources
     
-    ## Returns list of Affrodances.
+    ## Returns list of Affordances.
     def GetMissingSources(self):
         affordances = copy(self.process.sources)
         for objectPhantom in self.resources:

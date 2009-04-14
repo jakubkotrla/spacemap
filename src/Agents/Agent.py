@@ -31,11 +31,13 @@ class Agent:
         ## current text describing state of ProcessArea, used to show best info about its state in GUI.
         self.paText = ' '
         
+        ## Fields of view for normal atomic action
         self.viewConesNormal = []
         self.viewConesNormal.append( ViewCone(0.1, pi*0.9, 5 ) )
         self.viewConesNormal.append( ViewCone(0.3, pi/2, 20) )
         self.viewConesNormal.append( ViewCone(0.3, pi/4, 30) )
         self.viewConesNormal.append( ViewCone(0.3, pi/8, 50) )
+        ## Fields of view for Explore atomic action
         self.viewConesForExplore = []
         self.viewConesForExplore.append( ViewCone(0.4, pi, 10 ) )
         self.viewConesForExplore.append( ViewCone(0.4, pi, 20 ) )
