@@ -28,7 +28,7 @@ class Agent:
         self.newY = self.y
         self.dirAngle = pi / 4
 
-        ## current text describing state of ProcessArea, used to show best info about its state in GUI.
+        ## Current text describing state of ProcessArea, used to show best info about its state in GUI.
         self.paText = ' '
         
         ## Fields of view for normal atomic action
@@ -148,7 +148,7 @@ class Agent:
 
     def ToString(self):
         return "Agent"
-    ## Returns agents history as was saved by EpisodicMemory. 
+    ## Returns agent's history as was saved by EpisodicMemory. 
     def TellTheStory(self, txt):
         self.intelligence.TellTheStory(txt)
     

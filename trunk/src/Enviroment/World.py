@@ -53,7 +53,7 @@ class World:
                 events.append(WorldEvent(step, objToCreate, "add"))
         return events
     
-    ## Proces pre-generated events.        
+    ## Process pre-generated events.        
     def runEvents(self):
         map = Global.Map
         for event in self.events:

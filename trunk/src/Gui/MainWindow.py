@@ -1,5 +1,5 @@
 ## @package Gui.MainWindow
-# Main GUI file, uses TkInter to create window and other GUI elements and run the whole application.
+# Main GUI file, uses TkInter to create window and other GUI elements and runs the whole application.
 
 from Tkinter import *  
 from threading import *
@@ -378,12 +378,12 @@ class MainWindow(Frame):
         if self.playbackLock != None and not self.playbackLockLocked:
             self.playbackLock.acquire()
             self.playbackLockLocked = True
-    ## Resume simulation by releasing locks.
+    ## Resumes simulation by releasing locks.
     def resumeSimulation(self):
         if self.playbackLock != None and self.playbackLockLocked:
             self.playbackLock.release()
             self.playbackLockLocked = False
-    ## Exits and re;eases all locks to properly exit application.
+    ## Exits and releases all locks to properly exit application.
     def exitLocks(self):        
         if self.playbackLock != None and self.playbackLockLocked:
             self.playbackLock.release()

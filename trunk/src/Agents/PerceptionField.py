@@ -5,7 +5,7 @@ import copy
 from Enviroment.Global import Global
 from PerceptionFilter import PerceptionFilter
 
-## REpresents Phantom of seen object.
+## Represents Phantom of seen object.
 class Phantom:
     def __init__(self, rObject, memoryPhantom=None):
         self.object      = rObject
@@ -13,7 +13,7 @@ class Phantom:
         self.ownerProcess = None
         habEffect = rObject.curAttractivity * rObject.visibility
         self.habituation = Global.PFPhantomHabCreate * habEffect
-        ## Pointer to MemoryPhantom, if object was looked for and there is corresponding MemoryPhantom i MemoryArea. None otherwise.
+        ## Pointer to MemoryPhantom, if object was looked for and there is corresponding MemoryPhantom in MemoryArea. None otherwise.
         self.memoryPhantom = memoryPhantom
     
     ## Increase habituation as a result of ObjectNoticedAgain.
@@ -44,7 +44,7 @@ class Phantom:
         self.memoryPhantom = None
         #self will be deleted
     
-    ## Reset ist ownerProcess, its MemoryPhantom's ownerProcess as well.
+    ## Reset its ownerProcess, its MemoryPhantom's ownerProcess as well.
     def OwnerProcessTerminated(self):
         #self.ownerProcess.resources.remove(self) - meaningless, process will never be used again, is only stored in episodic memory
         self.ownerProcess = None
@@ -62,7 +62,7 @@ class Phantom:
             s = "Phantom(E, " + str(self.habituation) + ") of " + self.object.ToString()
         return s
 
-## Represent agent's shortterm memory for seen objects, contains list of objects' phantoms. 
+## Represent agent's short-term memory for seen objects, contains list of objects' phantoms. 
 class PerceptionField:
     def __init__(self, agent, processArea, spaceMap, memoryArea):
         self.agent = agent
@@ -72,9 +72,9 @@ class PerceptionField:
         self.memoryArea = memoryArea
         self.perceptionFilter = PerceptionFilter()
 
-    ## Notice new and already seen object to PF.
+    ## Notice new and already seen objects to PF.
     #
-    # Phantoms are sorted by theirs habiuation and only Global.PFsize of phantoms is stored.
+    # Phantoms are sorted by theirs habituation and only Global.PFsize of phantoms are stored.
     # Stored phantoms are propagated to ProcessArea and SpaceMap.
     def NoticeObjects(self, visibleObjects, actProcess):
         self.perceptionFilter.ProcessObjects(visibleObjects, actProcess)

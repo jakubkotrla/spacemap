@@ -12,7 +12,7 @@ from copy import copy
 ## Class responsible for selecting atomic action
 #
 # Every step an atomic action is selected based on actual state of and-or tree of intentions and process.
-# And-or tree is saved in ProcessArea.
+# And-or tree is held in ProcessArea.
 class ActionSelector:
     def __init__(self, agent, config, processArea, perceptionField, episodicMemory, spaceMap):
         self.agent = agent
@@ -74,7 +74,7 @@ class ActionSelector:
     #
     # For complex intentions with several possible processes, chooses randomly.
     # For intention I_Want chooses first one, order of smart action matters.
-    # If there is no availble process returns None.
+    # If there is no available process returns None.
     #
     def ChooseProcessForIntention(self, emotion, intention, parentProcess):
         processes = intention.processes
@@ -89,9 +89,9 @@ class ActionSelector:
             return Global.Choice(processes)
 
 
-    ## Returns atomic action based on current state of internal and-or tree of process and intentions.
+    ## Returns atomic action based on current state of internal and-or tree of processes and intentions.
     #
-    # Checks if all required affordances are available and then adds Execute to and-or tree and calls GetAtomicActionForSmrtProcess().
+    # Checks if all required affordances are available and then adds Execute to and-or tree and calls GetAtomicActionForSmartProcess().
     # If all required affordances are not available, adds intention I_Want and atomic action Explore.
     # Returns selected atomic action as ExcitedProcess.  
     def GetAtomicAction(self, emotion, excProcess):
@@ -134,7 +134,7 @@ class ActionSelector:
     ## Chooses atomic action for smart process based on smart action state.
     #
     # Call self recursively if needed for MoveTo.
-    # Chooses right wapyoint, solves Execute and ExecuteReal difference.
+    # Chooses right waypoint, solves Execute and ExecuteReal difference.
     # @param excProcess The smart action as ExcitedProcess.
     def GetAtomicActionforSmartProcess(self, emotion, excProcess):
         if (excProcess.process.name == "SearchRandom"):

@@ -29,7 +29,7 @@ class PerceptionFilter:
         for rObj in rObjs:
             rObj.curAttractivity = attractivity * rObj.attractivity
     
-    ## Utility method, sets all objects' attractivity regarding mutual affrodances between given current action and object.
+    ## Utility method, sets all objects' attractivity regarding mutual affordances between given current action and object.
     def SetAllToRegardingAffs(self, rObjs, action, coef):
         sources = action.sources
         sourcesCount = len(sources)

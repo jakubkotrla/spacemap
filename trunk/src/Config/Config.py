@@ -38,7 +38,7 @@ class ConfigSingleton:
         cfgs.sort()
         return cfgs     
     
-    ## SEts config with given name as active.
+    ## Sets config with given name as active.
     def Get(self, configFile):
         self.config = self.configs[configFile]
         return self  

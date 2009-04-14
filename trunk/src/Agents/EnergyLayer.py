@@ -35,7 +35,7 @@ class Place:
         status = str(Global.GetStep()) + ";" + str(self.index) + ";%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f"%(self.x,self.y,self.level,self.range,self.AGamount,self.totalAGamount,self.slowAGamount)
         Global.LogData("place-status", status)
     
-    ## Delete self, aka destructor.
+    ## Deletes self, aka destructor.
     def Delete(self):
         if self not in self.layer.places:   #probably deleted as child of another deleted place
             return
@@ -124,7 +124,7 @@ class EnergyPoint:
     #
     # 1. check for creating new node, eventually creates one.
     # 2. train EneryLayer by attracting close EnergyLayerNodes.
-    # 3. train SpaceMap - links node-memoryObject
+    # 3. train SpaceMap - links EneryLayerNode-MemoryObject
     # 4. decrease energy and eventually gets deleted
     def StepUpdate(self, nodesAround):
         cost = self.layer.GetNodeCreateCost()
@@ -177,7 +177,7 @@ class EnergyLayerNode:
         self.y = y
         self.linkToObjects = []
         self.index = index
-        ## Desciberd in model as "naplnenost uzlu".
+        ## Described in model as "naplnenost uzlu".
         self.usage = 0
         ## Described in model as "mnozstvi odpudivosti".
         self.AGamount = 0
@@ -311,7 +311,7 @@ class EnergyLayer:
         self.nodeIndex = 1
         self.places = []
         self.placeIndex = 0
-        ## Described in model as "pozadovany pocet uzlu".
+        ## Described in model as "chteny pocet uzlu".
         self.desiredNodeCount = 0
         
         ## Only for saving state to data files
@@ -367,7 +367,7 @@ class EnergyLayer:
                             node.place = rootPlace
                             rootPlace.nodes.append(node)
      
-    ## Returns list of nodes around given center closer than given per, returns at leadt one node, the closes one even if is outside of per.
+    ## Returns list of nodes around given center closer than given per, returns at least one node, the closest one even if is outside of per.
     def PositionToNodes(self, center, per):
         inNodes = {}
         closestNode = None
@@ -391,9 +391,9 @@ class EnergyLayer:
                 return None
     ## One step of simulation for EnergyLayer.
     #
-    # 1. updates EnergYPoints, EnergyLayerNodes, Places
+    # 1. updates EnergyPoints, EnergyLayerNodes, Places
     # 2. forgets nodes
-    # 3. save current state - node count etc.
+    # 3. saves current state - node count etc.
     def StepUpdate(self):
         for ep in self.energyPoints:
             ep.StepUpdate(self.getNodesAround(ep, Global.ELGravityRange))
@@ -457,7 +457,7 @@ class EnergyLayer:
         
     ## Creates one subplace.
     #
-    # Retusn False if new Place has AGamount lower than required limit.    
+    # Returns False if new Place has AGamount lower than required limit.    
     def createSubPlace(self, placeToSplit, nodesPlace):
         startNode = nodesPlace[0]
         nodes = nodesPlace[:]
@@ -529,7 +529,7 @@ class EnergyLayer:
     ## Creates new node during simulation.
     #
     # Sets new node location based on EnergyPoint location and noise.
-    # Set-ups correct lnks to MemoryObject and Place    
+    # Set-ups correct links to MemoryObject and Place    
     def CreateNode(self, point, memObject):
         xNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)
         yNoise = Global.Randint(-Global.ELNodeAddNoise, Global.ELNodeAddNoise)

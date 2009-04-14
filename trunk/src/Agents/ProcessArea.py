@@ -24,7 +24,7 @@ class ExcitedProcess:
         ## Additional data and pointers specific to different types of processes
         self.data                = {}   
      
-    ## Terminates self, propagates succes or failure to parent Excitedprocess.   
+    ## Terminates self, propagates success or failure to parent Excitedprocess.   
     def TerminateProcess(self, successful=True):
         self.endTime    = copy(Global.Time)
         self.successful = successful
@@ -90,7 +90,7 @@ class ProcessArea:
         self.processes       = {}
         self.actualIntention = None
         self.actualProcess   = None
-        ## Active process just above intnetion I_Want in and-or tree.
+        ## Active process just above intention I_Want in and-or tree.
         self.actualBasicProcess = None
         
     def HasNoIntention(self):
@@ -102,7 +102,7 @@ class ProcessArea:
     def GetActProcess(self):
         return self.actualProcess
     
-    ## Sets give intention as active, creates ExcitedIntention.
+    ## Sets given intention as active, creates ExcitedIntention.
     def ActivateIntention(self, intention, parentExcProcess):
         self.actualIntention = ExcitedIntention(intention, parentExcProcess)
         return self.actualIntention

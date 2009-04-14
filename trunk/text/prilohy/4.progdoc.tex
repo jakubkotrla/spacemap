@@ -28,7 +28,7 @@ Pak metodou \texttt{Map.Step()} spoèitá viditelnost pøedmìtù.
 \label{alg:prog-step}
 \begin{algorithmic}[1]
 \State vybrání atomické akce - \texttt{ActionSelector.GetAction()}
-\State provedeni akce
+\State provedení akce
 \State vnímání viditelných pøedmìtù
 \State aktualizace \texttt{PerceptionField}
 \State aktualizace \texttt{MemoryArea}
@@ -119,6 +119,7 @@ Souèástí aplikace jsou dva pomocné nástroje:
 \begin{description}
 \item[program \texttt{statter.exe}] \hfill \\
   poèítá prùmìrné, maximální a minimální hodnoty dat v souborech \texttt{data-elnode-status.txt} a \texttt{data-place-status.txt} a ukládá je do \texttt{data-elnode-status.stats.txt} a \texttt{data-places-status.stats.txt}.
+  Pro ètení datových souborù využívá knihovnu od Sebastiena Lorion: \texttt{LumenWorks.Framework.IO.Csv}.
 \item[skript \texttt{plotter.py}] \hfill \\
-  vizualizuje výstupní data aplikace, využívá knihoven NumPy a Matplotlib
+  vizualizuje výstupní data aplikace, využívá knihoven NumPy a Matplotlib.
 \end{description}
