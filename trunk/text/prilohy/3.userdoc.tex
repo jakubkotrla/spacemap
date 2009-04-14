@@ -1,12 +1,16 @@
 \chapter{Uživatelská dokumentace}
 
+Model prostorové mapy popsaný v kapitole \ref{chapter-model} resp. \ref{chapter-model-el} jsme implementovali v prototypové aplikace v jazyce Python.
+Aplikace je na pøiloženém CD vèetnì dalších knihoven nutných pro její bìh.
+\\
+
 \section{Instalace}
 Nejdøíve je tøeba nainstalovat potøebné knihovny:
 \begin{CompactItemize}
 \item interpetor jazyka Python 
 \item grafická knihovna GTK+
-\item knihovna NumPy\footnote{pro nástroj \texttt{plotter.py}\label{fn:repeat}} a Matplotlib\footref{fn:repeat}
-\item knihovna .Net Framework 3.5\footnote{pro nástroj \texttt{statter.exe}}
+\item knihovny PIL\footnote{Python Imaging Library}, NumPy\footnote{pro nástroj \texttt{plotter.py}\label{fn:repeat}} a Matplotlib\footref{fn:repeat}
+\item .Net Framework 3.5\footnote{pro nástroj \texttt{statter.exe}}
 \end{CompactItemize}
 
 
@@ -30,7 +34,7 @@ V prùbìhu aplikace ukládá data do adresáøe \texttt{../../exs}.
 \\
 
 Testovací mód lze spustím položkou \texttt{TestAll} menu \texttt{Start}.
-Aplikace spustí postupnì všechny dostupné testy. Vytvoøí adresáø \texttt{../../tests/yyyy-mm-dd--hh-mm-ss/}.
+Aplikace vytvoøí adresáø \texttt{../../tests/yyyy-mm-dd--hh-mm-ss/} a spustí postupnì všechny dostupné testy.
 Do tohoto adresáøe zkopíruje své aktuální nastavení - soubor \texttt{Global.py}
 Pro každý testovaný svìt vytvoøí v tomto adresáøi podadresáø \texttt{/nazev-sveta} a do nìj ukládá data.
 Stav svìta a prostorové mapy není zobrazen v oknì aplikace, ale je ukládán do souborù ve formátu PNG.
@@ -43,50 +47,57 @@ V obou módech jsou ukládána podrobná data do textových souborù. Tato data je mož
 Test devíti svìtù s 5000 kroky simulace mùže vygenerovat až 3GB dat.
 Nastavení aplikace má dvì èásti:
 
-\begin{CompactItemize}
-\item nastavení parametrù modelu - soubor \texttt{Enviroment/Global.py}
-\item urèení testovacích svìtù - soubor \texttt{Config/Config.py} a soubory svìtù v adresáøi \texttt{Config}
-\end{CompactItemize}
+\begin{description}
+\item[nastavení parametrù modelu]  \hfill \\
+  Soubor \texttt{Enviroment/Global.py}, obsahuje všechny parametry svìta, agenta a modelu prostorové mapy.
+  Význam parametrù je uveden v komentáøích v souboru a v pøíloze B.
+\item[urèení testovacích svìtù]  \hfill \\
+  Soubor \texttt{Config/Config.py} a soubory svìtù v adresáøi \texttt{Config}, urèuje tvar místnosti, rozložení pøedmìtu a waypointù a scénáø agenta.
+\end{description}
 
-Význam parametrù v souboru \texttt{Global.py} je uveden v komentáøích a v pøíloze B.
+
+Rychlost aplikace závisí pøedevším na poètu uzlù prostorové mapy. Ve svìtech s vìtším poètem uzlù trvá 1 krok simulace pøibližne 1 sekundu.
+\footnote{Na PC 2.4GHz 4GB RAM, Windows Vista.}
 \\
+
+\newpage
 
 \section{Výstupní data a jejich vizualizace}
 
 Výstupem aplikace jsou následující soubory:
 \begin{description}
-\item[PIL000000.png--PIL999999.png] \hfill \\
+  \setlength{\leftmargin}{0.5cm}
+  \setlength{\itemsep}{0pt}
+  \setlength{\parsep}{0pt}
+  \setlength{\topsep}{0pt}
+\item[\texttt{PIL000000.png}--\texttt{PIL999999.png}]  \hfill \\
   obrázky stavu svìta a prostorové mapy v každém kroku simulace
-\item[visibilityobjectheatmap.png] \hfill \\
+\item[\texttt{visibilityobjectheatmap.png}] \hfill \\
   obrázek stavu v posledním kroku simulace vèetnì nauèenosti pøedmìtu
-\item[data-scenario.txt] \hfill \\
+\item[\texttt{data-scenario.txt}] \hfill \\
   agentùv scénáø
-\item[data-nc.txt] \hfill \\
+\item[\texttt{data-nc.txt}] \hfill \\
   poèet uzlù
-\item[data-elnode-status.txt] \hfill \\
+\item[\texttt{data-elnode-status.txt}] \hfill \\
   stav všech uzlù v každém kroku
-\item[data-place-status.txt] \hfill \\
+\item[\texttt{data-place-status.txt}] \hfill \\
   stav všech míst v každém kroku
-\item[data-rememberinfo.txt] \hfill \\
+\item[\texttt{data-rememberinfo.txt}] \hfill \\
   chyba mapy pro každý objekt každý 10-tý krok  
-\item[data-elnodeheatmap.txt] \hfill \\
+\item[\texttt{data-elnodeheatmap.txt}] \hfill \\
   mapa rozložení uzlù po skonèení simulace s jejich naplnìností
-\item[data-elnodeheatmapag.txt] \hfill \\
+\item[\texttt{data-elnodeheatmapag.txt}] \hfill \\
  mapa rozložení uzlù po skonèení simulace s jejich množstvím odpudivosti
-\item[data-objheatmap.txt] \hfill \\
+\item[\texttt{data-objheatmap.txt}] \hfill \\
   mapa rozložení pøedmìtù po skonèení simulace s jejich nauèeností
-\item[log.txt] \hfill \\
+\item[\texttt{log.txt}] \hfill \\
   podrobné informace o prùbìhu simulace  
 \end{description}
 
-Data v textových souborech je možné vizualizovat použitím nástrojù \texttt{statter.exe}\footnote{
-je potøeba pouze, pokud uživatel chce vidìt podrobné informace o stavu uzlù prostorové mapy v prùbìhu simulace} a \texttt{plotter.py}.
+Data v textových souborech je možné vizualizovat použitím nástrojù \texttt{statter.exe} a \texttt{plotter.py}.
 Oba nástroje pracují tak, že po spuštìní projdou aktuální adresáø a rekurzivnì všechny podadresáøe a zpracují všechny nalezené soubory se správným jménem.
 \\
 
-Nástroj statter.exe spoèítá prùmìrné, minimální a maximální hodnoty dat v souborech
-\texttt{data-elnode-status.txt} a \texttt{data-place-status.txt} a uloží je do souborù \texttt{data-elnode-status.stats.txt} a \texttt{data-places-status.stats.txt}.
-\\
-
+Nástroj \texttt{statter.exe} spoèítá prùmìrné, minimální a maximální hodnoty dat o uzlech a místech a uloží je do dalších textových souborù.
 Nástroj \texttt{plotter.py} na základì textových souborù vytvoøí grafy a uloží je do souborù ve formátu PNG.
 \\
