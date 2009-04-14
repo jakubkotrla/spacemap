@@ -288,6 +288,7 @@ class MainWindow(Frame):
 
     ## Starts simulation in interactive mode in separate thread.
     def startSimulation(self, configName):
+        os.makedirs("../../exs/")
         dirList = os.listdir("../../exs/")
         for fname in dirList:
             os.remove("../../exs/" + fname)
