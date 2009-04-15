@@ -22,11 +22,12 @@ intensityChange_FailedProcess = 100
 pleasureChange_ItemNotFound = -20
 intensityChange_ItemNotFound = 20
 
-## UNCHANGED, original from Tomas Korenko source code
+## CHANGED, original from Tomas Korenko source code
 class Emotion:
     def __init__(self, filename, time):
-        f = open(filename,'r')
-        exec(f.read())
+        def Function(time):
+            return (5,5)
+        self.Function = Function
         self.time = Time(time.day, time.hour, time.minute)
         self.pleasure = self.Function(time)[0]
         self.intensity = self.Function(time)[1]

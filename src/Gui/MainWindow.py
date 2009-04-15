@@ -9,7 +9,6 @@ import time
 import copy
 import traceback
 from random import seed
-from PIL import ImageGrab, ImageDraw
 from Enviroment.Global import Global
 from Enviroment.World import World
 from Enviroment.Affordances import Affordances
