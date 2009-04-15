@@ -1,15 +1,12 @@
 \chapter{Vısledky testù modelu}
 
 Tato kapitola obsahuje vısledky testù modelu.
-Jednak testy finálního modelu prostorové mapy na rùznıch datech, druhak testy modelu s rùznımi hodnotami nìkterıch klíèovıch parametrù.
+V první podkapitole jsou testy finálního modelu prostorové mapy na rùznıch datech, v dalších jsou testy modelu s rùznımi hodnotami nìkterıch klíèovıch parametrù.
 \\
 
 Samotnı test je urèen testovacím svìtem\footnote{Pøehled všech testovacích místností je v pøíloze A.},
 tedy místností a scénáøem a hodnotami parametrù.
-V nìkterıch pøípadech bylo testována rùzná øešení konkrétních podúloh.
-V takovıch pøípadech nestaèí zmìnit parametry modelu, ale je nutné upravit samotnı algortimus.
 \\
-
 
 
 \section{Testy finálního modelu} \label{chapter-test-final}
@@ -58,9 +55,9 @@ Provedli jsme 5000 krokù simulace v místnostech EmptyRoom a FullRoom.
 \\
 
 V prvním testu nebyla naplnìnost uzlù pøi poèítání odpudivosti vùbec brána v úvahu.
-Vısledek je na obrázku \ref{fig:usage-ag-no} a ukazuje, e v tom pøípadì model rozmisuje uzly v prostoru témìø rovnomìrnì.
-Z toho vyplıvá, e naplìnost uzlu hraje v modelu vıznamnou roli.
-Obrázky \ref{fig:usage-ag-0.5}, \ref{fig:usage-ag-0.8}, \ref{fig:usage-ag-1} ukazují vısledky testù pro rùzné hodnoty \param{vlivu naplnìnosti}.
+Vısledek je na obrázku \ref{fig:usage-ag-no} a ukazuje, e v tomto pøípadì model rozmisuje uzly v prostoru témìø rovnomìrnì.
+Z toho vyplıvá, e naplnìnost uzlu hraje v modelu vıznamnou roli.
+Obrázky \ref{fig:usage-ag-0.5}, \ref{fig:usage-ag-0.8}, \ref{fig:usage-ag-1} ukazují vısledky testù pro rùzné hodnoty parametru \param{vliv naplnìnosti}.
 \\
 
 \begin{figure}[p]
@@ -100,12 +97,12 @@ Obrázky \ref{fig:usage-ag-0.5}, \ref{fig:usage-ag-0.8}, \ref{fig:usage-ag-1} uka
 \newpage
 
 \section{Pøesnost mapy}
-Jedním z objektivních kritérií modelu je pøenost mapy, nakolik odpovídá realitì virtuálního svìta.
+Jedním z objektivních kritérií modelu je pøesnost mapy, nakolik odpovídá realitì virtuálního svìta.
 
 \begin{definition}[Nauèenost pøedmìtu]
-V prùbìhu simulace agent vidí a pouívá pøedmìty a prostorová mapa dostává vjemy, které to odráí.
-Nauèenost pøedmìtu je vlastnost vyjadøující, jak moc agent pøedmìt vnímal a pouival.
-Na zaèátku simulace je rovna nule. V prùbìhu simulace, pokadé, kdy je vytvoøen vjem pøedmìtu, je nauèenost pøedmìtu zvıšena o intenzitu vjemu.
+V prùbìhu simulace agent vidí a pouívá pøedmìty a prostorová mapa dostává vjemy, které to odráejí.
+Nauèenost pøedmìtu je vlastnost vyjadøující poèet a intenzitu vjemù daného pøedmìtu.
+Na zaèátku simulace je rovna nule. V prùbìhu simulace pokadé, kdy je vytvoøen vjem pøedmìtu, je nauèenost pøedmìtu zvıšena o intenzitu vjemu.
 Nauèenost pøedmìtu neklesá.
 \end{definition}
 
@@ -126,9 +123,9 @@ Ukazuje, e náš pøepoklad je správnı, uzly prostorové mapy, resp. jejich naplnìn
 
 \newpage
 
-Dalším mìøítkem je pøesnost zapamatovanıch poloh pøedmìtù.
-V kadém kroku simulace mùeme urèit, na jaké poloze se agent domnívá, e pøedmìt je.
-To mùeme porovnat s realitou.
+Dalším monım mìøítkem je pøesnost zapamatovanıch poloh pøedmìtù.
+V kadém kroku simulace mùeme urèit polohu, o ní se agent domnívá, e na ní pøedmìt je.
+Tuto domnìlou polohu mùeme porovnat s skuteènou polohou pøedmìtu.
 Na obrázcích \ref{fig:test-error1} a \ref{fig:test-error2} je zobrazen vıvoj rozdílu mezi realitou a agentovou prostorovou mapu v
 èase\footnote{Vısledky v dalších místnostech jsou opìt na pøiloeném CD.}.
 V tomto testu model uspìl jen v polovinì testovanıch dat.
@@ -155,7 +152,7 @@ V tomto testu model uspìl jen v polovinì testovanıch dat.
 
 \section{Test limitù míst}
 V kapitole \ref{chapter-place-detect} byl popsán mechanismus vytváøení míst.
-Model prostorové mapy je díky nìmu schopen rozpoznat oblasti s vyšší hustotou uzlù a vytvoøit v takové oblasti místo.
+Model prostorové mapy je tak schopen rozpoznat oblasti s vyšší hustotou uzlù a vytvoøit v takové oblasti místo.
 V tomto testu jsme se rozhodli vyzkoušet vliv parametrù \param{rychlost klesání $\varrho$}, \param{limit vzniku podmísta} a \param{limit zapomenutí místa}.
 Test jsme provedli s nastavením parametrù tak, aby došlo k vytvoøení více míst, jejich hodnoty jsou v tabulce \ref{tab:test-mist}, test mìl 4000 krokù simulace.
 \\
@@ -186,8 +183,8 @@ Je vidìt, e zmìna testovanıch parametrù zpùsobila vznik více míst. I v témìø pr
 \\
 
 Vedlejším efektem však bylo vytvoøení míst i tam, kde jsme je neoèekávali a nechtìli.
-Zvıraznìná místa na obrázku \ref{fig:test-places-lh-heap} nevznikly pøímo díky hustotì uzlù.
-Ke svému vzniku spotøebovali mnoství odpudivosti nahromadìné v uzlech v tìsné blízkosti jinıch míst.
+Zvıraznìná místa na obrázku \ref{fig:test-places-lh-heap} nevznikla pøímo díky hustotì uzlù.
+Ke svému vzniku spotøebovala mnoství odpudivosti nahromadìné v uzlech v tìsné blízkosti jinıch míst.
 \\
 
 

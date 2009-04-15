@@ -7,15 +7,15 @@ Nìkterá z nich jsou popsána v této kapitole.
 \section{Pøitalivost stop vjemu}
 Pokud je v místnosti oblast, kde je poblí sebe více pøedmìtù, prostorová mapa v ní vytvoøí více uzlù.
 Pokud však budou mít pøedmìty nízkou aktraktivitu, napø. $^1/_{10}$ vıchozí atraktivity, nedojde k vzniku novıch uzlù.
-Poèáteèní intenzita stop vjemu vytváøenıch v této oblasti bude pøílis malá, aby pokryla rostoucí cenu uzlu.
+Poèáteèní intenzita stop vjemu vytváøenıch v této oblasti bude pøílis malá, ne aby pokryla rostoucí cenu uzlu.
 Pøestoe v oblasti jich bude hodnì, ádná z nich nebude dost intenzivní.
 \\
 
 Pokud èlovìk vidí hromadu malıch nezajímavıch vìcí, nezapamatuje si jednotlivé vìci, zapamatuje si však fakt, e v dané oblasti byla \uv{velká hromada nìèeho}.
 Øešením by bylo pøidat do modelu pøitalivost stop vjemu. Lze ji chápat jako shlukování vjemù, které jsou blízko u sebe.
 Síla pøitalivosti by mìla bıt nepøímo úmìrná intenzitì stopy vjemu, budou se tak shlukovat pouze vjemy s malou intenzitou.
-Také ochota stopy mìnit svoji polohu, tedy velikost zmìny polohy by mìla bıt nepøímo úmìrná na její intenzitì.
-Vısledkem bude, e slabší vjemy budou pøitaeny k silnìjším.
+Také ochota stopy mìnit svou polohu, tedy velikost zmìny polohy, by mìla bıt nepøímo úmìrná její intenzitì.
+Vısledkem bude, e slabší vjemy budou pøitahovány k silnìjším.
 \\
 
 % ?? ToDo ukazat/overit na prikladu na prikladu, ze to tak je.
@@ -26,9 +26,9 @@ Je dále ovlivnìna parametry modelu, které jsou však v prùbìhu celé simulace kons
 \\
 
 Jedna z moností, jak zlepšit rozloení uzlù v prostoru, je mìnit parametry ovlivòující odpudivost,
-pøedevším \param{sílu odpudivosti} a \param{dosah odpudivosti}, v prùbìhu simulace.
+v prùbìhu simulace, pøedevším \param{sílu odpudivosti} a \param{dosah odpudivosti}.
 Parametry by se mohly mìnit podle aktuální hustoty uzlù, která se odráí v mnoství odpudivosti.
-Dalším øešením by bylo pøidat ji do vıpoètu odpudivosti,
+Dalším øešením by bylo pøidat je do vıpoètu odpudivosti,
 tím by parametry pøestaly bıt stejné pro všechny uzly a odpudivost uzlù by se tak pøizpùsobovala lokální situaci.
 \\
 
@@ -36,12 +36,12 @@ tím by parametry pøestaly bıt stejné pro všechny uzly a odpudivost uzlù by se ta
 \section{Sjednocení stopy vjemu a uzlu}
 V pøedstaveném modelu jsou dva podobné objekty: stopa vjemu a uzel prostorové mapy.
 Na stopu vjemu lze nahlíet jako na doèasnı uzel mapy, kterı má danou svou ivotnost.
-Souèasnì lze nahlíet na uzel mapy jako na trvalìjší stopu vjemu.
-Stopa vjemu a uzel jsou tedy jen dva rùzné stupnì tého typu objektu, stopa vjmeu je uzel nultého stupnì.
+Souèasnì lze nahlíet na uzel mapy jako na trvalejší stopu vjemu.
+Stopa vjemu a uzel jsou tedy jen dva rùzné stupnì tého typu objektu, stopa vjemu je uzel nultého stupnì.
 \\
 
-Model lze rozšíøít o další stupnì, uzly by vytváøely další uzly, které by mìl ještì trvalejší charakter.
-Stupìò uzlu by urèoval jeho trvalost, ochotu se pohybovat, míru s jakou vytváøí další uzly vyššího stupnì.
+Model lze rozšíøit o další stupnì. Uzly by vytváøely další uzly, které by mìly ještì trvalejší charakter.
+Stupeò uzlu by urèoval jeho trvalost, ochotu se pohybovat a míru, s jakou vytváøí další uzly vyššího stupnì.
 Úplnım zobecnìním modelu by byla zmìna stupnì uzlu z diskrétní velièiny na spojitou. Mapa by tak obsahovala mnoho uzlù rùzného stupnì.
 \\
 
@@ -51,7 +51,7 @@ Stupìò uzlu by urèoval jeho trvalost, ochotu se pohybovat, míru s jakou vytváøí 
 Model obsahuje nìkolik mechanismù pro zapomínání:
 
 \begin{CompactItemize}
-\item sniování intenzit pamìovıch stop a vazeb mezi stopu a uzlem
+\item sniování intenzit pamìovıch stop a vazeb mezi stopou a uzlem
 \item slábnutí a zmizení stop vjemu
 \item klesání naplnìnosti uzlu
 \item klesání mnoství odpudivosti uzlu
@@ -59,20 +59,21 @@ Model obsahuje nìkolik mechanismù pro zapomínání:
 \item klesání intenzity místa
 \end{CompactItemize}
 
-Zapomínání uzlù je moné rozšiøit nìkolika zpùsoby.
+Zapomínání uzlù je moné rozšíøit nìkolika zpùsoby.
 Cenu vytvoøení a zapomenutí uzlu je moné skládat z více exponenciel, aby bylo dosaeno pozvolnìjšího prùbìhu funkce a dalšího zpomalení zapomínání uzlù.
-Dále je moné pøi zapomínání uzlù brát v potaz jejich naplnìnost. Uzel, kterı je pro prostorovou mapu dùleitı stojí zapomenout více.
-To se mùe promítnout do sníení energie na zapomínání, bude sníena v závislosti na naplìnosti uzlu, kterı byl zapomenut.
-Samotnı vıbìr uzlu, kterı bude zapomenut, mùe bıt ovlivnìn jejich naplnìností.
+Dále je moné pøi zapomínání uzlù brát v potaz jejich naplnìnost. 
+Zapomenutí uzlù s rùznou naplnìností by nemìlo mít stejnou cenu zapomenutí uzlu $cost_forget$, uzel s vyšší naplnìností je pro mapu dùleitìjší.
+To se mùe promítnout do sniování energie na zapomínání, je bude sniována v závislosti na naplnìnosti uzlu, kterı byl zapomenut.
+Také samotnı vıbìr uzlu, kterı bude zapomenut, mùe bıt ovlivnìn jejich naplnìností.
 \\
 
-Slábnutí a klesání rùznıch vlastností uzlù, vazeb a míst je v pøedstaveném modelu lineární, nezávisí na aktuální hodnotì vlasnosti.
-Model by bylo vhodné rozšíøit, aby rychlost klesání závisela na aktuální hodnotì.
+Slábnutí a klesání rùznıch vlastností uzlù, vazeb a míst je v pøedstaveném modelu lineární, nezávisí na aktuální hodnotì vlastnosti.
+Model by bylo vhodné rozšíøit, aby rychlost klesání závisela na její aktuální hodnotì.
 Pokud je hodnota vysoká, klesá rychleji, pokud se hodnota blíí k nule, klesá èím dál pomaleji.
 \\
 
 Model øeší zapomínání pouze za relativnì krátkou dobu.
-Pøeneseme-li mìøítko èasu modelu, kroky simulace, do reálného svìta, je vidìt, e model vyhovuje pro dobu trvající øádovì jednotky a desítky tıdnù.
+Pøeneseme-li mìøítko èasu modelu, tj. kroky simulace, do reálného svìta, je vidìt, e model vyhovuje pro dobu trvající øádovì jednotky a desítky tıdnù.
 Pokud by model mìl uspokojivì øešit zapomínání v øádu let, bylo vhodné rozšíøit intezitu vjemu do komplexnìjší velièiny,
 napø. pøidat mechanismy pracující s emocemi.
 \\
@@ -81,41 +82,42 @@ napø. pøidat mechanismy pracující s emocemi.
 
 \section{Rozšíøení uzlu a místa}
 Do uzlu je v modelu ukládána pouze informace o poloze pøedmìtù.
-Uzly lze však vyuít i uchování dalších informací, napø. které èinnosti poblí nich agent provádìl.
+Uzly lze však vyuít i k uchování dalších informací, napø. které èinnosti poblí nich agent provádìl.
 Vznikla by asociativní sí vazeb mezi èinnostmi a uzly. Jinım øešením by bylo vytváøet více map, pro kadı typ uchovávané informace jednu.
 \\
 
 Ukládané informace pak mohou bıt propagovány z uzlù do míst a z nich do nadøazenıch míst.
 Agent by pak byl schopen urèit nejèastìjší èinnosti provádìné v urèité místì a vytvoøit si tak pøedstavu o jeho funkènosti,
-napø: místo, kde se nejèastìji jí a pøipravuje jídlo oznaèí místo k tomu urèené.
-Pokud bychom mu dodali dostatek informací, bude schopen jej oznaèit slovem \emph{kuchynì} èi \emph{jídelna}.
+napø: místo, kde se nejèastìji jí a pøipravuje jídlo, oznaèí jako místo k tomu urèené.
+Pokud bychom mu dodali dostatek informací, bude schopen jej oznaèit slovem \emph{jídelna} èi \emph{kuchynì}.
 K tomu úèelu by bylo tøeba vytvoøit hierachii afordancí èi je nìjak jinak kategorizovat.
 \\
 
-Model byl vytvoøen v prostøedí svìta jen s jedním agentem. Pokud by svìt obsahoval více agentù, objevují se další informace, které je moné ukládat,
+Model byl vytvoøen v prostøedí svìta jen s jedním agentem.
+Pokud by svìt obsahoval více agentù, objevily by se další informace, které by bylo moné ukládat,
 napø. kde se agent setkal s jinım konkrétním agentem èi co vidìl dìlat ostatní agenty.
 Pokud by spolu agenti komunikovali, mohli by si pøedávat informace o poloze pøedmìtù.
 Taková informace je pak z hlediska modelu prostorové mapy jen další typ vjemu, jeho intenzita by závisela napø. na dùvìryhodnosti agenta.
 Celı proces pøedání informace o poloze pøedmìtu agentem $a_1$ agentovi $a_2$ si pak lze pøedstavit takto:
 \begin{CompactItemize}
 \item agent $a_1$ si vybaví pamìovou stopu a vytvoøí si pamìového fantoma
-\item pamìová stopa je pøedána agentovi $a_2$
-\item agent $a_2$ vytvoøí na základì pamìové stopy vjem, jeho intenzita bude odvozena z intenzity pamìové stopy a dalších faktorech
+\item pamìovı fantom je pøedána agentovi $a_2$
+\item agent $a_2$ vytvoøí na základì pamìového fantoma vjem, jeho intenzita bude odvozena z intenzity pamìové stopy agenta $a_1$ a dalších faktorù
 \item prostorová mapa agenta $a_2$ zpracuje vjem
 \end{CompactItemize}
 
 
 Uloenou pozici objektu\footnote{pamìovou stopy v prostorové mapì agenta $a_2$}
 by bylo vhodné obohatit o informaci, e tuto polohu se agent dozvìdìl od jiného agenta a od kterého.
-Zde je moné model dále obohacovat, agent mùe napø. po èase zapomenout, kdo mu o poloze pøedmìtu øekl.
+Zde je moné model dále obohacovat, agent mùe napø. po èase zapomenout, kdo mu poloze pøedmìtu sdìlil.
 \\
 
 
 
 
 \section{Rozšíøení modelu pro sloitìjší svìty} \label{chapter-complex-space}
-Model je navren pro velmi jednoduchı svìt, obsahující pouze jednu 2D místnost.
-Tato kapitola pøedstaví rozšíøení modelu pro svìt obsahující více místností, které jsou 3D.
+Model je navren pro velmi jednoduchı svìt obsahující pouze jednu 2D místnost.
+Tato kapitola pøedstavuje rozšíøení modelu pro svìt obsahující více místností, které jsou 3D.
 \\
 
 Rozšíøení modelu do 3D je pøímoèaré. Všechny algoritmy a vzorce pracují nezávisle na dimenzi svìta.
@@ -124,10 +126,10 @@ Poloha objektù prostorové mapy bude urèena tøemi souøadnicemi $<x,y,z>$. Vzdálen
 dist_{3D}(a,b) = \sqrt{  (a_x-b_x)^2 + (a_y-b_y)^2 + (a_z-b_z)^2}.
 \label{formula:vzdalenost-3D}
 \end{equation}
-Místnost mùe bıt obecnı mnohoúhelník. Model bude potøebovat od vnìjšího svìta pouze následující rozhraní: 
+Místnost mùe bıt obecnı mnohoúhelník. Model potøebuje od vnìjšího svìta pouze následující rozhraní: 
 \begin{CompactItemize}
-\item urèit obsah mnohostìnnu
-\item testovat náleení bodu do mnohostìnnu
+\item urèit obsah mnohostìnu
+\item testovat náleení bodu do mnohostìnu
 \item urèit prùseèík úseèky a stìny
 \item urèit viditelnost pøedmìtu\footnote{Zorná pole, popsaná v kapitole \ref{chapter-agent} jako kruhové vıseèe, budou kuely.}
 \end{CompactItemize}
@@ -139,19 +141,19 @@ Pro tyto úèely by bylo vhodné vyuít hotové øešení, napø. nìjakı volnì dostupnı 
 
 Svìt kolem nás není omezen na jednu uzavøenou místnost, skládá se z mnoha prostorù, které se dìlí na menší a menší.
 Svìt kolem nás mùeme chápat jako hiearchii takovıch prostorù, i kdy hranice mezi nimi nejsou vdy jasnì urèené.
-Napø. dùm se dìlí na podlaí, ta dále na byty, které jsou sloeny z nìkolika místnosti.
+Napø. dùm se dìlí na podlaí, ta dále na byty, které jsou sloeny z nìkolika místností.
 Model je moné rozšíøit tak, aby dokázal pracovat ve svìtì urèeném jako hiearchie prostorù.
 \\
 
 \begin{definition}[Hiearchickı svìt]
-Svìt se skládá z prostorù. Kadı prostor je obecnı mnohoúhelník, rozdìlenı na další podprostory. Tím je vytvoøena hiaerchie prostorù.
-Koøen stromu této hiearchie je samotnı svìt, listy stromu jsou prostory, které ji nemá smysl dále dìlit, napø. malá uzavøená místnost, lednièka èi šuplík.
-Podprostory v prostoru jsou chápány jako pøedmìty, napø. lednièka je prostor obsahující pøedmìty, ale z hlediska místnosti je pouze pøedmìt.
+Svìt se skládá z prostorù. Kadı prostor je obecnı mnohoúhelník, rozdìlenı na další podprostory. Tím je vytvoøena hiearchie prostorù.
+Koøen stromu této hiearchie je samotnı svìt, listy stromu jsou prostory, které ji nemá smysl dále dìlit, napø. malá uzavøená místnost, lednièka èi police.
+Podprostory v prostoru jsou chápány jako pøedmìty, napø. lednièka je prostor obsahující pøedmìty, ale z hlediska místnosti je pouze pøedmìtem.
 \end{definition}
 
 Èást prostorové mapy \emph{pamì na pøedmìty} pracuje nezávisle na velikosti svìta.
-\emph{Vrstva uzlù} je na nìm závislá, proto si mapa vytvoøí novu pro kadı prostor.
-V døíve uvedeném pøíkladu domu by kadá místnost, byt i podlaí mìlo vlastní \emph{vrstvu uzlù}.
+\emph{Vrstva uzlù} je na nìm závislá, proto si mapa vytvoøí novou pro kadı prostor.
+V døíve uvedeném pøíkladu domu by kadá místnost, byt i podlaí mìly vlastní \emph{vrstvu uzlù}.
 Hiearchii svìta musí model dostat k dispozici. \footnote{
  Model by si tuto hiearchii mohl konstruovat sám obdobnım zpùsobem, jakım si vytváøí místa v kapitole \ref{chapter-place-detect}.
  Pak by mìl pouze jednu velmi rozsáhlou vrstvu uzlù.
@@ -159,7 +161,7 @@ Hiearchii svìta musí model dostat k dispozici. \footnote{
 }\\
 
 To navíc umoòuje parametrizovat vrstvù uzlù na míru konkrétní místnosti, dokonce pouít jiné implementace a urèité modifikace modelu.
-Napø. malá místnost plná pøedmìtù (sklad) a velká témìø prázdná místnost (hala) mohou mít zcela jiné nastavení parametrù jako je hustota mapy èi cena uzlu.
+Napø. malá místnost plná pøedmìtù (sklad) a velká témìø prázdná místnost (hala) mohou mít zcela jiné nastavení parametrù, jako je hustota mapy èi cena uzlu.
 \\
 
 
@@ -170,21 +172,21 @@ Má urèité poadavky na geometrii virtuální svìta, pro kterı vytváøí prostorovou 
 
 \begin{CompactItemize}
 \item svìt je 2D polygon, kterı se vejde do ètverce pøiblinì 100$\times$100
-\item pøedmìty nemají velikost, jsou reprepzentovánı svım støedem
+\item pøedmìty nemají velikost, jsou reprezentovány svım støedem
 \end{CompactItemize}
 
 Tyto poadavky však nejsou pro mnoho úloh zásadním zpùsobem omezující.
 Model je moné pouít i pro jiné úèely.
-Struènì øeèeno model umí ukládat informaci o rozloení pøedmìtù v omezeném prostoru na základì postupnıch informací o jejich poloze.
-Dále umí urèit \emph{místa}, oblasti, kde je více pøedmìtù.
+Struènì øeèeno, model umí ukládat informaci o rozloení pøedmìtù v omezeném prostoru na základì postupnıch informací o jejich poloze.
+Dále umí urèit \emph{místa}, tj. oblasti, kde je více pøedmìtù.
 \\
 
 Model by bylo moné pouít napø. pro vytvoøení poèítaèového protivníka do hry pexeso.
 V kadém kole hry agent vidí dvojici karet - dva vjemy pøedmìtù.
-Díky tomu, e vjemy mají intenzitu, mùe model brát v potaz i fakt, e agent se na karty dívá z urèítého uzlu a vzdálenosti.
-Atraktivita pøedmìtu mùe bıt pouita pro simulaci rozeznatelností obrázku na kartì:
-Jinou atraktivitu bude mít karta s obrázkem èeveného vykøièníku a jinou karta s ilustrací v nevıraznıch pastelovıch barvách.
-Kdy bude chtít najít kartu do páru, model urèí její polohu s nepøeností odpovídající poètu otoèení hledané karty.
+Díky tomu, e vjemy mají intenzitu, mùe model brát v potaz i fakt, e agent se na karty dívá z urèitého uzlu a vzdálenosti.
+Atraktivita pøedmìtu mùe bıt pouita pro simulaci rozeznatelností obrázku na kartì.
+Jinou atraktivitu bude mít karta s obrázkem èerveného vykøièníku a jinou karta s ilustrací v nevıraznıch pastelovıch barvách.
+Kdy si bude agent vybavovat polohu karty v páru, model urèí její polohu s nepøesností odpovídající poètu otoèení hledané karty.
 \\
 
 Další úlohou, kde by bylo moné model pouít, je uèení se rozloení kláves na klávesnici virtuálním agentem a simulace jeho pøeklepù.

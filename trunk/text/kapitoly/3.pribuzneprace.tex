@@ -7,13 +7,13 @@ Nabízí se algoritmy shlukové analızy, napø. algoritmus K-Means \cite{litKMeans}.
 \\
 
 K-Means algoritmus dìlí data do K shlukù a minimalizuje jejich odchylku od støedù shlukù.
-Algoritmus je online v tom smyslu, e pracuje v krocích. Na za èátku jsou shluky urèeny náhodnì a v kadém dalším kroku jsou pøepoèítány tak,
+Algoritmus je online v tom smyslu, e pracuje v krocích. Na zaèátku jsou shluky urèeny náhodnì a v kadém dalším kroku jsou pøepoèítány tak,
 aby se jejich rozdìlení zlepšilo. Algoritmus konèí v okamiku, kdy se rozdìlení dat oproti pøedchozímu kroku nezmìní.
 \\
 
 K-Means algoritmus však pracuje nad všemi daty najednou, tedy agent by musel vidìt všechny pøedmìty souèasnì.
 Nedokáe zpracovávat vjemy postupnì a nezávisle na ostatních. Pøi zmìnì rozloení pøedmìtù je tøeba jej celı provést znovu.
-Algoritmus umí urèit shluky, tedy umístit bod tam, kde je hodnì dat. Ve skuteènosti potøebujeme opak, umístit hodnì uzlù tam, kde je pøedmìt.
+Algoritmus umí urèit shluky, tedy umístit bod tam, kde je hodnì dat. Ve skuteènosti potøebujeme opak, a to umístit hodnì uzlù tam, kde je pøedmìt.
 To samé platí obecnì pro geometrické algoritmy shlukové analızy, nelze je tedy pouít na hlavní model mapy. Mohou ale bıt vyuity pøi vytváøení hiearchie uzlù.
 \\
 
@@ -21,7 +21,7 @@ To samé platí obecnì pro geometrické algoritmy shlukové analızy, nelze je tedy p
 
 Mapování prostoru a vytváøení prostorovıch map se ve velké míøe vìnuje robotika. Øeší však problémy na jiné úrovni, typicky tzv. SLAM\footnote{Simultaneous Localization and Mapping} problém.
 Robot umístìnı do neznámého prostøedí, vybavenı senzory, má za úkol toto prostøedí zmapovat.
-Musí z obrazovıch dat vytvoøit mapu svého okolí, pohybovat se v nìm bez sráek a neztratit informaci o své poloze v právì vytváøené mapì.
+Musí z obrazovıch dat vytvoøit mapu svého okolí, pohybovat se v nìm bez naráení do stìn a neztratit informaci o své poloze v právì vytváøené mapì.
 To je celé ztíeno nepøesností senzorù a nespolehlivostí pohybového aparátu.
 Pokud øídící èást robota vyšle pøíkaz \uv{2 metry vpøed}, nemùe si bıt jistá, zda se robot skuteènì pøesune o dva metry vpøed.
 Èásti robota, zodpovìdné za jeho pohyb, jsou ve vykonání pøíkazù stejnì nepøesné jako robotovy senzory.
@@ -31,11 +31,11 @@ Navíc stav svìta v bezprostøedním okolí robota se mùe náhle a nepøedvídatelnì z
 Tyto netriviální úlohy náš model øešit nemusí, agent se pohybuje ve virtuálním svìtì a má pøesné informace o svém okolí.
 Pøesto se mùeme inspirovat øešeními, protoe úlohy jsou podobné.
 Velmi èasto jsou pouívány tzv. Kohonenovy mapy \cite{litKohonen}, nazıvané té samoorganizaèní mapy.
-Jedná se o typ neuronové sítì uèící se bez uèitele, vyuívá soutìní strategii uèení.
+Jedná se o typ neuronové sítì uèící se bez uèitele, která vyuívá soutìní strategii uèení.
 \\
 
 Samoorganizaèní mapy vyuili napø. autoøi v \cite{litShapeSOM} ke konstrukci robota, kterı umí vytvoøit 3D mapu svého okolí pomocí dálkomìru.
-Kohonenovo uèení je pouito v \cite{litPanImgs} ke konstrukci map, urèení orientaèních bodù a navigaci.
+Kohonenovo uèení je pouito v \cite{litPanImgs} ke konstrukci map, k urèení orientaèních bodù a navigaci.
 \\
 
 Samoorganizaèní mapy jsou èasto pouívány také ke klasifikaci dat a analıze shlukù.
@@ -44,16 +44,16 @@ Existuje nìkolik rozšíøení Kohonenovıch map, v \cite{litGNG} a \cite{litGNG2} je
 tzv. Growing Neural Gas Network. Model GNG v prùbìhu uèení vkládá nové uzly na místa nejvìtší chyby.
 \\
 
-V \cite{litGHSOM} je popsán model rostoucí hiearchické Kohonenovy mapy,
-Growing Hierarchical Self-Organizing Map \footnote{více informací o GHSOM lze nalézt na adrese http://www.ifs.tuwien.ac.at/~andi/ghsom/publications.html}.
+V \cite{litGHSOM} je popsán model rostoucí hiearchické Kohonenovy mapy -- 
+Growing Hierarchical Self-Organizing Map\footnote{Více informací o GHSOM lze nalézt na http://www.ifs.tuwien.ac.at/~andi/ghsom/.}.
 GHSOM zaèíná jako Kohonenova mapa tvoøená jedním uzlem a v prùbìhu uèení je rozšiøována:
 \begin{CompactItemize}
 \item jsou pøidávány øádky a sloupce uzlù
 \item pod uzly jsou pøidávány další úrovnì, Kohonenovy mapy o jednom uzlu
 \end{CompactItemize}
 
-Samoorganizaèní mapy jsou pouívány pro vytváøení prostorovıch map a existují jejich rozšíøení s hiearchií a mechanismy pro rùst mapy.
-Jsou tedy jedním z monıch øešení.
+Samoorganizaèní mapy jsou pouívány pro vytváøení prostorovıch map a existují jejich rozšíøení s hiearchií a mechanismy pro jejich rùst.
+Jsou tedy jedním z monıch øešení našeho problému.
 \\
 
 \section{Kognitivní mapy}
@@ -66,7 +66,7 @@ Je tvoøena ètyømi asociativními sítìmi:
 \item region-places map - ukládá pro kazdı region, která místa v nìm jsou 
 \end{CompactItemize}
 
-Místa i regiony jsou obdelníky. Jejich hiearchie je pøedem dána.
+Místa i regiony jsou obdélníky. Jejich hiearchie je pøedem dána.
 Regiony nevznikají seskupováním míst ani naopak místa nevznikají rozdìlením regionù. Asociativní sítì se pouze uèí pøíslušnost míst do regionù.
 Model je pouit pouze pro navigaci a aktualizaci mapy, neobsahuje pamì na pøedmìty ani další podobné informace.
 \\
@@ -80,18 +80,18 @@ Model je však pouit pouze pro navigaci. Mùe bıt vhodné pokud by rozsáhlı virtu
 V \cite{litCAN} je popsán model prostorové mapy, kterı umí ukládat informace o poloze pøedmìtù.
 Vyuívá k tomu autoasociativní Hopfiedovy sítì.
 % [literatura].
-Popsaná sí si pamatuje vazby mezi pøedmìty a oblastmi. Autoøi provedli experiemnt se sítí sloené z 1500 neuronù:
+Popsaná sí si pamatuje vazby mezi pøedmìty a oblastmi. Autoøi provedli experiment se sítí sloené z 1500 neuronù:
 \begin{CompactItemize}
 \item 1000 neuronù kóduje oblasti, jejich vıstup je spojitı $\in <0,1>$
 \item 500 neuronù kóduje pøedmìty, jejich vıstup je diskrétní $\in \{0,1\}$
 \end{CompactItemize}
 
-Autorùm se podaøilo nauèit sí natolik, e kdy je síti pøedán vstup odpovídající oblasti, jsou aktivní neurony kódující pøedmìt, kterı je v oblasti nauèenı a obrácenì,
+Autorùm se podaøilo nauèit sí tak, e kdy je síti pøedán vstup odpovídající oblasti, jsou aktivní neurony kódující pøedmìt, kterı je v oblasti nauèenı a obrácenì,
 pokud je síti pøedán vstup odpovídající pøedmìtu, jsou aktivní neurony kódující oblasti, kde je pøedmìt nauèenı.
 \\
 
 Tento model se blíí simulování procesù, o kterıch se domníváme, e se odehrávají v lidském mozku.
-Centrum orientace a navigace v prostorou a prostorová pamì je dle \cite{litPlaceCells1} v hipokampu. Existují vıpoèetní modely hipokampu, napø. \cite{litHip}.
+Centrum orientace a navigace v prostoru a prostorová pamì je dle \cite{litPlaceCells1} v hipokampu. Existují vıpoèetní modely hipokampu, napø. \cite{litHip}.
 Tyto modely však neøeší rozloení oblastí, tj. uzlù prostorové mapy ani jejich hiearchii, zamìøují se pøedevším na navigaci v prostoru.
 Jejich cílem je simulovat procesy v hipokampu, zatímco my chceme imitovat lidské chování.
 \\
