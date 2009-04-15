@@ -97,7 +97,7 @@ Zámìr \emph{Want(affordance)} agent mùe splnit úspìšnım provedením jedné z tøí 
 
 \begin{figure}[h]
   \centering
-  \scalebox{0.8}{\includegraphics{img/and-or.ps}}
+  \includegraphics[width=0.7\textwidth]{img/and-or.ps}
   \caption{Strom chytrıch akcí a jejich subakcí}
   \label{fig:smart-actions}
 \end{figure}
@@ -114,8 +114,6 @@ Teprve akce \emph{MoveToPartial} je atomická a lze ji provést v jednom kroku sim
 Parametr modelu \param{maximální krok agenta} urèuje maximální vzdálenost, o kterou agent zmìní svoji polohu v jednom kroku simulace.
 \end{definition}
 
-%\begin{definition}[MapPickUpDistance]
-%\end{definition}
 
 Chytré akce jsou:
 
@@ -123,11 +121,11 @@ Chytré akce jsou:
   \item[MoveTo(x,y)] \hfill \\
   pøesun agenta na polohu $<x,y>$. Nejdøíve je nalezena cesta, pokud je svìt konvexní místnost, jedná se o úseèku; pokud svìt není konvexní, jsou pouity waypointy a cesta je lomená èára. Kadá úseèka je pak rovnomìrnì rozdìlena na kratší èásti tak, aby délka její nejdelší èásti byla menší ne \param{maximální krok agenta}. Díky tomu se agent kadé kolo simulace posune jen o malı kus.
   \item[SearchRandom(afordance)] \hfill \\
-  náhodné hledání pøedmìtu s danou afordancí. Agent má u kadého waypointu uloen èas, kdy jej naposledy vidìl. Tato akce zajistí, e agent postupnì navštíví všechny waypointy. Zaène tím, kterı má nejstarší èas a k tomu waypointu, kterı navštívil jako poslední. Toto poøadí je urèeno na zaèátku akce. K pøesunu mezi waypointy agent provádí chytrou akci MoveTo.
+  náhodné hledání pøedmìtu s danou afordancí. Agent má u kadého way\-pointu uloen èas, kdy jej naposledy vidìl. Tato akce zajistí, e agent postupnì navštíví všechny waypointy v poøadí dle uloeného èasu. Zaène tím, kterı nevidìl nejdéle a skonèí u toho, kterı vidìl naposledy. Toto poøadí je urèeno na zaèátku akce. K pøesunu mezi waypointy agent provádí chytrou akci MoveTo.
   \item[LookUpInMemory(afordance)] \hfill \\
   získání pøedmìtu s danou afordancí s vyuitím prostorové mapy. Agent si nejdøíve vybaví pøedmìt s danou afordancí, kterı si pamatuje nejlépe (to urèí prostorová mapa). K tomutu pøedmìtu se pøesune pomocí chytré akce MoveTo. Pak spustí atomickou akci LookForObject, která je jen speciálním pøípadem akce Explore.
   \item[Execute(èinnost)] \hfill \\
-  provedení èinnosti. Tato akce je spuštìna pouze tehdy, pokud èinnost, kterou chce agent vykonat, má ji všechny zdroje. Pak agent ovìøí, zda všechny zdroje èinnosti jsou dostupné, tedy e je v jejich bezprostøední blízkosti. Pokud ne, pøesune se k nim pomocí chytré akce MoveTo.
+  provedení èinnosti. Tato akce je spuštìna pouze tehdy, pokud èinnost, kterou chce agent vykonat, má ji všechny zdroje\footnote{V souèasné implementaci má kadá èinnost pouze jeden zdroj. Pokud by mìla více, bylo by tøeba, aby agent umìl pøedmìty pøenášet.}. Pak agent ovìøí, zda všechny zdroje èinnosti jsou dostupné, tedy e je v jejich bezprostøední blízkosti. Pokud ne, pøesune se k nim pomocí chytré akce MoveTo.
 \end{description}
 
 
@@ -160,7 +158,7 @@ LookForObject(pamìovı fantom) & vyhledání pøedmìtu odpovídajícího pamìovému fa
 
 
 Souèástí svìta je i mnoina zámìrù a èinností, které agent mùe vykonávat. Závisí toti na pøedmìtech, resp. jejich afordancích, které jsou ve svìtì dostupné.
-Pokud by svìt obsahoval mnoho zámìrù, které nelze v daném svìtì splnit,
+Pokud by svìt obsahoval pøliš mnoho zámìrù, které nelze v daném svìtì splnit,
 bude se agent chovat hloupì a data, která bude dostávat prostorová mapa, budou spíše náhodná, ne aby pøipomínala lidské chování.
 Agent pak stráví vìtšinu èasu pohybem mezi waypointy, jak je ukázáno na obrázku \ref{fig:waypoint-hell}, a hledáním pøedmìtù s afordancemi, které se ve svìtì nenacházejí.
 Bude vìnovat ménì èasu a tedy i pozornosti ostatním pøedmìtùm.
@@ -184,13 +182,18 @@ Percepèní pole obsahuje odrazy zpozorovanıch pøedmìtù z vnìjšího svìta, tzv. fan
 Pamìová èást obsahuje pamìové fantomy, odrazy pøedmìtù vybavené z dlouhodobé pamìti.
 \\
 
-\begin{definition}[Velikost percepèního pole]
+\begin{definition}[Fantom]
 Percepèní pole obsahuje fantomy, tj. pøedmìty, které agent právì vnímá.
+Fantom je reprezentace agentovy myšlenky na pøedmìt.
+Má svou intenzitu urèující mnoství pozornosti, kterou agent fantomu vìnuje.
+\end{definition}
+
+\begin{definition}[Velikost percepèního pole]
+
 Agent mùe v jednom kroku simulace vidìt libovolné mnoství pøedmìtù, ale je schopen jich vnímat jen omezenı poèet.
 Vycházíme z kapacitní teorie pozornosti, která øíká, e celková kapacita lidské pozornosti je omezená \cite{litCapacityAtt}.
 Poèet fantomù, které mohou bıt souèasnì v percepèním poli, je dán parametrem \param{velikost percepèního pole}.
 Tento parametr je pro všechny testy roven magickému èíslu 7 dle experimentálních vısledkù z \cite{lit7plusminus2}.
-Zmìna parametru na nisí hodnotu mùe velmi ovlivnit uèení prostorové mapy.
 \end{definition}
 
 
@@ -201,7 +204,7 @@ Vıslednı model bere v potaz vzdálenost pøedmìtù od agenta i to, jak moc by se ag
 \\
 
 \begin{definition}[Zorné pole]
-Agent má definována tzv. zorná pole pøedstavovaná kruhovımi vıseèemi. Jejich støed je v místì agenta a jsou orientovány smìrem, kterım se agent dívá.
+Agent má definována tzv. zorná pole. Jsou pøedstavována kruhovımi vıseèemi, jejich støed je v místì agenta, jsou orientovány smìrem, kterım se agent dívá.
 Zorné pole je urèeno polomìrem, úhlem a váhou, která urèuje míru vnímavosti agenta na pøedmìty v zorném poli.
 \end{definition}
 
@@ -235,7 +238,8 @@ Jednu pro chvíle, kdy se agent rozhlíí (atomická akce Explore) - obrázek \ref{f
 \\
 
 Pøedmìty, které mají kladnou viditelnost, agent vidí a jsou pøedány k dalšímu zpracování filtru pozornosti.
-Poté jsou pøidány do percepèního pole. Pokud se v nìm udrí alespoò jeden krok simulace, jsou pøedány prostorové mapì a jejich fantomy procesní èásti.
+Poté jsou vytvoøeny jejich fantomy a ty pøidány do percepèního pole.
+Pokud se v nìm udrí alespoò jeden krok simulace, jsou pøedány prostorové mapì a jejich fantomy procesní èásti.
 \\
 
 \begin{definition}[Aktuální atraktivita pøedmìtu]

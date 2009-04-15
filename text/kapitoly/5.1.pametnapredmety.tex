@@ -14,9 +14,10 @@ intenzita urèuje, jak moc si agent tento pøedmìt pamatuje, a poloha jsou souøadn
 Pro kadı reálnı pøedmìt má pamì nejvıše jednu pamìovou stopu.
 \end{definition}
 
-\begin{definition}[Asociativní sí]
+\begin{definition}[Pamìová sí]
 Mezi pamìovımi stopami pøedmìtù a uzly mapy je asociativní sí, která se vytváøí v prùbìhu simulace, dle toho, jak agent vnímá pøedmìty kolem sebe.
-Asociativní sí je mnoina trojic \emph{$<$uzel,stopa,intenzita$>$}, tedy vazeb mezi pamìovımi stopami a uzly prostorové mapy, \(intenzita \in \mathbb{R}\).
+Pamìová sí je mnoina trojic \emph{$<$uzel,stopa,intenzita$>$}, tedy vazeb mezi pamìovımi stopami a uzly prostorové mapy, které mají svou intenzitu.
+Intenzita je nezáporné reálné èíslo.
 \end{definition}
 
 \begin{table}[h!]
@@ -48,7 +49,8 @@ ObjectUsed & Agent pøedmìt pouil, tento vjem není vytváøen a zpracováván v prùb
 
 
 \begin{definition}[Dosah uèení]
-Parametr modelu \param{dosah uèení} urèuje nejvyšší vzdálenost, na kterou budou vytváøeny vazby mezi pamìovou stopou a uzlem mapy.
+Parametr modelu \param{dosah uèení} urèuje velikost okolí pamìové stopy pøi uèení pamìové sítì.
+Do okolí padnou pouze uzly ve vzdálenosti menší ne \param{dosah uèení}.
 \end{definition}
 
 
