@@ -1,7 +1,10 @@
 \chapter{Uživatelská dokumentace}
 
-Model prostorové mapy popsaný v kapitole \ref{chapter-model} resp. \ref{chapter-model-el} jsme implementovali v prototypové aplikace v jazyce Python.
+Model prostorové mapy popsaný v kapitole \ref{chapter-model} jsme implementovali v prototypové aplikace v jazyku Python.
 Aplikace je na pøiloženém CD vèetnì dalších knihoven nutných pro její bìh.
+Aplikace byla vyvíjena na MS Windows Vista a otestována na Linux Gentoo\footnote{Je tøeba mít knihovny \texttt{dev-python/imaging} a \texttt{dev-python/pwm} zkompilované s podporou \texttt{Tk}.}.
+Pøi vývoji aplikace byl kladen dùraz na implementaci popsaného modelu a obsáhlost výstupních dat za cenu menšího pohodlí ovládání aplikace.
+Rychlost aplikace závisí pøedevším na poètu uzlù prostorové mapy. Ve svìtech s vìtším poètem uzlù trvá 1 krok simulace pøibližne 1 sekundu\footnote{Na PC 2.4GHz 4GB RAM, Windows Vista.}.
 \\
 
 \section{Instalace}
@@ -33,8 +36,8 @@ V prùbìhu aplikace ukládá data do adresáøe \texttt{../../exs}.
 \\
 
 Testovací mód lze spustím položkou \texttt{TestAll} menu \texttt{Start}.
-Aplikace vytvoøí adresáø \texttt{../../tests/yyyy-mm-dd--hh-mm-ss/} a spustí postupnì všechny dostupné testy.
-Do tohoto adresáøe zkopíruje své aktuální nastavení - soubor \texttt{Global.py}
+Aplikace vytvoøí adresáø \texttt{../../tests/yyyy-mm-dd--hh-mm-ss/} a spustí postupnì vše\-chny dostupné testy.
+Do tohoto adresáøe zkopíruje soubor \texttt{Global.py} -- své aktuální nastavení.
 Pro každý testovaný svìt vytvoøí v tomto adresáøi podadresáø \texttt{/nazev-sveta} a do nìj ukládá data.
 Stav svìta a prostorové mapy není zobrazen v oknì aplikace, ale je ukládán do souborù ve formátu PNG.
 V oknì aplikace jsou zobrazeny jen základní informace o prùbìhu testu.
@@ -55,11 +58,7 @@ Nastavení aplikace má dvì èásti:
 \end{description}
 
 
-Rychlost aplikace závisí pøedevším na poètu uzlù prostorové mapy. Ve svìtech s vìtším poètem uzlù trvá 1 krok simulace pøibližne 1 sekundu.
-\footnote{Na PC 2.4GHz 4GB RAM, Windows Vista.}
-\\
 
-\newpage
 
 \section{Výstupní data a jejich vizualizace}
 

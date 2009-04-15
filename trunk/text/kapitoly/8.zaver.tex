@@ -2,38 +2,30 @@
 
 Cílem této práce bylo vytvoøit model prostorové mapy,
 který by virtuálnímu agentovi pohybujícímu se ve virtuálním svìtì umožòoval imitovat nìkteré rysy lidského chování.
-K tìm patøí pøedevším nepøesnost zapamatovaných informaci, jejich postupné uèení a posléze zapomínání.
+K tìm patøí pøedevším nepøesnost zapamatovaných informací, jejich postupné uèení a posléze zapomínání.
 \\
 
 V práci jsme pøedstavili dva modely prostorové pamìti:
 model založený na Kohonenových samoorganizaèních mapách a model založený na pøitažlivosti a odpudivosti uzlù.
-Oba modely jsme implementovali v prototypové aplikaci v jazyce Python a provedli jejich testy v rùzných svìtech s rùzným nastavením.
-Testy ukázaly, že model založený na Kohonenových mapách nevyhovuje všem požadavkùm.
+Oba modely jsme implementovali v jazyku Python a provedli jejich testy v rùzných svìtech s rùzným nastavením.
+Ty ukázaly, že model založený na Kohonenových mapách nevyhovuje všem požadavkùm.
 \\
 
 Model založený na pøitažlivosti a odpudivosti splòuje kladené požadavky.
 Dokáže rozmístit uzly do prostoru dle èetnosti vjemù pøedmìtù.
-Je schopen jejich rozmístìní pozvolna upravit, pokud dojde ke zmìnì svìta.
+Pokud dojde ke zmìnì svìta, pozvolna upraví rozmístìní uzlù.
 Poèet uzlù se v prùbìhu mìní dle potøeby, èímž je imitováno postupné uèení a zapomínání.
 V prùbìhu simulace si agent vytváøí místa, která reprezentují oblasti s vyšším poètem pøedmìtù.
-Místa jsou uspoøádána do hiearchie, agent si nejdøíve vytvoøí místa pøedstavující vìtší oblasti a v prùbìhu simulace je dále dìlí.
+Místa jsou uspoøádána do hierarchie, agent si nejdøíve vytvoøí místa pøedstavující vìtší oblasti a v prùbìhu simulace je dále dìlí.
 \\
 
-
-%Model prostorové mapy, který jsme v této práci pøedstavili, splòuje základní požadavky, které na nìj byly kladeny v kapitole \ref{chapter-rozbor}.
-%Prostorová mapa je složena z uzlù, které jsou analogií place cells.
-%Obsahuje mechanismy, které umožòují imitovat nìkteré rysy lidského chování, napø. nepøesnost, shlukování pøedmìtù a zapomínání.
-%\\
-
-
-
-Model lze dále rozšiøovat a zobecòovat.
-Vìtšina parametrù, které mají vliv na chování prostorové mapy, jsou konstanty, které zùstávají v prùbìhu simulace stejné.
-Bylo by vhodné pøidat do modelu mechanismy, které by dokázaly v èase mìnit klíèové parametry modelu.
-\\
-
-Èasová složitost algoritmù modelu v jednom kroku simulace je $O(n_c)$, kde $n_c$ je aktuální poèet uzlù mapy. 
+Èasová složitost jednoho kroku simulace je $O(n_c^2)$, kde $n_c$ je aktuální poèet uzlù mapy. 
 Model není závislý na konkrétní abstrakci svìta a agenta.
 Byl definován a otestován pouze v jednoduchém 2D svìtì, v kapitole \ref{chapter-complex-space} je však popsáno pøímoèaré rozšíøení pro složité 3D svìty.
 Model je dále možné použít pro zcela netypické svìty, napø. rozložení karet ve høe pexeso.
+\\
+
+Model lze dále rozšiøovat a zobecòovat.
+Vìtšina parametrù, které mají vliv na chování prostorové mapy, jsou konstanty.
+Bylo by vhodné pøidat do modelu mechanismy, které by dokázaly mìnit klíèové parametry v èase.
 \\

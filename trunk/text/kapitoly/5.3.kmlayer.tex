@@ -20,7 +20,7 @@ Ostatní neurony jsou neaktivní a neuèí se. Kohonenova mapa a další modely samoor
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.5\textwidth]{img/kml/kml-start-grid.eps}
-  \caption{Poèáteèní pokrytí svìta uzly}
+  \caption{Poèáteèní pokrytí svìta uzly uspoøádanými do ètvercové møížky.}
   \label{fig:kml-start}
 \end{figure}
 
@@ -58,7 +58,7 @@ Pokaždé, když je vjem pøedán ke zpracování, provede se trénování Kohonenovy mapy
 
 Vyhrávající uzel $node_{win}$ je urèen dle vzdálenosti mezi uzlem a vjemem:
 \begin{equation}
-node_{win} = \arg \min_{node \in nodes} dist(node,vjem).
+node_{win} =\argmin_{node \in nodes} dist(node,vjem).
 \end{equation}
 
 V algoritmu je na øádce \ref{alg:km-uceni-vzorec} zmìnìna poloha uzlu mapy. Uzel je posunut smìrem k poloze vjemu o \(\Delta xy(n, vjem)\) dle vzorce:
