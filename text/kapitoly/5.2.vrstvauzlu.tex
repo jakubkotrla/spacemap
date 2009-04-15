@@ -5,7 +5,7 @@ Dále obsahuje mechanismy pro zmìnu poètu uzlù a vytváøení hiearchie.
 \\
 
 \begin{definition}[Okamitá naplnìnost uzlu]
-Uzel prostorové mapy má vazby na pamìové stopy. Tyto vazby mají intenzitu.
+Uzel prostorové mapy má vazby na pamìové stopy. Tyto vazby mají svou intenzitu.
 Okamitá naplnìnost uzlu je souèet intenzit všech vazeb uzlu na pamìové stopy.
 Pøedstavuje míru nauèenosti uzlu, resp. míru jeho dùleitosti pro pamì na pøedmìty.
 Èím více pamìovıch stop vyuívá uzel a èím intenzivnìjší jsou, tím ménì by se mìla mìnit jeho poloha.
@@ -13,7 +13,7 @@ Pøedstavuje míru nauèenosti uzlu, resp. míru jeho dùleitosti pro pamì na pøedm
 
 Okamitá naplnìnost uzlu závisí pøímo na vazbách na pamìové stopy.
 Kdy klesá jejich intenzita, klesá stejnì i okamitá naplnìnost.
-Není tedy moné model dostateènì parametrizovat, tak aby okamitá naplnìnost uzlu klesala rychleji èi pomaleji, ne intenzita vazeb.
+Není tedy moné model dostateènì parametrizovat tak, aby okamitá naplnìnost uzlu klesala rychleji èi pomaleji, ne intenzita vazeb.
 \\
 
 \begin{definition}[Rychlost klesání naplnìnosti]
@@ -21,7 +21,7 @@ Parametr modelu \param{rychlost klesání naplnìnosti} uzlu urèuje, jak rychle bud
 \end{definition}
 
 \begin{definition}[Naplnìnost uzlu]
-Naplnìnost je vlastnost uzlu, která záleí pøímo na \emph{okamité naplnìnosti uzlu}, nemìní se však tak rychle, má urèitou pamì.
+Naplnìnost je vlastnost uzlu, která záleí pøímo na \emph{okamité naplnìnosti uzlu}, nemìní se však tak rychle, tj. má urèitou pamì.
 Naplnìnost uzlu $node$ budeme dále ve vzorcích oznaèovat znakem $\mu(node)$.
 \end{definition}
 

@@ -1,7 +1,7 @@
 \chapter{Úvod}
 
 Kadı ivı tvor má pamì, tedy schopnost uloit si informaci a pozdìji si ji vybavit a pouít.
-Pamì je dùleitım pøedpokladem pro inteligentní chování jedince, bez ní nebude schopen se uèit nové informace a dovednosti.
+Pamì je dùleitım pøedpokladem pro inteligentní chování jedince, bez ní nebude schopen se uèit nové znalosti a dovednosti.
 \\
 
 Lidskou pamì je moné dìlit dle mnoha kritérií.
@@ -9,7 +9,7 @@ Napø. dle trvalosti uchovávanıch záznamù na krátkodobou a dlouhodobou.
 Krátkodobá pamì umí uchovat jen velmi omezené mnoství informací na krátkou dobu, která pøedstavuje øádovì sekundy a minuty.
 Naopak dlouhodobá pamì je schopná uchovat informaci po nìkolik dní a po celı ivot jedince a její kapacita se zdá neomezená.
 Dále je pamì moné dìlit dle povahy informací, které ukládá. Tímto zpùsobìm se pamì obvykle dìlí na procedurální, sémantickou a episodickou.
-Procedurální pamì ukládá zpùsoby pouití pøedmìtù a pohyby, které èlovìk provádí bez plného soustøedìní, napø. jízda na kole.
+Procedurální pamì ukládá zpùsoby pouití pøedmìtù a pohyby, které èlovìk provádí bez plného soustøedìní, napø. jízdu na kole.
 Sémantická pamì obsahuje objektivní fakta o okolním svìtì, napø. kolik má tıden dní nebo jakou barvu má zebra.
 Episodická pamì je pamìtí na osobní události, záitky, subjektivní informace,
 které se váí k vlastní osobì, napø. co dìlal èlovìk vèera veèer èi kdy naposledy jedl.
@@ -18,7 +18,7 @@ které se váí k vlastní osobì, napø. co dìlal èlovìk vèera veèer èi kdy naposled
 %litTulving
 
 Souèástí pamìti je i prostorová mapa svìta, která bıvá chápána jako èást episodické pamìti.
-Prostorová mapa nám umoòuje plnit jednoduché kadodenní úkoly jako je navigace v prostoru, urèení polohy pøedmìtù,
+Prostorová mapa lidem umoòuje plnit jednoduché kadodenní úkoly jako je navigace v prostoru, urèení polohy pøedmìtù,
 ale i sloitìjší úlohy, napø. popisování cesty jinému èlovìku, plánování staveb èi stìhování apod.
 \\
 
@@ -29,14 +29,14 @@ Reagují i na další neprostorové informace a objekty a zmìny prostøedí.
 \\
 
 V následujících letech byly u potkanù objeveny a popsány další typy neuronù, jejich aktivita souvisí s prostorem a orientací.
-Neurony, které jsou aktivní dle smìru natoèení hlavy potkana èi které jsou aktivní v blízkosti hranic prostoru \cite{litHDcells1,litHDcells2,litBorderCells}.
+Jsou to napø. neurony, které jsou aktivní dle smìru natoèení hlavy potkana èi které jsou aktivní v blízkosti hranic prostoru \cite{litHDcells1,litHDcells2,litBorderCells}.
 Vızkum ukazuje, e neurony s podobnımi vlasnostmi jako jsou place cells, mají i lidé \cite{litPlaceCellsHuman,litPlaceCellsHuman2}.
 \\
 
 %Vnímání, pozornost, rùzné reprezentace - alocentrická a egocentrická
 
 Cílem práce je vytvoøit model prostorové mapy, kterı umoní imitovat lidské chování.
-Mezi to patøí pøedevším nepøesnost a postupné uèení se prostoru, rozloení pøedmìtù a schopnost pøizpùsobit se zmìnám.
+K tomu to patøí pøedevším nepøesnost a postupné uèení se prostoru, rozloení pøedmìtù a schopnost pøizpùsobit se zmìnám.
 Další typickou vlasností lidské pamìti, která se tıká i prostorové mapy, je zapomínání.
 Po urèité dobì si èlovìk není schopen vzpomenout, kde pøesnì na polièce má v kuchyni sùl, pozdìji si nebude jistı, ani na které polièce sùl je. 
 V prùbìhu èasu by model mìl zapomínat, nejdøíve detaily a pozdìji i obecnìjší informace o prostoru a umístìní pøedmìtù.
@@ -46,19 +46,17 @@ V prùbìhu èasu by model mìl zapomínat, nejdøíve detaily a pozdìji i obecnìjší in
 Model prostorové mapy bude vycházet z vısledkù vızkumu place cells.
 Navrhneme jej a budeme zkoumat jeho chování v rùznıch pøípadech, vliv parametrù  apod.
 Model budeme posuzovat subjektivnì.
-Dále zkusíme najít objektivní metriky, které by nám mohli pomoci v hodncení modelu, napø. podobnost mapy s virtuálním svìtem.
+Dále zkusíme najít objektivní metriky, které by nám mohly pomoci v hodnocení modelu, napø. podobnost mapy s virtuálním svìtem.
 \\
 
 
 
 Práce je rozdìlena do osmi kapitol.
-Po této úvodní kapitole následuje druhá kapitola, která podrobnì rozebírá øešenı problém, vyjmenovává poadavky a omezení.
-Ve tøetí kapitole jsou shrnuty nìkteré dosavadní práce, které by bylo moné pouít èi alespoò z nich vyjít.
+Po úvodu následuje druhá kapitola, která podrobnì rozebírá øešenı problém, vyjmenovává poadavky a omezení.
+Ve tøetí kapitole jsou shrnuty nìkteré dosavadní práce, které by bylo moné vyuít èi alespoò z nich vyjít.
 Ètvrtá kapitola popisuje abstrakci svìta a architekturu agenta pouitého pro tvorbu a zkoumání modelu,
 pátá kapitola pøedstavuje vıslednı model vèetnì slepıch vìtví a rozhodnutí a základních testù.
-\\
-
-Šeštá kapitola je vìnována testùm modelu na rùznıch datech, s rùznım nastavením parametrù a menších úprav modelu.
+Šestá kapitola je vìnována testùm modelu na rùznıch datech a s rùznım nastavením parametrù.
 Na vısledcích ukazuje vliv zmìn rùznıch parametrù a vzorcù.
 V sedmé kapitole jsou popsána další moná rozšíøení modelu a naznaèeny další moné smìry jeho vıvoje a vızkumu,
 v osmé kapitole jsou shrnuty vısledky práce.

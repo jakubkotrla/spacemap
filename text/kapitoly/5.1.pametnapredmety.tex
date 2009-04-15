@@ -7,10 +7,10 @@ Pamì na pøedmìty vychází z práce Tomáše Korenka \cite{litKorenko}.
 \\
 
 \begin{definition}[Pamìová stopa pøedmìtu]
-Pamì nepracuje pøímo s reálnımi pøedmìty, ale vytváøí si jejich kopie, \emph{pamìové stopy pøedmìtù}.
-Pamìová stopa je reprezentace reálneho pøedmìtu v agentovì dlouhodobé pamìti, prostorové mapì.
-Je to trojice \emph{$<$pøedmìt, intenzita, poloha$>$}, kde pøedmìt je odkaz na reálnı pøedmìt; intenzita urèuje, jak moc si agent tento pøedmìt pamatuje
-a poloha jsou souøadnice, na kterıch se agent domnívá, e pøedmìt je.
+Pamì nepracuje pøímo s reálnımi pøedmìty, ale vytváøí si jejich kopie, tj. \emph{pamìové stopy pøedmìtù}.
+Pamìová stopa je reprezentace reálného pøedmìtu v agentovì dlouhodobé pamìti, prostorové mapì.
+Je to trojice \emph{$<$pøedmìt, intenzita, poloha$>$}, kde pøedmìt je odkaz na reálnı pøedmìt;
+intenzita urèuje, jak moc si agent tento pøedmìt pamatuje, a poloha jsou souøadnice, na kterıch se agent domnívá, e se pøedmìt nachází.
 Pro kadı reálnı pøedmìt má pamì nejvıše jednu pamìovou stopu.
 \end{definition}
 
@@ -28,11 +28,11 @@ Typ vjemu & Zpùsob vzniku \\
 
 ObjectNoticed & Agent vidí pøedmìt, kterı minulı krok simulace nevidìl \\
 
-ObjectNoticedAgain & Agent vidí pøedmìt, kterı vidìl ji pøedchozí krok simulace \\
+ObjectNoticedAgain & Agent vidí pøedmìt, kterı vidìl ji v pøedchozím krok simulace \\
 
 ObjectFound & Agent nalezl pøedmìt jako vısledek chytré akce LookUpInMemory \\
 
-ObjectNotFound & Agent nenalezl pøedmìt tam, kde ho hledal pøi chytré akce LookUpInMemory \\
+ObjectNotFound & Agent nenalezl pøedmìt tam, kde ho hledal pøi chytré akci LookUpInMemory \\
 
 \midrule[0.05pt]
 
@@ -52,8 +52,8 @@ Parametr modelu \param{dosah uèení} urèuje nejvyšší vzdálenost, na kterou budou 
 \end{definition}
 
 
-Pamìti je v kadém kroku pøedloena mnoina vjemù (mùe bıt prázdná). Vjem je trojice \emph{$<$pøedmìt,poloha,intenzita$>$}.
-Vjem má svùj typ, danı událostí, kterou byl vyvolán, jejich pøehled je v tabulce \ref{tab:typy-vjemu}.
+V kadém kroku je pamìti pøedloena mnoina vjemù (mùe bıt prázdná). Vjem je trojice \emph{$<$pøedmìt,poloha,intenzita$>$}.
+Vjem má svùj typ danı událostí, kterou byl vyvolán, jejich pøehled je v tabulce \ref{tab:typy-vjemu}.
 Kadı typ má urèenı koeficient, kterım je vynásobena intenzita vjemu pøed jeho zpracováním prostorovou mapou, tyto koeficienty jsou parametry modelu.
 \\
 
@@ -77,7 +77,7 @@ V prvním kroku je urèena pamìová stopa uchovávající informaci o pøedmìtu. Pokud
 \end{algorithmic}
 \end{algorithm}
 
-V kroku \ref{alg:spacemap-intensity} je urèena intenzita o kterou bude zvıšena vazba mezi pamìovou stopou a uzlem dle vzorce:
+V kroku \ref{alg:spacemap-intensity} je urèena intenzita, o kterou bude zvıšena vazba mezi pamìovou stopou a uzlem dle vzorce:
 
 \begin{equation} 
 \Delta \eta(node, vjem) = \eta(vjem) \times \frac{ norm( dist(node, vjem) ) }
@@ -90,7 +90,7 @@ V kroku \ref{alg:spacemap-intensity} je urèena intenzita o kterou bude zvıšena v
 \end{equation}
 \\
 
-kde \emph{nodes} je mnoina všech uzlù, do jejich okolí vjem padl a $dist$ je vzdálenost uzlu od polohy vjemu.
+kde \emph{nodes} je mnoina všech uzlù, do jejich okolí vjem padl, a $dist$ je vzdálenost uzlu od polohy vjemu.
 Funkce $norm$ je libovolná klesající funkce mající obor hodnot $<0,1>$, napø. nepøímá úmìra $norm(x) = 1/max(1,x)$ èi Gaussova funkce.
 %Èást algoritmu \ref{alg:zpracovani-vjemu} mùe bıt provádìna v rámci vrstvy uzlù, napø. v modelu Energy Layer.
 \\
@@ -105,7 +105,7 @@ Funkce $norm$ je libovolná klesající funkce mající obor hodnot $<0,1>$, napø. ne
 \end{algorithmic}
 \end{algorithm}
 
-Prostorová mapa je schopna øíci, kde se nacházejí pøedmìty, které agent pøed tím vidìl. Tato informace je uloena v døíve zmínìné asociativní síti.
+Prostorová mapa je schopna urèit, kde se nacházejí pøedmìty, které agent pøedtím vidìl. Tato informace je uloena v døíve zmínìné asociativní síti.
 Èím blíe je pøedmìt nìjakému uzlu mapy, tím vyšší je intenzita vazby mezi nimi.
 Kdy agent hledá pøedmìt mající nìjakou affordanci, provede se proces popsanı v algoritmu \ref{alg:vzpomenuti}. V kroku 2 je spoèítána poloha pøedmìtu z informací uloenıch v asociativní síti.
 Poloha pøedmìtu je váenı centroid všech uzlù, které mají vazbu na pamìovou stopu, váhou je intenzita vazeb:

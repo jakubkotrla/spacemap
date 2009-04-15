@@ -12,7 +12,7 @@ N_s(c) = \{j:d(j,c)\leq s\}.
 \end{equation}
 
 kde $d(j,c)$ je vzdálenost v topologické struktuøe.
-Neurony Kohonenovy mapy pøi uèení souteí o to, kterı z nich bude aktivní pøi daném vstupu.
+Neurony Kohonenovy mapy pøi uèení soutìí o to, kterı z nich bude aktivní pøi daném vstupu.
 Vítìznım neuronem se stane ten, kterı se nejvíce podobá vstupu. Jeho váha a váhy neuronù v jeho okolí jsou upraveny.
 Ostatní neurony jsou neaktivní a neuèí se. Kohonenova mapa a další modely samoorganizaèních map jsou popsány napø. v \cite{litSimaNeruda}.
 \\
@@ -86,9 +86,9 @@ Uzly mapy se postupnì pøesunou do míst s velkou èetností vjemù a rozloení uzlù 
 \end{figure}
 
 Test modelu (obrázek \ref{fig:kml-preuceni}) ukázal, e k tomu skuteènì dojde, ale více, ne bychom chtìli.
-Problém, kterı nastal, je e se sí pro naše potøeby \uv{pøeuèila}
+Problém, kterı nastal je, e se sí pro naše potøeby \uv{pøeuèila}
 %\footnote{jedná se analogii pøeuèení neuronové sítì}
- - uzly se èasem všechny pøesunuli k pøedmìtùm a prostor bez pøedmìtù zùstal prázdnı, bez uzlù.
+ -- uzly se èasem všechny pøesunuly k pøedmìtùm a prostor bez pøedmìtù zùstal prázdnı, bez uzlù.
 Navrhli jsme dvì øešení:
 \begin{CompactItemize}
 \item Umìlé pøedmìty - pøidání umìlıch pøedmìtù, které se budou snait dret pùvodní rozloení uzlù Kohonenovy mapy
@@ -119,7 +119,7 @@ Tím by mìly udret Kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty n
 Vısledek testu je na obrázku \ref{fig:kml-baseobjs}\footnote{Další vısledky testù s rùznou hodnotou atraktivity umìlıch pøedmìtù jsou na pøiloeném CD.}.
 Ukazuje, e øešení nevyhovuje. Mapa se stahuje do støedu místnosti bez ohledu na vliv umìlıch pøedmìtù.
 Dùvodem je to, e tìištì všech umìlıch pøedmìtù je ve støedu místnosti.
-Tomu bychom mohli na první zabránit zvıšením atraktivity base objects, které jsou na kraji místnosti.
+Tomu bychom mohli zabránit zvıšením atraktivity base objects, které jsou na kraji místnosti.
 Jednoduchım protipøíkladem takového øešení je místnost, která bude mít objekty pouze na kraji (na zdech, v rozích).
 Pak bychom potøebovali zvıšit atraktivitu base objects uprostøed místnosti resp. obecnì bychom museli zvıšit atraktivitu umìlıch pøedmìtù v místech,
 kde nejsou reálné pøedmìty.
@@ -130,13 +130,13 @@ Tím jsme pøevedli pùvodní problém na problém opaènı. Øešení s pouitím umìlıch p
 Do modelu jsme pøidali vzájemnou odpudivost uzlù sítì. V kadém kroku simulace se uzly, které jsou pøíliš blízko u sebe, odpuzují.
 
 \begin{definition}[Síla odpudivosti]
-Síla odpudivosti je parametr modelu, urèující, jak moc se budou uzly odpuzovat.
+Síla odpudivosti je parametr modelu urèující míru s jakou se budou uzly odpuzovat.
 \end{definition}
 
 
-Vzájemná odpudivost dvou uzlù závisí na síle odpudivosti, vzdálenosti uzlù a jejich naplnìnosti.
-Uzel s vysokou naplnìností bude v místì, kde je hodnì pøedmìtù.
-V takovıch místech by hustota uzlù mìla bıt vìtší a proto je nutné, aby v takovıch místech byla vzájemná odpudivost uzlù menší.
+Vzájemná odpudivost dvou uzlù závisí na síle odpudivosti, na vzdálenosti uzlù a jejich naplnìnosti.
+Uzel s vysokou naplnìností se bude nacházet v místì, kde je hodnì pøedmìtù.
+V takovıch místech by hustota uzlù mìla bıt vìtší, a proto je nutné, aby v takovıch místech byla vzájemná odpudivost uzlù menší.
 \\
 
 \begin{equation} 
@@ -173,10 +173,10 @@ Poloha uzlù je pak upravena dle tìchto sil.
   \label{fig:kml-ag}
 \end{figure}
 
-Vısledek testu je na obrázku \ref{fig:kml-ag}\footnote{Další vısledky testù s rùznou hodnotou síly odpudivosti jsou na pøiloeném CD, jsou obdobné}.
+Vısledek testu je na obrázku \ref{fig:kml-ag}\footnote{Další vısledky testù s rùznou hodnotou síly odpudivosti jsou na pøiloeném CD.}.
 Ukazuje, e odpudivost skuteènì rozprostøe uzly po celé místnosti.
-Objevil se však jinı problém, odpudivé síly deformují Kohonenovu mapu do stavu, kdy její následující uèení nedává smysl.
-Sí se pøekroutí tak, e uzly (na obrázku \ref{fig:kml-ag} èervenì vyznaèené), které jsou ve virtuálním svìtì vedle sebe, jsou v síti daleko a obrácenì.
+Objevil se však jinı problém -- odpudivé síly deformují Kohonenovu mapu do stavu, kdy její následující uèení nedává smysl.
+Sí se pøekroutí tak, e uzly (na obrázku \ref{fig:kml-ag} èervenì vyznaèené), které jsou ve virtuálním svìtì vedle sebe, jsou v síti daleko od sebe a obrácenì.
 \\
 
 Døíve zmínìnı problém pøeuèení skuteènì nastal a dvì rozdílná øešení jej nedokázala uspokojivì vyøešit. Model zaloenı na Kohonenovì mapì jsme tedy zamítli.
