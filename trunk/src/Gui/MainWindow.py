@@ -334,7 +334,7 @@ class MainWindow(Frame):
         Global.LogEnd()
         return
     
-    ## Rendes curent state of world, agent and SpaceMap on screen.
+    ## Renders curent state of world, agent and SpaceMap on screen.
     def RenderState(self, world):
         self.mapRenderer.RenderObjectVisibility()
         self.mapRenderer.RenderSpaceMap()

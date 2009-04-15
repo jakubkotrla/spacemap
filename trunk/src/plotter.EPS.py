@@ -80,8 +80,8 @@ def plotRememberOne(fileName, rows):
 
     if saveEPS: savefig(fileName+".eps", format="EPS")
     else:
-        savefig(fileName+".png", format="PNG")
         title(u'Chyba prostorové mapy v závislosti na naučenosti předmětů', family=fontFamily)
+        savefig(fileName+".png", format="PNG")
     clf()
 
 def plotRememberTimeOne(fileName, rows, plotTrained=True):
@@ -109,8 +109,8 @@ def plotRememberTimeOne(fileName, rows, plotTrained=True):
     
     if saveEPS: savefig(fileName+".eps", format="EPS")
     else:
-        savefig(fileName+".png", format="PNG")
         title(u'Chyba mapy v čase', family=fontFamily)
+        savefig(fileName+".png", format="PNG")
     clf()
         
 
@@ -154,8 +154,8 @@ def plotMeanErrorInTime(fileName):
     
     if saveEPS: savefig(fileName+".meanerror.eps", format="EPS")
     else:
-        savefig(fileName+".meanerror.png", format="PNG")
         title(u'Průmerná chyba mapy v čase', family=fontFamily)
+        savefig(fileName+".meanerror.png", format="PNG")
     clf()
     
 def plotELNodeStats(fileName):
@@ -193,8 +193,8 @@ def plotELNodeStats(fileName):
     
     if saveEPS: savefig(fileName+".dist.eps", format="EPS")
     else:
-        savefig(fileName+".dist.png", format="PNG")
         title(u'Změna polohy uzlu v čase', family=fontFamily)
+        savefig(fileName+".dist.png", format="PNG")
     clf()
     
     plot(stepND, usageMeanND, 'b-', label=u'průměr')
@@ -206,8 +206,8 @@ def plotELNodeStats(fileName):
     
     if saveEPS: savefig(fileName+".usage.eps", format="EPS")
     else:
-        savefig(fileName+".usage.png", format="PNG")
         title(u'Naplněnost uzlů v čase', family=fontFamily)
+        savefig(fileName+".usage.png", format="PNG")
     clf()
     
     plot(stepND, agMeanND, 'b-', label=u'průměr')
@@ -219,8 +219,8 @@ def plotELNodeStats(fileName):
     
     if saveEPS: savefig(fileName+".ag.eps", format="EPS")
     else:
+        title(u'Množství odpudivosti v uzlech v čase', family=fontFamily)
         savefig(fileName+".ag.png", format="PNG")
-        title(u'Množství odpudivosti v čase', family=fontFamily)
     clf()
     
 def plotPlacesStats(fileName):
@@ -245,8 +245,8 @@ def plotPlacesStats(fileName):
     
     if saveEPS: savefig(fileName+".ag.eps", format="EPS")
     else:
-        savefig(fileName+".ag.png", format="PNG")
         title(u'Množství odpudivosti v čase', family=fontFamily)
+        savefig(fileName+".ag.png", format="PNG")
     clf()
 
 def plotPlace(fileName):
@@ -272,8 +272,8 @@ def plotPlace(fileName):
     
     if saveEPS: savefig(fileName+".ags.eps", format="EPS")
     else:
-        savefig(fileName+".ags.png", format="PNG")
         title(u'Množství odpudivosti a intenzita v čase', family=fontFamily)
+        savefig(fileName+".ags.png", format="PNG")
     clf()
 
 def plotNC(fileName):
@@ -300,8 +300,8 @@ def plotNC(fileName):
     
     if saveEPS: savefig(fileName+".eps", format="EPS")
     else:
-        savefig(fileName+".png", format="PNG")
         title(ur'Počet uzlů v čase', family=fontFamily)
+        savefig(fileName+".png", format="PNG")
     clf()
 
 
@@ -309,7 +309,7 @@ fontFamily = 'Arial'
 fontObj = FontProperties(family=fontFamily);
 ## if True, app will plot remember data (mean/min/max/trained) error for every object
 full = False   
-## if True, app will save all output as EPS without title  
+## if True, app will save all output as EPS without title
 saveEPS = True
 
 for root, dirs, files in os.walk('.'):

@@ -163,12 +163,12 @@ class ProcessArea:
                 #there is no process left - HL intention finnished
                 self.actualIntention = None
 
-    ## Terminate actual intention as failure.
+    ## Terminates actual intention as failure.
     def TerminateIntentionFalse(self, emotion):
         self.actualIntention = None
         self.TerminateProcess(emotion, False)
     
-    ## Terminate actual intention I_Want.    
+    ## Terminates actual intention I_Want.    
     def TerminateIntentionWant(self, emotion):
         self.actualIntention = self.actualProcess.excParentIntention
     
