@@ -1,29 +1,36 @@
 \chapter{Rozbor problému} \label{chapter-rozbor}
 
-Cílem práce je vytvoøit model prostorové mapy, který bude agentovi umožòovat imitovat lidské chování.
-
-
-Cílem práce je vytvoøit model prostorové mapy, který bude virtuálnímu agentovi pohybujícímu se ve virtuálním svìtì umožòovat imitovat urèité/nìkteré rysy lidské chování.
-
+Cílem práce je vytvoøit model prostorové mapy, který bude virtuálnímu agentovi\footnote{Virtuální bytost budeme dále v práci oznaèovat jako agenta.}
+pohybujícímu se ve virtuálním svìtì umožòovat imitovat nìkteré rysy lidského chování.
 V této kapitole popíšeme požadavky na model, jeho vstupy a výstupy.
 \\
 
-Agent má na zaèátku úplnou informaci o geometrii a topologii svìta. V prùbìhu simulace se agent pohybuje svìtem a vnímá své okolí.
+Agent má na zaèátku úplnou informaci o geometrii a topologii svìta. V prùbìhu simulace se pohybuje svìtem a vnímá své okolí.
 V každém okamžiku ví, kde pøesnì se nalézá, kterým smìrem se dívá, jaké pøedmìty vidí a kde jsou tyto pøedmìty ve virtuálním svìtì umístìny.
 Agent si tedy nemusí vytváøet mapu, ani øešit analýzu obrazových dat èi podobné úlohy z robotiky. Dostává pøesná geometrická data - napø:
-
-\emph{Stojím na souøadnicích XY, dívám se smìrem na severozápad. Vidím dva pøedmìty: kvìtinu a talíø. Kvìtina je na souøadnicích XZ, talíø na YZ.}
 \\
+\emph{Stojím na souøadnicích XY, dívám se smìrem na severozápad. Vidím dva pøedmìty: kvìtinu a talíø. Kvìtina je na souøadnicích XZ, talíø na YZ.}
+
+
+\begin{definition}[Vjem]
+Vstupem modelu je pouze posloupnost vjemù. Vjem pøedstavuje informaci typu:
+\emph{Vidím pøedmìt ABC na místì XY s intenzitou 0,4.} èi \emph{Na místì XY používám pøedmìt ABC s intenzitou 2,0.}
+\\
+Vjem je tedy trojice \emph{$<$pøedmìt, poloha, intenzita \footnote{Intenzitu budeme dále ve vzorcích oznaèovat znakem $\eta$.}$>$}.
+Jedná se o sjednocení rùzných typù vstupù, není rozlišeno mezi spatøením a použitím pøedmìtu, tyto rozdíly se promítnou do hodnoty intenzity vjemu.
+\end{definition}
 
 \begin{definition}[Uzel]
-Prostorová mapa bude obsahovat \emph{uzly}. Uzel je bod v prostoru, který reprezentuje resp. pokrývá jeho èást, své okolí. Imituje tak chování place cells.
+Prostorová mapa bude obsahovat tzv. \emph{uzly}. Uzel je základní stavební prvek prostorové mapy.
+Reprezentuje v ní malou èást svìta, své nejbližší okolí. Imituje tak chování place cells.
 Model musí umìt na zaèátku simulace tyto uzly rozmístit do virtuálního svìta.
-V prùbìhu simulace musí jejich rozmístìní postupnì mìnit, tak aby jejich hustota byla vìtší v místech, kde agent vidìl více pøedmìtù, a menší v místech,
-kde agent vidìl ménì pøedmìtù. Nejmenší hustota by mìla být v místech, kde agent nevidìl žádné pøedmìty èi která vùbec nenavštívil.
+V prùbìhu simulace musí jejich rozmístìní postupnì mìnit tak, aby jejich hustota odpovídala èetnosti a rozložení vjemù.
+V místech, kde agent vidìl èi použil více pøedmìtù, by mìla být vyšší, a v místech, kde vidìl èi použil ménì pøedmìtù, by mìla být hustota uzlù menší.
+Nejmenší hustota by mìla být v místech, kde agent nevidìl žádné pøedmìty èi která vùbec nenavštívil.
 I v takovýchto místech ale musí být uzly mapy.
 \end{definition}
 
-Model musí umožnit ukládat k uzlùm informace o poloze pøedmìtù. Tyto informace si mùže agent pozdìji vyžádat.
+Model musí umožnit ukládat informace o poloze pøedmìtù. Tyto informace si mùže agent pozdìji vyžádat.
 Pøesnost tìchto informací by mìla v èase rùst, pokud je agent opakovanì dostává. Naopak, pokud agent informaci o poloze pøedmìtù delší dobu nedostane,
 informace by se mìla stát nepøesnou a postupnì vymizet až do té míry, že agent bude schopen øíci pouze to, že pøedmìt vidìl, nebude však schopen urèit kde.
 \\
@@ -33,22 +40,24 @@ Souèástí modelu tedy musí být mechanismus korigující poèet uzlù mapy v èase, v z
 \\
 
 Model by mìl být hiearchický èi alespoò umožnit vytvoøení hiearchie.
-Všechny uzly mapy by nemìly být rovnocenné, v prùbìhu simulace by mìly vznikat další uzly vyšší úrovnì, které budou pokrývat vìtší oblast.
+Všechny uzly mapy by nemìly být rovnocenné, postupnì by mìly vznikat další uzly vyšší úrovnì, které budou pokrývat vìtší oblast.
 Tyto uzly by mìly vznikat pøedevším v místech, kde agent vidìl mnoho pøedmìtù. Takto by model mìl být schopen urèit oblasti, kde je více pøedmìtù.
 \\
-
-Model musí být online v tom smyslu, že v každém okamžiku musí dát použitelné výsledky.
-Nemìl by být závislý na konkrétní abstrakci svìta èi architektuøe agenta.
-\\
-
-\begin{definition}[Vjem]
-Vstupem modelu je pouze posloupnost vjemù. Modelu jsou postupnì pøedkládány vjemy, ze kterých se uèí. Vjem øíká informaci typu:
-\\
-\emph{Vidím pøedmìt ABC na místì XY s intenzitou 0,4.}
-\\
-Vjem je tedy trojice: \emph{$<$pøedmìt, poloha, intenzita \footnote{Intenzitu budeme dále ve vzorcích oznaèovat znakem $\eta$}$>$.}.
-\end{definition}
 
 Výstupem modelu je rozmístìní uzlù v prostoru a urèení polohy pøedmìtù, které agent døíve vidìl.
 Pokroèilejším výstupem je urèení oblastí se zvýšeným poètem pøedmìtù èi kde se agent èasto vyskytuje a provádí nìjakou èinnost.
 \\
+
+Mechanismy modelu musí být online algoritmy, prostorová mapa se bude uèit postupnì a v každém okamžiku musí dát použitelné výsledky.
+Model by nemìl být závislý na konkrétní abstrakci svìta èi architektuøe agenta.
+\\
+
+Model prostorové mapy tedy musí:
+
+\begin{CompactItemize}
+\item být složen z uzlù imitujících place cells
+\item rozmístit uzly stejnì jako jsou rozmístìné pøedmìty
+\item mìnit rozložení uzlù a jejich poèet dle zmìn svìta
+\item umìt zapomínat
+\item umìt urèit oblasti s vyšším poètem pøedmìtù
+\end{CompactItemize}
