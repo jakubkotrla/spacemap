@@ -5,67 +5,149 @@ V první podkapitole jsou testy finálního modelu prostorové mapy na rùznıch datec
 \\
 
 Samotnı test je urèen testovacím svìtem\footnote{Pøehled všech testovacích místností je v pøíloze A.},
-tedy místností a scénáøem a hodnotami parametrù.
+tedy místností a hodnotami parametrù modelu.
+Na základì pøedmìtù, èinností a zámìrù definovanıch ve svìtì je na zaèátku simulace vygenerován agentùv scénáø, tj. posloupnost zámìrù, které se bude snait postupnì splnit.
+Scénáø do znaèné míry urèuje agentùv pohyb po svìtì.
+\\
+
+Zobrazení stavu svìta a prostorové mapy na následujících stránkách obsahuje následující objekty:
+
+\begin{description}
+  \setlength{\leftmargin}{0.5cm}
+  \setlength{\itemsep}{0pt}
+  \setlength{\parsep}{0pt}
+  \setlength{\topsep}{0pt}
+  \item[modré ètverce] - pøedmìty
+  \item[menší zelené ètverce] - uzly prostorové mapy
+  \item[modré krunice] - místa
+  \item[modré úseèky] - náleení uzlu do místa
+\end{description}
+
+
+Vısledek testu závisí také na inicializaci generátoru pseudonáhodnıch èísel.
+Generátor je inicializován hodnotou urèenou parametrem v souboru \texttt{Enviroment/Global.py}, co umoòuje provádìt opakovatelné experimenty.
 \\
 
 
 \section{Testy vısledného modelu} \label{chapter-test-final}
 Model prostorové mapy popsanı v kapitole \ref{chapter-model} resp. \ref{chapter-model-el}
 s vıchozím nastavením parametrù dle tabulky \ref{tab:param-el} v pøíloze B jsme otestovali v osmi rùznıch místnostech. 
-Na obrázku \ref{fig:final-crazy}, \ref{fig:final-heapline} a \ref{fig:final-lobby} jsou vısledky ve tøech místnostech.
+Na obrázku \ref{fig:final-crazy} a \ref{fig:final-heapline} jsou zobrazeny nìkteré vısledky.
 Vısledky v dalších místnostech, další vıstupní data a videa zachycující prùbìh testù jsou na pøiloeném DVD.
 \\
 
+Na obrázku \ref{fig:final-heapline} je vidìt, e rozloení uzlù kopíruje rozloení pøedmìtù.
+V levém horním rohu a pravém dolním je malá hustota uzlù.
+Konkrétnì obrázek \ref{fig:final-heapline-1000-uzly} ukazuje, e v dolním pravém ètverci je 36 uzlù. V tomto kroku byl celkovı poèet uzlù prostorové mapy 231.
+Pøiblinì 15\% uzlù tak pokrıvá 1/4 svìta.
+\\
 
-\begin{figure}[p]
-  \centering
-  \subfloat[Krok 1000]{\includegraphics[width=0.5\textwidth]{img/final/crazy1000.eps}}
-  \subfloat[Krok 5000]{\includegraphics[width=0.5\textwidth]{img/final/crazy5000.eps}}
-  \caption{Test vısledného modelu, místnost CrazyRoom.}
-  \label{fig:final-crazy}
-\end{figure}
+Poblí pøedmìtù je vysoká hustota uzlù, jak ukazuje obrázek \ref{fig:final-heapline-1000-vyrez}.
+Hustota uzlù se zvyšuje smìrem k pøedmìtùm.
+\\
 
-\begin{figure}[p]
-  \centering
-  \subfloat[Krok 1000]{\includegraphics[width=0.5\textwidth]{img/final/heapline1000.eps}}
-  \subfloat[Krok 5000]{\includegraphics[width=0.5\textwidth]{img/final/heapline5000.eps}}
-  \caption{Test vısledného modelu, místnost HeapLineRoom.}
-  \label{fig:final-heapline}
-\end{figure}
+Na obrázku \ref{fig:final-heapline-1000-uzly} je vidìt, e prostorová mapa v kroku 100 obsahovala tøi místa druhé úrovnì, jedno z nich obsahovalo další dvì místa tøetí úrovnì.
+V kroku 5000 obsahovala prostorová mapa další ètyøi místa, jak ukazuje obrázek \ref{fig:final-heapline-5000}.
+Mapa vytvoøila dvì místa ètvrté úrovnì, jedno tøetí úrovnì a jedno druhé úrovnì.
+\\
+
+Vısledky ukazují, e model rozmisuje uzly do svìta dle rozloení pøedmìtù. Uzel pøedstavuje agentovu reprezentaci èásti prostoru.
+Vysoká hustota uzlù v jedné oblasti znamená, e agent si danou oblast dobøe pamatuje. Èím vìtší hustota, tím déle si tuto znalost o prostoru zapamatuje.
+\\
+
+Postupné vytváøení míst shora, tedy nejdøíve vìtších a pozdìji menších míst, imituje naši pøedstavu,
+e èlovìk si nejdøíve vytváøí hrubou pøedstavu o svém okolí a v prùbìhu èasu tuto pøedstavu konkretizuje.
+Místa první úrovnì jsou nepøesné pøedstavy o oblastech typu \uv{nìkde v rohu}. Místa vyšších úrovní pøedstavují pøesnìjší znalosti o prostoru.
+\\
+
+
+Obrázek \ref{fig:final-crazy} ukazuje, e model se chová podobnì i v pomìrnì komplikovanıch místnostech. Místnost CrazyRoom je nekonvexní polygon.
+Hustota uzlù roste smìrem k poloze pøedmìtù a v takovıch místech vznikají místa.
+\\
 
 
 \newpage
 
-\begin{figure}[h!]
+\begin{figure}[p]
   \centering
-  \subfloat[Krok 1000]{\includegraphics[width=0.5\textwidth]{img/final/lobby1000.eps}}
-  \subfloat[Krok 5000]{\includegraphics[width=0.5\textwidth]{img/final/lobby5000.eps}}
-  \caption{Test vısledného modelu, místnost Lobby.}
-  \label{fig:final-lobby}
+  \subfloat[Krok 1000]{\label{fig:final-heapline-1000-uzly}\includegraphics[width=0.7\textwidth]{img/final/heapline1000-uzly.eps}}
+  \quad
+  \subfloat[Krok 1000, vıøez levého dolního ètverce]{\label{fig:final-heapline-1000-vyrez}\includegraphics[width=0.7\textwidth]{img/final/heapline1000-vyrez.eps}}
+  \caption{Test vısledného modelu, místnost HeapLineRoom.}
+  \label{fig:final-heapline}
+\end{figure}
+
+\newpage
+
+
+
+\begin{figure}[p]
+  \centering
+  \subfloat[Místnost HeapLineRoom]{\label{fig:final-heapline-5000}\includegraphics[width=0.7\textwidth]{img/final/heapline5000.eps}}
+  \quad
+  \subfloat[Místnost CrazyRoom]{\label{fig:final-crazy}\includegraphics[width=0.7\textwidth]{img/final/crazy5000.eps}}
+  \caption{Test vısledného modelu, krok 5000.}
+  \label{fig:final-heapline}
 \end{figure}
 
 
+\clearpage
 
 
+\section{Naplnìnost uzlu} \label{chapter-test-ag}
 
-\section{Vliv naplnìnosti} \label{chapter-test-ag}
-
-V tomto testu ukáeme, jak dùleitou roli hraje vliv naplnìnosti pøi urèování vzájemné odpudivosti dvou uzlù ve vzorci \eqref{formula:el-odpudivost}.
+V tomto testu ukáeme, jak dùleitou roli hraje vliv naplnìnosti pøi urèování vzájemné odpudivosti dvou uzlù ve vzorcích
+\eqref{formula:el-odpudivost} a \eqref{formula:el-odpudivost-posun}.
 Provedli jsme 5000 krokù simulace v místnostech EmptyRoom a FullRoom.
 \\
 
 V prvním testu nebyla naplnìnost uzlù pøi poèítání odpudivosti vùbec brána v úvahu.
 Vısledek je na obrázku \ref{fig:usage-ag-no} a ukazuje, e v tomto pøípadì model rozmisuje uzly v prostoru témìø rovnomìrnì.
-Z toho vyplıvá, e naplnìnost uzlu hraje v modelu vıznamnou roli.
-Obrázky \ref{fig:usage-ag-0.5}, \ref{fig:usage-ag-0.8}, \ref{fig:usage-ag-1} ukazují vısledky testù pro rùzné hodnoty parametru \param{vliv naplnìnosti}.
+Hustota uzlù je vìtší v místnosti FullRoom, protoe ta obsahuje více pøedmìtù.
 \\
+
+Na obrázku \ref{fig:usage-ag-sqrt} je hodnota parametru \param{vliv naplnìnosti}
+rovna $0,8$ a naplnìnost je pøed pouitím ve vzorcích  \eqref{formula:el-odpudivost} a \eqref{formula:el-odpudivost-posun} odmocnìna.
+Pøedevším na obrázku \ref{fig:usage-ag-sqrt-full} je vidìt, e hustota uzlù prostorové mapy je vìtší poblí pøedmìtù.
+\\
+
+Na obrázku \ref{fig:usage-ag-0.5} a \ref{fig:usage-ag-1} jsou vısledky testù pøi pouití pùvodních vzorcù
+\eqref{formula:el-odpudivost} a \eqref{formula:el-odpudivost-posun} a hodnota parametru \param{vliv naplnìnosti} je rovna $0,5$, resp. $1,0$.
+V tomto pøípadì je velkı rozdíl hustot v oblastech s pøedmìty a bez pøedmìtù.
+\\
+
+Z vısledkù testù vyplıvá, e naplnìnost uzlu je hraje v modelu vıznamnou roli.
+Pøedstavuje míru dùleitosti uzlu pro prostorovou mapu, resp. pamì na pøedmìty.
+Zmìna parametru \param{vliv naplnìnosti} má malı vliv na rozmístìní uzlù v prostoru, resp. na rozdíl hustot v oblastech s pøedmìty a v oblastech bez pøedmìtù.
+Zmìna zpùsobu vıpoètu vzájemné odpudivosti dvou uzlù má mnohem zásadnìjší vliv.
+\\
+
+
+Naplnìnost uzlu tak reprezentuje intenzitu zapamatované znalosti.
+Oblasti s uzly s vysokou naplnìností si agent dobøe pamatuje.
+Pokud se rozloení pøedmìtù v oblasti zmìní, napø. pøedmìty zmizí èi se objeví nové, trvá delší dobu, ne se prostorová mapa zmìnì pøizpùsobí.
+Oblasti s uzly s malou naplnìností jsou tvárné.
+\\
+
+Pokud se v prázdné oblasti objeví novı pøedmìt, prostorová mapa se tomu rychle pøizpùsobí.
+Naopak pokud pøedmìt ze svìta zmizí, prostorová mapa si bude ještì urèitou dobu pamatovat skuteènost, e tam pøedmìt byl.
+\\
+
 
 \begin{figure}[p]
   \centering
   \subfloat[EmptyRoom]{\includegraphics[width=0.5\textwidth]{img/usage/nousage-empty.eps}}
   \subfloat[FullRoom]{\includegraphics[width=0.5\textwidth]{img/usage/nousage-full.eps}}
-  \caption{Test odpudivosti uzlù, jejich naplnìnost není brána v uvahu.}
+  \caption{Test odpudivosti uzlù, jejich naplnìnost není brána v úvahu.}
   \label{fig:usage-ag-no}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \subfloat[EmptyRoom]{\includegraphics[width=0.5\textwidth]{img/usage/square-empty.eps}}
+  \subfloat[FullRoom]{\label{fig:usage-ag-sqrt-full}\includegraphics[width=0.5\textwidth]{img/usage/square-full.eps}}
+  \caption{Test odpudivosti uzlù, vliv naplnìnosti $=0,8$, naplnìnost odmocnìna.}
+  \label{fig:usage-ag-sqrt}
 \end{figure}
 
 \begin{figure}[p]
@@ -76,13 +158,6 @@ Obrázky \ref{fig:usage-ag-0.5}, \ref{fig:usage-ag-0.8}, \ref{fig:usage-ag-1} uka
   \label{fig:usage-ag-1}
 \end{figure}
 
-\begin{figure}[p]
-  \centering
-  \subfloat[EmptyRoom]{\includegraphics[width=0.5\textwidth]{img/usage/usage0.8-empty.eps}}
-  \subfloat[FullRoom]{\includegraphics[width=0.5\textwidth]{img/usage/usage0.8-full.eps}}
-  \caption{Test odpudivosti uzlù, vliv naplnìnosti $=0,8$.}
-  \label{fig:usage-ag-0.8}
-\end{figure}
 
 \begin{figure}[p]
   \centering
@@ -97,56 +172,86 @@ Obrázky \ref{fig:usage-ag-0.5}, \ref{fig:usage-ag-0.8}, \ref{fig:usage-ag-1} uka
 \newpage
 
 \section{Pøesnost mapy}
-Jedním z objektivních kritérií modelu je pøesnost mapy, nakolik odpovídá realitì virtuálního svìta.
+Jedním z objektivních kritérií modelu je pøesnost mapy, tj. nakolik odpovídá \uv{realitì} virtuálního svìta.
 
 \begin{definition}[Nauèenost pøedmìtu]
-V prùbìhu simulace agent vidí a pouívá pøedmìty a prostorová mapa dostává vjemy, které to odráejí.
+V prùbìhu simulace agent vidí a pouívá pøedmìty, prostorová mapa pak dostává vjemy, které to odráejí.
 Nauèenost pøedmìtu je vlastnost vyjadøující poèet a intenzitu vjemù daného pøedmìtu.
-Na zaèátku simulace je rovna nule. V prùbìhu simulace pokadé, kdy je vytvoøen vjem pøedmìtu, je nauèenost pøedmìtu zvıšena o intenzitu vjemu.
-Nauèenost pøedmìtu neklesá.
+Na zaèátku simulace je rovna nule, v prùbìhu simulace roste. Vdy kdy je vytvoøen vjem pøedmìtu, je nauèenost pøedmìtu zvıšena o intenzitu vjemu.
+Nauèenost pøedmìtu v èase je neklesající funkce.
 \end{definition}
 
 Na konci simulace máme k dispozici mnoinu pøedmìtù, jejich polohu a nauèenost\footnote{Tyto informace jsou nezávislé na prostorové mapì.}.
 Prostorová mapa má k dispozici mnoinu uzlù, jejich polohu a naplnìnost. Pøedpokládáme, e naplnìnost uzlù bude odráet nauèenost pøedmìtù.
-Vizualizace dat pro místnost FullRoom je na obrázku \ref{fig:test-heatmap}, další jsou na pøiloeném DVD.
-Ukazuje, e náš pøedpoklad je správnı, uzly prostorové mapy, resp. jejich naplnìnost se blíí nauèenosti pøedmìtù.
 \\
 
 
+Vizualizace dat pro místnost FullRoom je na obrázku \ref{fig:test-heatmap}. Vısledky v dalších místnostech jsou na pøiloeném DVD.
+Obrázek \ref{fig:test-heatmap-obj} ukazuje nauèenost pøedmìtù, obrázek \ref{fig:test-heatmap-uzly} naplnìnost uzlù.
+Vısledky jsou velmi podobné, naplnìnost uzlù je spojitìjší.
+To je zpùsobeno pøedevším tím, e poèet uzlù je vıraznì vìtší ne poèet pøedmìtù (240 uzlù, 33 pøedmìtù).
+\\
+
 \begin{figure}[h]
   \centering
-  \subfloat[Nauèenost pøedmìtù]{\includegraphics[width=0.5\textwidth]{img/heatmap/predmet.eps}}
-  \subfloat[Naplnìnost uzlù]{\includegraphics[width=0.5\textwidth]{img/heatmap/uzel.eps}}
+  \subfloat[Nauèenost pøedmìtù]{\label{fig:test-heatmap-obj}\includegraphics[width=0.5\textwidth]{img/heatmap/predmet.eps}}
+  \subfloat[Naplnìnost uzlù]{\label{fig:test-heatmap-uzly}\includegraphics[width=0.5\textwidth]{img/heatmap/uzel.eps}}
   \caption{Vizualizace naplnìnosti uzlù a nauèenosti pøedmìtù.}
   \label{fig:test-heatmap}
 \end{figure}
 
-\newpage
 
-Dalším monım mìøítkem je pøesnost zapamatovanıch poloh pøedmìtù.
-V kadém kroku simulace mùeme urèit polohu, o ní se agent domnívá, e na ní pøedmìt je.
-Tuto domnìlou polohu mùeme porovnat s skuteènou polohou pøedmìtu.
-Na obrázcích \ref{fig:test-error1} a \ref{fig:test-error2} je zobrazen vıvoj rozdílu mezi realitou a agentovou prostorovou mapu v
-èase\footnote{Vısledky v dalších místnostech jsou opìt na pøiloeném DVD.}.
-V tomto testu model uspìl jen v polovinì testovanıch dat.
+Náš pøedpoklad je správnı, uzly prostorové mapy, resp. jejich naplnìnost se blíí nauèenosti pøedmìtù.
+To znamená, e popsanı model prostorové mapy odráí èetnost vjemù nejen rozloením uzlù, ale i jejich naplnìností.
+Vısledky nejsou však zcela identické, rozmístìní uzlù a jejich naplnìnost vykazuje urèité zkreslení.
+Osamocenı pøedmìt umístìnı stranou od ostatních se pøi tomto zpùsobu vizualizace témìø neprojeví.
 \\
 
 
-\begin{figure}[h]
+Dalším monım mìøítkem je pøesnost zapamatovanıch poloh pøedmìtù.
+V kadém kroku simulace mùeme urèit polohu, o ní se agent domnívá, e na ní pøedmìt je.
+Tuto domnìlou polohu mùeme porovnat se skuteènou polohou pøedmìtu.
+\\
+
+Na obrázku \ref{fig:test-error} je zobrazen vıvoj rozdílu mezi realitou a agentovou prostorovou mapu v
+èase\footnote{Vısledky v dalších místnostech jsou opìt na pøiloeném DVD.}.
+Na ose $y$ je zobrazena chyba mapy, tj. vzdálenost mezi skuteènou a domnìlou polohou pøedmìtu, její rozsah se v kadé místnosti liší.
+Hodnota grafu v jednom kroku je prùmìrná chyba všech pøedmìtù.
+\\
+
+
+Relativní chyba vzhledem k velikosti místnosti se pohybuje øádovì v jednotkách procent.
+V místnostech CrazyRoom, FullRoom, HeapRoom, HeapLineRoom a SmallRoom má graf klesající tendenci.
+V místnostech Corridor, Lobby a Empty velikost chyby neustále kolísá.
+\\
+
+Vısledky ukazují, e místnosti obsahující vìtší poèet pøedmìtù, uspoøádanıch do hromad, se mapa uèí dobøe.
+V prùbìhu èasu pøesnost svıch znalostí o prostoru zpøesòuje. 
+\\
+
+
+V EmptyRoom, tedy prázdné místnosti pouze s jedním pøedmìtem, se polohu jediného pøedmìtu mapa nauèí do urèité míry a pak ji ji nezpøesòuje.
+To odpovídá naší pøedstavì,
+e prostor témìø bez záchytnıch bodù si èlovìk pamatuje nepøesnì a špatnì se o nìm uèí prostorové znalosti, nebo je není k èemu vztáhnout.
+\\
+
+
+
+\begin{figure}[p]
   \centering
   \subfloat[Místnost Corridor]{\includegraphics[width=0.5\textwidth]{img/error/corridor.eps}}
   \subfloat[Místnost CrazyRoom]{\includegraphics[width=0.5\textwidth]{img/error/crazy.eps}}
+
+  \subfloat[Místnost EmptyRom]{\includegraphics[width=0.5\textwidth]{img/error/empty.eps}}
+  \subfloat[Místnost FullRoom]{\includegraphics[width=0.5\textwidth]{img/error/full.eps}}
+  
+  \subfloat[Místnost HeapRoom]{\includegraphics[width=0.5\textwidth]{img/error/heap.eps}}
+  \subfloat[Místnost Lobby]{\includegraphics[width=0.5\textwidth]{img/error/lobby.eps}}
   \caption{Prùmìrná chyba polohy pøedmìtù v èase.}
-  \label{fig:test-error1}
+  \label{fig:test-error}
 \end{figure}
 
-\begin{figure}[h]
-  \centering
-  \subfloat[Místnost FullRoom]{\includegraphics[width=0.5\textwidth]{img/error/full.eps}}
-  \subfloat[Místnost HeapRoom]{\includegraphics[width=0.5\textwidth]{img/error/heap.eps}}
-  \caption{Prùmìrná chyba polohy pøedmìtù v èase.}
-  \label{fig:test-error2}
-\end{figure}
+
 
 \newpage
 
@@ -154,7 +259,8 @@ V tomto testu model uspìl jen v polovinì testovanıch dat.
 V kapitole \ref{chapter-place-detect} byl popsán mechanismus vytváøení míst.
 Model prostorové mapy je tak schopen rozpoznat oblasti s vyšší hustotou uzlù a vytvoøit v takové oblasti místo.
 V tomto testu jsme se rozhodli vyzkoušet vliv parametrù \param{rychlost klesání $\varrho$}, \param{limit vzniku podmísta} a \param{limit zapomenutí místa}.
-Test jsme provedli s nastavením parametrù tak, aby došlo k vytvoøení více míst, jejich hodnoty jsou v tabulce \ref{tab:test-mist}, test mìl 4000 krokù simulace.
+Test jsme provedli s nastavením parametrù tak, aby došlo k vytvoøení více míst, jejich hodnoty jsou v tabulce \ref{tab:test-mist}.
+Provedli jsme 4000 krokù simulace v místnosti EmptyRoom a HeapRoom.
 \\
 
 \begin{table}[h!]
@@ -164,11 +270,11 @@ Test jsme provedli s nastavením parametrù tak, aby došlo k vytvoøení více míst, 
 Parametr & Vıchozí hodnota & Testovaná hodnota \\
 \midrule[0.2pt]
 
-ELAGFadeOut & 0,1 & 0,05 \\
+\param{Rychlost klesání} $\varrho$ & 0,1 & 0,05 \\
 
-PlacesAGNeeded & 1500 & 1000 \\
+\param{Limit vzniku podmísta} & 1500 & 1000 \\
 
-PlacesAGMin & 500 & 300 \\
+\param{Limit zapomenutí} místa & 500 & 300 \\
 
 \bottomrule[0.5pt]
 \end{tabular}
@@ -183,9 +289,17 @@ Je vidìt, e zmìna testovanıch parametrù zpùsobila vznik více míst. I v témìø pr
 \\
 
 Vedlejším efektem však bylo vytvoøení míst i tam, kde jsme je neoèekávali a nechtìli.
-Zvıraznìná místa na obrázku \ref{fig:test-places-lh-heap} nevznikla pøímo díky hustotì uzlù.
-Ke svému vzniku spotøebovala mnoství odpudivosti nahromadìné v uzlech v tìsné blízkosti jinıch míst.
+Zvıraznìná místa na obrázku \ref{fig:test-places-lh-heap} nevznikla jako pøímı dùsledek vìtší hustoty uzlù.
+Ke svému vzniku spotøebovala mnoství odpudivosti nahromadìné v uzlech v tìsné blízkosti jinıch míst, jakési \uv{zbytkové mnoství odpudivosti}.
 \\
+
+Tato místa nenaplòují naši pøedstavu o tom, jak èlovìk vnímá shluky pøedmìtù a jak si vjemy seskupuje.
+Reprezentují oblasti pojmenovatelné jako  \uv{hned vedle té hromady pøedmìtù} a \uv{mezi zdí a hromadou pøedmìtù}.
+Lidé jistì pouívají taková oznaèení oblastí, ale nepøedstavují si pod nimi místo, ke kterému by bylo moné vztáhnout další prostorové informace.
+Obì pojmenování obsahují odkaz na opravdové místo.
+\\
+
+
 
 
 \begin{figure}[p]
@@ -207,33 +321,38 @@ Ke svému vzniku spotøebovala mnoství odpudivosti nahromadìné v uzlech v tìsné b
 
 
 
-\newpage
 
 \section{Test dynamického svìta}
 Model prostorové mapy je vytvoøen tak, aby se dokázal pøizpùsobit mìnícímu se prostøedí.
 Provedli jsme test v místnosti SwitchRoom, kterou jsme navrhli právì pro tento úèel.
 V místnosti dojde ke dvìma zmìnám, v kroku 1500 je odebrána èást pøedmìtù a v kroku 4000 je nìkolik z nich vráceno zpìt a vytvoøeno nìkolik
-novıch\footnote{Místnost SwitchRoom a její zmìny jsou zobrazeny v pøíloze A}.
+novıch\footnote{Místnost SwitchRoom a její zmìny jsou zobrazeny v pøíloze A.}.
 \\
 
-Vısledek testu je na obrázcích \ref{fig:test-dyn-nc} a \ref{fig:test-dyn}. Je na nich vidìt, e mapa se skuteènì pøizpùsobila novım pøedmìtùm
-pøidanım v kroku 4000 v dolním pravém rohu a brzy tam vzniklo místo.
-Poèet uzlù mapy také zareagoval na zmìnu poètu pøedmìtù, krátce po kroku 1500 pøestal rùst, pozdìji zaèal zvolna klesat.
-Kdy byly pøidány nové pøedmìty, poèet uzlù zaèal pozvolna stoupat.
+Vısledek testu je na obrázcích \ref{fig:test-dyn-nc} a \ref{fig:test-dyn}.
+Obrázek \ref{fig:test-dyn-nc} ukazuje poèet uzlù prostorové mapy v èase.
+Poèet uzlù zpoèátku simulace rychle roste. Po odebrání pøedmìtù v kroku 1500 se jeho rùst zastaví a v kroku 3000 zaèíná pomalu klesat.
+V kroku 4000 jsou do svìta pøidány další pøedmìty a poèet uzlù opìt zaène rùst.
+\\
+
+Obrázek \ref{fig:test-dyn} ukazuje vytvoøení místa v kroku 4497, co je reakce prostorové mapy na pøidání pøedmìtù v kroku 4000.
+Nové místo tedy vzniklo pøiblinì tøikrát pomaleji, ne vzniká první místo.
 Prùbìh testu je lépe vidìt na videu, které je na pøiloeném DVD.
+Vısledky testu ukazují, e model prostorové mapy se skuteènì umí pøizpùsobit pøidání novıch pøedmìtù do svìta.
 \\
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\textwidth]{img/dyn/nc.eps}
-  \caption{Poèet uzlù prostorové mapy v èase, testovací místnost SwitchRoom.}
+  \includegraphics[width=1.0\textwidth]{img/dyn/nc.eps}
+  \caption{Poèet uzlù prostorové mapy v èase, místnost SwitchRoom.}
   \label{fig:test-dyn-nc}
 \end{figure}
 
 \begin{figure}[!h]
   \centering
-  \subfloat[Krok 4001]{\includegraphics[width=0.5\textwidth]{img/dyn/step4001.eps}}
-  \subfloat[Krok 4400]{\includegraphics[width=0.5\textwidth]{img/dyn/step4400.eps}}
+  \subfloat[Krok 4001]{\includegraphics[width=0.6\textwidth]{img/dyn/step4001.eps}}
+  
+  \subfloat[Krok 4400]{\includegraphics[width=0.6\textwidth]{img/dyn/step4497.eps}}
   \caption{Test dynamického svìta, v kroku 4000 jsou pøidány pøedmìty do pravého dolního rohu, v kroku 4400 tam ji je místo.}
   \label{fig:test-dyn}
 \end{figure}
