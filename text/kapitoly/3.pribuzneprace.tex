@@ -18,7 +18,7 @@ aby se jejich rozdìlení zlepšilo. Algoritmus konèí v okamiku, kdy se rozdìlení 
 K-Means algoritmus však pracuje nad všemi daty najednou, tedy agent by musel vidìt všechny pøedmìty souèasnì.
 Nedokáe zpracovávat vjemy postupnì a nezávisle na ostatních. Pøi zmìnì rozloení pøedmìtù je tøeba jej celı provést znovu.
 Algoritmus umí urèit shluky, tedy umístit bod tam, kde je hodnì dat. Ve skuteènosti potøebujeme opak, a to umístit hodnì uzlù tam, kde je pøedmìt.
-To samé platí obecnì pro geometrické algoritmy shlukové analızy, nelze je tedy pouít na hlavní model mapy. Mohou ale bıt vyuity pøi vytváøení hiearchie uzlù.
+To samé platí obecnì pro geometrické algoritmy shlukové analızy, nelze je tedy pouít na hlavní model mapy. Mohou ale bıt vyuity pøi vytváøení hierarchie uzlù.
 \\
 
 \section{Samoorganizaèní mapy}
@@ -52,14 +52,14 @@ GHSOM zaèíná jako Kohonenova mapa tvoøená jedním uzlem a v prùbìhu uèení je rozš
 \item pod uzly jsou pøidávány další úrovnì, Kohonenovy mapy o jednom uzlu
 \end{CompactItemize}
 
-Samoorganizaèní mapy jsou pouívány pro vytváøení prostorovıch map a existují jejich rozšíøení s hiearchií a mechanismy pro jejich rùst.
+Samoorganizaèní mapy jsou pouívány pro vytváøení prostorovıch map a existují jejich rozšíøení s hierarchií a mechanismy pro jejich rùst.
 Jsou tedy jedním z monıch øešení našeho problému.
 \\
 
 \section{Kognitivní mapy}
-V \cite{litVoicu2003} autoøi popisují model hiearchické kognitivní mapy, kterı obsahuje prostorovou mapu o dvou úrovních (místa a regiony).
+V \cite{litVoicu2003} autoøi popisují model hierarchické kognitivní mapy, kterı obsahuje prostorovou mapu o dvou úrovních (místa a regiony).
 Je tvoøena ètyømi asociativními sítìmi, které ukládají vazby mezi místy a regiony a sousednost míst a regionù.
-Místa i regiony jsou obdélníky. Jejich hiearchie je však pøedem dána.
+Místa i regiony jsou obdélníky. Jejich hierarchie je však pøedem dána.
 Regiony nevznikají seskupováním míst ani naopak místa nevznikají rozdìlením regionù. Asociativní sítì se pouze uèí pøíslušnost míst do regionù.
 Model je pouit pouze pro navigaci a aktualizaci mapy, neobsahuje pamì na pøedmìty ani další podobné informace.
 \\

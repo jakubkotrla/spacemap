@@ -50,7 +50,7 @@ Pokaždé, když je vjem pøedán ke zpracování, provede se trénování Kohonenovy mapy
 	\State $n \gets first(queue)$
 	\State $queue \gets queue  \setminus \{n\}$
 	\State zmìna polohy $n$ dle vzorce \ref{formula:km-uceni} \label{alg:km-uceni-vzorec}
-	\State $queue \gets$ sousedi $n$ (pokud nebyli ješte trénováni)
+	\State $queue \gets$ sousedi $n$ (pokud nebyli ještì trénováni)
 \EndWhile
 \State vjem je pøedán vrstvì uzlù k dalšímu zpracování
 \end{algorithmic}
@@ -112,16 +112,16 @@ Tím by mìly udržet Kohonenovu mapu roztaženou i v místech, kde reálné pøedmìty n
   \centering
   \subfloat[Po 500 krocích]{\label{fig:kml-bo-1}\includegraphics[width=0.5\textwidth]{img/kml/bo-0.5-0500.eps}}
   \subfloat[Po 1000 krocích]{\label{fig:kml-bo-2}\includegraphics[width=0.5\textwidth]{img/kml/bo-0.5-1000.eps}}
-  \caption{Test modelu s base objects}
+  \caption{Test modelu s umìlými pøedmìty}
   \label{fig:kml-baseobjs}
 \end{figure}
 
 Výsledek testu je na obrázku \ref{fig:kml-baseobjs}\footnote{Další výsledky testù s rùznou hodnotou atraktivity umìlých pøedmìtù jsou na pøiloženém CD.}.
 Mapa se stahuje do støedu místnosti bez ohledu na vliv umìlých pøedmìtù.
 Dùvodem je to, že tìžištì všech umìlých pøedmìtù je ve støedu místnosti.
-Tomu bychom mohli zabránit zvýšením atraktivity base objects, které jsou na kraji místnosti.
+Tomu bychom mohli zabránit zvýšením atraktivity umìlých pøedmìtù, které jsou na kraji místnosti.
 Jednoduchým protipøíkladem takového øešení je místnost, která bude mít objekty pouze na kraji (na zdech, v rozích).
-Pak bychom potøebovali zvýšit atraktivitu base objects uprostøed místnosti resp. obecnì bychom museli zvýšit atraktivitu umìlých pøedmìtù v místech,
+Pak bychom potøebovali zvýšit atraktivitu umìlých pøedmìtù uprostøed místnosti resp. obecnì bychom museli zvýšit atraktivitu umìlých pøedmìtù v místech,
 kde nejsou reálné pøedmìty.
 Tím jsme pøevedli pùvodní problém hledání oblastí s vyšším poètem pøedmìtù na problém opaèný, tj. na hledání bez pøedmìtù.
 Øešení s použitím umìlých pøedmìtù tedy nevyhovuje.

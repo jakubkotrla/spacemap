@@ -7,7 +7,7 @@ V této kapitole popíšeme požadavky na model, jeho vstupy a výstupy.
 
 Agent má na zaèátku úplnou informaci o geometrii a topologii svìta. V prùbìhu simulace se pohybuje svìtem a vnímá své okolí.
 V každém okamžiku ví, kde pøesnì se nalézá, kterým smìrem se dívá, jaké pøedmìty vidí a kde jsou tyto pøedmìty ve virtuálním svìtì umístìny.
-Agent si tedy nemusí vytváøet mapu, ani øešit analýzu obrazových dat èi podobné úlohy z robotiky. Dostává pøesná geometrická data - napø:
+Agent si tedy nemusí vytváøet mapu, ani øešit analýzu obrazových dat èi podobné úlohy z robotiky. Dostává pøesná geometrická data - napø.:
 \\
 \emph{Stojím na souøadnicích XY, dívám se smìrem na severozápad. Vidím dva pøedmìty: kvìtinu a talíø. Kvìtina je na souøadnicích XZ, talíø na YZ.}
 
@@ -39,7 +39,7 @@ Poèet uzlù prostorové mapy by se mìl pøizpùsobit velikosti svìta a poètu pøedmìt
 Souèástí modelu tedy musí být mechanismus korigující poèet uzlù mapy v èase, v závislosti na poètu pøedmìtù, které agent vidí, resp. èetnosti vjemù pøedmìtù.
 \\
 
-Model by mìl být hiearchický èi alespoò umožnit vytvoøení hiearchie.
+Model by mìl být hierarchický èi alespoò umožnit vytvoøení hierarchie.
 Všechny uzly mapy by nemìly být rovnocenné, postupnì by mìly vznikat další uzly vyšší úrovnì, které budou pokrývat vìtší oblast.
 Tyto uzly by mìly vznikat pøedevším v místech, kde agent vidìl mnoho pøedmìtù. Takto by model mìl být schopen urèit oblasti, kde je více pøedmìtù.
 \\

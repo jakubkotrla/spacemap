@@ -104,7 +104,7 @@ Zámìr \emph{Want(affordance)} agent mùe splnit úspìšnım provedením jedné z tøí 
 
 
 Kadá tato èinnost se skládá z nìkolika akcí, které mohou obsahovat další subakce, a není moné ji provést v jednom kroku simulace.
-Vıše zmínìné èinnosti jsou tedy implementovány jako tzv. chytré akce, které si pamatují aktuální stav a dle nìj dokáí urèit, jakou subakci má agent vykonat.
+Vıše zmínìné èinnosti jsou tedy implementovány jako tzv. \emph{chytré akce}, které si pamatují aktuální stav a dle nìj dokáí urèit, jakou subakci má agent vykonat.
 Strom akcí a subakcí je na obrázku \ref{fig:smart-actions}.
 Napø. pro náhodné hledání pøedmìtu je pouita chytrá akce \emph{SearchRandom}. Ta je schopná urèit, kam se agent má pøesunout pomocí další chytré akce \emph{MoveTo}.
 Teprve akce \emph{MoveToPartial} je atomická a lze ji provést v jednom kroku simulace.
@@ -176,7 +176,7 @@ Scénáø záleí pouze na zámìrech definovanıch v rámci svìta, aby bylo moné prová
 \end{figure}
 
 Pamì agenta je rozdìlena na krátkodobou a dlouhodobou. Dlouhodobá pamì v našem pøípadì obsahuje pouze prostorovou mapu.
-Krátkodobá pamìt se skládá ze tøí èástí: procesní èásti, percepèního pole a pamìové èásti.
+Krátkodobá pamì se skládá ze tøí èástí: procesní èásti, percepèního pole a pamìové èásti.
 Procesní èást obsahuje právì splòovanı zámìr, provádìné èinnosti, chytré akce a subakce, vše uspoøádané do stromu.
 Percepèní pole obsahuje odrazy zpozorovanıch pøedmìtù z vnìjšího svìta, tzv. fantomy.
 Pamìová èást obsahuje pamìové fantomy, odrazy pøedmìtù vybavené z dlouhodobé pamìti.
