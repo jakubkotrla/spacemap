@@ -6,8 +6,8 @@ Nìkterá z nich jsou popsána v této kapitole.
 
 \section{Pøitalivost stop vjemu}
 Pokud je v místnosti oblast, kde je poblí sebe více pøedmìtù, prostorová mapa v ní vytvoøí více uzlù.
-Pokud však budou mít pøedmìty nízkou aktraktivitu, napø. $^1/_{10}$ vıchozí atraktivity, nedojde k vzniku novıch uzlù.
-Poèáteèní intenzita stop vjemu vytváøenıch v této oblasti bude pøílis malá, ne aby pokryla rostoucí cenu uzlu.
+Pokud však budou mít pøedmìty nízkou atraktivitu, napø. $^1/_{10}$ vıchozí atraktivity, nedojde k vzniku novıch uzlù.
+Poèáteèní intenzita stop vjemu vytváøenıch v této oblasti bude pøíliš malá, ne aby pokryla rostoucí cenu uzlu.
 Pøestoe v oblasti jich bude hodnì, ádná z nich nebude dost intenzivní.
 \\
 
@@ -74,7 +74,7 @@ Pokud je hodnota vysoká, klesá rychleji, pokud se hodnota blíí k nule, klesá èí
 
 Model øeší zapomínání pouze za relativnì krátkou dobu.
 Pøeneseme-li mìøítko èasu modelu, tj. kroky simulace, do reálného svìta, je vidìt, e model vyhovuje pro dobu trvající øádovì jednotky a desítky tıdnù.
-Pokud by model mìl uspokojivì øešit zapomínání v øádu let, bylo vhodné rozšíøit intezitu vjemu do komplexnìjší velièiny,
+Pokud by model mìl uspokojivì øešit zapomínání v øádu let, bylo vhodné rozšíøit intenzitu vjemu do komplexnìjší velièiny,
 napø. pøidat mechanismy pracující s emocemi.
 \\
 
@@ -88,9 +88,9 @@ Vznikla by asociativní sí vazeb mezi èinnostmi a uzly. Jinım øešením by bylo vy
 
 Ukládané informace pak mohou bıt propagovány z uzlù do míst a z nich do nadøazenıch míst.
 Agent by pak byl schopen urèit nejèastìjší èinnosti provádìné v urèité místì a vytvoøit si tak pøedstavu o jeho funkènosti,
-napø: místo, kde se nejèastìji jí a pøipravuje jídlo, oznaèí jako místo k tomu urèené.
+napø. místo, kde se nejèastìji jí a pøipravuje jídlo, oznaèí jako místo k tomu urèené.
 Pokud bychom mu dodali dostatek informací, bude schopen jej oznaèit slovem \emph{jídelna} èi \emph{kuchynì}.
-K tomu úèelu by bylo tøeba vytvoøit hierachii afordancí èi je nìjak jinak kategorizovat.
+K tomu úèelu by bylo tøeba vytvoøit hierarchii afordancí èi je nìjak jinak kategorizovat.
 \\
 
 Model byl vytvoøen v prostøedí svìta jen s jedním agentem.
@@ -142,25 +142,25 @@ Pro tyto úèely by bylo vhodné vyuít hotové øešení, napø. nìjakı volnì dostupnı 
 Svìt kolem nás není omezen na jednu uzavøenou místnost, skládá se z mnoha prostorù, které se dìlí na menší a menší.
 Svìt kolem nás mùeme chápat jako hiearchii takovıch prostorù, i kdy hranice mezi nimi nejsou vdy jasnì urèené.
 Napø. dùm se dìlí na podlaí, ta dále na byty, které jsou sloeny z nìkolika místností.
-Model je moné rozšíøit tak, aby dokázal pracovat ve svìtì urèeném jako hiearchie prostorù.
+Model je moné rozšíøit tak, aby dokázal pracovat ve svìtì urèeném jako hierarchie prostorù.
 \\
 
-\begin{definition}[Hiearchickı svìt]
-Svìt se skládá z prostorù. Kadı prostor je obecnı mnohoúhelník, rozdìlenı na další podprostory. Tím je vytvoøena hiearchie prostorù.
-Koøen stromu této hiearchie je samotnı svìt, listy stromu jsou prostory, které ji nemá smysl dále dìlit, napø. malá uzavøená místnost, lednièka èi police.
+\begin{definition}[Hierarchickı svìt]
+Svìt se skládá z prostorù. Kadı prostor je obecnı mnohoúhelník, rozdìlenı na další podprostory. Tím je vytvoøena hierarchie prostorù.
+Koøen stromu této hierarchie je samotnı svìt, listy stromu jsou prostory, které ji nemá smysl dále dìlit, napø. malá uzavøená místnost, lednièka èi police.
 Podprostory v prostoru jsou chápány jako pøedmìty, napø. lednièka je prostor obsahující pøedmìty, ale z hlediska místnosti je pouze pøedmìtem.
 \end{definition}
 
 Èást prostorové mapy \emph{pamì na pøedmìty} pracuje nezávisle na velikosti svìta.
 \emph{Vrstva uzlù} je na nìm závislá, proto si mapa vytvoøí novou pro kadı prostor.
 V døíve uvedeném pøíkladu domu by kadá místnost, byt i podlaí mìly vlastní \emph{vrstvu uzlù}.
-Hiearchii svìta musí model dostat k dispozici. \footnote{
+Hierarchii svìta musí model dostat k dispozici. \footnote{
  Model by si tuto hiearchii mohl konstruovat sám obdobnım zpùsobem, jakım si vytváøí místa v kapitole \ref{chapter-place-detect}.
  Pak by mìl pouze jednu velmi rozsáhlou vrstvu uzlù.
- To by nebylo vhodné z hlediska nároku na vıpoèetní vıkon. Navíc lidé tuto hiearchii vnímají okamitì, nemusejí se ji zdlouhavì uèit.
+ To by nebylo vhodné z hlediska nároku na vıpoèetní vıkon. Navíc lidé tuto hierarchii vnímají okamitì, nemusejí se ji zdlouhavì uèit.
 }\\
 
-To navíc umoòuje parametrizovat vrstvù uzlù na míru konkrétní místnosti, dokonce pouít jiné implementace a urèité modifikace modelu.
+To navíc umoòuje parametrizovat vrstvu uzlù na míru konkrétní místnosti, dokonce pouít jiné implementace a urèité modifikace modelu.
 Napø. malá místnost plná pøedmìtù (sklad) a velká témìø prázdná místnost (hala) mohou mít zcela jiné nastavení parametrù, jako je hustota mapy èi cena uzlu.
 \\
 
