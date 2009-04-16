@@ -35,11 +35,11 @@ class HeapRoom(BaseConfig):
         map.AddObject(Wood, 60, 70)
         
         map.AddObject(Hammer, 90, 5)
-        map.AddObject(Nail, 90, 10, amount=20)
+        map.AddObject(Nail, 90, 10)
         map.AddObject(Hammer, 90, 15)
         map.AddObject(Screwdriver, 92, 14)
         map.AddObject(Screwdriver, 86, 8)
-        map.AddObject(Nail, 88, 12, amount=10)
+        map.AddObject(Nail, 88, 12)
         map.AddObject(Torch, 96, 2)
         map.AddObject(Pipe, 98, 6)
 
