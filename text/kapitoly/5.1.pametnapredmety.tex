@@ -7,7 +7,7 @@ Pamì na pøedmìty vychází z práce Tomáše Korenka \cite{litKorenko}.
 \\
 
 \begin{definition}[Pamìová stopa pøedmìtu]
-Pamì nepracuje pøímo s reálnımi pøedmìty, ale vytváøí si jejich kopie, tj. \emph{pamìové stopy pøedmìtù}.
+Pamì nepracuje pøímo s reálnımi pøedmìty, ale vytváøí si jejich kopie tzv. \emph{pamìové stopy pøedmìtù}.
 Pamìová stopa je reprezentace reálného pøedmìtu v agentovì dlouhodobé pamìti, prostorové mapì.
 Je to trojice \emph{$<$pøedmìt, intenzita, poloha$>$}, kde pøedmìt je odkaz na reálnı pøedmìt;
 intenzita urèuje, jak dobøe si agent tento pøedmìt pamatuje, a poloha jsou souøadnice, na kterıch se agent domnívá, e se pøedmìt nachází.
@@ -16,7 +16,7 @@ Pro kadı reálnı pøedmìt má pamì nejvıše jednu pamìovou stopu.
 
 \begin{definition}[Pamìová sí]
 Mezi pamìovımi stopami pøedmìtù a uzly mapy je asociativní sí, která se vytváøí v prùbìhu simulace, dle toho, jak agent vnímá pøedmìty kolem sebe.
-Pamìová sí je mnoina trojic \emph{$<$uzel,stopa,intenzita$>$}, tedy vazeb mezi pamìovımi stopami a uzly prostorové mapy, které mají svou intenzitu.
+Pamìová sí je mnoina trojic \emph{$<$uzel, stopa, intenzita$>$}, tedy vazeb mezi pamìovımi stopami a uzly prostorové mapy, které mají svou intenzitu.
 Intenzita je nezáporné reálné èíslo.
 \end{definition}
 
@@ -39,7 +39,7 @@ ObjectNotFound & Agent nenalezl pøedmìt tam, kde ho hledal pøi chytré akci LookU
 
 ObjectUsed & Agent pøedmìt pouil, tento vjem není vytváøen a zpracováván v prùbìhu vnímání, ale pøi provádìní atomické akce ExecuteReal \\
 
-\bottomrule[0.5pt]
+\bottomrule[0.4pt]
 \end{tabular}
 \end{center}
 \centering
@@ -49,12 +49,12 @@ ObjectUsed & Agent pøedmìt pouil, tento vjem není vytváøen a zpracováván v prùb
 
 
 \begin{definition}[Dosah uèení]
-Parametr modelu \param{dosah uèení} urèuje velikost okolí pamìové stopy pøi uèení pamìové sítì.
+Parametr modelu \param{dosah uèení} urèuje velikost okolí vjemu pøi uèení pamìové sítì.
 Do okolí padnou pouze uzly ve vzdálenosti menší ne \param{dosah uèení}.
 \end{definition}
 
 
-V kadém kroku je pamìti pøedloena mnoina vjemù (mùe bıt prázdná). Vjem je trojice \emph{$<$pøedmìt,poloha,intenzita$>$}.
+V kadém kroku je pamìti pøedloena mnoina vjemù (mùe bıt prázdná). Vjem je trojice \emph{$<$pøedmìt, poloha, intenzita$>$}.
 Vjem má svùj typ danı událostí, kterou byl vyvolán, jejich pøehled je v tabulce \ref{tab:typy-vjemu}.
 Kadı typ má urèenı koeficient, kterım je vynásobena intenzita vjemu pøed jeho zpracováním prostorovou mapou, tyto koeficienty jsou parametry modelu.
 \\
@@ -107,14 +107,14 @@ Funkce $norm$ je libovolná klesající funkce mající obor hodnot $<0,1>$, napø. ne
 \end{algorithmic}
 \end{algorithm}
 
-Prostorová mapa je schopna urèit, kde se nacházejí pøedmìty, které agent pøedtím vidìl. Tato informace je uloena v døíve zmínìné asociativní síti.
+Prostorová mapa je schopna urèit, kde se nacházejí pøedmìty, které agent døíve vidìl èi pouil. informace o poloze pøedmìtu je uloena ve vıše zmínìné asociativní síti.
 Èím blíe je pøedmìt nìjakému uzlu mapy, tím vyšší je intenzita vazby mezi nimi.
-Kdy agent hledá pøedmìt mající nìjakou affordanci, provede se proces popsanı v algoritmu \ref{alg:vzpomenuti}. V kroku 2 je spoèítána poloha pøedmìtu z informací uloenıch v asociativní síti.
+Kdy agent hledá pøedmìt mající nìjakou affordanci, provede se algoritmus \ref{alg:vzpomenuti}. V kroku 2 je spoèítána poloha pøedmìtu z informací uloenıch v asociativní síti.
 Poloha pøedmìtu je váenı centroid všech uzlù, které mají vazbu na pamìovou stopu, váhou je intenzita vazeb:
 \\
 
 \begin{equation} 
-c_w(stopa) = \frac{\displaystyle \sum_{n \in stopa} n_{xy} \times \eta(vazba_n) }{\displaystyle \sum_{n \in stopa} \eta(vazba_n) }.
+c_w(stopa) = \frac{\displaystyle \sum_{n \in stopa} n_{xy} \times \eta(vazba(stopa,n)) }{\displaystyle \sum_{n \in stopa} \eta(vazba(stopa,n)) }.
 \label{formula:el-centroid-mista}
 \end{equation}
 

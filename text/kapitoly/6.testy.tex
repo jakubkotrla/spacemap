@@ -61,8 +61,8 @@ Místa první úrovnì jsou nepøesné pøedstavy o oblastech typu \uv{nìkde v rohu}. M
 \\
 
 
-Obrázek \ref{fig:final-crazy} ukazuje, e model se chová podobnì i v pomìrnì komplikovanıch místnostech. Místnost CrazyRoom je nekonvexní polygon.
-Hustota uzlù roste smìrem k poloze pøedmìtù a v takovıch místech vznikají místa.
+Obrázek \ref{fig:final-crazy} ukazuje, e model se chová podobnì i v pomìrnì komplikovanıch místnostech jako je místnost CrazyRoom. Ta je reprezentována nekonvexním polygonem.
+Hustota uzlù roste smìrem k poloze pøedmìtù a v takovıch oblastech vznikají místa.
 \\
 
 
@@ -116,7 +116,7 @@ Na obrázku \ref{fig:usage-ag-0.5} a \ref{fig:usage-ag-1} jsou vısledky testù pøi
 V tomto pøípadì je velkı rozdíl hustot v oblastech s pøedmìty a bez pøedmìtù.
 \\
 
-Z vısledkù testù vyplıvá, e naplnìnost uzlu je hraje v modelu vıznamnou roli.
+Z vısledkù testù vyplıvá, e naplnìnost uzlu hraje v modelu vıznamnou roli.
 Pøedstavuje míru dùleitosti uzlu pro prostorovou mapu, resp. pamì na pøedmìty.
 Zmìna parametru \param{vliv naplnìnosti} má malı vliv na rozmístìní uzlù v prostoru, resp. na rozdíl hustot v oblastech s pøedmìty a v oblastech bez pøedmìtù.
 Zmìna zpùsobu vıpoètu vzájemné odpudivosti dvou uzlù má mnohem zásadnìjší vliv.
@@ -177,7 +177,7 @@ Jedním z objektivních kritérií modelu je pøesnost mapy, tj. nakolik odpovídá \uv
 \begin{definition}[Nauèenost pøedmìtu]
 V prùbìhu simulace agent vidí a pouívá pøedmìty, prostorová mapa pak dostává vjemy, které to odráejí.
 Nauèenost pøedmìtu je vlastnost vyjadøující poèet a intenzitu vjemù daného pøedmìtu.
-Na zaèátku simulace je rovna nule, v prùbìhu simulace roste. Vdy kdy je vytvoøen vjem pøedmìtu, je nauèenost pøedmìtu zvıšena o intenzitu vjemu.
+Na zaèátku simulace je rovna nule, v prùbìhu simulace roste. Vdy, kdy je vytvoøen vjem pøedmìtu, je nauèenost pøedmìtu zvıšena o intenzitu vjemu.
 Nauèenost pøedmìtu v èase je neklesající funkce.
 \end{definition}
 
@@ -221,8 +221,8 @@ Hodnota grafu v jednom kroku je prùmìrná chyba všech pøedmìtù.
 
 
 Relativní chyba vzhledem k velikosti místnosti se pohybuje øádovì v jednotkách procent.
-V místnostech CrazyRoom, FullRoom, HeapRoom, HeapLineRoom a SmallRoom má graf klesající tendenci.
-V místnostech Corridor, Lobby a Empty velikost chyby neustále kolísá.
+V místnostech CrazyRoom, FullRoom, HeapRoom, HeapLineRoom a SmallRoom má chyba klesající tendenci.
+V místnostech Corridor, Lobby a EmptyRoom velikost chyby neustále kolísá.
 \\
 
 Vısledky ukazují, e místnosti obsahující vìtší poèet pøedmìtù, uspoøádanıch do hromad, se mapa uèí dobøe.
@@ -232,7 +232,7 @@ V prùbìhu èasu pøesnost svıch znalostí o prostoru zpøesòuje.
 
 V EmptyRoom, tedy prázdné místnosti pouze s jedním pøedmìtem, se polohu jediného pøedmìtu mapa nauèí do urèité míry a pak ji ji nezpøesòuje.
 To odpovídá naší pøedstavì,
-e prostor témìø bez záchytnıch bodù si èlovìk pamatuje nepøesnì a špatnì se o nìm uèí prostorové znalosti, nebo je není k èemu vztáhnout.
+e prostor témìø bez záchytnıch bodù si èlovìk pamatuje nepøesnì. Špatnì se o nìm uèí prostorové znalosti, nebo je není k èemu vztáhnout.
 \\
 
 

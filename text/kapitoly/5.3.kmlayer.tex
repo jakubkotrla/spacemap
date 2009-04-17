@@ -2,12 +2,12 @@
 
 Vìtšina modelù pamìti, zmínìnıch v tøetí kapitole, vyuívá samoorganizaèní Kohonenovy mapy \cite{litKohonen}.
 Kohonenova mapa je model neuronové sítì uèící se bez uèitele, vyuívá soutìní strategii uèení.
-Neurony jsou v Kohonenovì mapì uspoøádány do nìjaké topologické struktury, nejèastìji do dvourozmìrné møíky.
+Neurony jsou v Kohonenovì mapì uspoøádány do topologické struktury, nejèastìji do dvourozmìrné møíky.
 Tím je urèeno, jaké neurony spolu sousedí.
 Okolím neuronu $N_s(c)$ velikosti $s$ neuronu $c$ pak rozumíme jeho sousedy a další neurony, jejich vzdálenost v topologii je menší ne $s$:
 
 \begin{equation} 
-N_s(c) = \{j:d(j,c)\leq s\}.
+N_s(c) = \{j:d(j,c)\leq s\},
 \label{formula:km-okoli}
 \end{equation}
 
@@ -25,7 +25,7 @@ Ostatní neurony jsou neaktivní a neuèí se. Kohonenova mapa a další modely samoor
 \end{figure}
 
 Kohonenova mapa by mìla splòovat naše poadavky. Umí rozmístit uzly do hustoty odpovídající rozmístìní pøedmìtù v prostoru.
-Umí se uèit online, kadı vjem agenta je moné chápat jako prvek trénovací mnoiny dat. Jeví se jako ideální.
+Umí se uèit online, kadı vjem agenta je moné chápat jako prvek trénovací mnoiny dat.
 Navrhli jsme tedy model vrstvy uzlù zaloenı na Kohonenovì mapì.
 \\
 
@@ -73,8 +73,8 @@ kde \(coef_{neighbour}\) je vzdálenost mezi vyhrávajícím uzlem a právì trénovanı
 Vzorec \eqref{formula:km-uceni} je analogií uèení Kohonenovy mapy.
 \\
 
-Tímto algoritmem by se mìla prostorová mapa v prùbìhu simulace nauèit rozloení pøedmìtù ve svìtì a pøizpùsobit se mu.
-Uzly mapy se postupnì pøesunou do míst s velkou èetností vjemù a rozloení uzlù by se tak mìlo v èase postupnì blíit rozloení pøedmìtù.
+Tímto algoritmem by se mìla prostorová mapa v prùbìhu simulace nauèit rozmístìní pøedmìtù ve svìtì a pøizpùsobit se mu.
+Uzly mapy se postupnì pøesunou do míst s velkou èetností vjemù a rozmístìní uzlù by se tak mìlo v èase postupnì blíit rozmístìní pøedmìtù.
 \\
 
 \begin{figure}[h!]
@@ -87,12 +87,11 @@ Uzly mapy se postupnì pøesunou do míst s velkou èetností vjemù a rozloení uzlù 
 
 Test modelu (obrázek \ref{fig:kml-preuceni}) ukázal, e k tomu skuteènì dojde, ale více, ne bychom chtìli.
 Problém, kterı nastal je, e se sí pro naše potøeby \uv{pøeuèila}
-%\footnote{jedná se analogii pøeuèení neuronové sítì}
  -- uzly se èasem všechny pøesunuly k pøedmìtùm a prostor bez pøedmìtù zùstal prázdnı, bez uzlù.
 Navrhli jsme dvì øešení:
 \begin{CompactItemize}
 \item Umìlé pøedmìty - pøidání umìlıch pøedmìtù, které se budou snait dret pùvodní rozloení uzlù Kohonenovy mapy
-\item Odpudivost uzlù - uzly mapy se budou vzájemnì odpuzovat, aby se nenahromadily všechny na jedno místo
+\item Odpudivost uzlù - uzly mapy se budou vzájemnì odpuzovat, aby se nenahromadily všechny v jednom místì
 \end{CompactItemize}
 
 Vıše zmínìná øešení jsme vyzkoušeli v jednoduché ètvercové místnosti.
@@ -100,7 +99,7 @@ Vıše zmínìná øešení jsme vyzkoušeli v jednoduché ètvercové místnosti.
 
 \subsection{Umìlé pøedmìty}
 Toto øešení pøidává do svìta další pøedmìty, agent je nevyuívá k plnìní svıch zámìrù, pouze je vnímá a mìní dle nich svou prostorovou mapu.
-Umìlé pøedmìty musí mít niší atraktivitu ne reálné pøedmìty, aby je nemìly na prostorovou mapu vìtší vliv ne opravdové pøedmìty.
+Umìlé pøedmìty musí mít niší atraktivitu ne reálné pøedmìty, aby nemìly na prostorovou mapu vìtší vliv ne opravdové pøedmìty.
 \\
 
 Umìlé pøedmìty jsou do svìta pøidány na zaèátku, pøi vytváøení ètvercové sítì. V kadém místì, kde je uzel sítì, je vytvoøen jeden umìlı pøedmìt.
@@ -117,13 +116,14 @@ Tím by mìly udret Kohonenovu mapu roztaenou i v místech, kde reálné pøedmìty n
 \end{figure}
 
 Vısledek testu je na obrázku \ref{fig:kml-baseobjs}\footnote{Další vısledky testù s rùznou hodnotou atraktivity umìlıch pøedmìtù jsou na pøiloeném DVD.}.
+Uzly mapy se v prùbìhu simulace stahují do støedu místnosti.
 Mapa se stahuje do støedu místnosti bez ohledu na vliv umìlıch pøedmìtù.
 Dùvodem je to, e tìištì všech umìlıch pøedmìtù je ve støedu místnosti.
 Tomu bychom mohli zabránit zvıšením atraktivity umìlıch pøedmìtù, které jsou na kraji místnosti.
 Jednoduchım protipøíkladem takového øešení je místnost, která bude mít objekty pouze na kraji (na zdech, v rozích).
 Pak bychom potøebovali zvıšit atraktivitu umìlıch pøedmìtù uprostøed místnosti resp. obecnì bychom museli zvıšit atraktivitu umìlıch pøedmìtù v místech,
 kde nejsou reálné pøedmìty.
-Tím jsme pøevedli pùvodní problém hledání oblastí s vyšším poètem pøedmìtù na problém opaènı, tj. na hledání bez pøedmìtù.
+Tím jsme pøevedli pùvodní problém hledání oblastí s vyšším poètem pøedmìtù na problém opaènı, tj. na hledání oblastí bez pøedmìtù.
 Øešení s pouitím umìlıch pøedmìtù tedy nevyhovuje.
 \\
 
@@ -131,11 +131,11 @@ Tím jsme pøevedli pùvodní problém hledání oblastí s vyšším poètem pøedmìtù na pr
 Do modelu jsme pøidali vzájemnou odpudivost uzlù sítì. V kadém kroku simulace se uzly, které jsou pøíliš blízko u sebe, odpuzují.
 
 \begin{definition}[Síla odpudivosti]
-Síla odpudivosti je parametr modelu urèující míru s jakou se budou uzly odpuzovat.
+Parametr modelu \param{síla odpudivosti} urèuje míru s jakou se budou uzly odpuzovat.
 \end{definition}
 
 
-Vzájemná odpudivost dvou uzlù závisí na síle odpudivosti, na vzdálenosti uzlù a jejich naplnìnosti.
+Vzájemná odpudivost dvou uzlù závisí na \param{síle odpudivosti}, na vzdálenosti uzlù a jejich naplnìnosti.
 Uzel s vysokou naplnìností se bude nacházet v místì, kde je hodnì pøedmìtù.
 V takovıch místech by hustota uzlù mìla bıt vìtší, a proto je nutné, aby v takovıch místech byla vzájemná odpudivost uzlù menší.
 \\
@@ -148,9 +148,9 @@ odpudivost(n_i, n_j) = \frac{ sila_{odpudivost} }{ dist(n_i, n_j)^2 \times \mu(n
 
 Naplnìnost uzlu lze pøi urèování vzájemné odpudivosti chápat jako analogii k hmotnosti tìles, s tím rozdílem,
 e odpudivost dvou uzlù je nepøímo úmìrná souèinu jejich naplnìností. Odpudivost je dána vzorcem \eqref{formula:km-odpudivost},
-kde $sila_{odpudivost}$ je síla odpudivosti.
+kde $sila_{odpudivost}$ je parametr \param{síla odpudivosti}.
 V kadém kroku simulace je spoètena vzájemná odpudivost uzlù. Tím jsou urèeny všechny odpudivé síly, které na uzly pùsobí.
-Poloha uzlù je pak upravena dle tìchto sil.
+Poloha uzlù je pak upravena dle tìchto sil:
 \\
 
 \begin{equation} 
@@ -160,7 +160,7 @@ Poloha uzlù je pak upravena dle tìchto sil.
   }}
   odpudivost(n, node)
 }{ max(1, \mu(node)) }
-\label{formula:el-odpudivost}
+\label{formula:el-odpudivost}.
 \end{equation}
 \\
 
