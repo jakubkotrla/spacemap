@@ -1,7 +1,7 @@
 \chapter{Pøíbuzné práce}
 
-V této kapitole pøedstavíme práce, které øeší problém podobnı tomu, kterı jsme nastínili v pøedchozí kapitole.
-Pokusíme se v nich najít myšlenky, ze kterıch bychom mohli vyjít pøi konstrukci modelu.
+V této kapitole pøedstavíme práce øešící problém podobnı tomu, kterı jsme nastínili v pøedchozí kapitole.
+Pokusíme se v nich najít myšlenky, ze kterıch bychom mohli vyjít pøi návrhu modelu.
 \\
 
 \section{Shluková analıza}
@@ -44,7 +44,7 @@ Existuje nìkolik rozšíøení Kohonenovıch map, napø. v \cite{litGNG} a \cite{litGN
 tzv. Growing Neural Gas Network. Model GNG v prùbìhu uèení vkládá nové uzly na místa nejvìtší chyby.
 \\
 
-V \cite{litGHSOM} je popsán model rostoucí hiearchické Kohonenovy mapy -- 
+V \cite{litGHSOM} je popsán model rostoucí hierarchické Kohonenovy mapy -- 
 Growing Hierarchical Self-Organizing Map\footnote{Více informací o GHSOM lze nalézt na http://www.ifs.tuwien.ac.at/~andi/ghsom/.}.
 GHSOM zaèíná jako Kohonenova mapa tvoøená jedním uzlem a v prùbìhu uèení je rozšiøována:
 \begin{CompactItemize}
@@ -60,24 +60,24 @@ Jsou tedy jedním z monıch øešení našeho problému.
 V \cite{litVoicu2003} autoøi popisují model hierarchické kognitivní mapy, kterı obsahuje prostorovou mapu o dvou úrovních (místa a regiony).
 Je tvoøena ètyømi asociativními sítìmi, které ukládají vazby mezi místy a regiony a sousednost míst a regionù.
 Místa i regiony jsou obdélníky. Jejich hierarchie je však pøedem dána.
-Regiony nevznikají seskupováním míst ani naopak místa nevznikají rozdìlením regionù. Asociativní sítì se pouze uèí pøíslušnost míst do regionù.
+Regiony nevznikají seskupováním míst ani místa nevznikají dìlením regionù. Asociativní sítì se pouze uèí pøíslušnost míst do regionù.
 Model je pouit pouze pro navigaci a aktualizaci mapy, neobsahuje pamì na pøedmìty ani další podobné informace.
 \\
 
 V \cite{litFiltr} autoøi navrhují vytvoøit kognitivní mapu jako filtr mezi agentem a reprezentací svìta.
 Virtuální svìt je reprezentován jako tzv. IHT\footnote{Informed Hierarchical Topological graph} graf obsahující topologickou a geometrickou informaci.
-IHT má dvì úrovnì: jednoduchá místa reprezentovaná jako konvexní polygony a z nich sloené vìtší oblasti. Topologie oblastí je ale urèena dopøedu.
+IHT má dvì úrovnì: jednoduchá místa reprezentovaná jako konvexní polygony a z nich sloené vìtší oblasti. Topologie oblastí je však urèena dopøedu.
 Prostorová mapa jednotlivıch agentù je vytváøena jako filtr, umoòující agentùm pøistupovat k této reprezentaci v závislosti na agentovì minulosti.
 Model je pouit pouze pro navigaci a neumoòuje prùbìné štìpení oblastí ani vytváøení novıch.
 \\
 
 V \cite{litCAN} je popsán model prostorové mapy, kterı umí ukládat informace o poloze pøedmìtù.
-Vyuívá k tomu autoasociativní sít obsahující dva typy neuronù:
+Vyuívá k tomu autoasociativní sí obsahující dva typy neuronù:
 \begin{CompactItemize}
 \item neurony kódující oblasti, jejich vıstup je spojitı v intervalu $<0,1>$
 \item neurony kódující pøedmìty, jejich vıstup je diskrétní: 0 èi 1
 \end{CompactItemize}
-V experimentu se sítí sloenou z 1500 neuronù se autorùm se podaøilo nauèit sí vazby mezi oblastmi a pøedmìty.
+V experimentu se sítí sloenou z 1500 neuronù se autorùm podaøilo nauèit sí vazby mezi oblastmi a pøedmìty.
 Pokud je nauèené síti dán vstup odpovídající oblasti, jsou aktivní neurony kódující pøedmìt, kterı se v oblasti nachází.
 A obrácenì pokud je síti dán vstup odpovídající pøedmìtu, jsou aktivní neurony kódující oblast, kde se pøedmìt nachází.
 \\

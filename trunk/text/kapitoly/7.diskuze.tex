@@ -1,6 +1,6 @@
 \chapter{Diskuse}
 Model prostorové mapy popsanı v kapitole \ref{chapter-model} resp. \ref{chapter-model-el} splòuje základní poadavky, které jsme na nìj kladli.
-V prùbìhu jeho testování a vytváøení se však objevila celá øada monıch rozšíøení a vylepšení.
+V prùbìhu jeho vytváøení a testování se však objevila celá øada monıch rozšíøení a vylepšení.
 Nìkterá z nich jsou popsána v této kapitole.
 \\
 
@@ -18,33 +18,17 @@ Také ochota stopy mìnit svou polohu, tedy velikost zmìny polohy, by mìla bıt nep
 Vısledkem bude, e slabší vjemy budou pøitahovány k silnìjším.
 \\
 
-% ?? ToDo ukazat/overit na prikladu na prikladu, ze to tak je.
 
 \section{Adaptivní odpudivost}
-V pøedstaveném modelu je vzájemná odpudivost uzlù závislá pouze na jejich vzdálenosti a naplnìnosti.
+V pøedstaveném modelu je vzájemná odpudivost uzlù závislá pouze na vzdálenosti mezi nimi a jejich naplnìnosti.
 Je dále ovlivnìna parametry modelu, které jsou však v prùbìhu celé simulace konstantní.
 \\
 
-Jedna z moností, jak zlepšit rozloení uzlù v prostoru, je mìnit parametry ovlivòující odpudivost,
-v prùbìhu simulace, pøedevším \param{sílu odpudivosti} a \param{dosah odpudivosti}.
+Jedna z moností, jak zlepšit rozloení uzlù v prostoru, je v prùbìhu simulace mìnit parametry ovlivòující odpudivost,
+pøedevším \param{sílu odpudivosti} a \param{dosah odpudivosti}.
 Parametry by se mohly mìnit podle aktuální hustoty uzlù, která se odráí v mnoství odpudivosti.
-Dalším øešením by bylo pøidat je do vıpoètu odpudivosti,
-tím by parametry pøestaly bıt stejné pro všechny uzly a odpudivost uzlù by se tak pøizpùsobovala lokální situaci.
+Dalším øešením by bylo pøidat mnoství odpudivosti uzlu do vzorce pro vıpoèet odpudivosti, která by se tak pøizpùsobovala lokální situaci.
 \\
-
-
-\section{Sjednocení stopy vjemu a uzlu}
-V pøedstaveném modelu jsou dva podobné objekty: stopa vjemu a uzel prostorové mapy.
-Na stopu vjemu lze nahlíet jako na doèasnı uzel mapy, kterı má danou svou ivotnost.
-Souèasnì lze nahlíet na uzel mapy jako na trvalejší stopu vjemu.
-Stopa vjemu a uzel jsou tedy jen dva rùzné stupnì tého typu objektu, stopa vjemu je uzel nultého stupnì.
-\\
-
-Model lze rozšíøit o další stupnì. Uzly by vytváøely další uzly, které by mìly ještì trvalejší charakter.
-Stupeò uzlu by urèoval jeho trvalost, ochotu se pohybovat a míru, s jakou vytváøí další uzly vyššího stupnì.
-Úplnım zobecnìním modelu by byla zmìna stupnì uzlu z diskrétní velièiny na spojitou. Mapa by tak obsahovala mnoho uzlù rùzného stupnì.
-\\
-
 
 
 \section{Zapomínání}
@@ -53,8 +37,7 @@ Model obsahuje nìkolik mechanismù pro zapomínání:
 \begin{CompactItemize}
 \item sniování intenzit pamìovıch stop a vazeb mezi stopou a uzlem
 \item slábnutí a zmizení stop vjemu
-\item klesání naplnìnosti uzlu
-\item klesání mnoství odpudivosti uzlu
+\item klesání naplnìnosti a mnoství odpudivosti uzlu
 \item zapomínání uzlù
 \item klesání intenzity místa
 \end{CompactItemize}
@@ -77,6 +60,20 @@ Pøeneseme-li mìøítko èasu modelu, tj. kroky simulace, do reálného svìta, je vidì
 Pokud by model mìl uspokojivì øešit zapomínání v øádu let, bylo vhodné rozšíøit intenzitu vjemu do komplexnìjší velièiny,
 napø. pøidat mechanismy pracující s emocemi.
 \\
+
+
+\section{Sjednocení stopy vjemu a uzlu}
+V pøedstaveném modelu jsou dva podobné objekty: stopa vjemu a uzel prostorové mapy.
+Na stopu vjemu lze nahlíet jako na doèasnı uzel mapy, kterı má danou svou ivotnost.
+Souèasnì lze nahlíet na uzel mapy jako na trvalejší stopu vjemu.
+Stopa vjemu a uzel jsou tedy jen dva rùzné stupnì tého typu objektu, stopa vjemu je uzel nultého stupnì.
+\\
+
+Model lze rozšíøit o další stupnì. Uzly by vytváøely další uzly, které by mìly ještì trvalejší charakter.
+Stupeò uzlu by urèoval jeho trvalost, ochotu se pohybovat a míru, s jakou vytváøí další uzly vyššího stupnì.
+Úplnım zobecnìním modelu by byla zmìna stupnì uzlu z diskrétní velièiny na spojitou. Mapa by tak obsahovala mnoho uzlù rùzného stupnì.
+\\
+
 
 
 
@@ -114,7 +111,6 @@ Zde je moné model dále obohacovat, agent mùe napø. po èase zapomenout, kdo mu 
 
 
 
-
 \section{Rozšíøení modelu pro sloitìjší svìty} \label{chapter-complex-space}
 Model je navren pro velmi jednoduchı svìt obsahující pouze jednu 2D místnost.
 Tato kapitola pøedstavuje rozšíøení modelu pro svìt obsahující více místností, které jsou 3D.
@@ -126,6 +122,9 @@ Poloha objektù prostorové mapy bude urèena tøemi souøadnicemi $<x,y,z>$. Vzdálen
 dist_{3D}(a,b) = \sqrt{  (a_x-b_x)^2 + (a_y-b_y)^2 + (a_z-b_z)^2}.
 \label{formula:vzdalenost-3D}
 \end{equation}
+
+\newpage
+
 Místnost mùe bıt obecnı mnohoúhelník. Model potøebuje od vnìjšího svìta pouze následující rozhraní: 
 \begin{CompactItemize}
 \item urèit obsah mnohostìnu
@@ -164,7 +163,7 @@ To navíc umoòuje parametrizovat vrstvu uzlù na míru konkrétní místnosti, dokonc
 Napø. malá místnost plná pøedmìtù (sklad) a velká témìø prázdná místnost (hala) mohou mít zcela jiné nastavení parametrù, jako je hustota mapy èi cena uzlu.
 \\
 
-
+\newpage
 
 \section{Další moná pouití modelu}
 Model je navren jako èást episodické pamìti virtuálního agenta. Není však závislı na jeho architektuøe.
@@ -191,4 +190,6 @@ Kdy si bude agent vybavovat polohu karty v páru, model urèí její polohu s nepøe
 
 Další úlohou, kde by bylo moné model pouít, je uèení se rozloení kláves na klávesnici virtuálním agentem a simulace jeho pøeklepù.
 Psaním písmen, tedy pouíváním kláves, by se model rozloení uèil a v prùbìhu èasu by frekvence pøeklepù klesala.
+Vjem by mohl bıt zpùsoben napøíklad stisknutím klávesy pøi psaní. Nejspíše by bylo nutné provést urèitou geometrickou transformaci prostoru, 
+aby klávesy, tj. pøedmìty, nebyly pøílíš blízko sebe.
 \\
