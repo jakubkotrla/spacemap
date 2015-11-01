@@ -1,0 +1,1 @@
+Virtual world with virtual agent to create memory model for space clustering. Agent should cluster space/world in manner similar to human.
